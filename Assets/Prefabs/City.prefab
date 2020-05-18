@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1070758265128441448
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5360778420626545991}
+  - component: {fileID: 5184658327631588807}
+  - component: {fileID: 3187627947043177647}
+  - component: {fileID: 3672536202116024420}
+  m_Layer: 0
+  m_Name: City Limits
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5360778420626545991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 10, y: 0.1, z: 10}
+  m_Children: []
+  m_Father: {fileID: 6303210571421432175}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5184658327631588807
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &3187627947043177647
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3672536202116024420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c50a50bc0fca2d4c86db790236725e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &3469767919227977101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6303210571421432175}
+  - component: {fileID: 7307572958468241306}
+  - component: {fileID: 6564999988731377981}
+  - component: {fileID: -2898946987551350288}
+  m_Layer: 0
+  m_Name: City
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6303210571421432175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5360778420626545991}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7307572958468241306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac8cd10216058c44b6620abf1c6471f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingPrefabs:
+  - {fileID: 3629112668969951117, guid: 2a9160e434dd9c44781ed3d80ad788d6, type: 3}
+  - {fileID: 4062185150980313869, guid: 64fcbf1fd00efe24b97eb3d9f0b25058, type: 3}
+  - {fileID: 6551339687451519340, guid: b9e0c031adb45b344a834b6e1e48e208, type: 3}
+  - {fileID: 2346400239157233202, guid: 8993ebfb58eb11247bdaf642ef8bb138, type: 3}
+  - {fileID: 258828231553787804, guid: c5c4c55a8aac326458056d452c671964, type: 3}
+  buildings: []
+  defaultWallMaterial: {fileID: 2100000, guid: 12861769f6151ea4485ed8e626647475, type: 2}
+  defaultFloorMaterial: {fileID: 2100000, guid: 8811037fe0ece84429ece78b207663e0,
+    type: 2}
+  wallMaterials:
+  - {fileID: 2100000, guid: 12861769f6151ea4485ed8e626647475, type: 2}
+  - {fileID: 2100000, guid: de3713aca0cfa694d9bc83c7fb5c28ef, type: 2}
+  floorMaterials:
+  - {fileID: 2100000, guid: 8811037fe0ece84429ece78b207663e0, type: 2}
+  wallSectionPrefab: {fileID: 1142925104130558610, guid: 3d3a6656c50a54b499ad39efa159dcd9,
+    type: 3}
+  walls: {fileID: 0}
+  radius: 100
+--- !u!114 &6564999988731377981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f224a032a713b4899444afe71e0023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3675544862485484884, guid: 22256e9fa4b32244e98cc6e0f63d15e8,
+    type: 3}
+  pillPrefab: {fileID: 3931174853506778531, guid: bc64cf3afe000114cbb27f37aa75d1d0,
+    type: 3}
+  squadPrefab: {fileID: 9053947970362020428, guid: 9af983e09f7396a489ffcfe6fc9d15e5,
+    type: 3}
+  pillClasses:
+  - className: Guard
+    primary: {fileID: 4056308008923751511, guid: 767ce553c58f18b49be2feba98519d46,
+      type: 3}
+    secondary: {fileID: 0}
+    skin: {fileID: 2100000, guid: 3db2bfa2aa32a954394ac0a9333e22c1, type: 2}
+    bodyGear: {fileID: 1435025089649330390, guid: 48845aafa58af034bb30ec3b501ddbf3,
+      type: 3}
+    headGear: {fileID: 0}
+    probability: 0.9
+  - className: Riot Personnel
+    primary: {fileID: 5561473365579642321, guid: 17cc735c0c0214645a35e677a3a9f913,
+      type: 3}
+    secondary: {fileID: 5968027895846996904, guid: efa2947546b2b834abd2ed4214eb1dcf,
+      type: 3}
+    skin: {fileID: 2100000, guid: d13d187f3a7ab4c44964ef877a2e4a4f, type: 2}
+    bodyGear: {fileID: 4934690952432774333, guid: 8a00b5c7764aa9e4a99b08f5d8daef97,
+      type: 3}
+    headGear: {fileID: 5347536055362246905, guid: 27d03f13c49a4b045a7f1ec115f575b4,
+      type: 3}
+    probability: 0.1
+  atOnce: 20
+  prescriptions: 100
+  team: 1
+--- !u!114 &-2898946987551350288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3df27b9289d1e8c4fb82e0df4f4673ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 0}
