@@ -15,7 +15,7 @@ public class Bed : MonoBehaviour
         occupant.controlOverride = true;
 
         occupant.transform.parent = transform.parent;
-        occupant.transform.localPosition = Vector3.up * 0.25f;
+        occupant.transform.localPosition = Vector3.up;
         occupant.transform.localEulerAngles = new Vector3(-90, 180, 0);
 
         occupant.Sleep(this);

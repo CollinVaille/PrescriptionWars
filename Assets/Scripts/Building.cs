@@ -13,6 +13,7 @@ public class Building : MonoBehaviour
     [HideInInspector] public City city;
     [HideInInspector] public int buildingIndex;
     [HideInInspector] public Material wall, floor;
+    private bool flipped = false;
 
     private int openDoors = 0;
 
@@ -82,25 +83,39 @@ public class Building : MonoBehaviour
 
     public void FlipHorizontally ()
     {
+        flipped = true;
+
+        //Commented out approach is simpler but causes box collider warnings for negative scales
+        /*
         Vector3 newScale = transform.localScale;
         newScale.x = -newScale.x;
         transform.localScale = newScale;
-
-        /*
-        //Flip door
-        door.closePosition = -door.closePosition;
-        door.openPosition = -door.openPosition;
-
-        //Flip everything else
-        Vector3 childPosition;
+        */
+        
+        //Flip each child individually
         foreach(Transform child in transform)
         {
-            childPosition = child.localPosition;
+            //Flip position
+            Vector3 childPosition = child.localPosition;
             childPosition.x = -childPosition.x;
             child.localPosition = childPosition;
+
+            //Flip rotation
+            Vector3 childRotation = child.localEulerAngles;
+            childRotation.y = -childRotation.y;
+            child.localEulerAngles = childRotation;
+
+            //Flip door
+            Door door = child.GetComponent<Door>();
+            if (door && door.doorMotion == Door.DoorMotion.SlideX)
+            {
+                door.closePosition = -door.closePosition;
+                door.openPosition = -door.openPosition;
+            }
         }
-        */
     }
+
+    public bool Flipped () { return flipped; }
 }
 
 [System.Serializable]
@@ -159,7 +174,7 @@ public class BuildingJSON
     {
         buildingIndex = building.buildingIndex;
 
-        flipped = building.transform.localScale.x < 0;
+        flipped = building.Flipped();
 
         localPosition = building.transform.localPosition;
         localRotation = building.transform.localRotation;

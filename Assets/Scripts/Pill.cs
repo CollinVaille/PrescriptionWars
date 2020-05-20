@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Pill : MonoBehaviour
 {
@@ -221,11 +222,11 @@ public class Pill : MonoBehaviour
             SetShadowsRecursively(child, shadowsOn);
     }
 
-    public void OnCreationFromSpawner (Spawner spawner)
+    public virtual void OnCreationFromSpawner (Spawner spawner)
     {
         this.spawner = spawner;
         team = spawner.team;
-
+        
         //So the player can read the name tags of friendly pills
         if (team == Player.playerTeam)
         {
@@ -234,6 +235,8 @@ public class Pill : MonoBehaviour
         }
         else
             gameObject.layer = 15;
+
+        SnapToGround();
     }
 
     public virtual void BringToLife ()
@@ -260,7 +263,8 @@ public class Pill : MonoBehaviour
 
     public virtual bool RaycastShoot (Transform from, int range, out RaycastHit hit)
     {
-        return Physics.Raycast(from.position + from.forward, from.forward, out hit, range);
+        return Physics.Raycast(from.position + from.forward, from.forward, out hit, range,
+            Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
     }
 
     public virtual void AlertOfAttacker (Pill attacker, bool softAlert) { }
@@ -294,6 +298,16 @@ public class Pill : MonoBehaviour
     public virtual void Sleep (Bed bed) { }
 
     public virtual void WakeUp () { }
+
+    private void SnapToGround ()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 10))
+        {
+            Vector3 adjustedSpawn = hit.point;
+            adjustedSpawn.y += transform.GetComponent<Collider>().bounds.size.y / 2.0f;
+            transform.position = adjustedSpawn;
+        }
+    }
 
     private string GetRandomPillName ()
     {

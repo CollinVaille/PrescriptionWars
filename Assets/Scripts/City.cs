@@ -69,7 +69,7 @@ public class City : MonoBehaviour
         if(Random.Range(0, 2) == 0)
             GenerateWalls();
 
-        Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
+        //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
 
         //After the city has been generated, build the nav mesh to pathfind through it
         GenerateNavMesh();
@@ -612,12 +612,25 @@ public class City : MonoBehaviour
         }
         else //Major city name
         {
-            //Get list of city names
-            TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/City Names");
-            string[] cityNames = cityNamesFile.text.Split('\n');
+            if(Random.Range(0, 4) == 0) //Two part city name
+            {
+                string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
+                    "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
 
-            //Pick a random name
-            cityName = cityNames[Random.Range(0, cityNames.Length)];
+                string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
+                    "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
+
+                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+            }
+            else //Normal city name
+            {
+                //Get list of city names
+                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/City Names");
+                string[] cityNames = cityNamesFile.text.Split('\n');
+
+                //Pick a random name
+                cityName = cityNames[Random.Range(0, cityNames.Length)];
+            }
         }
 
         return cityName;

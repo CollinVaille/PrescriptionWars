@@ -53,6 +53,7 @@ MonoBehaviour:
   team: 0
   moveSpeed: 4
   performingAction: 0
+  controlOverride: 0
   spawnPoint: {x: 0, y: 0, z: 0}
   corpsePrefab: {fileID: 5059777174072120811, guid: c1e5b5b56bf4ec744b632edcf9473c91,
     type: 3}
@@ -78,6 +79,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -89,6 +91,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -234,7 +237,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3931174853506778531}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.50000006
   m_Speed: 4

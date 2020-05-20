@@ -48,6 +48,22 @@ public class Bot1 : Pill
         spawner.ReportDeath(this, true);
     }
 
+    public override void OnCreationFromSpawner (Spawner spawner)
+    {
+        base.OnCreationFromSpawner(spawner);
+
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+
+        //Move agent onto navmesh
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 5, NavMesh.AllAreas))
+            agent.Warp(hit.position);
+
+        //Debug.Log(agent.Warp(hit.position).ToString() + ": " + (hit.position - transform.position).ToString());
+
+        //Bootup BIOS on agent
+        agent.enabled = true;
+    }
+
     private bool NoInterruptions ()
     {
         return !dead && !controlOverride && !target && !potentialTarget;

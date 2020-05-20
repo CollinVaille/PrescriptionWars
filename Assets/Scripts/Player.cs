@@ -8,9 +8,10 @@ public class Player : Pill
     private enum POV { FirstPerson, ThirdPerson, ThirdPerson360 }
     private enum Dir { Left, Center, Right }
 
-    //References
     public static Player player;
     public static int playerTeam = -1;
+
+    //References
     private Transform head, cameraTransform;
     private GameObject interactOption;
     private Image healthBar, reticle, underwaterVisual;
@@ -73,6 +74,8 @@ public class Player : Pill
         //Initialize other player settings
         mainAudioSource.spatialBlend = 0;
         feet.clip = walking;
+
+        ApplyDisplaySettings();
 
         //Load in later
         order1 = Squad.Orders.Follow;
@@ -1203,6 +1206,13 @@ public class Player : Pill
             moveSpeed -= 5;
             feet.clip = walking;
         }
+    }
+
+    public void ApplyDisplaySettings ()
+    {
+        rotationSpeed = DisplaySettings.sensitivity;
+        cameraTransform.GetComponent<Camera>().farClipPlane = DisplaySettings.viewDistance;
+        QualitySettings.SetQualityLevel(DisplaySettings.quality);
     }
 }
 

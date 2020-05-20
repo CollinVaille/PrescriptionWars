@@ -140,8 +140,8 @@ public class PlanetTerrain : MonoBehaviour
 
         terrainData.SetHeights(0, 0, heights);
 
-        Debug.Log("NGS: " + noiseGroundScale + ", AGS: " + amplitudeGroundScale + ", AP: " + amplitudePower +
-    ", NS: " + noiseStrength);
+        //Debug.Log("NGS: " + noiseGroundScale + ", AGS: " + amplitudeGroundScale + ", AP: " + amplitudePower +
+        //", NS: " + noiseStrength);
     }
 
     //Returns 0 if point not within boundary width
@@ -613,7 +613,7 @@ public class PlanetTerrain : MonoBehaviour
             trees.Add(newTree);
         }
 
-        Debug.Log("Tree Count: " + trees.Count);
+        //Debug.Log("Tree Count: " + trees.Count);
 
         terrainData.SetTreeInstances(trees.ToArray(), true);
 

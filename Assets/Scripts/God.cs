@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class God : MonoBehaviour
 {
-    public enum MenuScreen { PauseMenu = 0, LoadingScreen = 1, SquadMenu = 2 }
+    public enum MenuScreen { PauseMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3 }
 
     public static God god;
     private bool paused = false;
@@ -36,6 +36,10 @@ public class God : MonoBehaviour
     {
         god = this;
         Planet.planet = GetComponent<Planet>();
+
+        //Initialize display settings
+        if (!DisplaySettings.loaded)
+            DisplaySettings.LoadSettings();
 
         //Variable initialization
         currentScreen = MenuScreen.PauseMenu;
@@ -126,8 +130,31 @@ public class God : MonoBehaviour
         //Set new menu screen
         currentScreen = newScreen;
 
+        //Initialize new menu screen contents
+        OnMenuScreenLoad(newScreen);
+
         //Show new menu screen
         pauseMenus[(int)currentScreen].gameObject.SetActive(true);
+    }
+
+    private void OnMenuScreenLoad (MenuScreen newScreen)
+    {
+        //Perform all needed menu screen initialization here
+
+        if(newScreen == MenuScreen.SettingsMenu)
+        {
+            Transform menu = pauseMenus[(int)newScreen];
+
+            //Set input fields
+            menu.Find("Sensitivity Input Field").GetComponent<InputField>().text = DisplaySettings.sensitivity.ToString();
+            menu.Find("View Distance Input Field").GetComponent<InputField>().text = DisplaySettings.viewDistance.ToString();
+
+            //Set quality dropdown options
+            Dropdown qualityDropdown = menu.Find("Quality Dropdown").GetComponent<Dropdown>();
+            qualityDropdown.ClearOptions();
+            qualityDropdown.AddOptions(new List<string>(QualitySettings.names));
+            qualityDropdown.value = DisplaySettings.quality;
+        }
     }
 
     public void LoadingScreen (bool show, bool generateNew)
@@ -212,6 +239,15 @@ public class God : MonoBehaviour
                 LoadingScreen(true, true);
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            else if (buttonName.Equals("Settings Button"))
+                SetMenuScreen(MenuScreen.SettingsMenu);
+        }
+        else if(currentScreen == MenuScreen.SettingsMenu)
+        {
+            if (buttonName.Equals("Save Button"))
+                ReadInSettingsFromDisplay();
+
+            SetMenuScreen(MenuScreen.PauseMenu);
         }
         else
             Pause(false);
@@ -220,6 +256,28 @@ public class God : MonoBehaviour
     public void OnButtonMouseOver (Transform buttonTransform)
     {
         oneShotAudioSource.PlayOneShot(mouseOver);
+    }
+
+    private void ReadInSettingsFromDisplay ()
+    {
+        Transform menu = pauseMenus[(int)currentScreen];
+
+        //Sensitivity
+        if (!int.TryParse(menu.Find("Sensitivity Input Field").GetComponent<InputField>().text, out int sensitivity))
+            sensitivity = 90;
+        DisplaySettings.sensitivity = Mathf.Clamp(sensitivity, 1, 10000);
+
+        //View distance
+        if (!int.TryParse(menu.Find("View Distance Input Field").GetComponent<InputField>().text, out int viewDistance))
+            viewDistance = 1000;
+        DisplaySettings.viewDistance = Mathf.Clamp(viewDistance, 1, 100000);
+
+        //Quality
+        DisplaySettings.quality = menu.Find("Quality Dropdown").GetComponent<Dropdown>().value;
+
+        //Save and apply
+        DisplaySettings.SaveSettings();
+        Player.player.ApplyDisplaySettings();
     }
 
     public void ManageAudioSource (AudioSource toManage)
@@ -267,5 +325,30 @@ public class God : MonoBehaviour
         }
 
         return new string(modified);
+    }
+}
+
+public class DisplaySettings
+{
+    public static bool loaded = false;
+
+    public static int sensitivity = 90;
+    public static int viewDistance = 1000;
+    public static int quality = 0;
+
+    public static void SaveSettings ()
+    {
+        PlayerPrefs.SetInt("Sensitivity", sensitivity);
+        PlayerPrefs.SetInt("View Distance", viewDistance);
+        PlayerPrefs.SetInt("Quality", quality);
+    }
+
+    public static void LoadSettings ()
+    {
+        loaded = true;
+
+        sensitivity = PlayerPrefs.GetInt("Sensitivity", 90);
+        viewDistance = PlayerPrefs.GetInt("View Distance", 1000);
+        quality = PlayerPrefs.GetInt("Quality", 0);
     }
 }
