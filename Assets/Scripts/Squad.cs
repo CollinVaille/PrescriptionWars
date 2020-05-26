@@ -8,20 +8,30 @@ public class Squad : MonoBehaviour
     public enum Orders { Standby, Roam, HoldPosition, Follow, FormLine, FormSquare }
     public enum SquadType { Mobilized, Citizen, DayGuard, NightGuard }
 
-    //Basic squad variables
-    private Orders orders = Orders.Standby;
-    private int ordersID = 0;
+    //Basic info
     public SquadType squadType = SquadType.Mobilized;
-    public Pill leader = null;
+    private AudioClip pronounciation;
 
-    //Members
+    //References
+    private Army army;
+
+    //Squad composition
+    public Pill leader = null;
     public List<Pill> members;
+
+    //Orders
+    private Orders orders = Orders.Standby; //Type of order
+    private int ordersID = 0; //Instance of order (differentiates between 2 orders of same type)
 
     public void InitializeSquad (int predictedSize)
     {
         members = new List<Pill>(predictedSize);
 
         name = GetRandomSquadName();
+
+        army = Army.GetArmy(0);
+        for(int x = 0; x < 25; x++)
+            army.Comms().Send(new RadioTranmission(this, TransmissionType.ReportingIn));
     }
 
     //Adds a squad member
@@ -226,6 +236,10 @@ public class Squad : MonoBehaviour
             default: squadName = "Zeta"; break; //Woodrat, Packrat, Muskrat, Vulture, Winter, Mike
         }
 
+        pronounciation = Resources.Load<AudioClip>("Radio/Squad Names/" + squadName);
+
         return squadName + " Squad";
     }
+
+    public AudioClip Pronounce () { return pronounciation; }
 }

@@ -14,13 +14,13 @@ public class Army : MonoBehaviour
     public int team = 0;
 
     //Comms channel
-    private Queue<RadioTranmission> commsChannel;
-    private List<AudioSource> channelReceivers;
+    private CommsChannel commsChannel;
 
-    public void Start ()
+    public void Awake ()
     {
         //Initialize comms channel
-        StartCoroutine(CommsChannelManager());
+        commsChannel = GetComponent<CommsChannel>();
+        commsChannel.InitializeCommsChannel(this);
 
         //When done with set up, make army available for referencing
         if (armies == null)
@@ -49,51 +49,5 @@ public class Army : MonoBehaviour
 
     }
 
-    private IEnumerator CommsChannelManager ()
-    {
-        //Initialization
-        commsChannel = new Queue<RadioTranmission>();
-        channelReceivers = new List<AudioSource>();
-
-        //Main loop: always up, waiting to process new incoming transmissions
-        while (true)
-        {
-            //Wait for a new message to appear
-            yield return new WaitWhile(() => commsChannel.Count == 0);
-
-            //Get the next message
-            RadioTranmission rt = commsChannel.Dequeue();
-
-            //Broadcast message
-            foreach(AudioSource receiver in channelReceivers)
-            {
-                if (receiver.isPlaying)
-                    receiver.Stop();
-
-                //receiver.clip = 
-                receiver.Play();
-            }
-
-            //Process message
-            Debug.Log(rt.transmissionType);
-        }
-    }
-
-    public void AddChannelReceiver (AudioSource newReceiver) { channelReceivers.Add(newReceiver); }
-
-    public void SendTransmission (RadioTranmission rt) { commsChannel.Enqueue(rt); }
-}
-
-public class RadioTranmission
-{
-    public enum TransmissionType { ReportingIn }
-
-    public TransmissionType transmissionType = TransmissionType.ReportingIn;
-    public int squadCode = -1;
-
-    public RadioTranmission (TransmissionType transmissionType, int squadCode)
-    {
-        this.transmissionType = transmissionType;
-        this.squadCode = squadCode;
-    }
+    public CommsChannel Comms () { return commsChannel; }
 }

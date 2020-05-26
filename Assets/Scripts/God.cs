@@ -294,6 +294,24 @@ public class God : MonoBehaviour
         wasPlaying.RemoveAt(parallelIndex);
     }
 
+    public static void InitializeAudioList (List<AudioClip> audioList, string resourcesPath)
+    {
+        for (int x = 1; x <= 10000; x++)
+        {
+            AudioClip newClip = Resources.Load<AudioClip>(resourcesPath + x);
+
+            if (newClip)
+                audioList.Add(newClip);
+            else
+                break;
+        }
+    }
+
+    public static AudioClip RandomClip (List<AudioClip> audioList)
+    {
+        return audioList[Random.Range(0, audioList.Count)];
+    }
+
     public static string SpaceOutString (string toSpaceOut)
     {
         char[] original = toSpaceOut.ToCharArray();
