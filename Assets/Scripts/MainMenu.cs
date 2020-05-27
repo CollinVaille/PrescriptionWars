@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    public List<GameObject> menus;
+
     public Sprite unselectedButtonTexture;
-    public Sprite selectedButtonTexture;
 
     // Start is called before the first frame update
     void Start()
@@ -20,12 +21,16 @@ public class MainMenu : MonoBehaviour
         
     }
 
-    public void OnButtonEnter(Transform button)
+    public void ButtonClicked(int numOfButtonClicked)
     {
-        button.GetComponent<Image>().sprite = selectedButtonTexture;
+        if(numOfButtonClicked >= 0 && numOfButtonClicked < menus.Count)
+        {
+            gameObject.SetActive(false);
+            menus[numOfButtonClicked].SetActive(true);
+        }
     }
 
-    public void OnButtonExit(Transform button)
+    public void ResetButtonTexture(Transform button)
     {
         button.GetComponent<Image>().sprite = unselectedButtonTexture;
     }
