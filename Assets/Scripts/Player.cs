@@ -20,6 +20,7 @@ public class Player : Pill
     private AudioReverbZone underwaterReverb;
     private Item droppedOnDeath = null;
     private AudioReverbPreset outdoorReverbPreset;
+    public GameObject mapMarkerPrefab;
 
     //Customization
     public float rotationSpeed = 90;
@@ -74,6 +75,10 @@ public class Player : Pill
         feet.clip = walking;
 
         ApplyDisplaySettings();
+
+        //Create marker for player on the planet map
+        MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
+        mapMarker.InitializeMarker(transform);
 
         //Load in later
         order1 = Squad.Orders.Follow;
@@ -1204,6 +1209,11 @@ public class Player : Pill
             moveSpeed -= 5;
             feet.clip = walking;
         }
+    }
+
+    public void SetCameraState (bool on)
+    {
+        cameraTransform.GetComponent<Camera>().enabled = on;
     }
 
     public void ApplyDisplaySettings ()

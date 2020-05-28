@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class MapMarker : MonoBehaviour
+public class MapMarker : MonoBehaviour, IPointerUpHandler
 {
+    public enum MarkerType { Player, City, Squad }
+
+    //Type
+    public MarkerType markerType;
+
+    //Basic references
     private Transform markedObject;
     private Camera mapCamera;
 
-    private Text textLabel;
-    private int fontSize;
+    //Text variables
+    private Text textLabel = null;
+    private int currentFontSize = 10, fontScale = 10000;
+
+    //Rotation and scale variables
+    Vector3 rotationVector = Vector3.zero, scaleVector = Vector3.one;
 
     public void InitializeMarker (Transform markedObject)
     {
@@ -21,31 +32,50 @@ public class MapMarker : MonoBehaviour
 
         //Set name and text
         name = markedObject.name + " Marker";
+
         textLabel = GetComponent<Text>();
-        textLabel.text = markedObject.name;
+        if(textLabel)
+        {
+            textLabel.text = markedObject.name;
+            fontScale = textLabel.fontSize * 1000;
+        }
 
         //Get other references
         mapCamera = God.god.mapCamera;
+        scaleVector = transform.localScale * 1000;
     }
 
-    private void Update()
+    private void Update ()
     {
         if (!markedObject)
             return;
 
-        //Update position of map marker
+        //Update position
         Vector3 screenPosition = mapCamera.WorldToScreenPoint(markedObject.position);
         screenPosition.z = 0;
         transform.position = screenPosition;
 
-        //Update size of map marker text
-        fontSize = (int)(10000 / mapCamera.orthographicSize);
-        if(fontSize != textLabel.fontSize)
-            textLabel.fontSize = fontSize;
+        //Update rotation
+        if(markerType == MarkerType.Player)
+        {
+            rotationVector.z = -markedObject.eulerAngles.y;
+            transform.eulerAngles = rotationVector;
+        }
+
+        //Update size
+        if (textLabel)
+        {
+            currentFontSize = (int)(fontScale / mapCamera.orthographicSize);
+            if (currentFontSize != textLabel.fontSize)
+                textLabel.fontSize = currentFontSize;
+        }
+        else
+            transform.localScale = scaleVector / mapCamera.orthographicSize;
     }
 
-    public void OnMouseUp()
+    public void OnPointerUp (PointerEventData eventData)
     {
-        Debug.Log("Clicked " + name);
+        if(eventData.button == PointerEventData.InputButton.Right)
+            Debug.Log("Clicked " + name);
     }
 }

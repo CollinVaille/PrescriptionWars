@@ -33,6 +33,8 @@ public class God : MonoBehaviour
 
     //Map
     private bool mapOpen = false;
+    public Material mapWater;
+    private Material realWater;
     [HideInInspector] public Camera mapCamera;
     private float realDeltaTime = 0.0f, lastFrameTime = 0.0f;
     private float mapZoom = 0.0f;
@@ -331,9 +333,11 @@ public class God : MonoBehaviour
         mapOpen = toMap;
         HUD.gameObject.SetActive(!toMap);
         mapCamera.enabled = toMap;
+        if (Player.player)
+            Player.player.SetCameraState(!toMap);
         Pause(toMap);
 
-        if (mapOpen)
+        if (mapOpen) //Load map
         {
             //Update status
             mapZoom = mapCamera.orthographicSize;
@@ -342,6 +346,20 @@ public class God : MonoBehaviour
 
             //Update map view
             mapScreen.Find("Planet Name").GetComponent<Text>().text = Planet.planet.planetName;
+
+            //Update water
+            if(Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
+            {
+                realWater = Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial;
+                mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
+                Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = mapWater;
+            }
+        }
+        else //Unload map
+        {
+            //Update water
+            if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
+                Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = realWater;
         }
     }
 

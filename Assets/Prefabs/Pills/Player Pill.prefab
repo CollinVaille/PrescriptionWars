@@ -53,9 +53,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   squad: {fileID: 0}
-  moveSpeed: 10
   team: 0
+  moveSpeed: 10
   performingAction: 0
+  controlOverride: 0
+  spawnPoint: {x: 0, y: 0, z: 0}
+  mapMarkerPrefab: {fileID: 1360486795340895755, guid: cc1afef5f8326814e823dd96dbd0cd65,
+    type: 3}
   rotationSpeed: 90
   healthRegen: 5
   ricochet: {fileID: 8300000, guid: f3e69037bbf459f46893b49cdec4d0b1, type: 3}
@@ -98,6 +102,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -109,6 +114,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
