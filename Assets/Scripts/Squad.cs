@@ -14,6 +14,7 @@ public class Squad : MonoBehaviour
 
     //References
     private Army army;
+    public GameObject mapMarkerPrefab;
 
     //Squad composition
     public Pill leader = null;
@@ -30,8 +31,12 @@ public class Squad : MonoBehaviour
         name = GetRandomSquadName();
 
         army = Army.GetArmy(0);
-        for(int x = 0; x < 25; x++)
-            army.Comms().Send(new RadioTranmission(this, TransmissionType.ReportingIn));
+        //for(int x = 0; x < 25; x++)
+        army.Comms().Send(new RadioTranmission(this, TransmissionType.ReportingIn));
+
+        //Create marker for squad on the planet map
+        MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
+        mapMarker.InitializeMarker(transform);
     }
 
     //Adds a squad member

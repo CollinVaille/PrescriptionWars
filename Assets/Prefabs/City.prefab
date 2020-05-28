@@ -192,6 +192,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ac8cd10216058c44b6620abf1c6471f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 100
+  mapMarkerPrefab: {fileID: 1688723436328904097, guid: fd115be7e4db4294daf535a7719cb532,
+    type: 3}
   buildingPrefabs:
   - {fileID: 3629112668969951117, guid: 2a9160e434dd9c44781ed3d80ad788d6, type: 3}
   - {fileID: 4062185150980313869, guid: 64fcbf1fd00efe24b97eb3d9f0b25058, type: 3}
@@ -211,7 +214,6 @@ MonoBehaviour:
     type: 3}
   walls: {fileID: 0}
   wallMaterialIndex: 0
-  radius: 100
 --- !u!114 &6564999988731377981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +255,7 @@ MonoBehaviour:
     probability: 0.1
   atOnce: 20
   prescriptions: 100
-  team: 1
+  team: 0
 --- !u!114 &-2898946987551350288
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class City : MonoBehaviour
 {
+    //General
+    [HideInInspector] public int radius = 100;
+    public GameObject mapMarkerPrefab;
+
     //Building construction
     public GameObject[] buildingPrefabs;
     private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
@@ -23,13 +27,20 @@ public class City : MonoBehaviour
     [HideInInspector] public Transform walls;
     [HideInInspector] public int wallMaterialIndex;
 
-    [HideInInspector] public int radius = 100;
-
+    //Area system (how city is subdivided and organized)
     private int areaSize = 5;
     private bool[,] areaTaken;
 
     //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     private List<int> horizontalRoads, verticalRoads;
+
+    //Called after city has been generated or regenerated
+    public void OnCityStart ()
+    {
+        //Create marker for city on the planet map
+        MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
+        mapMarker.InitializeMarker(transform);
+    }
 
     public void ReserveTerrainLocation ()
     {
@@ -76,6 +87,8 @@ public class City : MonoBehaviour
 
         //Set the name after all possible influencing factors on the name have been set
         gameObject.name = GenerateCityName();
+
+        OnCityStart();
     }
 
     private void LoadBuildingPrototypes ()
@@ -612,13 +625,23 @@ public class City : MonoBehaviour
         }
         else //Major city name
         {
-            if(Random.Range(0, 4) == 0) //Two part city name
+            if(Random.Range(0, 4) == 0) //Two part generic city name
             {
                 string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
                     "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
 
                 string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
                     "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
+
+                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+            }
+            else if (Random.Range(0, 4) == 0) //Two part nordic/dwarven city name
+            {
+                string[] part1 = new string[] { "Staavan", "Volks", "Korvan", "Weyro", "Teyro", "Vail", "Rhen",
+                    "Bhor", "Vel", "Galto", "Vogh", "Mons", "Forel" };
+
+                string[] part2 = new string[] { "gar", "gaard", "var", "boro", "baro", " Koros", "kura",
+                    "brunnr", "kyyge", "kuldhir", "touhm", "thume" };
 
                 cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
             }
@@ -720,6 +743,8 @@ public class CityJSON
 
         //After the city has been regenerated, build the nav mesh to pathfind through it
         city.GenerateNavMesh();
+
+        city.OnCityStart();
     }
 
     //General

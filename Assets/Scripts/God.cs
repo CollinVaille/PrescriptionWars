@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class God : MonoBehaviour
 {
-    public enum MenuScreen { PauseMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3 }
+    public enum MenuScreen { PauseMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3, MapMenu = 4 }
 
     public static God god;
     private bool paused = false;
@@ -14,7 +14,7 @@ public class God : MonoBehaviour
     //Menu screens
     private MenuScreen currentScreen;
     public Transform[] pauseMenus;
-    public Transform canvas;
+    public Transform HUD;
 
     //Audio
     private AudioSource oneShotAudioSource;
@@ -31,6 +31,15 @@ public class God : MonoBehaviour
     private string loadingScreenTrivia = "";
     private static string[] triviaLines;
 
+    //Map
+    private bool mapOpen = false;
+    [HideInInspector] public Camera mapCamera;
+    private float realDeltaTime = 0.0f, lastFrameTime = 0.0f;
+    private float mapZoom = 0.0f;
+    private Vector3 movementVector = Vector3.zero;
+    private Vector3 previousMousePosition = Vector3.zero;
+    private Vector3 mapPosition = Vector3.zero;
+
     //Initialization
     void Awake ()
     {
@@ -46,6 +55,7 @@ public class God : MonoBehaviour
         oneShotAudioSource = GetComponents<AudioSource>()[0];
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
+        mapCamera = GetComponent<Camera>();
 
         //Refresh pause state to start out as resumed
         paused = true;
@@ -59,7 +69,41 @@ public class God : MonoBehaviour
     {
         //Can pause/resume with pause button on keyboard
         if (Input.GetButtonDown("Pause"))
-            Pause(!paused);
+        {
+            if (paused)
+                BackOneScreen();
+            else
+                Pause(true);
+        }
+
+        //Update map
+        if(mapOpen)
+        {
+            realDeltaTime = Time.realtimeSinceStartup - lastFrameTime;
+
+            //Map zoom
+            mapZoom -= Input.GetAxis("Mouse ScrollWheel") * realDeltaTime * 20000;
+            mapZoom = Mathf.Clamp(mapZoom, 100, 1000);
+            mapCamera.orthographicSize = mapZoom;
+
+            //Map click and drag movement
+            if (Input.GetMouseButton(0))
+            {
+                //Get movement
+                movementVector.x = (previousMousePosition.x - Input.mousePosition.x) * mapZoom / 10.0f;
+                movementVector.z = (previousMousePosition.y - Input.mousePosition.y) * mapZoom / 10.0f;
+
+                //Apply movement with boundaries in mind
+                mapPosition += movementVector * realDeltaTime;
+                mapPosition.x = Mathf.Clamp(mapPosition.x, -480, 1520);
+                mapPosition.z = Mathf.Clamp(mapPosition.z, -480, 1520);
+                transform.position = mapPosition;
+            }
+
+            //Update info for next frame
+            previousMousePosition = Input.mousePosition;
+            lastFrameTime = Time.realtimeSinceStartup;
+        }
     }
 
     public void Pause (bool pause)
@@ -127,21 +171,22 @@ public class God : MonoBehaviour
         //Hide previous menu screen
         pauseMenus[(int)currentScreen].gameObject.SetActive(false);
 
+        //Initialize new menu screen contents
+        OnMenuScreenLoad(newScreen, currentScreen);
+
         //Set new menu screen
         currentScreen = newScreen;
-
-        //Initialize new menu screen contents
-        OnMenuScreenLoad(newScreen);
 
         //Show new menu screen
         pauseMenus[(int)currentScreen].gameObject.SetActive(true);
     }
 
-    private void OnMenuScreenLoad (MenuScreen newScreen)
+    private void OnMenuScreenLoad (MenuScreen newScreen, MenuScreen oldScreen)
     {
         //Perform all needed menu screen initialization here
 
-        if(newScreen == MenuScreen.SettingsMenu)
+        //Load new screen
+        if (newScreen == MenuScreen.SettingsMenu)
         {
             Transform menu = pauseMenus[(int)newScreen];
 
@@ -155,6 +200,8 @@ public class God : MonoBehaviour
             qualityDropdown.AddOptions(new List<string>(QualitySettings.names));
             qualityDropdown.value = DisplaySettings.quality;
         }
+        else if (newScreen == MenuScreen.MapMenu)
+            SwitchToFromMap(true);
     }
 
     public void LoadingScreen (bool show, bool generateNew)
@@ -192,9 +239,9 @@ public class God : MonoBehaviour
         }
         else
         {
-            //Done with loading which means player has been loaded in so get rid of placeholder camera
+            //Done with loading which means player has been loaded so disable map camera
             Destroy(GetComponent<AudioListener>());
-            Destroy(GetComponent<Camera>());
+            mapCamera.enabled = false;
 
             pauseMenus[(int)MenuScreen.LoadingScreen].gameObject.SetActive(false);
         }
@@ -219,7 +266,12 @@ public class God : MonoBehaviour
 
         string buttonName = buttonTransform.name;
 
-        if(currentScreen == MenuScreen.PauseMenu)
+        //Special management of back button
+        if (buttonName.Equals("Back Button"))
+            BackOneScreen();
+
+        //Management of all other buttons
+        if (currentScreen == MenuScreen.PauseMenu)
         {
             if (buttonName.Equals("Resume Button"))
                 Pause(false);
@@ -242,20 +294,55 @@ public class God : MonoBehaviour
             else if (buttonName.Equals("Settings Button"))
                 SetMenuScreen(MenuScreen.SettingsMenu);
         }
-        else if(currentScreen == MenuScreen.SettingsMenu)
+        else if (currentScreen == MenuScreen.SettingsMenu)
         {
             if (buttonName.Equals("Save Button"))
                 ReadInSettingsFromDisplay();
 
             SetMenuScreen(MenuScreen.PauseMenu);
         }
-        else
-            Pause(false);
+        else if (currentScreen == MenuScreen.SquadMenu)
+        {
+            if (buttonName.Equals("Map Button"))
+                SetMenuScreen(MenuScreen.MapMenu);
+        }
     }
 
     public void OnButtonMouseOver (Transform buttonTransform)
     {
         oneShotAudioSource.PlayOneShot(mouseOver);
+    }
+
+    private void BackOneScreen ()
+    {
+        if (currentScreen == MenuScreen.SettingsMenu)
+            SetMenuScreen(MenuScreen.PauseMenu);
+        else if (currentScreen == MenuScreen.MapMenu)
+            SwitchToFromMap(false);
+        else
+            Pause(false);
+    }
+
+    private void SwitchToFromMap (bool toMap)
+    {
+        Transform mapScreen = pauseMenus[(int)MenuScreen.MapMenu];
+
+        //Toggle views
+        mapOpen = toMap;
+        HUD.gameObject.SetActive(!toMap);
+        mapCamera.enabled = toMap;
+        Pause(toMap);
+
+        if (mapOpen)
+        {
+            //Update status
+            mapZoom = mapCamera.orthographicSize;
+            lastFrameTime = Time.realtimeSinceStartup;
+            mapPosition = transform.position;
+
+            //Update map view
+            mapScreen.Find("Planet Name").GetComponent<Text>().text = Planet.planet.planetName;
+        }
     }
 
     private void ReadInSettingsFromDisplay ()

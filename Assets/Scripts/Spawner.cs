@@ -95,14 +95,12 @@ public class Spawner : MonoBehaviour
 
         //Instantiate pill
         Pill pill;
-        if (playerPrefab) //One time creation of player
+        if (!Player.player && Player.playerTeam == team) //One time creation of player
         {
             pill = Instantiate(playerPrefab).GetComponent<Pill>();
-            playerPrefab = null;
-
-            Player.playerTeam = team;
 
             //Loading is over, player is here everybody!
+            Player.player = pill.GetComponent<Player>();
             God.god.LoadingScreen(false, false);
         }
         else

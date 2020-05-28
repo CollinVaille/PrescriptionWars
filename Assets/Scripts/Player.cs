@@ -9,7 +9,7 @@ public class Player : Pill
     private enum Dir { Left, Center, Right }
 
     public static Player player;
-    public static int playerTeam = -1;
+    public static int playerTeam = 0;
 
     //References
     private Transform head, cameraTransform;
@@ -52,16 +52,14 @@ public class Player : Pill
     protected override void Start ()
     {
         base.Start();
-
-        player = this;
         
         //Set references
         head = transform.Find("Head");
         cameraTransform = head.Find("Camera");
-        healthBar = God.god.canvas.Find("Health Bar").GetComponent<Image>();
-        reticle = God.god.canvas.Find("Reticle").GetComponent<Image>();
-        underwaterVisual = God.god.canvas.Find("Underwater").GetComponent<Image>();
-        itemInfo = God.god.canvas.Find("Item Info").GetComponent<Text>();
+        healthBar = God.god.HUD.Find("Health Bar").GetComponent<Image>();
+        reticle = God.god.HUD.Find("Reticle").GetComponent<Image>();
+        underwaterVisual = God.god.HUD.Find("Underwater").GetComponent<Image>();
+        itemInfo = God.god.HUD.Find("Item Info").GetComponent<Text>();
         feet = GetComponents<AudioSource>()[1];
         underwaterAmbience = GetComponents<AudioSource>()[2];
         underwaterReverb = GetComponent<AudioReverbZone>();
@@ -420,7 +418,7 @@ public class Player : Pill
 
     private IEnumerator ManageInteractOption ()
     {
-        Text interactText = God.god.canvas.Find("Interactable Text").GetComponent<Text>();
+        Text interactText = God.god.HUD.Find("Interactable Text").GetComponent<Text>();
         int interactMask = (1 << 10) | (1 << 14); //Collide with interactable (10) or good bot (14) layers
 
         //Continually update the interact option
@@ -448,7 +446,7 @@ public class Player : Pill
     private void EraseInteractOption ()
     {
         interactOption = null;
-        God.god.canvas.Find("Interactable Text").GetComponent<Text>().text = "";
+        God.god.HUD.Find("Interactable Text").GetComponent<Text>().text = "";
     }
 
     private void SwapToSidearm ()
@@ -584,7 +582,7 @@ public class Player : Pill
 
     private IEnumerator ManageHealth ()
     {
-        Image healthBarBackground = God.god.canvas.Find("Health Bar Background").GetComponent<Image>();
+        Image healthBarBackground = God.god.HUD.Find("Health Bar Background").GetComponent<Image>();
 
         //Every frame, manage visibility of health bar until death
         while (true)

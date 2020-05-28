@@ -14,7 +14,7 @@ public class Planet : MonoBehaviour
     private static string jsonString = "";
 
     //General
-    public string planetName = "";
+    [HideInInspector] public string planetName = "";
     public Biome biome = Biome.Unknown;
 
     //Day/night cycle
@@ -533,7 +533,7 @@ public class Planet : MonoBehaviour
 
     public void SetUnderwaterColor (Color underwaterColor)
     {
-        God.god.canvas.Find("Underwater").GetComponent<Image>().color = underwaterColor;
+        God.god.HUD.Find("Underwater").GetComponent<Image>().color = underwaterColor;
     }
 
     private void LoadWaterCubemap (string mapName)
@@ -626,7 +626,7 @@ public class Planet : MonoBehaviour
         {
             cities = new List<City>();
 
-            for (int cityCount = 0; cityCount < 1; cityCount++)
+            for (int cityCount = 0; cityCount < 2; cityCount++)
             {
                 City newCity = Instantiate(cityPrefab, Vector3.zero, Quaternion.identity).GetComponent<City>();
                 newCity.GenerateCity();
@@ -986,7 +986,7 @@ public class PlanetJSON
         //Ocean
         oceanHeight = planet.oceanTransform.position.y;
         oceanType = planet.oceanType;
-        underwaterColor = God.god.canvas.Find("Underwater").GetComponent<Image>().color;
+        underwaterColor = God.god.HUD.Find("Underwater").GetComponent<Image>().color;
         iceTexture = planet.oceanTransform.GetComponent<Renderer>().sharedMaterial.mainTexture.name;
 
         //Audio
