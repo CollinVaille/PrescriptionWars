@@ -208,6 +208,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 33860836}
+  - component: {fileID: 33860837}
   m_Layer: 5
   m_Name: Load Game Menu
   m_TagString: Untagged
@@ -234,6 +235,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &33860837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33860835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ac35bf5d7b89b43ba254580db48c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previousMenu: {fileID: 911445609}
 --- !u!1 &58430092
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 58430093}
+  - component: {fileID: 58430094}
   m_Layer: 5
   m_Name: New Game Menu
   m_TagString: Untagged
@@ -269,6 +284,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &58430094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58430092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ac35bf5d7b89b43ba254580db48c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previousMenu: {fileID: 911445609}
 --- !u!1 &340289547
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,7 +435,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 911445612}
+      - m_Target: {fileID: 911445611}
         m_MethodName: ResetButtonTexture
         m_Mode: 2
         m_Arguments:
@@ -597,7 +625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -846,7 +874,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 911445612}
+      - m_Target: {fileID: 911445611}
         m_MethodName: ResetButtonTexture
         m_Mode: 2
         m_Arguments:
@@ -931,8 +959,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -100}
-  m_SizeDelta: {x: 250, y: 100}
+  m_AnchoredPosition: {x: 0, y: -60}
+  m_SizeDelta: {x: 400, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &576484916
 MonoBehaviour:
@@ -1020,7 +1048,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 576484918}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1699037225}
+        m_MethodName: ResetButtonTexture
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 576484915}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &576484918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,7 +1079,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0d8b3067c52e4b546b9053b195f0f0ed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1211,8 +1250,7 @@ MonoBehaviour:
   - {fileID: 58430092}
   - {fileID: 33860835}
   - {fileID: 1699037223}
-  unselectedButtonTexture: {fileID: 21300000, guid: 0d8b3067c52e4b546b9053b195f0f0ed,
-    type: 3}
+  - {fileID: 1849849744}
 --- !u!1 &988378269
 GameObject:
   m_ObjectHideFlags: 0
@@ -1346,12 +1384,12 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 911445612}
+      - m_Target: {fileID: 911445611}
         m_MethodName: ResetButtonTexture
         m_Mode: 2
         m_Arguments:
@@ -1493,6 +1531,7 @@ RectTransform:
   - {fileID: 58430093}
   - {fileID: 33860836}
   - {fileID: 1699037224}
+  - {fileID: 1849849745}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1712,12 +1751,12 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
+          m_IntArgument: 4
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 911445612}
+      - m_Target: {fileID: 911445611}
         m_MethodName: ResetButtonTexture
         m_Mode: 2
         m_Arguments:
@@ -1961,9 +2000,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fac97cf7c431ecb4d9f9f7f527615cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unselectedButtonTexture: {fileID: 21300000, guid: 0d8b3067c52e4b546b9053b195f0f0ed,
+  unselectedButtonTexture: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc,
     type: 3}
-  selectedButtonTexture: {fileID: 21300000, guid: 2c5a574d1b6d5ed4d932634509b7fe7d,
+  selectedButtonTexture: {fileID: 21300000, guid: 3e70017136d27e24aa6537970eba0e0b,
     type: 3}
 --- !u!114 &1699037226
 MonoBehaviour:
@@ -1977,7 +2016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76ac35bf5d7b89b43ba254580db48c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenu: {fileID: 911445609}
+  previousMenu: {fileID: 911445609}
 --- !u!1 &1712527091
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,7 +2133,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 250, y: 100}
+  m_SizeDelta: {x: 400, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1738697751
 MonoBehaviour:
@@ -2182,7 +2221,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1738697753}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1699037225}
+        m_MethodName: ResetButtonTexture
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1738697750}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1738697753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2202,7 +2252,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0d8b3067c52e4b546b9053b195f0f0ed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2358,7 +2408,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 911445612}
+      - m_Target: {fileID: 911445611}
         m_MethodName: ResetButtonTexture
         m_Mode: 2
         m_Arguments:
@@ -2406,6 +2456,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794150503}
   m_CullTransparentMesh: 0
+--- !u!1 &1849849744
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1849849745}
+  - component: {fileID: 1849849746}
+  m_Layer: 5
+  m_Name: Credits Menu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1849849745
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849849744}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1068848731}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1849849746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849849744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ac35bf5d7b89b43ba254580db48c4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previousMenu: {fileID: 911445609}
 --- !u!1 &1900877729
 GameObject:
   m_ObjectHideFlags: 0
@@ -2456,7 +2555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607845, g: 0.19607845, b: 0.19607845, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2534,7 +2633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:

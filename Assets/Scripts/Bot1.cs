@@ -566,14 +566,12 @@ public class Bot1 : Pill
             yield return new WaitForSeconds(Random.Range(0.2f, 0.25f));
         }
 
-        Vector3 originalPosition = transform.position;
-
         if(agent.enabled && agent.isOnNavMesh)
             agent.isStopped = true;
 
         agent.enabled = false;
 
-        //Debug.Log(transform.position.y - originalPosition.y);
+        Debug.Log(transform.position.y);
     }
 
     //Returns the distance between the two vectors NOT factoring in their y value (so ignoring height difference)
