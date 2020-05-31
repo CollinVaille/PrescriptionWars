@@ -8,11 +8,13 @@ public class MainMenu : MonoBehaviour
     public List<GameObject> menus;
 
     public AudioSettingsMenu audioSettingsMenu;
+    public VideoSettingsMenu videoSettingsMenu;
 
     // Start is called before the first frame update
     void Start()
     {
         audioSettingsMenu.LoadSettings();
+        videoSettingsMenu.LoadSettings();
     }
 
     // Update is called once per frame

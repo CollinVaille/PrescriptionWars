@@ -18,7 +18,7 @@ public class VideoSettingsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen)
+        /*if (Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen)
             fullscreenDropdown.value = 0;
         else if (Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
             fullscreenDropdown.value = 1;
@@ -34,7 +34,7 @@ public class VideoSettingsMenu : MonoBehaviour
         else if (Screen.currentResolution.height == 1440)
             resolutionDropdown.value = 2;
         else if (Screen.currentResolution.height == 2160)
-            resolutionDropdown.value = 3;
+            resolutionDropdown.value = 3;*/
     }
 
     // Update is called once per frame
@@ -93,6 +93,25 @@ public class VideoSettingsMenu : MonoBehaviour
     {
         item.GetComponent<Image>().sprite = dropdownItemUnselected;
     }
+
+    public void LoadSettings()
+    {
+        VideoSettings.LoadSettings();
+
+        fullscreenDropdown.value = VideoSettings.fullscreenMode;
+        resolutionDropdown.value = VideoSettings.resolution;
+
+        ToggleFullScreen();
+        ChangeResolution();
+    }
+
+    public void SaveSettings()
+    {
+        VideoSettings.fullscreenMode = fullscreenDropdown.value;
+        VideoSettings.resolution = resolutionDropdown.value;
+
+        VideoSettings.SaveSettings();
+    }
 }
 
 public class VideoSettings
@@ -103,11 +122,16 @@ public class VideoSettings
     public static int viewDistance = 1000;
     public static int quality = 0;
 
+    public static int fullscreenMode;
+    public static int resolution;
+
     public static void SaveSettings()
     {
         PlayerPrefs.SetInt("Sensitivity", sensitivity);
         PlayerPrefs.SetInt("View Distance", viewDistance);
         PlayerPrefs.SetInt("Quality", quality);
+        PlayerPrefs.SetInt("Fullscreen Mode", fullscreenMode);
+        PlayerPrefs.SetInt("Resolution", resolution);
     }
 
     public static void LoadSettings()
@@ -120,5 +144,7 @@ public class VideoSettings
         sensitivity = PlayerPrefs.GetInt("Sensitivity", 90);
         viewDistance = PlayerPrefs.GetInt("View Distance", 1000);
         quality = PlayerPrefs.GetInt("Quality", 0);
+        fullscreenMode = PlayerPrefs.GetInt("Fullscreen Mode", 3);
+        resolution = PlayerPrefs.GetInt("Resolution", 0);
     }
 }
