@@ -1218,9 +1218,9 @@ public class Player : Pill
 
     public void ApplyDisplaySettings ()
     {
-        rotationSpeed = DisplaySettings.sensitivity;
-        cameraTransform.GetComponent<Camera>().farClipPlane = DisplaySettings.viewDistance;
-        QualitySettings.SetQualityLevel(DisplaySettings.quality);
+        rotationSpeed = VideoSettings.sensitivity;
+        cameraTransform.GetComponent<Camera>().farClipPlane = VideoSettings.viewDistance;
+        QualitySettings.SetQualityLevel(VideoSettings.quality);
     }
 }
 
