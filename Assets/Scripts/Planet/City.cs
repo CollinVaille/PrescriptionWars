@@ -23,7 +23,7 @@ public class City : MonoBehaviour
     public Material[] wallMaterials, floorMaterials;
 
     //Walls
-    public GameObject wallSectionPrefab;
+    public GameObject wallSectionPrefab, gatePrefab;
     [HideInInspector] public Transform walls;
     [HideInInspector] public int wallMaterialIndex;
 
@@ -514,11 +514,8 @@ public class City : MonoBehaviour
         //Now that the wall section locations have been determined, place them
         for (int x = 0; x < skipWallSection.Length; x++)
         {
-            if (skipWallSection[x])
-                continue;
-
-            PlaceWallSection(startX + x * wallLength, placementHeight, startZ - wallLength / 2.0f, 0);
-            PlaceWallSection(startX + x * wallLength, placementHeight,
+            PlaceWallSection(skipWallSection[x], startX + x * wallLength, placementHeight, startZ - wallLength / 2.0f, 0);
+            PlaceWallSection(skipWallSection[x], startX + x * wallLength, placementHeight,
                 startZ + verticalSections * wallLength - wallLength / 2.0f, 0);
         }
 
@@ -558,18 +555,19 @@ public class City : MonoBehaviour
         //Now that the wall section locations have been determined, place them
         for (int z = 0; z < skipWallSection.Length; z++)
         {
-            if (skipWallSection[z])
-                continue;
-
-            PlaceWallSection(startX - wallLength / 2.0f, placementHeight, startZ + z * wallLength, 90);
-            PlaceWallSection(startX + horizontalSections * wallLength - wallLength / 2.0f,
+            PlaceWallSection(skipWallSection[z], startX - wallLength / 2.0f, placementHeight, startZ + z * wallLength, 90);
+            PlaceWallSection(skipWallSection[z], startX + horizontalSections * wallLength - wallLength / 2.0f,
                 placementHeight, startZ + z * wallLength, 90);
         }
     }
 
-    public void PlaceWallSection (float x, float y, float z, int rotation)
+    public void PlaceWallSection (bool gate, float x, float y, float z, int rotation)
     {
-        Transform newWallSection = Instantiate(wallSectionPrefab, walls).transform;
+        Transform newWallSection;
+        if(gate)
+            newWallSection = Instantiate(gatePrefab, walls).transform;
+        else
+            newWallSection = Instantiate(wallSectionPrefab, walls).transform;
 
         newWallSection.localRotation = Quaternion.Euler(0, rotation, 0);
 
@@ -694,11 +692,13 @@ public class CityJSON
 
             wallSectionLocations = new List<Vector3>();
             wallSectionRotations = new List<int>();
+            wallSectionIsGate = new List<bool>();
 
             foreach(Transform wallSection in cityWalls)
             {
                 wallSectionLocations.Add(wallSection.localPosition);
                 wallSectionRotations.Add((int)wallSection.localEulerAngles.y);
+                wallSectionIsGate.Add(wallSection.CompareTag("Gate"));
             }
         }
         else
@@ -706,6 +706,7 @@ public class CityJSON
             wallMaterialIndex = -1;
             wallSectionLocations = null;
             wallSectionRotations = null;
+            wallSectionIsGate = null;
         }
     }
 
@@ -741,7 +742,7 @@ public class CityJSON
             for(int x = 0; x < wallSectionLocations.Count; x++)
             {
                 Vector3 location = wallSectionLocations[x];
-                city.PlaceWallSection(location.x, location.y, location.z, wallSectionRotations[x]);
+                city.PlaceWallSection(wallSectionIsGate[x], location.x, location.y, location.z, wallSectionRotations[x]);
             }
         }
 
@@ -764,4 +765,5 @@ public class CityJSON
     public int wallMaterialIndex;
     public List<Vector3> wallSectionLocations;
     public List<int> wallSectionRotations;  //Parallel array to wallSectionLocations
+    public List<bool> wallSectionIsGate;
 }

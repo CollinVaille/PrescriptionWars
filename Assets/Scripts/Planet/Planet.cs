@@ -190,7 +190,7 @@ public class Planet : MonoBehaviour
             biome = Biome.Temperate;
 
             //Terrain textures
-            terrainCustomization.groundTexture = LoadTexture("Grass 0043", "Grass 0103", "Common Ground");
+            terrainCustomization.groundTexture = LoadTexture("Grass 0043", "Grass 0103", "Common Ground", "Twisted Hills");
             terrainCustomization.cliffTexture = LoadTexture("Rock Grassy 0030", "Cliffs 0120", "Age of the Canyon");
 
             //Terrain heightmap
@@ -258,8 +258,8 @@ public class Planet : MonoBehaviour
                     {
                         biome = Biome.Forest;
 
-                        terrainCustomization.groundTexture = LoadTexture("Common Ground");
-                        terrainCustomization.cliffTexture = LoadTexture("Faulted Range");
+                        terrainCustomization.groundTexture = LoadTexture("Common Ground", "Darkland Forest");
+                        terrainCustomization.cliffTexture = LoadTexture("Faulted Range", "Fractured Flow");
 
                         if (!hasOcean)
                             terrainCustomization.seabedHeight = -10;
@@ -450,7 +450,10 @@ public class Planet : MonoBehaviour
 
         if (biome == Biome.Frozen) //Cold
         {
-            LoadSkybox(false, "Cold Night", "Night Moon Burst", "SkyNight", "Cartoon Base NightSky", "BlueGreenNebular");
+            if(RenderSettings.fog)
+                LoadSkybox(false, "Cold Night", "Night Moon Burst");
+            else
+                LoadSkybox(false, "SkyNight", "Cartoon Base NightSky", "BlueGreenNebular", "Blue Galaxy 1", "Blue Galaxy 2");
 
             //Ambience
             if (RenderSettings.fog && RenderSettings.fogDensity > 0.05f && intensity < 0.55f)
@@ -460,7 +463,10 @@ public class Planet : MonoBehaviour
         }
         else if (biome == Biome.Temperate || biome == Biome.Forest) //Temperate
         {
-            LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Cartoon Base NightSky", "BlueGreenNebular");
+            if(RenderSettings.fog)
+                LoadSkybox(false, "SkyEarlyDusk", "Cartoon Base NightSky");
+            else
+                LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "BlueGreenNebular", "Yellow Galaxy", "Spiral Galaxy");
 
             //Ambience (biome and fog play a factor here)
             if (biome == Biome.Forest)
@@ -472,7 +478,10 @@ public class Planet : MonoBehaviour
         }
         else //Hot (don't worry about fog; impossible for hot planets)
         {
-            LoadSkybox(false, "Deep Dusk");
+            if (Random.Range(0, 3) == 0)
+                LoadSkybox(false, "Deep Dusk");
+            else
+                LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy", "Galaxy Field 1", "Galaxy Field 2");
             nightAmbience = LoadAmbience("Summer Night");
         }
     }
@@ -559,7 +568,7 @@ public class Planet : MonoBehaviour
         if (oceanType == OceanType.Frozen)
         {
             if(iceTexture.Equals("")) //Generate new ice texture
-                FreezeOcean("Glacier", "Ice 0041", "Ice Cracked", "Ice Caves");
+                FreezeOcean("Glacier", "Ice 0041", "Ice Cracked", "Ice Caves", "Chiseled Ice");
             else //Load old ice texture
                 FreezeOcean(iceTexture);
         }
