@@ -355,8 +355,8 @@ public class Planet : MonoBehaviour
             terrainCustomization.cliffTexture = LoadTexture("Slumbering Volcano");
             terrainCustomization.seabedTexture = LoadTexture("Noxious Melt");
 
-            LoadSkybox(true, "AllSky_Space_AnotherPlanet");
-            LoadSkybox(false, "AllSky_Space_AnotherPlanet");
+            LoadSkybox(true, "AllSky_Space_AnotherPlanet", "RedYellowNebular", "RedOrangeYellowNebular");
+            LoadSkybox(false, daySkybox.name);
 
             dayAmbience = LoadAmbience("Large Eerie Reverberant Space");
             nightAmbience = dayAmbience;
@@ -450,7 +450,7 @@ public class Planet : MonoBehaviour
 
         if (biome == Biome.Frozen) //Cold
         {
-            LoadSkybox(false, "Cold Night", "Night Moon Burst", "SkyNight", "Cartoon Base NightSky");
+            LoadSkybox(false, "Cold Night", "Night Moon Burst", "SkyNight", "Cartoon Base NightSky", "BlueGreenNebular");
 
             //Ambience
             if (RenderSettings.fog && RenderSettings.fogDensity > 0.05f && intensity < 0.55f)
@@ -460,7 +460,7 @@ public class Planet : MonoBehaviour
         }
         else if (biome == Biome.Temperate || biome == Biome.Forest) //Temperate
         {
-            LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Cartoon Base NightSky");
+            LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Cartoon Base NightSky", "BlueGreenNebular");
 
             //Ambience (biome and fog play a factor here)
             if (biome == Biome.Forest)

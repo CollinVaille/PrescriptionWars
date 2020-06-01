@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.60817355, g: 0.6037869, b: 0.6110926, a: 1}
+  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -943,7 +943,6 @@ RectTransform:
   - {fileID: 824337806}
   - {fileID: 1087282024}
   - {fileID: 1230166387}
-  - {fileID: 2007093157}
   m_Father: {fileID: 1317923753}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4544,11 +4543,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 2
+  biome: 1
   sun: {fileID: 705507995}
   moon: {fileID: 0}
   dayLength: 300
-  dayProgression: 100
+  dayProgression: 400
   daySkybox: {fileID: 0}
   nightSkybox: {fileID: 0}
   dayAmbience: {fileID: 0}
@@ -7391,89 +7390,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2007093156
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2007093157}
-  - component: {fileID: 2007093159}
-  - component: {fileID: 2007093158}
-  m_Layer: 5
-  m_Name: Credits
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2007093157
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007093156}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 290544965}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: -50}
-  m_SizeDelta: {x: 500, y: 250}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2007093158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007093156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 94b1aa0b92289c1498a2de5f58b28f15, type: 3}
-    m_FontSize: 10
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 48
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 1
-    m_LineSpacing: 1
-  m_Text: "Credits\nSkyboxBlended shader by Aubrey Falconer\nWater Shader by NVJOB
-    (Nisholas Veselov)\nAllSky Free Skyboxes by rpgwhitelock\nSkybox by Clod\n10
-    Skyboxes Pack: Day-Night by Wello Soft\nStar Nest Skybox by Ninjapretzel\n'Star
-    Nest' Algorithm by Pablo Rom\xE1n Andrioli\nLens Flares by Unity Technologies\n\nAldrich
-    Font by MADType\r\n\nSound Bible\nJab by Mike Koenig\n9mm Gunshot by Mike Koenig\nSpas
-    12 Reload by RA The Sun God\nMetal Bang by Caroline Ford\n\nMoonscape on freesfx.co.uk"
---- !u!222 &2007093159
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2007093156}
-  m_CullTransparentMesh: 0
 --- !u!1 &2085770206
 GameObject:
   m_ObjectHideFlags: 0

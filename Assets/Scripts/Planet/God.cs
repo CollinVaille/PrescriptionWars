@@ -353,6 +353,9 @@ public class God : MonoBehaviour
                 mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
                 Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = mapWater;
             }
+
+            //Makes back button rendered above map markers
+            mapScreen.Find("Back Button").SetAsLastSibling();
         }
         else //Unload map
         {
