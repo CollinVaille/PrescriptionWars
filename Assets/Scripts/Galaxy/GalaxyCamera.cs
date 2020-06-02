@@ -13,10 +13,10 @@ public class GalaxyCamera : MonoBehaviour
     {
         
         //Speed up/slow down
-        if (Input.GetButton("Sprint"))
+        /*if (Input.GetButton("Sprint"))
             moveSpeed += 25 * Time.deltaTime;
         else if (Input.GetButton("Equip"))
-            moveSpeed -= 25 * Time.deltaTime;
+            moveSpeed -= 25 * Time.deltaTime;*/
 
         //WASD and scrollwheel movement
         movementVector.x = Input.GetAxis("Horizontal");
@@ -33,7 +33,23 @@ public class GalaxyCamera : MonoBehaviour
         //Apply movement
         transform.Translate(movementVector * moveSpeed * Time.deltaTime);
 
+        //Camera restrictions
+        if (transform.position.y > 300)
+            transform.position = new Vector3(transform.position.x, 300, transform.position.z);
+        else if (transform.position.y < 50)
+            transform.position = new Vector3(transform.position.x, 50, transform.position.z);
+        if (transform.position.x < transform.position.y - 75)
+            transform.position = new Vector3(transform.position.y - 75, transform.position.y, transform.position.z);
+        else if (transform.position.x > 300 - transform.position.y + 225)
+            transform.position = new Vector3(300 - transform.position.y + 225, transform.position.y, transform.position.z);
+        if (transform.position.z < ((transform.position.y / 50 * 0.0733f + 1) * 0.3f * transform.position.y))
+            transform.position = new Vector3(transform.position.x, transform.position.y, ((transform.position.y / 50 * 0.0733f + 1) * 0.3f * transform.position.y));
+        else if (transform.position.z > 275 - ((transform.position.y - 50) / 250 * 145.418f))
+            transform.position = new Vector3(transform.position.x, transform.position.y, 275 - ((transform.position.y - 50) / 250 * 145.418f));
+
         //Clean up at end of update
         previousMousePosition = Input.mousePosition;
+
+        //50 -> 15, 300 -> 130
     }
 }
