@@ -439,7 +439,7 @@ public class Planet : MonoBehaviour
         }
         else //Hot
         {
-            LoadSkybox(true, "SkySunset", "SkyMorning", "Desert Sky Morning");
+            LoadSkybox(true, "SkySunset", "SkyMorning", "Desert Sky Morning", "Desert World Sky");
             dayAmbience = LoadAmbience("Howling Wind");
         }
     }
@@ -466,7 +466,7 @@ public class Planet : MonoBehaviour
             if(RenderSettings.fog)
                 LoadSkybox(false, "SkyEarlyDusk", "Cartoon Base NightSky");
             else
-                LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "BlueGreenNebular", "Yellow Galaxy", "Spiral Galaxy");
+                LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Yellow Galaxy", "Spiral Galaxy");
 
             //Ambience (biome and fog play a factor here)
             if (biome == Biome.Forest)

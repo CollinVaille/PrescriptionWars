@@ -23,7 +23,7 @@ public class City : MonoBehaviour
     public Material[] wallMaterials, floorMaterials;
 
     //Walls
-    public GameObject wallSectionPrefab, gatePrefab;
+    public GameObject wallSectionPrefab, gatePrefab, fencePostPrefab;
     [HideInInspector] public Transform walls;
     [HideInInspector] public int wallMaterialIndex;
 
@@ -514,10 +514,19 @@ public class City : MonoBehaviour
         //Now that the wall section locations have been determined, place them
         for (int x = 0; x < skipWallSection.Length; x++)
         {
-            PlaceWallSection(skipWallSection[x], startX + x * wallLength, placementHeight, startZ - wallLength / 2.0f, 0);
-            PlaceWallSection(skipWallSection[x], startX + x * wallLength, placementHeight,
+            bool nextIsGate = false;
+            if (x < horizontalSections - 1)
+                nextIsGate = skipWallSection[x + 1];
+
+            PlaceWallSection(skipWallSection[x], nextIsGate,
+                startX + x * wallLength, placementHeight, startZ - wallLength / 2.0f, 0);
+            PlaceWallSection(skipWallSection[x], nextIsGate || x == horizontalSections - 1,
+                startX + x * wallLength, placementHeight,
                 startZ + verticalSections * wallLength - wallLength / 2.0f, 0);
         }
+
+        bool firstHorSectionIsGate = skipWallSection[0];
+        bool lastHorSectionIsGate = skipWallSection[horizontalSections - 1];
 
         //VERTICAL WALLS-------------------------------------------------------------------------------------
 
@@ -555,14 +564,31 @@ public class City : MonoBehaviour
         //Now that the wall section locations have been determined, place them
         for (int z = 0; z < skipWallSection.Length; z++)
         {
-            PlaceWallSection(skipWallSection[z], startX - wallLength / 2.0f, placementHeight, startZ + z * wallLength, 90);
-            PlaceWallSection(skipWallSection[z], startX + horizontalSections * wallLength - wallLength / 2.0f,
+            bool nextIsGate = false;
+            if (z < verticalSections - 1)
+                nextIsGate = skipWallSection[z + 1];
+
+            PlaceWallSection(skipWallSection[z], nextIsGate,
+                startX - wallLength / 2.0f, placementHeight, startZ + z * wallLength, 90);
+            PlaceWallSection(skipWallSection[z], nextIsGate || z == verticalSections - 1,
+                startX + horizontalSections * wallLength - wallLength / 2.0f,
                 placementHeight, startZ + z * wallLength, 90);
         }
+
+        //Place fence post at near corner if no fence gates there
+        if (fencePostPrefab && !firstHorSectionIsGate && !skipWallSection[0])
+            PlaceFencePost(new Vector3(
+                startX - wallLength / 2.0f, placementHeight, startZ - wallLength / 2.0f), 90);
+
+        //Place fence post at far corner if no fence gates there
+        if (fencePostPrefab && !lastHorSectionIsGate && !skipWallSection[verticalSections - 1])
+            PlaceFencePost(new Vector3(startX + (verticalSections - 1) * wallLength + wallLength / 2.0f,
+                placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);
     }
 
-    public void PlaceWallSection (bool gate, float x, float y, float z, int rotation)
+    public void PlaceWallSection (bool gate, bool nextIsGate, float x, float y, float z, int rotation)
     {
+        //Place wall section
         Transform newWallSection;
         if(gate)
             newWallSection = Instantiate(gatePrefab, walls).transform;
@@ -573,6 +599,25 @@ public class City : MonoBehaviour
 
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
+
+        //Place fence post correlating to wall section
+        if(fencePostPrefab && !gate && !nextIsGate)
+        {
+            Vector3 fencePostPosition = newWallSection.localPosition;
+            if (Mathf.Abs(rotation) < 1)
+                fencePostPosition.x += newWallSection.localScale.x / 2.0f;
+            else
+                fencePostPosition.z += newWallSection.localScale.x / 2.0f;
+
+            PlaceFencePost(fencePostPosition, newWallSection.localEulerAngles.y);
+        }
+    }
+
+    public void PlaceFencePost(Vector3 position, float rotation)
+    {
+        Transform fencePost = Instantiate(fencePostPrefab, walls).transform;
+        fencePost.localEulerAngles = new Vector3(0, rotation, 0);
+        fencePost.localPosition = position;
     }
 
     private void GenerateBuildingMaterials ()
@@ -614,16 +659,45 @@ public class City : MonoBehaviour
 
         if (radius < 60) //Small station name
         {
-            //Get list of station names
-            TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Station Names");
-            string[] stationNames = stationNamesFile.text.Split('\n');
+            string stationName;
+
+            if(Random.Range(0, 2) == 0) //Predefined station names
+            {
+                //Get list of station names
+                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Station Names");
+                string[] stationNames = stationNamesFile.text.Split('\n');
+
+                //Pick a random name from list
+                stationName = stationNames[Random.Range(0, stationNames.Length)];
+            }
+            else //Two-part randomized station names
+            {
+                //Get list of prefixes
+                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Station Name Prefixes");
+                string[] prefixes = prefixFile.text.Split('\n');
+
+                //Get list of suffixes
+                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Station Name Suffixes");
+                string[] suffixes = suffixFile.text.Split('\n');
+
+                //Determine suffix
+                string suffix = suffixes[Random.Range(0, suffixes.Length)];
+                string prefix = prefixes[Random.Range(0, prefixes.Length)];
+                if (Random.Range(0, 2) == 0 || prefix.Contains("'"))
+                    suffix = " " + suffix;
+                else
+                    suffix = suffix.ToLower();
+
+                //Determine prefix and get station name
+                stationName = prefix + suffix;
+            }
 
             string[] stationSuffixes = new string[] { " Station", " Outpost", " Camp", " Settlement",
-                " Installation", " Base", " Post", " Retreat", " Village", " Point", " Favela" };
+                " Installation", " Base", " Post", " Retreat", " Village", " Point", " Holdout",
+                " Hideout", " Hideaway", " Redoubt", " Slum" };
 
-            //Pick a random name
-            cityName = stationNames[Random.Range(0, stationNames.Length)]
-                + stationSuffixes[Random.Range(0, stationSuffixes.Length)];
+            //Finish the city name with a suffix indicating it's not a major city
+            cityName = stationName + stationSuffixes[Random.Range(0, stationSuffixes.Length)];
         }
         else //Major city name
         {
@@ -692,13 +766,13 @@ public class CityJSON
 
             wallSectionLocations = new List<Vector3>();
             wallSectionRotations = new List<int>();
-            wallSectionIsGate = new List<bool>();
+            wallSectionTypes = new List<string>();
 
             foreach(Transform wallSection in cityWalls)
             {
                 wallSectionLocations.Add(wallSection.localPosition);
                 wallSectionRotations.Add((int)wallSection.localEulerAngles.y);
-                wallSectionIsGate.Add(wallSection.CompareTag("Gate"));
+                wallSectionTypes.Add(wallSection.tag);
             }
         }
         else
@@ -706,7 +780,7 @@ public class CityJSON
             wallMaterialIndex = -1;
             wallSectionLocations = null;
             wallSectionRotations = null;
-            wallSectionIsGate = null;
+            wallSectionTypes = null;
         }
     }
 
@@ -742,7 +816,14 @@ public class CityJSON
             for(int x = 0; x < wallSectionLocations.Count; x++)
             {
                 Vector3 location = wallSectionLocations[x];
-                city.PlaceWallSection(wallSectionIsGate[x], location.x, location.y, location.z, wallSectionRotations[x]);
+
+                if (wallSectionTypes[x].Equals("Fence Post"))
+                    city.PlaceFencePost(location, wallSectionRotations[x]);
+                else
+                    //We want to place the fence posts manually, so just always say next section is gate
+                    //so it won't place them for us
+                    city.PlaceWallSection(wallSectionTypes[x].Equals("Gate"), true,
+                        location.x, location.y, location.z, wallSectionRotations[x]);
             }
         }
 
@@ -765,5 +846,5 @@ public class CityJSON
     public int wallMaterialIndex;
     public List<Vector3> wallSectionLocations;
     public List<int> wallSectionRotations;  //Parallel array to wallSectionLocations
-    public List<bool> wallSectionIsGate;
+    public List<string> wallSectionTypes;  //Parallel array to wallSectionLocations
 }
