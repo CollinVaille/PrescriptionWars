@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class PlanetIcon : MonoBehaviour
 {
-    private Text nameLabel;
+    public Text nameLabel;
 
-    private void Start ()
+    public Planet.Biome biome;
+
+    public void InitializePlanet (string planetName)
     {
-        AddNameLabel();
+        AddNameLabel(planetName);
     }
 
-    private void AddNameLabel ()
+    private void AddNameLabel (string planetName)
     {
         //Create label
         nameLabel = new GameObject(name + " Label").AddComponent<Text>();
@@ -23,8 +25,11 @@ public class PlanetIcon : MonoBehaviour
         //Add it to UI layer
         nameLabel.gameObject.layer = 5;
 
+        //Set gameobject name
+        name = planetName;
+
         //Set text
-        nameLabel.text = name;
+        nameLabel.text = planetName;
 
         //Set font
         nameLabel.font = GalaxyMenu.galaxyMenu.planetNameFont;

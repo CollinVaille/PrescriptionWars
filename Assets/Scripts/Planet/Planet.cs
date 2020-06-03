@@ -919,7 +919,7 @@ public class Planet : MonoBehaviour
         ambientAudioSource.volume = internalAmbientVolume * ambientVolume;
     }
 
-    private string GeneratePlanetName ()
+    private string GeneratePlanetName()
     {
         string planetName = "";
 
