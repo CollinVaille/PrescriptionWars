@@ -261,7 +261,20 @@ public class PlanetTerrain : MonoBehaviour
             cliffLayer.metallic = 1;
             seabedLayer.metallic = 1;
             seabedLayer.smoothness = 1;
+
+            //Make horizon blend in with terrain
+            horizonMaterial.SetFloat("_Metallic", 1);
         }
+        else if(Planet.planet.biome == Planet.Biome.Spirit)
+        {
+            cliffLayer.metallic = 1;
+            cliffLayer.smoothness = 1;
+
+            seabedLayer.metallic = 0.2f;
+            seabedLayer.smoothness = 0.8f;
+        }
+        else
+            horizonMaterial.SetFloat("_Metallic", 0);
     }
 
     private void SetHorizons ()
