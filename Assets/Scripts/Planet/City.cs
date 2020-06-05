@@ -26,6 +26,7 @@ public class City : MonoBehaviour
     public GameObject wallSectionPrefab, gatePrefab, fencePostPrefab;
     [HideInInspector] public Transform walls;
     [HideInInspector] public int wallMaterialIndex;
+    public Material cityWallMaterial;
 
     //Area system (how city is subdivided and organized)
     private int areaSize = 5;
@@ -58,11 +59,14 @@ public class City : MonoBehaviour
     {
         //Reserve terrain location
         //radius = Random.Range(40, 100);
-        radius = Random.Range(40, 60);
+        //radius = Random.Range(40, 60);
+        radius = Random.Range(70, 110);
         areaTaken = new bool[radius * 2 / areaSize, radius * 2 / areaSize];
         ReserveTerrainLocation();
 
-        GenerateBuildingMaterials();
+        //Determine city type, which determines whether we have walls, fence posts...
+        //what buildings and building materials are used etc...
+        CityGenerator.generator.CustomizeCity(this);
 
         //Generate roads, buildings, etc...
         GenerateRoads();
@@ -77,7 +81,7 @@ public class City : MonoBehaviour
         for (int x = 0; x < 400; x++)
             GenerateBuilding();
 
-        if(Random.Range(0, 2) == 0)
+        if(wallSectionPrefab)
             GenerateWalls();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
@@ -451,7 +455,6 @@ public class City : MonoBehaviour
         walls.localRotation = Quaternion.Euler(0, 0, 0);
 
         //Set texture of walls using reference material
-        Material cityWallMaterial = wallSectionPrefab.GetComponent<Renderer>().sharedMaterial;
         Material referenceMaterial = wallMaterials[wallMaterialIndex];
         cityWallMaterial.mainTexture = referenceMaterial.mainTexture;
         cityWallMaterial.SetTexture("_BumpMap", referenceMaterial.GetTexture("_BumpMap"));
@@ -618,39 +621,6 @@ public class City : MonoBehaviour
         Transform fencePost = Instantiate(fencePostPrefab, walls).transform;
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
-    }
-
-    private void GenerateBuildingMaterials ()
-    {
-        //Keep concrete theme going
-        if (Random.Range(0, 10) == 0)
-            return;
-
-        switch(Planet.planet.biome)
-        {
-            case Planet.Biome.Temperate:
-                wallMaterials = new Material[] {
-                    Resources.Load<Material>("Building Materials/Plaster Wall"),
-                    Resources.Load<Material>("Building Materials/Brick Wall")
-                };
-                floorMaterials = new Material[] {
-                    Resources.Load<Material>("Building Materials/Wood Floor"),
-                    Resources.Load<Material>("Building Materials/Slate Tile Floor")
-                };
-                break;
-            case Planet.Biome.Desert:
-                wallMaterials = new Material[] {
-                    Resources.Load<Material>("Building Materials/Sand Wall"),
-                    Resources.Load<Material>("Building Materials/Sand Wall 2"),
-                    Resources.Load<Material>("Building Materials/Cobblestone Wall")
-                };
-                floorMaterials = new Material[] {
-                    Resources.Load<Material>("Building Materials/Sand Wall"),
-                    Resources.Load<Material>("Building Materials/Sand Wall 2"),
-                    Resources.Load<Material>("Building Materials/Slate Tile Floor")
-                };
-                break;
-        }
     }
 
     public string GenerateCityName ()

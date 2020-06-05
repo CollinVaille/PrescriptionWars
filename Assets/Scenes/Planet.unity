@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.22090253, g: 0.095493756, b: 0.00462839, a: 1}
+  m_IndirectSpecularColor: {r: 0.56311494, g: 0.45829225, b: 0.00000515019, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2755,7 +2755,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 135, y: 0, z: 0}
 --- !u!1 &731343691
 GameObject:
@@ -2920,7 +2920,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!170 &811231356
 AudioDistortionFilter:
@@ -4543,7 +4543,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 7
+  biome: 0
+  generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
   moon: {fileID: 0}
   dayLength: 300
@@ -5183,7 +5184,7 @@ Transform:
   - {fileID: 515587975}
   - {fileID: 814359348}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1253430120
 GameObject:
@@ -5516,7 +5517,7 @@ RectTransform:
   - {fileID: 462843209}
   - {fileID: 1933690470}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5640,7 +5641,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1398867327
 GameObject:
@@ -6650,6 +6651,113 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1684861041}
   m_CullTransparentMesh: 0
+--- !u!1 &1721634685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1721634686}
+  - component: {fileID: 1721634687}
+  - component: {fileID: 1721634688}
+  m_Layer: 0
+  m_Name: Planet Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1721634686
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721634685}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1721634687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721634685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cb9a5feafe1fab4697f05e4eedea1c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1721634688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721634685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7330a9bd9c4228a45a7c7694155b0f42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biomeMaterials:
+  - name: Frozen
+    wallMaterials:
+    - Concrete Wall
+    - Concrete Wall 2
+    floorMaterials:
+    - Concrete Floor
+  - name: Temperate
+    wallMaterials:
+    - Brick Wall
+    - Plaster Wall
+    floorMaterials:
+    - Wood Floor
+    - Slate Tile Floor
+  - name: Desert
+    wallMaterials:
+    - Sand Wall
+    - Sand Wall 2
+    - Cobblestone Wall
+    floorMaterials:
+    - Sand Wall
+    - Sand Wall 2
+    - Slate Tile Floor
+  cityTypes:
+  - name: Slum
+    spawnChance: 1
+    biomes: []
+    buildings:
+    - Hotel
+    - Hovel Ruins
+    - Mini Garage
+    - Retail Hole in the Wall
+    - Swamp Ass Hovel
+    - Dome Hut
+    wallChance: 0.5
+    wallSections:
+    - Wall Slab
+    - Half Slab Half Bars
+    gates:
+    - Slum Gate
+    - Slum Gate 2
+    - Slum Gate 3
+    - Slum Gate 4
+    - Slum Anti-Gate
+    - Slum Anti-Gate 2
+    fencePostChance: 0.5
+    fencePosts:
+    - Fence Post Slab
+    - Fence Post Slab 2
+    wallMaterials: []
+    floorMaterials: []
 --- !u!1 &1779026122
 GameObject:
   m_ObjectHideFlags: 0
@@ -7108,7 +7216,7 @@ Transform:
   m_LocalScale: {x: 3000, y: 1, z: 3000}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1909745538
 MonoBehaviour:
@@ -7388,7 +7496,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2085770206
 GameObject:

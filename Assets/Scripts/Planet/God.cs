@@ -46,9 +46,9 @@ public class God : MonoBehaviour
     void Awake ()
     {
         god = this;
-        Planet.planet = GetComponent<Planet>();
 
-        //Initialize display settings
+        //Initialize settings
+        AudioSettings.LoadSettings();
         VideoSettings.LoadSettings();
 
         //Variable initialization

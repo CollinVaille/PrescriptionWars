@@ -13,6 +13,7 @@ public class Door : MonoBehaviour
     public DoorType doorType = DoorType.Single;
     public DoorMotion doorMotion = DoorMotion.SlideX;
     public bool automatic = false;
+    public float openDuration = 0.75f, closeDuration = 0.75f;
 
     public Building building;
 
@@ -54,15 +55,14 @@ public class Door : MonoBehaviour
         if(doorType == DoorType.Single)
         {
             Vector3 doorPosition = transform.localPosition;
-            float duration = 0.75f;
-            for (float t = 0; t < duration; t += Time.deltaTime)
+            for (float t = 0; t < openDuration; t += Time.deltaTime)
             {
                 if (doorMotion == DoorMotion.SlideX)
-                    doorPosition.x = Mathf.Lerp(closePosition, openPosition, t / duration);
+                    doorPosition.x = Mathf.Lerp(closePosition, openPosition, t / openDuration);
                 else if (doorMotion == DoorMotion.SlideY)
-                    doorPosition.y = Mathf.Lerp(closePosition, openPosition, t / duration);
+                    doorPosition.y = Mathf.Lerp(closePosition, openPosition, t / openDuration);
                 else
-                    doorPosition.z = Mathf.Lerp(closePosition, openPosition, t / duration);
+                    doorPosition.z = Mathf.Lerp(closePosition, openPosition, t / openDuration);
 
                 transform.localPosition = doorPosition;
 
@@ -77,23 +77,22 @@ public class Door : MonoBehaviour
             Vector3 leftDoorPosition = leftDoor.localPosition;
             Vector3 rightDoorPosition = rightDoor.localPosition;
 
-            float duration = 0.75f;
-            for (float t = 0; t < duration; t += Time.deltaTime)
+            for (float t = 0; t < openDuration; t += Time.deltaTime)
             {
                 if(doorMotion == DoorMotion.SlideX)
                 {
-                    leftDoorPosition.x = Mathf.Lerp(closePosition, openPosition, t / duration);
-                    rightDoorPosition.x = -Mathf.Lerp(closePosition, openPosition, t / duration);
+                    leftDoorPosition.x = Mathf.Lerp(closePosition, openPosition, t / openDuration);
+                    rightDoorPosition.x = -Mathf.Lerp(closePosition, openPosition, t / openDuration);
                 }
                 else if (doorMotion == DoorMotion.SlideY)
                 {
-                    leftDoorPosition.y = Mathf.Lerp(closePosition, openPosition, t / duration);
-                    rightDoorPosition.y = -Mathf.Lerp(closePosition, openPosition, t / duration);
+                    leftDoorPosition.y = Mathf.Lerp(closePosition, openPosition, t / openDuration);
+                    rightDoorPosition.y = -Mathf.Lerp(closePosition, openPosition, t / openDuration);
                 }
                 else
                 {
-                    leftDoorPosition.z = Mathf.Lerp(closePosition, openPosition, t / duration);
-                    rightDoorPosition.z = -Mathf.Lerp(closePosition, openPosition, t / duration);
+                    leftDoorPosition.z = Mathf.Lerp(closePosition, openPosition, t / openDuration);
+                    rightDoorPosition.z = -Mathf.Lerp(closePosition, openPosition, t / openDuration);
                 }
 
                 leftDoor.localPosition = leftDoorPosition;
@@ -154,15 +153,14 @@ public class Door : MonoBehaviour
         if (doorType == DoorType.Single)
         {
             Vector3 doorPosition = transform.localPosition;
-            float duration = 0.75f;
-            for (float t = 0; t < duration; t += Time.deltaTime)
+            for (float t = 0; t < closeDuration; t += Time.deltaTime)
             {
                 if (doorMotion == DoorMotion.SlideX)
-                    doorPosition.x = Mathf.Lerp(openPosition, closePosition, t / duration);
+                    doorPosition.x = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
                 else if (doorMotion == DoorMotion.SlideY)
-                    doorPosition.y = Mathf.Lerp(openPosition, closePosition, t / duration);
+                    doorPosition.y = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
                 else
-                    doorPosition.z = Mathf.Lerp(openPosition, closePosition, t / duration);
+                    doorPosition.z = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
 
                 transform.localPosition = doorPosition;
 
@@ -177,23 +175,22 @@ public class Door : MonoBehaviour
             Vector3 leftDoorPosition = leftDoor.localPosition;
             Vector3 rightDoorPosition = rightDoor.localPosition;
 
-            float duration = 0.75f;
-            for (float t = 0; t < duration; t += Time.deltaTime)
+            for (float t = 0; t < closeDuration; t += Time.deltaTime)
             {
                 if(doorMotion == DoorMotion.SlideX)
                 {
-                    leftDoorPosition.x = Mathf.Lerp(openPosition, closePosition, t / duration);
-                    rightDoorPosition.x = -Mathf.Lerp(openPosition, closePosition, t / duration);
+                    leftDoorPosition.x = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
+                    rightDoorPosition.x = -Mathf.Lerp(openPosition, closePosition, t / closeDuration);
                 }
                 else if (doorMotion == DoorMotion.SlideY)
                 {
-                    leftDoorPosition.y = Mathf.Lerp(openPosition, closePosition, t / duration);
-                    rightDoorPosition.y = -Mathf.Lerp(openPosition, closePosition, t / duration);
+                    leftDoorPosition.y = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
+                    rightDoorPosition.y = -Mathf.Lerp(openPosition, closePosition, t / closeDuration);
                 }
                 else
                 {
-                    leftDoorPosition.z = Mathf.Lerp(openPosition, closePosition, t / duration);
-                    rightDoorPosition.z = -Mathf.Lerp(openPosition, closePosition, t / duration);
+                    leftDoorPosition.z = Mathf.Lerp(openPosition, closePosition, t / closeDuration);
+                    rightDoorPosition.z = -Mathf.Lerp(openPosition, closePosition, t / closeDuration);
                 }
 
                 leftDoor.localPosition = leftDoorPosition;
