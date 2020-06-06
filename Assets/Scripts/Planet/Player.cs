@@ -228,22 +228,25 @@ public class Player : Pill
         //Manage adding/removing items from hand
         if (Input.GetButtonDown("Equip")) //Hand/ground swapping
         {
-            if (interactOption)
+            if (interactOption && interactOption.GetComponent<Item>()) //Pick up interact option
             {
-                if (interactOption.GetComponent<Item>()) //Pick up interact option
-                {
-                    Equip(interactOption.GetComponent<Item>());
-                    EraseInteractOption(); //"Used up" the option
-                }
-                else if (interactOption.GetComponent<Door>())
+                Equip(interactOption.GetComponent<Item>());
+                EraseInteractOption(); //"Used up" the option
+            }
+            else //Just unequip current item
+                Equip(null);
+        }
+        else if(Input.GetButtonDown("Interact")) //Button used for general interaction with the world
+        {
+            if(interactOption)
+            {
+                if (interactOption.GetComponent<Door>())
                     interactOption.GetComponent<Door>().ToggleDoorState(GetAudioSource());
                 else if (interactOption.GetComponent<Lamp>())
                     interactOption.GetComponent<Lamp>().ToggleLightState(GetAudioSource());
                 else if (interactOption.GetComponent<Bed>())
                     interactOption.GetComponent<Bed>().GoToBed(GetPill());
             }
-            else //Just unequip current item
-                Equip(null);
         }
         else if (Input.GetButtonDown("Sidearm")) //Hand/sidearm swapping
             SwapToSidearm();

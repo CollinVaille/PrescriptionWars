@@ -47,15 +47,19 @@ public class CityGenerator : MonoBehaviour
             city.floorMaterials[x] = Resources.Load<Material>("City/Building Materials/" + floorMats[x]);
 
         //Customize walls
-        if (cityType.wallChance >= Random.Range(0, 1.0f))
+        if (Random.Range(0, 90) < city.radius && cityType.wallSections.Length > 0)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
             city.wallSectionPrefab = Resources.Load<GameObject>("City/Wall Sections/" + wall);
 
-            //Gate
+            //Horizontal Gate
             string gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.gatePrefab = Resources.Load<GameObject>("City/Gates/" + gate);
+            city.horGatePrefab = Resources.Load<GameObject>("City/Gates/" + gate);
+
+            //Vertical gate
+            gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
+            city.verGatePrefab = Resources.Load<GameObject>("City/Gates/" + gate);
 
             //Fence posts
             if (cityType.fencePostChance >= Random.Range(0, 1.0f))
@@ -168,7 +172,6 @@ public class CityType
     public string[] buildings;
 
     //Walls
-    public float wallChance = 0.5f; //0 = 0% spawn chance, 1 = 100% spawn chance
     public string[] wallSections;
 
     //Gates

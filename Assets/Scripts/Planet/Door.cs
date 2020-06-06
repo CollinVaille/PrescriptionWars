@@ -230,7 +230,8 @@ public class Door : MonoBehaviour
         int pillLayers = (1 << 11) | (1 << 14) | (1 << 15);
 
         //Detection radius
-        float radius = transform.lossyScale.magnitude * 3;
+        float radius = 5.0f;
+        //float radius = transform.lossyScale.magnitude * 3;
 
         //Use audio source of detected pill for opening/closing sounds
         Collider[] detected = new Collider[1];

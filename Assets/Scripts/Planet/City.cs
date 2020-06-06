@@ -23,7 +23,7 @@ public class City : MonoBehaviour
     public Material[] wallMaterials, floorMaterials;
 
     //Walls
-    public GameObject wallSectionPrefab, gatePrefab, fencePostPrefab;
+    public GameObject wallSectionPrefab, horGatePrefab, verGatePrefab, fencePostPrefab;
     [HideInInspector] public Transform walls;
     [HideInInspector] public int wallMaterialIndex;
     public Material cityWallMaterial;
@@ -471,7 +471,8 @@ public class City : MonoBehaviour
         PrepareWalls(Random.Range(0, wallMaterials.Length));
 
         float wallLength = wallSectionPrefab.transform.localScale.x;
-        float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;
+        float placementHeight = 0.0f;
+        //float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;
 
         float cityWidth = areaSize * areaTaken.GetLength(0);
 
@@ -591,10 +592,12 @@ public class City : MonoBehaviour
 
     public void PlaceWallSection (bool gate, bool nextIsGate, float x, float y, float z, int rotation)
     {
+        bool horizontalSection = Mathf.Abs(rotation) < 1;
+
         //Place wall section
         Transform newWallSection;
         if(gate)
-            newWallSection = Instantiate(gatePrefab, walls).transform;
+            newWallSection = Instantiate(horizontalSection ? horGatePrefab : verGatePrefab, walls).transform;
         else
             newWallSection = Instantiate(wallSectionPrefab, walls).transform;
 
@@ -607,7 +610,7 @@ public class City : MonoBehaviour
         if(fencePostPrefab && !gate && !nextIsGate)
         {
             Vector3 fencePostPosition = newWallSection.localPosition;
-            if (Mathf.Abs(rotation) < 1)
+            if (horizontalSection)
                 fencePostPosition.x += newWallSection.localScale.x / 2.0f;
             else
                 fencePostPosition.z += newWallSection.localScale.x / 2.0f;
@@ -715,6 +718,10 @@ public class CityJSON
 
         radius = city.radius;
 
+        buildingPrefabs = new List<string>(city.buildingPrefabs.Length);
+        foreach (GameObject buildingPrefab in city.buildingPrefabs)
+            buildingPrefabs.Add(buildingPrefab.name);
+
         wallMaterials = new string[city.wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
             wallMaterials[x] = city.wallMaterials[x].name;
@@ -734,6 +741,14 @@ public class CityJSON
         {
             wallMaterialIndex = city.wallMaterialIndex;
 
+            wallSection = city.wallSectionPrefab.name;
+            horGate = city.horGatePrefab.name;
+            verGate = city.verGatePrefab.name;
+            if (city.fencePostPrefab)
+                fencePost = city.fencePostPrefab.name;
+            else
+                fencePost = "";
+
             wallSectionLocations = new List<Vector3>();
             wallSectionRotations = new List<int>();
             wallSectionTypes = new List<string>();
@@ -748,6 +763,12 @@ public class CityJSON
         else
         {
             wallMaterialIndex = -1;
+
+            wallSection = "";
+            horGate = "";
+            verGate = "";
+            fencePost = "";
+
             wallSectionLocations = null;
             wallSectionRotations = null;
             wallSectionTypes = null;
@@ -762,13 +783,17 @@ public class CityJSON
 
         city.ReserveTerrainLocation();
 
+        city.buildingPrefabs = new GameObject[buildingPrefabs.Count];
+        for (int x = 0; x < buildingPrefabs.Count; x++)
+            city.buildingPrefabs[x] = Resources.Load<GameObject>("City/Buildings/" + buildingPrefabs[x]);
+
         city.wallMaterials = new Material[wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("Building Materials/" + wallMaterials[x]);
+            city.wallMaterials[x] = Resources.Load<Material>("City/Building Materials/" + wallMaterials[x]);
 
         city.floorMaterials = new Material[floorMaterials.Length];
         for (int x = 0; x < floorMaterials.Length; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("Building Materials/" + floorMaterials[x]);
+            city.floorMaterials[x] = Resources.Load<Material>("City/Building Materials/" + floorMaterials[x]);
 
         city.buildings = new List<Building>(buildings.Count);
         for (int x = 0; x < buildings.Count; x++)
@@ -781,6 +806,12 @@ public class CityJSON
 
         if(walls)
         {
+            city.wallSectionPrefab = Resources.Load<GameObject>("City/Wall Sections/" + wallSection);
+            city.horGatePrefab = Resources.Load<GameObject>("City/Gates/" + horGate);
+            city.verGatePrefab = Resources.Load<GameObject>("City/Gates/" + verGate);
+            if (!fencePost.Equals(""))
+                city.fencePostPrefab = Resources.Load<GameObject>("City/Fence Posts/" + fencePost);
+
             city.PrepareWalls(wallMaterialIndex);
 
             for(int x = 0; x < wallSectionLocations.Count; x++)
@@ -808,12 +839,14 @@ public class CityJSON
     public int radius;
 
     //Buildings
+    public List<string> buildingPrefabs;
     public string[] wallMaterials, floorMaterials;
     public List<BuildingJSON> buildings;
 
     //City walls
     public bool walls;
     public int wallMaterialIndex;
+    public string wallSection, horGate, verGate, fencePost;
     public List<Vector3> wallSectionLocations;
     public List<int> wallSectionRotations;  //Parallel array to wallSectionLocations
     public List<string> wallSectionTypes;  //Parallel array to wallSectionLocations
