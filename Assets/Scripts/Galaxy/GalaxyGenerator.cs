@@ -7,6 +7,8 @@ public class GalaxyGenerator : MonoBehaviour
     string[] planetNames;
 
     public int numberOfPlanets;
+    public int distanceBetweenPlanets;
+    public int hyperspaceLaneCheckingRadius;
 
     public float leftBoundary;
     public float rightBoundary;
@@ -15,10 +17,12 @@ public class GalaxyGenerator : MonoBehaviour
 
     public GameObject planetPrefab;
     public Transform planetDaddy;
+    public Transform hyperspaceLanesDaddy;
 
     List<GameObject> planets;
 
     public List<Material> frozenMaterials;
+    public List<Material> spiritMaterials;
     public List<Material> temperateMaterials;
     public List<Material> desertMaterials;
     public List<Material> swampMaterials;
@@ -31,6 +35,7 @@ public class GalaxyGenerator : MonoBehaviour
     void Start()
     {
         GeneratePlanets();
+        GenerateHyperspaceLanes();
         //Physics.CheckSphere()
     }
 
@@ -38,6 +43,41 @@ public class GalaxyGenerator : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void GenerateHyperspaceLanes()
+    {
+        for(int x = 0; x < planets.Count; x++)
+        {
+            planets[x].GetComponent<PlanetIcon>().hyperspaceLanes = new List<GameObject>();
+            for(int y = 0; y < planets.Count; y++)
+            {
+                if (x != y && Vector3.Distance(planets[x].transform.localPosition, planets[y].transform.localPosition) <= hyperspaceLaneCheckingRadius)
+                {
+                    planets[x].GetComponent<PlanetIcon>().AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy, x, y);
+                }
+            }
+            if(planets[x].GetComponent<PlanetIcon>().hyperspaceLanes.Count == 0)
+            {
+                int indexWithSmallestDistance = -1;
+                for(int y = 0; y < planets.Count; y++)
+                {
+                    if(x != y)
+                    {
+                        if(indexWithSmallestDistance >= 0)
+                        {
+                            if (Vector3.Distance(planets[x].transform.localPosition, planets[y].transform.localPosition) < Vector3.Distance(planets[x].transform.localPosition, planets[indexWithSmallestDistance].transform.localPosition))
+                                indexWithSmallestDistance = y;
+                        }
+                        if(y == 0)
+                        {
+                            indexWithSmallestDistance = 0;
+                        }
+                    }
+                }
+                planets[x].GetComponent<PlanetIcon>().AddHyperspaceLane(planets[x], planets[indexWithSmallestDistance], hyperspaceLanesDaddy, x, indexWithSmallestDistance);
+            }
+        }
     }
 
     private void GeneratePlanets()
@@ -76,11 +116,25 @@ public class GalaxyGenerator : MonoBehaviour
     private Vector3 GeneratePlanetLocation(float radius)
     {
         Vector3 randomPosition;
+        bool goodPosition;
 
         while (true)
         {
+            goodPosition = true;
             randomPosition = new Vector3(Random.Range(leftBoundary, rightBoundary), 0, Random.Range(bottomBoundary, topBoundary));
-            if (Physics.CheckSphere(randomPosition, radius) == false)
+            for(int x = 0; x < planets.Count; x++)
+            {
+                /*if(Mathf.Abs(randomPosition.x - planets[x].transform.localPosition.x) <= 30 || Mathf.Abs(randomPosition.z - planets[x].transform.localPosition.z) <= 30)
+                {
+                    continue;
+                }*/
+                if(Vector3.Distance(randomPosition, planets[x].transform.localPosition) <= distanceBetweenPlanets)
+                {
+                    goodPosition = false;
+                    break;
+                }
+            }
+            if (goodPosition == true)
                 break;
         }
 
@@ -119,6 +173,10 @@ public class GalaxyGenerator : MonoBehaviour
         {
             return forestMaterials[Random.Range(0, forestMaterials.Count)];
         }
+        else if (biome == Planet.Biome.Spirit)
+        {
+            return spiritMaterials[Random.Range(0, frozenMaterials.Count)];
+        }
 
         return frozenMaterials[0];
     }
@@ -126,7 +184,7 @@ public class GalaxyGenerator : MonoBehaviour
     //Method the randomly generates a biome for a planet.
     private Planet.Biome GenerateBiome()
     {
-        int random = Random.Range(0, 6);
+        int random = Random.Range(0, 7);
 
         if (random == 0)
             return Planet.Biome.Frozen;
@@ -140,6 +198,8 @@ public class GalaxyGenerator : MonoBehaviour
             return Planet.Biome.Hell;
         else if (random == 5)
             return Planet.Biome.Forest;
+        else if (random == 6)
+            return Planet.Biome.Spirit;
 
         return Planet.Biome.Unknown;
     }
