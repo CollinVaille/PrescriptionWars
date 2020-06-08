@@ -20,6 +20,7 @@ public class GalaxyGenerator : MonoBehaviour
     public Transform hyperspaceLanesDaddy;
 
     List<GameObject> planets;
+    public GameObject hyperspaceLanesManager;
 
     public List<Material> frozenMaterials;
     public List<Material> spiritMaterials;
@@ -47,17 +48,17 @@ public class GalaxyGenerator : MonoBehaviour
 
     private void GenerateHyperspaceLanes()
     {
+        hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().hyperspaceLanes = new List<GameObject>();
         for(int x = 0; x < planets.Count; x++)
         {
-            planets[x].GetComponent<PlanetIcon>().hyperspaceLanes = new List<GameObject>();
             for(int y = 0; y < planets.Count; y++)
             {
                 if (x != y && Vector3.Distance(planets[x].transform.localPosition, planets[y].transform.localPosition) <= hyperspaceLaneCheckingRadius)
                 {
-                    planets[x].GetComponent<PlanetIcon>().AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy, x, y);
+                    hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy);
                 }
             }
-            if(planets[x].GetComponent<PlanetIcon>().hyperspaceLanes.Count == 0)
+            if(hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().CheckIfPlanetHasHyperspaceLanes(planets[x]) == false)
             {
                 int indexWithSmallestDistance = -1;
                 for(int y = 0; y < planets.Count; y++)
@@ -75,7 +76,7 @@ public class GalaxyGenerator : MonoBehaviour
                         }
                     }
                 }
-                planets[x].GetComponent<PlanetIcon>().AddHyperspaceLane(planets[x], planets[indexWithSmallestDistance], hyperspaceLanesDaddy, x, indexWithSmallestDistance);
+                hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().AddHyperspaceLane(planets[x], planets[indexWithSmallestDistance], hyperspaceLanesDaddy);
             }
         }
     }
@@ -175,7 +176,7 @@ public class GalaxyGenerator : MonoBehaviour
         }
         else if (biome == Planet.Biome.Spirit)
         {
-            return spiritMaterials[Random.Range(0, frozenMaterials.Count)];
+            return spiritMaterials[Random.Range(0, spiritMaterials.Count)];
         }
 
         return frozenMaterials[0];

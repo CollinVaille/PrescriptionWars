@@ -9,10 +9,6 @@ public class PlanetIcon : MonoBehaviour
 
     public Planet.Biome biome;
 
-    public GameObject linePrefab;
-
-    public List<GameObject> hyperspaceLanes;
-
     Vector3 rotation;
 
     public void InitializePlanet (string planetName)
@@ -65,36 +61,6 @@ public class PlanetIcon : MonoBehaviour
 
         //Rotates the planet.
         transform.localEulerAngles += rotation * Time.deltaTime;
-    }
-
-    public void AddHyperspaceLane(GameObject planet1, GameObject planet2, Transform daddy, int planet1Index, int planet2Index)
-    {
-        GameObject line = Instantiate(linePrefab);
-
-        line.GetComponent<Line>().gameObject1 = planet1;
-        line.GetComponent<Line>().gameObject2 = planet2;
-
-        List<string> planetNames = new List<string>();
-        planetNames.Add(planet1.name);
-        planetNames.Add(planet2.name);
-        planetNames.Sort();
-        line.name = planetNames[0] + " - " + planetNames[1];
-
-        bool goodLine = true;
-        for (int x = 0; x < hyperspaceLanes.Count; x++)
-        {
-            string name = hyperspaceLanes[x].name;
-            if (name.Equals("" + planetNames[0] + " - " + planetNames[1]))
-            {
-                Debug.Log("Works");
-            }
-        }
-        if (goodLine)
-        {
-            line.transform.parent = daddy;
-            hyperspaceLanes.Add(line);
-            //Debug.Log("Added");
-        }
     }
 
     private void OnMouseUp ()

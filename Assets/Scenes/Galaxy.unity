@@ -229,6 +229,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 291867261}
+  - component: {fileID: 291867262}
   m_Layer: 0
   m_Name: Hyperspace Lanes
   m_TagString: Untagged
@@ -250,6 +251,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &291867262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 291867260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f6574afa5c514747aefd206457cf4ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hyperspaceLanes: []
+  linePrefab: {fileID: 3218432236788720050, guid: 85d8f56790fc70a43ac19a655cb1ac82,
+    type: 3}
 --- !u!1 &348621248
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,20 +464,64 @@ MonoBehaviour:
     type: 3}
   planetDaddy: {fileID: 1394729654}
   hyperspaceLanesDaddy: {fileID: 291867261}
+  hyperspaceLanesManager: {fileID: 291867260}
   frozenMaterials:
   - {fileID: 2100000, guid: 51922023e6da5aa43a073b59de793fe8, type: 2}
+  - {fileID: 2100000, guid: 64d484be7c509b4438efe4500ebaca4f, type: 2}
+  - {fileID: 2100000, guid: a0a7a65bce2c6db42b2e3c5fb95a6804, type: 2}
+  - {fileID: 2100000, guid: b6c36e3a0ff859c44a7ee052543ff7b9, type: 2}
+  - {fileID: 2100000, guid: 6f51d25a1865990479f01991cad4df93, type: 2}
+  - {fileID: 2100000, guid: 81bc4c74c07d85f4ba1a6b6eadf2d159, type: 2}
+  - {fileID: 2100000, guid: f05aa7a21e2b1a44c90780bcb79222dc, type: 2}
+  - {fileID: 2100000, guid: 919f22bf872f6af4281f03442ace587d, type: 2}
+  - {fileID: 2100000, guid: 53211d45ffc4e25488d3a22506534305, type: 2}
+  - {fileID: 2100000, guid: df18f0e7e1163554983eeff90f9cc58a, type: 2}
+  - {fileID: 2100000, guid: 7e571e5a91ef6934cbc9f6d410b7f9ac, type: 2}
+  - {fileID: 2100000, guid: eb60000ecaca6864bb6bbc0dcfb4b057, type: 2}
+  - {fileID: 2100000, guid: 2f5e0729176f55443ad5c85196a982d1, type: 2}
   spiritMaterials:
   - {fileID: 2100000, guid: 97048ed9e69584a40ba32c4452a9683c, type: 2}
+  - {fileID: 2100000, guid: 9e0d7ae5c1317e24db874c069924b342, type: 2}
+  - {fileID: 2100000, guid: b94d5f08c1261fb4a8ffb924025cd2ec, type: 2}
+  - {fileID: 2100000, guid: c969f1cecbff3db4ab38c1b4ba0221a4, type: 2}
+  - {fileID: 2100000, guid: dbbabf6ae96d2634691a5c3bd4bebf55, type: 2}
   temperateMaterials:
   - {fileID: 2100000, guid: 6e179b06f980eb84e86f7fb9979032b3, type: 2}
+  - {fileID: 2100000, guid: e7dc64e17cdbef44089aab69d0deb0ca, type: 2}
+  - {fileID: 2100000, guid: ff864f3736d2f6e45977b3e48d57f9da, type: 2}
+  - {fileID: 2100000, guid: 5da7a8eac6b62844080ca8b2a20bc78f, type: 2}
+  - {fileID: 2100000, guid: 7f166ccc3413da541ab7d846ca03e6ef, type: 2}
+  - {fileID: 2100000, guid: 1150b1ec3e6482e4cabd0cf4065e5108, type: 2}
+  - {fileID: 2100000, guid: b8fa3c9dcaf23c741b50ce479455c496, type: 2}
   desertMaterials:
   - {fileID: 2100000, guid: 7d642c6a35ddcb945ab4dc98c1b0637c, type: 2}
+  - {fileID: 2100000, guid: 1dfeb8f9b5085504b8c8ae32abcefb30, type: 2}
+  - {fileID: 2100000, guid: 32e804facf86bd042aaa5edd28195f1b, type: 2}
+  - {fileID: 2100000, guid: 73caaf5207922e3418e1fd547ec39ad8, type: 2}
+  - {fileID: 2100000, guid: 4e5622779b3b1104780b7afac28e9493, type: 2}
+  - {fileID: 2100000, guid: f1423009e8ef9734691b70b31639e5b7, type: 2}
   swampMaterials:
-  - {fileID: 2100000, guid: 45fa427c8154be644830a43a2b2a57cd, type: 2}
+  - {fileID: 2100000, guid: 18b6b36d22212724b9682cd1933eb820, type: 2}
+  - {fileID: 2100000, guid: fc2806b9de9e1f84a84964fe1c581e0c, type: 2}
   hellMaterials:
   - {fileID: 2100000, guid: 651334a7b19190a41ac8c99ff1e1708d, type: 2}
+  - {fileID: 2100000, guid: 48084fb49d0dc4d44930d84b7eee19c3, type: 2}
+  - {fileID: 2100000, guid: cbf1bd3cbbc825d4b8ee87db3520b095, type: 2}
+  - {fileID: 2100000, guid: fe056c59c2f34604f976504119f9bce7, type: 2}
+  - {fileID: 2100000, guid: bd4557145d1ded14eb3ed735a2202966, type: 2}
+  - {fileID: 2100000, guid: 639c2ad358bf71a4299cfcc98b3113b1, type: 2}
+  - {fileID: 2100000, guid: cfd5aad6e6dd20b469573c2c9eb327a3, type: 2}
+  - {fileID: 2100000, guid: 39e0cfdfc168f86489e413d713d87560, type: 2}
+  - {fileID: 2100000, guid: fb396c0472f60fb44921de350d692745, type: 2}
   forestMaterials:
   - {fileID: 2100000, guid: 0e31e3e229228a3438738cf4982eca08, type: 2}
+  - {fileID: 2100000, guid: d5cd8c086c04311429a9e794b793570f, type: 2}
+  - {fileID: 2100000, guid: 83c30870fa5d3954d9b1180dbf299cfb, type: 2}
+  - {fileID: 2100000, guid: ab4b97e8184938049993098ee24ed54d, type: 2}
+  - {fileID: 2100000, guid: a7ff976d02e0afa4bb2d41996d575de8, type: 2}
+  - {fileID: 2100000, guid: 3cf569b407d76da4cb9f2ac1373c7651, type: 2}
+  - {fileID: 2100000, guid: 3a1cef8690fd36341a8609e62603df4b, type: 2}
+  - {fileID: 2100000, guid: bac15cb22a1a9cd449cc7c3030ed9222, type: 2}
 --- !u!4 &1394729654
 Transform:
   m_ObjectHideFlags: 0
