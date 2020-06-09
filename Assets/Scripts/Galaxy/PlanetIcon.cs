@@ -25,7 +25,7 @@ public class PlanetIcon : MonoBehaviour
         nameLabel = new GameObject(name + " Label").AddComponent<Text>();
 
         //Make it a child of canvas
-        nameLabel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        nameLabel.transform.SetParent(GameObject.Find("Planet Labels").transform, false);
 
         //Add it to UI layer
         nameLabel.gameObject.layer = 5;
