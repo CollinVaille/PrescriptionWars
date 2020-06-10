@@ -15,6 +15,8 @@ public class MainMenu : MonoBehaviour
     {
         audioSettingsMenu.LoadSettings();
         videoSettingsMenu.LoadSettings();
+
+        FlagCreationMenu.Initialize();
     }
 
     // Update is called once per frame
