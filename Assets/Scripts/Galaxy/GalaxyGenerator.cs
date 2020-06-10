@@ -37,11 +37,17 @@ public class GalaxyGenerator : MonoBehaviour
     {
         GeneratePlanets();
         GenerateHyperspaceLanes();
+        GalaxyManager.Initialize(planets);
         //Physics.CheckSphere()
     }
 
     // Update is called once per frame
     void Update()
+    {
+        
+    }
+
+    private void LoadNewGameSettings()
     {
         
     }

@@ -31,6 +31,8 @@ public class FlagCreationMenu : MonoBehaviour
     public Text blueSliderText;
     public Text modeText;
 
+    public static bool initialized;
+
     public static void Initialize()
     {
         mode = EditMode.Symbol;
@@ -39,6 +41,8 @@ public class FlagCreationMenu : MonoBehaviour
 
         backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
         symbolColor = new Vector3(0, 0, 0);
+
+        initialized = true;
     }
 
     // Start is called before the first frame update
