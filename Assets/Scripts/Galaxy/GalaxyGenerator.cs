@@ -54,35 +54,94 @@ public class GalaxyGenerator : MonoBehaviour
 
     private void GenerateHyperspaceLanes()
     {
-        hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().hyperspaceLanes = new List<GameObject>();
+        //----------------------------------------------------------------------------------------------------
+        //FIRST, PERFORM SOME SET UP
+
+        //Set up lane manager
+        HyperspaceLanesManager laneManager = hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>();
+        laneManager.hyperspaceLanes = new List<GameObject>();
+
+        //Get planet positions
+        Vector3[] planetPositions = new Vector3[planets.Count];
+        for (int x = 0; x < planetPositions.Length; x++)
+            planetPositions[x] = planets[x].transform.localPosition;
+
+        //----------------------------------------------------------------------------------------------------
+        //THEN, PERFORM KRUSKAL'S MINIMUM SPANNING TREE TO ENSURE CONNECTEDNESS OF ENTIRE GALAXY!!!!!!
+
+        //Get all possible lanes and their weights, i.e. distances
+        PossibleHyperspaceLane[] possibleLanes = new PossibleHyperspaceLane[planets.Count * planets.Count];
+        int nextWeightIndex = 0;
         for(int x = 0; x < planets.Count; x++)
+        {
+            for (int y = 0; y < planets.Count; y++)
+            {
+                if(x == y) //Do not allow self-loops
+                    possibleLanes[nextWeightIndex++] = new PossibleHyperspaceLane(
+                    Mathf.Infinity, x, y);
+                else
+                    possibleLanes[nextWeightIndex++] = new PossibleHyperspaceLane(
+                    Vector3.Distance(planetPositions[x], planetPositions[y]), x, y);
+            }
+        }
+
+        //Sort possible lanes by weight, i.e. distance
+        //This ensures that we try to add the shortest hyperspace lanes first
+        System.Array.Sort(possibleLanes);
+
+        //Initially, each planet is it's own tree
+        List<HashSet<int>> indexTrees = new List<HashSet<int>>();
+        for(int x = 0; x < planets.Count; x++)
+        {
+            HashSet<int> newTree = new HashSet<int>();
+            newTree.Add(x);
+            indexTrees.Add(newTree);
+        }
+
+        //Add hyperspace lanes until all planets are in a single connected tree
+        //But only add a lane if it serves to connect two trees
+        int possibleLaneIndex = 0;
+        while(indexTrees.Count > 1)
+        {
+            PossibleHyperspaceLane possibleLane = possibleLanes[possibleLaneIndex++];
+
+            //Determine which tree each planet belongs to
+            int planet1Tree = -1;
+            int planet2Tree = -1;
+            for(int x = 0; x < indexTrees.Count; x++)
+            {
+                if (indexTrees[x].Contains(possibleLane.planet1Index))
+                    planet1Tree = x;
+
+                if (indexTrees[x].Contains(possibleLane.planet2Index))
+                    planet2Tree = x;
+            }
+
+            //Disjoint trees, so include hyperspace line
+            if(planet1Tree != planet2Tree)
+            {
+                //Merge trees
+                indexTrees[planet1Tree].UnionWith(indexTrees[planet2Tree]); //1 becomes union of 1 and 2
+                indexTrees.RemoveAt(planet2Tree); //2 gets discarded
+
+                //Include hyperspace lane
+                laneManager.AddHyperspaceLane(
+                planets[possibleLane.planet1Index], planets[possibleLane.planet2Index], hyperspaceLanesDaddy);
+            }
+        }
+
+        //----------------------------------------------------------------------------------------------------
+        //FINALLY, ENSURE ALL LANES ARE ADDED WITHIN CERTAIN DISTANCE THRESHOLD (CIARAN'S ALGORITHM)
+
+        //Add hyperspace lanes for planets within certain distance of each other, regardless of connectedness
+        for (int x = 0; x < planets.Count; x++)
         {
             for(int y = 0; y < planets.Count; y++)
             {
-                if (x != y && Vector3.Distance(planets[x].transform.localPosition, planets[y].transform.localPosition) <= hyperspaceLaneCheckingRadius)
+                if (x != y && Vector3.Distance(planetPositions[x], planetPositions[y]) <= hyperspaceLaneCheckingRadius)
                 {
-                    hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy);
+                    laneManager.AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy);
                 }
-            }
-            if(hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().CheckIfPlanetHasHyperspaceLanes(planets[x]) == false)
-            {
-                int indexWithSmallestDistance = -1;
-                for(int y = 0; y < planets.Count; y++)
-                {
-                    if(x != y)
-                    {
-                        if(indexWithSmallestDistance >= 0)
-                        {
-                            if (Vector3.Distance(planets[x].transform.localPosition, planets[y].transform.localPosition) < Vector3.Distance(planets[x].transform.localPosition, planets[indexWithSmallestDistance].transform.localPosition))
-                                indexWithSmallestDistance = y;
-                        }
-                        if(y == 0)
-                        {
-                            indexWithSmallestDistance = 0;
-                        }
-                    }
-                }
-                hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>().AddHyperspaceLane(planets[x], planets[indexWithSmallestDistance], hyperspaceLanesDaddy);
             }
         }
     }
@@ -99,7 +158,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             //Assigns a name to each planet.
             string newPlanetName = "";
-            while (true)
+            for(int attempt = 1; attempt <= 1000; attempt++)
             {
                 newPlanetName = GeneratePlanetName();
                 if (PlanetNameRedundant(newPlanetName) == false)
@@ -122,10 +181,10 @@ public class GalaxyGenerator : MonoBehaviour
 
     private Vector3 GeneratePlanetLocation(float radius)
     {
-        Vector3 randomPosition;
+        Vector3 randomPosition = Vector3.zero;
         bool goodPosition;
 
-        while (true)
+        for(int attempt = 1; attempt <= 1000; attempt++)
         {
             goodPosition = true;
             randomPosition = new Vector3(Random.Range(leftBoundary, rightBoundary), 0, Random.Range(bottomBoundary, topBoundary));
@@ -272,5 +331,28 @@ public class GalaxyGenerator : MonoBehaviour
         }
 
         return planetName;
+    }
+}
+
+class PossibleHyperspaceLane : System.IComparable
+{
+    public float weight;
+    public int planet1Index, planet2Index;
+
+    public PossibleHyperspaceLane(float weight, int planet1Index, int planet2Index)
+    {
+        this.weight = weight;
+        this.planet1Index = planet1Index;
+        this.planet2Index = planet2Index;
+    }
+
+    public int CompareTo(object other)
+    {
+        PossibleHyperspaceLane otherLane = other as PossibleHyperspaceLane;
+
+        if (weight < otherLane.weight)
+            return -1;
+        else
+            return 1;
     }
 }

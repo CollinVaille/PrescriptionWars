@@ -16,11 +16,16 @@ public class Line : MonoBehaviour
     void Start()
     {
         // Add a Line Renderer to the GameObject
-        line = this.gameObject.AddComponent<LineRenderer>();
+        line = gameObject.AddComponent<LineRenderer>();
+
         // Set the width of the Line Renderer
-        line.SetWidth(0.10F, 0.10F);
+        line.startWidth = 0.20f;
+        line.endWidth = 0.20f;
+        //line.SetWidth(0.10F, 0.10F); //Deprecated
+
         // Set the number of vertex fo the Line Renderer
-        line.SetVertexCount(2);
+        line.positionCount = 2;
+        //line.SetVertexCount(2); //Deprecated
 
         line.material = lineMaterial;
 

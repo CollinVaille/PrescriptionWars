@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class PlanetIcon : MonoBehaviour
 {
+    //Name label
     public Text nameLabel;
+    private int currentFontSize = 10, fontScale = 10000;
+    private static Transform mainCamTransform = null;
 
     public Planet.Biome biome;
 
@@ -35,27 +38,36 @@ public class PlanetIcon : MonoBehaviour
 
         //Set text
         nameLabel.text = planetName;
+        nameLabel.gameObject.name = planetName + " Label";
 
         //Set font
         nameLabel.font = GalaxyMenu.galaxyMenu.planetNameFont;
 
         //Set font size
-        nameLabel.fontSize = 20;
+        fontScale = 3000;
+        mainCamTransform = Camera.main.transform;
 
         //Long names will be invisible without this
         nameLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
         nameLabel.verticalOverflow = VerticalWrapMode.Overflow;
 
         //Center text below planet
-        nameLabel.alignment = TextAnchor.LowerCenter;
+        nameLabel.alignment = TextAnchor.MiddleCenter;
     }
 
     private void Update ()
     {
-        //Update position of name label
+        //Update name label
         if(nameLabel)
         {
+            //Size
+            currentFontSize = (int)(fontScale / mainCamTransform.position.y);
+            if (currentFontSize != nameLabel.fontSize)
+                nameLabel.fontSize = currentFontSize;
+
+            //Position
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
+            screenPosition.y -= currentFontSize * 2;
             nameLabel.transform.position = screenPosition;
         }
 
