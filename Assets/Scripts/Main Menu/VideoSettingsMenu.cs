@@ -8,13 +8,6 @@ public class VideoSettingsMenu : MonoBehaviour
     public Dropdown fullscreenDropdown;
     public Dropdown resolutionDropdown;
 
-    public Sprite dropdownItemSelected;
-    public Sprite dropdownItemUnselected;
-
-    public AudioSource sfxSource;
-
-    public AudioClip dropdownOptionSelected;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -81,17 +74,6 @@ public class VideoSettingsMenu : MonoBehaviour
         {
             Screen.SetResolution(3840, 2160, Screen.fullScreenMode);
         }
-    }
-
-    public void OnDropDownItemEnter(Transform item)
-    {
-        item.GetComponent<Image>().sprite = dropdownItemSelected;
-        sfxSource.PlayOneShot(dropdownOptionSelected);
-    }
-
-    public void OnDropDownItemExit(Transform item)
-    {
-        item.GetComponent<Image>().sprite = dropdownItemUnselected;
     }
 
     public void LoadSettings()

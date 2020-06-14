@@ -7,6 +7,7 @@ public class GalaxyGenerator : MonoBehaviour
     string[] planetNames;
 
     public int numberOfPlanets;
+    public int numberOfEmpires;
     public int distanceBetweenPlanets;
     public int hyperspaceLaneCheckingRadius;
 
@@ -35,6 +36,11 @@ public class GalaxyGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (NewGameMenu.initialized)
+        {
+            numberOfPlanets = NewGameMenu.numberOfPlanets;
+            numberOfEmpires = NewGameMenu.numberOfEmpires;
+        }
         GeneratePlanets();
         GenerateHyperspaceLanes();
         GalaxyManager.Initialize(planets);

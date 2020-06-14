@@ -26,13 +26,22 @@ public class GalaxyManager : MonoBehaviour
 
 public class Empire
 {
+    public enum Culture
+    {
+        Red,
+        Green,
+        Blue
+    }
+
     public static List<Empire> empires;
 
     //Planets
     public List<int> planetsOwned;
 
+    //General Information
+    public string empireName;
+    public Culture empireCulture;
+
     //Flags
-    public int symbolSelected;
-    public Vector3 backgroundColor;
-    public Vector3 symbolColor;
+    Flag empireFlag;
 }

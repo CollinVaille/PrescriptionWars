@@ -60,6 +60,8 @@ public class FlagCreationMenu : MonoBehaviour
     {
         background.color = new Color(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
         symbol.color = new Color(symbolColor.x, symbolColor.y, symbolColor.z, 1);
+
+        NewGameMenu.UpdateEmpireFlag(symbolSelected, backgroundColor, symbolColor);
     }
 
     public void OnButtonClick(string direction)
@@ -185,4 +187,12 @@ public class FlagCreationMenu : MonoBehaviour
         greenSliderText.text = "" + greenSlider.value;
         blueSliderText.text = "" + blueSlider.value;
     }
+}
+
+public class Flag
+{
+    public int symbolSelected;
+
+    public Vector3 backgroundColor;
+    public Vector3 symbolColor;
 }
