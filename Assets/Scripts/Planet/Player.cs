@@ -238,15 +238,8 @@ public class Player : Pill
         }
         else if(Input.GetButtonDown("Interact")) //Button used for general interaction with the world
         {
-            if(interactOption)
-            {
-                if (interactOption.GetComponent<Door>())
-                    interactOption.GetComponent<Door>().ToggleDoorState(GetAudioSource());
-                else if (interactOption.GetComponent<Lamp>())
-                    interactOption.GetComponent<Lamp>().ToggleLightState(GetAudioSource());
-                else if (interactOption.GetComponent<Bed>())
-                    interactOption.GetComponent<Bed>().GoToBed(GetPill());
-            }
+            if(interactOption && interactOption.GetComponent<Interactable>())
+                    interactOption.GetComponent<Interactable>().Interact(GetPill());
         }
         else if (Input.GetButtonDown("Sidearm")) //Hand/sidearm swapping
             SwapToSidearm();
@@ -433,8 +426,8 @@ public class Player : Pill
         while(true)
         {
             //Check in front of us for objects in interactable layer (layer 10)
-            RaycastHit hit;
-            if(Physics.SphereCast(head.position, 0.75f, head.forward, out hit, 2, interactMask, QueryTriggerInteraction.Collide))
+            Vector3 from = head.TransformPoint(Vector3.back * 0.25f);
+            if(Physics.SphereCast(from, 0.25f, head.forward, out RaycastHit hit, 2.25f, interactMask, QueryTriggerInteraction.Collide))
             {
                 //Found an interactable object so add/display it as the option
                 interactOption = hit.collider.gameObject;
@@ -1168,15 +1161,23 @@ public class Player : Pill
         indoorZoneCount--;
     }
 
-    public override void Sleep (Bed bed)
+    public override void OverrideControl (Interactable overrider)
     {
+        base.OverrideControl(overrider);
+
         feet.Stop();
         SetSprinting(false);
 
-        StartCoroutine(PlayerSleep(bed));
+        if (overrider)
+        {
+            if (overrider is Seat)
+                StartCoroutine(PlayerSit((Seat)overrider));
+            else
+                StartCoroutine(PlayerDefaultOverride(overrider));
+        }
     }
 
-    private IEnumerator PlayerSleep (Bed bed)
+    private IEnumerator PlayerDefaultOverride (Interactable overrider)
     {
         do
         {
@@ -1192,7 +1193,38 @@ public class Player : Pill
         }
         while (!dead && (!Input.anyKeyDown || Input.GetButtonDown("360 View")));
 
-        bed.WakeUp();
+        overrider.ReleaseControl(!dead);
+    }
+
+    private IEnumerator PlayerSit (Seat seat)
+    {
+        bool controllingVehicle = seat.controls;
+
+        //Player set up
+        head.localEulerAngles = Vector3.zero;
+        Vehicle.speedometer.enabled = true;
+        Vehicle.gearIndicator.enabled = true;
+
+        do
+        {
+            //Update inputs
+            SquadInputUpdate();
+            POVInputUpdate();
+            ItemInputUpdate();
+
+            //Update vehicle GUI
+            if (controllingVehicle)
+                seat.controls.UpdateSpeedometer();
+
+            yield return null;
+        }
+        while (!dead && !Input.GetButtonDown("Interact"));
+
+        //Player clean up
+        Vehicle.speedometer.enabled = false;
+        Vehicle.gearIndicator.enabled = false;
+
+        seat.ReleaseControl(!dead);
     }
 
     private void SetSprinting (bool sprinting)

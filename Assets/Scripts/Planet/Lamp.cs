@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lamp : MonoBehaviour
+public class Lamp : Interactable
 {
     public AudioClip turnOn, turnOff;
 
@@ -13,6 +13,13 @@ public class Lamp : MonoBehaviour
     private void Start ()
     {
         destroyWhenOff = !GetComponent<Light>();
+    }
+
+    public override void Interact(Pill interacting)
+    {
+        base.Interact(interacting);
+
+        ToggleLightState(interacting.GetAudioSource());
     }
 
     public void ToggleLightState (AudioSource audioSource)

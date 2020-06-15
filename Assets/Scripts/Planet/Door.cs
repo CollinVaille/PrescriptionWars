@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class Door : Interactable
 {
     public enum DoorType { Single, Double }
     public enum DoorMotion { SlideX, SlideY, SlideZ }
@@ -24,6 +24,13 @@ public class Door : MonoBehaviour
     {
         if (automatic)
             StartCoroutine(AutomaticController());
+    }
+
+    public override void Interact(Pill interacting)
+    {
+        base.Interact(interacting);
+
+        ToggleDoorState(interacting.GetAudioSource());
     }
 
     public void ToggleDoorState (AudioSource audioSource)

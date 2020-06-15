@@ -51,6 +51,9 @@ public class God : MonoBehaviour
         AudioSettings.LoadSettings();
         VideoSettings.LoadSettings();
 
+        //Call for restart of all static initialization
+        Vehicle.setUp = false;
+
         //Variable initialization
         currentScreen = MenuScreen.PauseMenu;
         oneShotAudioSource = GetComponents<AudioSource>()[0];

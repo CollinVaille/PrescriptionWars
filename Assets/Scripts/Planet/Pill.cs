@@ -16,8 +16,8 @@ public class Pill : MonoBehaviour
     public int team = 0;
     public float moveSpeed = 10;
     protected float health = 100, maxHealth;
-    protected bool dead = false, touchingWater = false;
-    [HideInInspector] public bool performingAction = false, controlOverride = false;
+    protected bool dead = false, touchingWater = false, controlOverride = false;
+    [HideInInspector] public bool performingAction = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
     protected Item holding = null;
@@ -293,11 +293,11 @@ public class Pill : MonoBehaviour
             this.navigationZone = null;
     }
 
-    public virtual bool CanSleep () { return !dead && !controlOverride; }
+    public virtual bool CanOverride () { return !dead && !controlOverride; }
 
-    public virtual void Sleep (Bed bed) { }
+    public virtual void OverrideControl (Interactable overrider) { controlOverride = true; }
 
-    public virtual void WakeUp () { }
+    public virtual void ReleaseOverride () { controlOverride = false; }
 
     private void SnapToGround ()
     {

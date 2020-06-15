@@ -801,20 +801,23 @@ public class Bot1 : Pill
         }
     }
 
-    public override bool CanSleep ()
+    public override bool CanOverride ()
     {
-        if (base.CanSleep() && squad && !target && !potentialTarget)
+        if (base.CanOverride() && squad && !target && !potentialTarget)
             return squad.GetOrders() == Squad.Orders.GoToBed;
         else
             return false;
     }
 
-    public override void Sleep (Bed bed)
+    public override void OverrideControl (Interactable overrider)
     {
-        StartCoroutine(BotSleep(bed));
+        base.OverrideControl(overrider);
+
+        if (overrider)
+            StartCoroutine(BotDefaultOverride(overrider));
     }
 
-    private IEnumerator BotSleep (Bed bed)
+    private IEnumerator BotDefaultOverride (Interactable overrider)
     {
         do
         {
@@ -822,10 +825,10 @@ public class Bot1 : Pill
         }
         while (!dead && !target && !potentialTarget && squad.GetOrders() == Squad.Orders.GoToBed);
 
-        bed.WakeUp();
+        overrider.ReleaseControl(!dead);
     }
 
-    public override void WakeUp ()
+    public override void ReleaseOverride ()
     {
         if(!dead)
             CarryOutOrders();
