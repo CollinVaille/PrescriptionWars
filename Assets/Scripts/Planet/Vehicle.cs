@@ -27,6 +27,16 @@ public class Vehicle : MonoBehaviour
     protected AudioSource generalAudio, engineAudio;
     protected Rigidbody rBody;
 
+    [HideInInspector] public float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
+    [HideInInspector] public float steeringWheel = 0.0f; //0.0f = even/no rotation, 1.0f = full right, -1.0f = full left
+    public float thrustPower = 2000, breakPower = 1500, turnStrength = 90;
+    public float floorPosition = -0.1f;
+
+    public int[] gears;
+    public AudioClip gearShift, gearStuck, slowDown;
+    private int gearNumber = 1;
+    private int maxSpeed = 0, currentSpeed = 0;
+
     protected virtual void Start()
     {
         InitializeStaticVariables();
@@ -36,17 +46,39 @@ public class Vehicle : MonoBehaviour
         rBody = GetComponent<Rigidbody>();
 
         God.god.ManageAudioSource(engineAudio);
+
+        maxSpeed = gears[gearNumber - 1];
     }
 
     protected virtual void FixedUpdate()
     {
         if (!on)
             return;
+        
+        //Update speed
+        int newSpeed = (int)rBody.velocity.magnitude;
+        if (newSpeed + 10 < currentSpeed)
+            generalAudio.PlayOneShot(slowDown);
+        currentSpeed = newSpeed;
 
-        engineAudio.pitch = Mathf.Max(1, rBody.velocity.magnitude / 25.0f);
+        //Update engine pitch
+        engineAudio.pitch = Mathf.Max(1, currentSpeed / 25.0f);
+
+        //Update movement
+        if (currentSpeed > maxSpeed) //Slow down if going over speed limit
+            rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime,  ForceMode.VelocityChange);
+        else //Under speed limit; normal control
+        {
+            if (gasPedal > 0)
+                rBody.AddForce(transform.forward * Time.fixedDeltaTime * thrustPower);
+            else if (gasPedal < 0)
+                rBody.AddForce(-transform.forward * Time.fixedDeltaTime * breakPower);
+
+            //Stabilize vehicle to zero mph if operator doesn't resist
+            if (currentSpeed < 3)
+                rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime / 5.0f, ForceMode.VelocityChange);
+        }
     }
-
-    public void TogglePower() { SetPower(!on); }
 
     public void SetPower(bool turnOn)
     {
@@ -65,6 +97,8 @@ public class Vehicle : MonoBehaviour
 
             engineAudio.pitch = 1.0f;
             engineAudio.Pause();
+
+            gasPedal = 0.0f;
         }
 
         on = turnOn;
@@ -72,11 +106,43 @@ public class Vehicle : MonoBehaviour
 
     public void UpdateSpeedometer()
     {
-        int newSpeed = (int)rBody.velocity.magnitude;
-        if (newSpeed != speedometerReading)
+        if (currentSpeed != speedometerReading)
         {
-            speedometerReading = newSpeed;
+            speedometerReading = currentSpeed;
             speedometer.text = speedometerReading + " mph";
         }
+    }
+
+    public void UpdateGearIndicator() { gearIndicator.text = "Gear " + gearNumber; }
+
+    public bool Grounded()
+    {
+        return Physics.Raycast(transform.position + Vector3.one * floorPosition,
+            Vector3.down, 2.0f);
+    }
+
+    public void ChangeGear(bool goUpOne, bool updateIndicator)
+    {
+        //Change gear number
+        if (goUpOne)
+        {
+            if(++gearNumber > gears.Length)
+            {
+                gearNumber = gears.Length;
+                generalAudio.PlayOneShot(gearStuck);
+            }
+        }
+        else if(--gearNumber < 1)
+        {
+            gearNumber = 1;
+            generalAudio.PlayOneShot(gearStuck);
+        }
+
+        //Update effects
+        maxSpeed = gears[gearNumber - 1];
+
+        generalAudio.PlayOneShot(gearShift);
+        if (updateIndicator)
+            UpdateGearIndicator();
     }
 }

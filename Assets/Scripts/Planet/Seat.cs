@@ -7,6 +7,8 @@ public class Seat : Interactable
     private Pill occupant;
     public Vehicle controls;
 
+    public float radius;
+
     public AudioClip sit, getUp;
 
     public override void Interact(Pill interacting)
@@ -57,5 +59,17 @@ public class Seat : Interactable
 
         occupant.ReleaseOverride();
         occupant = null;
+    }
+
+    public void UpdateSeatBelt()
+    {
+        if(Input.GetKey(KeyCode.Y))
+        occupant.GetRigidbody().AddForce(
+            (transform.position + Vector3.up - occupant.transform.position) * Time.fixedDeltaTime * 5000);
+    }
+
+    public bool OccupantEjected()
+    {
+        return Vector3.Distance(occupant.transform.position, transform.position) > radius;
     }
 }

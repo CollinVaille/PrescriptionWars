@@ -309,6 +309,8 @@ public class Pill : MonoBehaviour
         }
     }
 
+    public Rigidbody GetRigidbody() { return rBody; }
+
     private string GetRandomPillName ()
     {
         string pillName = "";

@@ -215,10 +215,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   powerOn: {fileID: 8300000, guid: a87e95437215c394db0cf1d5b1e9465e, type: 3}
   powerOff: {fileID: 8300000, guid: 68c65ec691fccd14a8c3631b8bf90946, type: 3}
+  gasPedal: 0
+  steeringWheel: 0
+  thrustPower: 2000
+  breakPower: 1500
+  turnStrength: 90
+  floorPosition: -0.1
+  gears: 0f0000001e0000003c0000005a000000
+  gearShift: {fileID: 8300000, guid: 43f9889e1ca76034e9c03a1e3a8ab641, type: 3}
+  gearStuck: {fileID: 8300000, guid: dc8d0078cece8c94780faae018c5cd53, type: 3}
+  slowDown: {fileID: 8300000, guid: cd4cc6ff96a0afe48bd2c0151d0ada76, type: 3}
   fans:
   - {fileID: 3046276886746499676}
   - {fileID: 3046276886859343689}
-  power: 150
+  power: 3750
+  airCushion: 0.0175
 --- !u!54 &3046276885877308491
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1296,6 +1307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controls: {fileID: 3046276885877308490}
+  radius: 5
   sit: {fileID: 8300000, guid: 8bb21a56d90493847af73b8307707021, type: 3}
   getUp: {fileID: 8300000, guid: 5e8441d0ea3ae944db1b2809c47065f4, type: 3}
 --- !u!1 &3046276887237304929

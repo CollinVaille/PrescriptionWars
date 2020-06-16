@@ -1198,12 +1198,15 @@ public class Player : Pill
 
     private IEnumerator PlayerSit (Seat seat)
     {
-        bool controllingVehicle = seat.controls;
+        Vehicle vehicleUnderControl = seat.controls;
 
         //Player set up
         head.localEulerAngles = Vector3.zero;
         Vehicle.speedometer.enabled = true;
         Vehicle.gearIndicator.enabled = true;
+
+        if (vehicleUnderControl)
+            vehicleUnderControl.UpdateGearIndicator();
 
         do
         {
@@ -1212,19 +1215,32 @@ public class Player : Pill
             POVInputUpdate();
             ItemInputUpdate();
 
+            //Update seatbelt
+            seat.UpdateSeatBelt();
+
             //Update vehicle GUI
-            if (controllingVehicle)
-                seat.controls.UpdateSpeedometer();
+            if (vehicleUnderControl)
+            {
+                vehicleUnderControl.gasPedal = Input.GetAxis("Vertical");
+                vehicleUnderControl.steeringWheel = Input.GetAxis("Horizontal");
+
+                if (Input.GetButtonDown("Up One Gear"))
+                    vehicleUnderControl.ChangeGear(true, true);
+                else if (Input.GetButtonDown("Down One Gear"))
+                    vehicleUnderControl.ChangeGear(false, true);
+
+                vehicleUnderControl.UpdateSpeedometer();
+            }
 
             yield return null;
         }
-        while (!dead && !Input.GetButtonDown("Interact"));
+        while (!dead && !Input.GetButtonDown("Interact") && !seat.OccupantEjected());
 
         //Player clean up
         Vehicle.speedometer.enabled = false;
         Vehicle.gearIndicator.enabled = false;
 
-        seat.ReleaseControl(!dead);
+        seat.ReleaseControl(!dead && !seat.OccupantEjected());
     }
 
     private void SetSprinting (bool sprinting)
