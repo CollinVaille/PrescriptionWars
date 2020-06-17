@@ -17,12 +17,12 @@ public class NewGameMenu : MonoBehaviour
 
     public Dropdown empireCultureDropdown;
 
-    public static Empire.Culture empireCulture;
+    public static Empire.Culture empireCulture = Empire.Culture.Red;
 
-    public static string empireName;
+    public static string empireName = "";
 
-    public static int numberOfPlanets;
-    public static int numberOfEmpires;
+    public static int numberOfPlanets = 60;
+    public static int numberOfEmpires = 3;
 
     public static bool initialized = false;
 

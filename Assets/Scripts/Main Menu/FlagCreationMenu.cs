@@ -13,6 +13,7 @@ public class FlagCreationMenu : MonoBehaviour
     public static EditMode mode;
 
     public static int symbolSelected;
+    public static int symbolsCount;
 
     public static Vector3 backgroundColor;
     public static Vector3 symbolColor;

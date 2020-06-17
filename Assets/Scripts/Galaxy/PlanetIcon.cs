@@ -10,7 +10,13 @@ public class PlanetIcon : MonoBehaviour
     private int currentFontSize = 10, fontScale = 10000;
     private static Transform mainCamTransform = null;
 
+    //Planet biome
     public Planet.Biome biome;
+
+    //Planet culture
+    public Empire.Culture culture;
+
+    public int ownerID = -1;
 
     Vector3 rotation;
 
@@ -73,6 +79,12 @@ public class PlanetIcon : MonoBehaviour
 
         //Rotates the planet.
         transform.localEulerAngles += rotation * Time.deltaTime;
+    }
+
+    public void SetPlanetOwner(int ownerID)
+    {
+        this.ownerID = ownerID;
+        nameLabel.color = Empire.empires[this.ownerID].GetEmpireColor();
     }
 
     private void OnMouseUp ()

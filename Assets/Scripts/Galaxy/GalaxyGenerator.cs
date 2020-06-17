@@ -16,12 +16,16 @@ public class GalaxyGenerator : MonoBehaviour
     public float topBoundary;
     public float bottomBoundary;
 
+    public string playerEmpireName;
+
     public GameObject planetPrefab;
     public Transform planetDaddy;
     public Transform hyperspaceLanesDaddy;
 
     List<GameObject> planets;
     public GameObject hyperspaceLanesManager;
+
+    public List<Sprite> flagSymbols;
 
     public List<Material> frozenMaterials;
     public List<Material> spiritMaterials;
@@ -38,12 +42,12 @@ public class GalaxyGenerator : MonoBehaviour
     {
         if (NewGameMenu.initialized)
         {
-            numberOfPlanets = NewGameMenu.numberOfPlanets;
-            numberOfEmpires = NewGameMenu.numberOfEmpires;
+            LoadNewGameSettings();
         }
         GeneratePlanets();
         GenerateHyperspaceLanes();
-        GalaxyManager.Initialize(planets);
+        GenerateEmpires();
+        GalaxyManager.Initialize(planets, flagSymbols);
         //Physics.CheckSphere()
     }
 
@@ -55,7 +59,203 @@ public class GalaxyGenerator : MonoBehaviour
 
     private void LoadNewGameSettings()
     {
-        
+        numberOfPlanets = NewGameMenu.numberOfPlanets;
+        numberOfEmpires = NewGameMenu.numberOfEmpires;
+        playerEmpireName = NewGameMenu.empireName;
+    }
+
+    private void GenerateEmpires()
+    {
+        Empire.empires = new List<Empire>();
+
+        for (int x = 0; x < numberOfEmpires; x++)
+        {
+            Empire.empires.Add(new Empire());
+
+            //----------------------------------------------------------------------------------------------------
+            //Generates the empire's culture.
+
+            Empire.empires[x].empireCulture = new Empire.Culture();
+            Empire.Culture empireCulture = new Empire.Culture();
+            while (true)
+            {
+                int random = Random.Range(0, 3);
+                if (random == 0)
+                    empireCulture = Empire.Culture.Red;
+                else if (random == 1)
+                    empireCulture = Empire.Culture.Green;
+                else if (random == 2)
+                    empireCulture = Empire.Culture.Blue;
+
+                if(x == 0)
+                    break;
+                bool goodCulture = true;
+                for(int y = 0; y < x; y++)
+                {
+                    if (Empire.empires[y].empireCulture == empireCulture)
+                        goodCulture = false;
+                }
+                if (goodCulture)
+                    break;
+            }
+            Empire.empires[x].empireCulture = empireCulture;
+
+            //----------------------------------------------------------------------------------------------------
+            //Generate the empire's name.
+
+            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
+                Empire.empires[x].empireName = playerEmpireName;
+            else
+            {
+                string empireName = "";
+                while (true)
+                {
+                    empireName = Empire.empires[x].empireCulture + " Empire";
+
+                    if (x == 0)
+                        break;
+
+                    bool goodName = true;
+                    for(int y = 0; y < x; y++)
+                    {
+                        if (Empire.empires[y].empireName.Equals(empireName))
+                            goodName = false;
+                    }
+
+                    if(goodName)
+                        break;
+                }
+                Empire.empires[x].empireName = empireName;
+            }
+
+            //----------------------------------------------------------------------------------------------------
+            //Generates the empire's flag.
+            Empire.empires[x].empireFlag = new Flag();
+            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
+            {
+                Empire.empires[x].empireFlag.symbolSelected = FlagCreationMenu.symbolSelected;
+                Empire.empires[x].empireFlag.backgroundColor = FlagCreationMenu.backgroundColor;
+                Empire.empires[x].empireFlag.symbolColor = FlagCreationMenu.symbolColor;
+            }
+            else
+            {
+                //Generates the symbol color of each empire's flag based on the empire's culture.
+                if (Empire.empires[x].empireCulture == Empire.Culture.Red)
+                {
+                    Empire.empires[x].empireFlag.symbolColor = new Vector3(Random.Range(0.25f, 1.0f), 0, 0);
+                }
+                else if (Empire.empires[x].empireCulture == Empire.Culture.Green)
+                {
+                    Empire.empires[x].empireFlag.symbolColor = new Vector3(0, Random.Range(0.25f, 1.0f), 0);
+                }
+                else if (Empire.empires[x].empireCulture == Empire.Culture.Blue)
+                {
+                    Empire.empires[x].empireFlag.symbolColor = new Vector3(0, 0, Random.Range(0.25f, 1.0f));
+                }
+
+                //Generates the background color of each empire's flag.
+                if (Empire.empires[x].empireFlag.symbolColor.x + Empire.empires[x].empireFlag.symbolColor.y + Empire.empires[x].empireFlag.symbolColor.z < 0.6f)
+                    Empire.empires[x].empireFlag.backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
+                else
+                    Empire.empires[x].empireFlag.backgroundColor = new Vector3(0, 0, 0);
+
+                //Generates the symbol on each empire's flag (ensures there will be no duplicates).
+                int random = 0;
+                while (true)
+                {
+                    random = Random.Range(0, flagSymbols.Count);
+
+                    if (x == 0)
+                        break;
+
+                    bool goodSymbol = true;
+                    for(int y = 0; y < x; y++)
+                    {
+                        if (Empire.empires[y].empireFlag.symbolSelected == random)
+                            goodSymbol = false;
+                    }
+                    if (goodSymbol)
+                        break;
+                }
+                Empire.empires[x].empireFlag.symbolSelected = random;
+            }
+
+            //----------------------------------------------------------------------------------------------------
+            //Generates the empire's planets.
+
+            Empire.empires[x].planetsOwned = new List<int>();
+
+            GameObject sourcePlanet = new GameObject();
+            for (int y = 0; y < planets.Count; y++)
+            {
+                sourcePlanet = planets[y];
+                if (sourcePlanet.GetComponent<PlanetIcon>().ownerID == -1)
+                {
+                    Empire.empires[x].planetsOwned.Add(y);
+                    planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(x);
+                    planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+                    sourcePlanet = planets[y];
+                    break;
+                }
+            }
+
+            while(Empire.empires[x].planetsOwned.Count < planets.Count / numberOfEmpires)
+            {
+                int indexToAdd = -1;
+
+                for(int y = 0; y < planets.Count; y++)
+                {
+                    if(planets[y].GetComponent<PlanetIcon>().ownerID == -1)
+                    {
+                        if(indexToAdd == -1)
+                        {
+                            indexToAdd = y;
+                        }
+                        else
+                        {
+                            if (Vector3.Distance(planets[y].transform.localPosition, sourcePlanet.transform.localPosition) < Vector3.Distance(planets[indexToAdd].transform.localPosition, sourcePlanet.transform.localPosition))
+                                indexToAdd = y;
+                        }
+                    }
+                }
+
+                Empire.empires[x].planetsOwned.Add(indexToAdd);
+                planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
+                planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+            }
+        }
+
+        //----------------------------------------------------------------------------------------------------
+        //Deals with the leftover planets.
+
+        int iteration = 0;
+        while (PlanetsAttachedToEmpires() < planets.Count)
+        {
+            for (int y = 0; y < planets.Count; y++)
+            {
+                if (planets[y].GetComponent<PlanetIcon>().ownerID == -1)
+                {
+                    Empire.empires[iteration].planetsOwned.Add(y);
+                    planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(iteration);
+                    planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[iteration].empireCulture;
+                    break;
+                }
+            }
+
+            iteration++;
+        }
+    }
+
+    private int PlanetsAttachedToEmpires()
+    {
+        int num = 0;
+
+        foreach(Empire empire in Empire.empires)
+        {
+            num += empire.planetsOwned.Count;
+        }
+
+        return num;
     }
 
     private void GenerateHyperspaceLanes()

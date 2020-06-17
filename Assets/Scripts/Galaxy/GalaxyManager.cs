@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class GalaxyManager : MonoBehaviour
 {
+    public static int playerID = 0;
+
     public static List<GameObject> planets;
 
-    public static void Initialize(List<GameObject> planetList)
+    public static List<Sprite> flagSymbols;
+
+    public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList)
     {
         planets = planetList;
+        flagSymbols = flagSymbolsList;
     }
 
     // Start is called before the first frame update
@@ -43,5 +48,10 @@ public class Empire
     public Culture empireCulture;
 
     //Flags
-    Flag empireFlag;
+    public Flag empireFlag;
+
+    public Color GetEmpireColor()
+    {
+        return new Color(empireFlag.symbolColor.x, empireFlag.symbolColor.y, empireFlag.symbolColor.z, 1.0f);
+    }
 }
