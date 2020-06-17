@@ -502,7 +502,7 @@ public class GalaxyGenerator : MonoBehaviour
     {
         string planetName = "";
 
-        if (Random.Range(0, 5) != 0) //Normal random name
+        if (Random.Range(0, 6) != 0) //Normal random name
         {
             //Pick a random name
             planetName = planetNames[Random.Range(0, planetNames.Length)];
@@ -518,7 +518,7 @@ public class GalaxyGenerator : MonoBehaviour
             planetName = greekLetters[Random.Range(0, greekLetters.Length)] + " "
                 + zodiacSigns[Random.Range(0, zodiacSigns.Length)];
         }
-        else //Some prefix + major or minor name
+        else if (Random.Range(0, 2) == 0) //Some prefix + major or minor name
         {
             string[] prefixes = new string[] { "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Rho", "Omikron", "Zeta",
             "Sigma", "Omega", "Ursa", "Virgo", "Canis", "Pisces", "Saega", "Polis"};
@@ -527,6 +527,17 @@ public class GalaxyGenerator : MonoBehaviour
                 planetName = prefixes[Random.Range(0, prefixes.Length)] + " Major";
             else
                 planetName = prefixes[Random.Range(0, prefixes.Length)] + " Minor";
+        }
+        else //Some guy's name that wanted to shove his dick into history + some edgy sounding fate
+        {
+            string[] dickShovers = new string[] { "Troy's ", "Turner's ", "Coronado's ", "Septim's ", "Pelagius' ",
+            "Haile's ", "Myra's ", "Midas' ", "Calypso's "};
+
+            string[] edgyFates = new string[] { "Fall", "Demise", "Oblivion", "End", "Moon", "Shame", "Hell",
+            "Garden", "Domain", "Eyrie", "Madness", "Lost Plane", "Last"};
+
+            planetName = dickShovers[Random.Range(0, dickShovers.Length)] + " "
+                + edgyFates[Random.Range(0, edgyFates.Length)];
         }
 
         //Add roman numeral onto end for variation
