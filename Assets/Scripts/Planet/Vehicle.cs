@@ -26,6 +26,7 @@ public class Vehicle : MonoBehaviour
 
     protected AudioSource generalAudio, engineAudio;
     protected Rigidbody rBody;
+    private List<Collider> vehicleColliders;
 
     [HideInInspector] public float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
     [HideInInspector] public float steeringWheel = 0.0f; //0.0f = even/no rotation, 1.0f = full right, -1.0f = full left
@@ -48,6 +49,10 @@ public class Vehicle : MonoBehaviour
         God.god.ManageAudioSource(engineAudio);
 
         maxSpeed = gears[gearNumber - 1];
+
+        //Initialize vehicle colliders list
+        vehicleColliders = new List<Collider>();
+        AddCollidersRecursive(transform);
     }
 
     protected virtual void FixedUpdate()
@@ -144,5 +149,27 @@ public class Vehicle : MonoBehaviour
         generalAudio.PlayOneShot(gearShift);
         if (updateIndicator)
             UpdateGearIndicator();
+    }
+
+    private void AddCollidersRecursive(Transform t)
+    {
+        foreach(Collider c in t.gameObject.GetComponents<Collider>())
+            vehicleColliders.Add(c);
+
+        foreach (Transform child in t)
+            AddCollidersRecursive(child);
+    }
+
+    public void SetPassengerCollisionRecursive(Transform passengerTransform, bool ignoreCollision)
+    {
+        Collider passengerCollider = passengerTransform.gameObject.GetComponent<Collider>();
+        if (passengerCollider)
+        {
+            foreach (Collider vehicleCollider in vehicleColliders)
+                Physics.IgnoreCollision(passengerCollider, vehicleCollider, ignoreCollision);
+        }
+
+        foreach (Transform child in passengerTransform)
+            SetPassengerCollisionRecursive(child, ignoreCollision);
     }
 }

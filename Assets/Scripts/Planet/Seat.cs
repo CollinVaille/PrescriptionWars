@@ -5,7 +5,7 @@ using UnityEngine;
 public class Seat : Interactable
 {
     private Pill occupant;
-    public Vehicle controls;
+    public Vehicle controls = null, belongsTo = null;
 
     public float radius;
 
@@ -24,6 +24,12 @@ public class Seat : Interactable
             return;
 
         occupant = pill;
+
+        if(belongsTo)
+        {
+            occupant.GetRigidbody().isKinematic = true;
+            belongsTo.SetPassengerCollisionRecursive(occupant.transform, true);
+        }
 
         occupant.transform.parent = transform;
         occupant.transform.localPosition = Vector3.up;
@@ -56,6 +62,12 @@ public class Seat : Interactable
 
         occupant.transform.parent = null;
         occupant.transform.eulerAngles = Vector3.up * transform.eulerAngles.y;
+
+        if (belongsTo)
+        {
+            occupant.GetRigidbody().isKinematic = false;
+            belongsTo.SetPassengerCollisionRecursive(occupant.transform, false);
+        }
 
         occupant.ReleaseOverride();
         occupant = null;

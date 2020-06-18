@@ -35,7 +35,7 @@ public class Hovercraft : Vehicle
         //string hitName = " (None)";
         Vector3 forcePosition = transform.position;
         forcePosition.y += floorPosition;
-        if (Physics.Raycast(forcePosition, Vector3.down, out RaycastHit hit, 99999, surfaceLayerMask, QueryTriggerInteraction.Ignore))
+        if (Hovercast(forcePosition, out RaycastHit hit))
         {
             distanceToGround = Mathf.Max(Mathf.Sqrt(hit.distance), airCushion);
             //hitName = " " + hit.collider.name;
@@ -46,18 +46,49 @@ public class Hovercraft : Vehicle
         //Apply hover force
         rBody.AddForce(Time.fixedDeltaTime * power * Vector3.up / distanceToGround, ForceMode.Force);
 
-
         //Get back fan ground point
         Vector3 backPoint = fans[fans.Length - 1].position;
-        if (Physics.Raycast(backPoint, Vector3.down, out hit, 99999, surfaceLayerMask, QueryTriggerInteraction.Ignore))
+        if (Hovercast(backPoint, out hit))
             backPoint = hit.point;
 
         //Get front fan ground point
         Vector3 frontPoint = fans[0].position;
-        if (Physics.Raycast(frontPoint, Vector3.down, out hit, 99999, surfaceLayerMask, QueryTriggerInteraction.Ignore))
+        if (Hovercast(frontPoint, out hit))
             frontPoint = hit.point;
 
         //Determine rotation of speeder based on back/front ground points
         transform.rotation = Quaternion.LookRotation(frontPoint - backPoint);
+    }
+
+    //Casts ray downwards, detecting anything that should be "hovered over" (including water!)
+    //Returns true if anything was hit
+    private bool Hovercast(Vector3 origin, out RaycastHit hit)
+    {
+        if (Physics.Raycast(origin, Vector3.down, out hit, 99999, surfaceLayerMask, QueryTriggerInteraction.Ignore))
+        {
+            //Any hit below sea level in planets with sea gets replaced with equivalent sea level point
+            //(How floating on water is achieved)
+            if (Planet.planet.hasOcean)
+            {
+                //The exception is that hovercraft submerged can't use fans to push off water
+                float seaLevel = Planet.planet.oceanTransform.position.y;
+                if (hit.point.y < seaLevel && transform.position.y >= seaLevel)
+                {
+                    //Replace hit point
+                    Vector3 newHitPoint = origin;
+                    newHitPoint.y = seaLevel;
+                    hit.point = newHitPoint;
+
+                    //Replace hit distance
+                    hit.distance = origin.y - seaLevel;
+
+                    //Nothing else is used so no need to replace it...
+                }
+            }
+
+            return true;
+        }
+        else
+            return false;
     }
 }
