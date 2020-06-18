@@ -73,30 +73,42 @@ public class GalaxyGenerator : MonoBehaviour
             Empire.empires.Add(new Empire());
 
             //----------------------------------------------------------------------------------------------------
+            //Determines if the empire is being controlled by the player.
+            if (x == GalaxyManager.playerID)
+                Empire.empires[x].playerEmpire = true;
+            else
+                Empire.empires[x].playerEmpire = false;
+
+            //----------------------------------------------------------------------------------------------------
             //Generates the empire's culture.
 
             Empire.empires[x].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
-            while (true)
+            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
+                empireCulture = NewGameMenu.empireCulture;
+            else
             {
-                int random = Random.Range(0, 3);
-                if (random == 0)
-                    empireCulture = Empire.Culture.Red;
-                else if (random == 1)
-                    empireCulture = Empire.Culture.Green;
-                else if (random == 2)
-                    empireCulture = Empire.Culture.Blue;
-
-                if(x == 0)
-                    break;
-                bool goodCulture = true;
-                for(int y = 0; y < x; y++)
+                while (true)
                 {
-                    if (Empire.empires[y].empireCulture == empireCulture)
-                        goodCulture = false;
+                    int random = Random.Range(0, 3);
+                    if (random == 0)
+                        empireCulture = Empire.Culture.Red;
+                    else if (random == 1)
+                        empireCulture = Empire.Culture.Green;
+                    else if (random == 2)
+                        empireCulture = Empire.Culture.Blue;
+
+                    if (x == 0)
+                        break;
+                    bool goodCulture = true;
+                    for (int y = 0; y < x; y++)
+                    {
+                        if (Empire.empires[y].empireCulture == empireCulture)
+                            goodCulture = false;
+                    }
+                    if (goodCulture)
+                        break;
                 }
-                if (goodCulture)
-                    break;
             }
             Empire.empires[x].empireCulture = empireCulture;
 

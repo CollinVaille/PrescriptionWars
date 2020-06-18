@@ -73,7 +73,7 @@ public class PlanetIcon : MonoBehaviour
 
             //Position
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
-            screenPosition.y -= currentFontSize * 2;
+            screenPosition.y -= currentFontSize * 4;
             nameLabel.transform.position = screenPosition;
         }
 
@@ -84,7 +84,7 @@ public class PlanetIcon : MonoBehaviour
     public void SetPlanetOwner(int ownerID)
     {
         this.ownerID = ownerID;
-        nameLabel.color = Empire.empires[this.ownerID].GetEmpireColor();
+        nameLabel.color = Empire.empires[this.ownerID].GetLabelColor();
     }
 
     private void OnMouseUp ()
