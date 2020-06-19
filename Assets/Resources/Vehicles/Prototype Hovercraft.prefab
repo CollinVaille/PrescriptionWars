@@ -221,14 +221,15 @@ MonoBehaviour:
   breakPower: 1500
   turnStrength: 90
   floorPosition: -0.1
-  gears: 0f0000001e0000003c0000005a000000
+  gears: 000000000f0000001e0000003c000000
   gearShift: {fileID: 8300000, guid: 43f9889e1ca76034e9c03a1e3a8ab641, type: 3}
   gearStuck: {fileID: 8300000, guid: dc8d0078cece8c94780faae018c5cd53, type: 3}
   slowDown: {fileID: 8300000, guid: cd4cc6ff96a0afe48bd2c0151d0ada76, type: 3}
+  traction: 50
   fans:
   - {fileID: 3046276886746499676}
   - {fileID: 3046276886859343689}
-  power: 3750
+  power: 2500
   airCushion: 0.0175
 --- !u!54 &3046276885877308491
 Rigidbody:
@@ -731,7 +732,7 @@ GameObject:
   - component: {fileID: 3046276886338296508}
   m_Layer: 0
   m_Name: Floor
-  m_TagString: Untagged
+  m_TagString: Buoyant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1292,8 +1293,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 1.5, z: 1.5}
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Size: {x: 1.5, y: 0.5, z: 1.5}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!114 &3046276887201998769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,7 +1308,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controls: {fileID: 3046276885877308490}
-  belongsTo: {fileID: 3046276885877308490}
   radius: 5
   sit: {fileID: 8300000, guid: 8bb21a56d90493847af73b8307707021, type: 3}
   getUp: {fileID: 8300000, guid: 5e8441d0ea3ae944db1b2809c47065f4, type: 3}

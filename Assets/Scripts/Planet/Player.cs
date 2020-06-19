@@ -115,7 +115,8 @@ public class Player : Pill
             return;
         }
 
-        MovementInputUpdate();
+        RotationInputUpdate();
+        TranslationInputUpdate();
         MovementEffectsUpdate();
 
         //Remainder of controls only respond on initial frame of being pressed down
@@ -127,8 +128,8 @@ public class Player : Pill
         SquadInputUpdate();
     }
 
-    //Rotate/move player based on input
-    private void MovementInputUpdate ()
+    //Rotate player based on input
+    private void RotationInputUpdate ()
     {
         //Rotation... can't rotate when in 360 view because mouse movement is being used by 360 camera
         if(pov != POV.ThirdPerson360)
@@ -148,7 +149,11 @@ public class Player : Pill
             else if (head.localEulerAngles.x > 60) //Lower limit
                 head.localEulerAngles = new Vector3(60, 0, 0);
         }
+    }
 
+    //Move player based on input
+    private void TranslationInputUpdate()
+    {
         //Sprinting
         if (Input.GetButtonDown("Sprint"))
             SetSprinting(true);
@@ -160,7 +165,7 @@ public class Player : Pill
 
         //Backward/forward movement
         transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime, Space.Self);
-       
+
         //Jump
         if (Input.GetButtonDown("Jump"))
             Jump();
@@ -1208,12 +1213,20 @@ public class Player : Pill
         if (vehicleUnderControl)
             vehicleUnderControl.UpdateGearIndicator();
 
-        do
+        while (!dead && !seat.EjectingOccupant())
         {
+            //Wait a frame
+            yield return null;
+
+            //Pause
+            if (Time.timeScale == 0)
+                continue;
+
             //Update inputs
-            SquadInputUpdate();
-            POVInputUpdate();
+            RotationInputUpdate();
             ItemInputUpdate();
+            POVInputUpdate();
+            SquadInputUpdate();
 
             //Update seatbelt
             seat.UpdateSeatBelt();
@@ -1231,16 +1244,16 @@ public class Player : Pill
 
                 vehicleUnderControl.UpdateSpeedometer();
             }
-
-            yield return null;
         }
-        while (!dead && !Input.GetButtonDown("Interact") && !seat.OccupantEjected());
 
         //Player clean up
-        Vehicle.speedometer.enabled = false;
-        Vehicle.gearIndicator.enabled = false;
+        if(vehicleUnderControl)
+        {
+            Vehicle.speedometer.enabled = false;
+            Vehicle.gearIndicator.enabled = false;
+        }
 
-        seat.ReleaseControl(!dead && !seat.OccupantEjected());
+        seat.ReleaseControl(!dead && !seat.EjectingOccupant());
     }
 
     private void SetSprinting (bool sprinting)

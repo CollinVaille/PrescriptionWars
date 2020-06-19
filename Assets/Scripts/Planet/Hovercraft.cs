@@ -12,16 +12,44 @@ public class Hovercraft : Vehicle
 
     protected override void FixedUpdate()
     {
+        base.FixedUpdate();
+
         if (!on)
             return;
 
-        base.FixedUpdate();
+        UpdateRotation();
 
-        //Steering wheel
+        UpdateFans();
+    }
+
+    private void UpdateRotation()
+    {
+        //Steering wheel rotates vehicle
         if (steeringWheel != 0)
             transform.Rotate(0.0f, steeringWheel * Time.fixedDeltaTime * turnStrength, 0.0f);
 
-        UpdateFans();
+        //Get back fan ground point
+        Vector3 backPoint = fans[fans.Length - 1].position;
+        if (Hovercast(backPoint, out RaycastHit hit))
+            backPoint = hit.point;
+
+        //Get front fan ground point
+        Vector3 frontPoint = fans[0].position;
+        if (Hovercast(frontPoint, out hit))
+            frontPoint = hit.point;
+
+        //Determine rotation of speeder based on back/front ground points
+        if(Mathf.Abs(frontPoint.y - backPoint.y) < 5)
+            transform.rotation = Quaternion.LookRotation(frontPoint - backPoint);
+
+        //Adjust rotation so that vehicle rotates sideways when driver turns wheel
+        //Rotation is sharper the faster you are going
+        transform.Rotate(0.0f, 0.0f, steeringWheel * currentSpeed * 0.25f, Space.Self);
+
+        //Apply limits on rotation so vehicle doesn't go vertical on sharp inclines
+        //Vector3 localEulerAngles = transform.localEulerAngles;
+        //localEulerAngles.x = ClampAngle(localEulerAngles.x, -45, 45);
+        //transform.localEulerAngles = localEulerAngles;
     }
 
     private void UpdateFans()
@@ -45,19 +73,6 @@ public class Hovercraft : Vehicle
 
         //Apply hover force
         rBody.AddForce(Time.fixedDeltaTime * power * Vector3.up / distanceToGround, ForceMode.Force);
-
-        //Get back fan ground point
-        Vector3 backPoint = fans[fans.Length - 1].position;
-        if (Hovercast(backPoint, out hit))
-            backPoint = hit.point;
-
-        //Get front fan ground point
-        Vector3 frontPoint = fans[0].position;
-        if (Hovercast(frontPoint, out hit))
-            frontPoint = hit.point;
-
-        //Determine rotation of speeder based on back/front ground points
-        transform.rotation = Quaternion.LookRotation(frontPoint - backPoint);
     }
 
     //Casts ray downwards, detecting anything that should be "hovered over" (including water!)
@@ -91,4 +106,31 @@ public class Hovercraft : Vehicle
         else
             return false;
     }
+
+    //Provided from unity answers: https://answers.unity.com/questions/141775/limit-local-rotation.html
+    /* private float ClampAngle(float angle, float min, float max)
+    {
+        //If angle in the critic region...
+        if (angle < 90 || angle > 270)
+        {
+            //Convert all angles to -180..+180
+
+            if (angle > 180)
+                angle -= 360;
+
+            if (max > 180)
+                max -= 360;
+
+            if (min > 180)
+                min -= 360;
+        }
+
+        angle = Mathf.Clamp(angle, min, max);
+
+        //If angle negative, convert to 0..360
+        if (angle < 0)
+            angle += 360;
+
+        return angle;
+     }  */
 }

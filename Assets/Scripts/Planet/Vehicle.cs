@@ -35,8 +35,11 @@ public class Vehicle : MonoBehaviour
 
     public int[] gears;
     public AudioClip gearShift, gearStuck, slowDown;
-    private int gearNumber = 1;
-    private int maxSpeed = 0, currentSpeed = 0;
+    private int gearNumber = 0;
+    protected int maxSpeed = 0, currentSpeed = 0;
+
+    private bool tractionControl = false;
+    public int traction = 50;
 
     protected virtual void Start()
     {
@@ -48,11 +51,13 @@ public class Vehicle : MonoBehaviour
 
         God.god.ManageAudioSource(engineAudio);
 
-        maxSpeed = gears[gearNumber - 1];
+        maxSpeed = gears[gearNumber];
 
         //Initialize vehicle colliders list
         vehicleColliders = new List<Collider>();
         AddCollidersRecursive(transform);
+
+        tractionControl = traction > 0;
     }
 
     protected virtual void FixedUpdate()
@@ -63,7 +68,7 @@ public class Vehicle : MonoBehaviour
         //Update speed
         int newSpeed = (int)rBody.velocity.magnitude;
         if (newSpeed + 10 < currentSpeed)
-            generalAudio.PlayOneShot(slowDown);
+            generalAudio.PlayOneShot(slowDown, (currentSpeed - newSpeed) / 50.0f);
         currentSpeed = newSpeed;
 
         //Update engine pitch
@@ -83,6 +88,9 @@ public class Vehicle : MonoBehaviour
             if (currentSpeed < 3)
                 rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime / 5.0f, ForceMode.VelocityChange);
         }
+
+        //Update traction
+        UpdateTraction();
     }
 
     public void SetPower(bool turnOn)
@@ -118,12 +126,18 @@ public class Vehicle : MonoBehaviour
         }
     }
 
-    public void UpdateGearIndicator() { gearIndicator.text = "Gear " + gearNumber; }
+    public void UpdateGearIndicator()
+    {
+        if(gearNumber == 0)
+            gearIndicator.text = "Park";
+        else
+            gearIndicator.text = "Gear " + gearNumber;
+    }
 
-    public bool Grounded()
+    public bool Grounded(float errorMargin)
     {
         return Physics.Raycast(transform.position + Vector3.one * floorPosition,
-            Vector3.down, 2.0f);
+            Vector3.down, errorMargin);
     }
 
     public void ChangeGear(bool goUpOne, bool updateIndicator)
@@ -131,20 +145,20 @@ public class Vehicle : MonoBehaviour
         //Change gear number
         if (goUpOne)
         {
-            if(++gearNumber > gears.Length)
+            if(++gearNumber >= gears.Length)
             {
-                gearNumber = gears.Length;
+                gearNumber = gears.Length - 1;
                 generalAudio.PlayOneShot(gearStuck);
             }
         }
-        else if(--gearNumber < 1)
+        else if(--gearNumber < 0)
         {
-            gearNumber = 1;
+            gearNumber = 0;
             generalAudio.PlayOneShot(gearStuck);
         }
 
         //Update effects
-        maxSpeed = gears[gearNumber - 1];
+        maxSpeed = gears[gearNumber];
 
         generalAudio.PlayOneShot(gearShift);
         if (updateIndicator)
@@ -171,5 +185,32 @@ public class Vehicle : MonoBehaviour
 
         foreach (Transform child in passengerTransform)
             SetPassengerCollisionRecursive(child, ignoreCollision);
+    }
+
+    private void UpdateTraction ()
+    {
+        if (tractionControl && currentSpeed > 0)
+        {
+            Vector3 localVelocity = transform.InverseTransformDirection(rBody.velocity);
+            if (localVelocity.x < 0) //Eliminate negative velocity
+            {
+                localVelocity.x += Time.fixedDeltaTime * traction;
+
+                if (localVelocity.x > 0) //Boundary check
+                    localVelocity.x = 0;
+                //else if (!drifting && localVelocity.x < -50)
+                //    StartCoroutine(DriftingSFX());
+            }
+            else //Eliminate positive velocity
+            {
+                localVelocity.x -= Time.fixedDeltaTime * traction;
+
+                if (localVelocity.x < 0) //Boundary check
+                    localVelocity.x = 0;
+                //else if (!drifting && localVelocity.x > 50)
+                //    StartCoroutine(DriftingSFX());
+            }
+            rBody.velocity = transform.TransformDirection(localVelocity);
+        }
     }
 }

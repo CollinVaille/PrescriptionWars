@@ -5,17 +5,35 @@ using UnityEngine;
 public class Seat : Interactable
 {
     private Pill occupant;
-    public Vehicle controls = null, belongsTo = null;
+    public Vehicle controls = null;
+    private Vehicle belongsTo = null;
 
     public float radius;
+    private bool ejecting = false;
+    private CollisionDetectionMode occupantsPriorMode;
 
     public AudioClip sit, getUp;
+
+    private void Start()
+    {
+        //Determine which vehicle seat belongs to (if any)
+        Transform t = transform.parent;
+        while(t && !belongsTo)
+        {
+            belongsTo = t.GetComponent<Vehicle>();
+
+            t = t.parent;
+        }
+    }
 
     public override void Interact(Pill interacting)
     {
         base.Interact(interacting);
 
-        Sit(interacting);
+        if (occupant && occupant == interacting)
+            ejecting = true;
+        else
+            Sit(interacting);
     }
 
     private void Sit(Pill pill)
@@ -27,7 +45,11 @@ public class Seat : Interactable
 
         if(belongsTo)
         {
-            occupant.GetRigidbody().isKinematic = true;
+            Rigidbody occupantRBody = occupant.GetRigidbody();
+            occupantsPriorMode = occupantRBody.collisionDetectionMode;
+            occupantRBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+            occupantRBody.isKinematic = true;
+
             belongsTo.SetPassengerCollisionRecursive(occupant.transform, true);
         }
 
@@ -65,12 +87,17 @@ public class Seat : Interactable
 
         if (belongsTo)
         {
-            occupant.GetRigidbody().isKinematic = false;
+            Rigidbody occupantRBody = occupant.GetRigidbody();
+            occupantRBody.isKinematic = false;
+            occupantRBody.collisionDetectionMode = occupantsPriorMode;
+
             belongsTo.SetPassengerCollisionRecursive(occupant.transform, false);
         }
 
         occupant.ReleaseOverride();
         occupant = null;
+
+        ejecting = false;
     }
 
     public void UpdateSeatBelt()
@@ -80,8 +107,8 @@ public class Seat : Interactable
             (transform.position + Vector3.up - occupant.transform.position) * Time.fixedDeltaTime * 5000);
     }
 
-    public bool OccupantEjected()
+    public bool EjectingOccupant()
     {
-        return Vector3.Distance(occupant.transform.position, transform.position) > radius;
+        return ejecting || Vector3.Distance(occupant.transform.position, transform.position) > radius;
     }
 }
