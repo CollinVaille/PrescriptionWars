@@ -74,6 +74,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             //----------------------------------------------------------------------------------------------------
             //Determines if the empire is being controlled by the player.
+
             if (x == GalaxyManager.playerID)
                 Empire.empires[x].playerEmpire = true;
             else
@@ -142,6 +143,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's flag.
+
             Empire.empires[x].empireFlag = new Flag();
             if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
             {
@@ -190,6 +192,29 @@ public class GalaxyGenerator : MonoBehaviour
                         break;
                 }
                 Empire.empires[x].empireFlag.symbolSelected = random;
+            }
+
+            //----------------------------------------------------------------------------------------------------
+            //Generates the empire's color.
+
+            if(x == GalaxyManager.playerID)
+            {
+                if(Empire.empires[x].empireCulture == Empire.Culture.Red)
+                {
+                    Empire.empires[x].empireColor = new Color(Random.Range(0.25f, 1.0f), 0, 0, 1.0f);
+                }
+                else if(Empire.empires[x].empireCulture == Empire.Culture.Green)
+                {
+                    Empire.empires[x].empireColor = new Color(0, Random.Range(0.25f, 1.0f), 0, 1.0f);
+                }
+                else if (Empire.empires[x].empireCulture == Empire.Culture.Blue)
+                {
+                    Empire.empires[x].empireColor = new Color(0, 0, Random.Range(0.25f, 1.0f), 1.0f);
+                }
+            }
+            else
+            {
+                Empire.empires[x].empireColor =  new Color(Empire.empires[x].empireFlag.symbolColor.x, Empire.empires[x].empireFlag.symbolColor.y, Empire.empires[x].empireFlag.symbolColor.z, 1.0f);
             }
 
             //----------------------------------------------------------------------------------------------------

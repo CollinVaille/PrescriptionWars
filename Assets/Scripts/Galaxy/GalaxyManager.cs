@@ -60,6 +60,7 @@ public class Empire
     public string empireName;
     public Culture empireCulture;
     public bool playerEmpire;
+    public Color empireColor;
 
     //Flags
     public Flag empireFlag;
@@ -67,30 +68,9 @@ public class Empire
     //Resources
     public float credits;
 
-    public Color GetEmpireColor()
-    {
-        if (playerEmpire)
-        {
-            if(empireCulture == Culture.Red)
-            {
-                return Color.red;
-            }
-            if(empireCulture == Culture.Green)
-            {
-                return Color.green;
-            }
-            if(empireCulture == Culture.Blue)
-            {
-                return Color.blue;
-            }
-        }
-
-        return new Color(empireFlag.symbolColor.x, empireFlag.symbolColor.y, empireFlag.symbolColor.z, 1.0f);
-    }
-
     public Color GetLabelColor()
     {
-        Color labelColor = GetEmpireColor();
+        Color labelColor = empireColor;
 
         labelColor.r += 0.3f;
         labelColor.g += 0.3f;
