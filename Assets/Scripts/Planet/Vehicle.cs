@@ -93,7 +93,7 @@ public class Vehicle : MonoBehaviour
         UpdateTraction();
     }
 
-    public void SetPower(bool turnOn)
+    public virtual void SetPower(bool turnOn)
     {
         if (on == turnOn)
             return;

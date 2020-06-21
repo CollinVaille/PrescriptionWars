@@ -7,8 +7,14 @@ public class Hovercraft : Vehicle
     public Transform[] fans;
     public float power = 1.0f, airCushion = 0.5f;
 
+    public ParticleSystem hoverCloud;
+    public ParticleSystem[] engineExhaust;
+    public ParticleSystem[] exhaustStream;
+
     //Physics layers that the hovercraft should consider ground to propel on top off
     private int surfaceLayerMask = ~0; //Not no layers = all layers
+
+    private float distanceToGround = 0;
 
     protected override void FixedUpdate()
     {
@@ -20,6 +26,35 @@ public class Hovercraft : Vehicle
         UpdateRotation();
 
         UpdateFans();
+
+        UpdateExhaust();
+    }
+
+    public override void SetPower(bool turnOn)
+    {
+        base.SetPower(turnOn);
+
+        if(turnOn)
+        {
+            hoverCloud.Play();
+
+            foreach (ParticleSystem exhaust in engineExhaust)
+            {
+                exhaust.gameObject.SetActive(true);
+                exhaust.Play();
+            }
+        }
+        else
+        {
+            hoverCloud.Stop();
+
+
+            foreach (ParticleSystem exhaust in engineExhaust)
+            {
+                exhaust.Stop();
+                exhaust.gameObject.SetActive(false);
+            }
+        }
     }
 
     private void UpdateRotation()
@@ -39,12 +74,13 @@ public class Hovercraft : Vehicle
             frontPoint = hit.point;
 
         //Determine rotation of speeder based on back/front ground points
-        if(Mathf.Abs(frontPoint.y - backPoint.y) < 5)
+        //But only if hovercraft is close to ground and the angle isn't too harsh
+        if(distanceToGround < 7 && Mathf.Abs(frontPoint.y - backPoint.y) < 5)
             transform.rotation = Quaternion.LookRotation(frontPoint - backPoint);
 
         //Adjust rotation so that vehicle rotates sideways when driver turns wheel
         //Rotation is sharper the faster you are going
-        transform.Rotate(0.0f, 0.0f, steeringWheel * currentSpeed * 0.25f, Space.Self);
+        transform.Rotate(0.0f, 0.0f, steeringWheel * currentSpeed * -0.25f, Space.Self);
 
         //Apply limits on rotation so vehicle doesn't go vertical on sharp inclines
         //Vector3 localEulerAngles = transform.localEulerAngles;
@@ -59,7 +95,7 @@ public class Hovercraft : Vehicle
             fan.Rotate(0.0f, 0.0f, 1000 * Time.fixedDeltaTime * power, Space.Self);
 
         //Determine distance to ground
-        float distanceToGround = airCushion;
+        distanceToGround = airCushion;
         //string hitName = " (None)";
         Vector3 forcePosition = transform.position;
         forcePosition.y += floorPosition;
@@ -71,8 +107,32 @@ public class Hovercraft : Vehicle
 
         //gearIndicator.text = distanceToGround.ToString("F2") + hitName;
 
-        //Apply hover force
-        rBody.AddForce(Time.fixedDeltaTime * power * Vector3.up / distanceToGround, ForceMode.Force);
+        //Apply hover force (but only if needed)
+        if(rBody.velocity.y < 10)
+            rBody.AddForce(Time.fixedDeltaTime * power * Vector3.up / distanceToGround, ForceMode.Force);
+    }
+
+    private void UpdateExhaust()
+    {
+        bool backwardThrusting = transform.InverseTransformDirection(rBody.velocity).z < -0.1f;
+
+        for (int x = 0; x < exhaustStream.Length; x++)
+        {
+            //Change size of exhaust based on speed
+            ParticleSystem.MainModule mainMod = exhaustStream[x].main;
+            mainMod.startSizeY = 0.5f + currentSpeed / 60.0f;
+
+            //Change speed of exhaust simulation (also based on speed of vehicle)
+            mainMod.simulationSpeed = 1.0f + currentSpeed / 3.0f;
+
+            //Update whether exhaust is pointing forward/backward
+            Vector3 exhaustRotation = exhaustStream[x].transform.localEulerAngles;
+            if (backwardThrusting)
+                exhaustRotation.y = 0;
+            else
+                exhaustRotation.y = 180;
+            exhaustStream[x].transform.localEulerAngles = exhaustRotation;
+        }
     }
 
     //Casts ray downwards, detecting anything that should be "hovered over" (including water!)

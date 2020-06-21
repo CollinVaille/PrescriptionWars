@@ -27,16 +27,19 @@ public class Water : MonoBehaviour
             rBody = entering.transform.root.GetComponent<Rigidbody>();
         
         //Submerge rigidbody
-        if(rBody && !submerged.Contains(rBody))
+        if(rBody)
         {
-            submerged.Add(rBody);
+            if(!submerged.Contains(rBody))
+            {
+                submerged.Add(rBody);
 
-            rBody.drag += 4;
+                rBody.drag += 4;
 
-            if(rBody.velocity.magnitude > 10)
-                PlaySound(majorSplashes[Random.Range(0, majorSplashes.Length)], entering);
-            else if(rBody.velocity.magnitude > 4)
-                PlaySound(minorSplashes[Random.Range(0, minorSplashes.Length)], entering);
+                if (rBody.velocity.magnitude > 10)
+                    PlaySound(majorSplashes[Random.Range(0, majorSplashes.Length)], entering);
+                else if (rBody.velocity.magnitude > 4)
+                    PlaySound(minorSplashes[Random.Range(0, minorSplashes.Length)], entering);
+            }
 
             if (entering.CompareTag("Buoyant"))
                 StartCoroutine(FloatToSurface(rBody, entering));
@@ -78,7 +81,7 @@ public class Water : MonoBehaviour
 
         while(buoyantCollider.bounds.min.y <= surfaceLevel)
         {
-            buoyantBody.AddForce(Vector3.up * Time.deltaTime * buoyantBody.mass * 25);
+            buoyantBody.MovePosition(buoyantBody.position + Vector3.up * Time.deltaTime);
             yield return null;
         }
 
