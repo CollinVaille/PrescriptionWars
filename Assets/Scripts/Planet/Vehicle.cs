@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Vehicle : MonoBehaviour
+public class Vehicle : MonoBehaviour, Damageable
 {
     public static bool setUp = false;
     public static Text speedometer, gearIndicator;
     public static int speedometerReading = 0;
+
+    public static List<AudioClip> lightHits, mediumHits, hardHits;
 
     private static void InitializeStaticVariables()
     {
@@ -17,6 +19,15 @@ public class Vehicle : MonoBehaviour
         speedometer = God.god.HUD.Find("Speedometer").GetComponent<Text>();
         gearIndicator = God.god.HUD.Find("Gear Indicator").GetComponent<Text>();
         speedometerReading = 0;
+
+        lightHits = new List<AudioClip>();
+        God.InitializeAudioList(lightHits, "Vehicles/Damage SFX/Light Hit ");
+
+        mediumHits = new List<AudioClip>();
+        God.InitializeAudioList(mediumHits, "Vehicles/Damage SFX/Medium Hit ");
+
+        hardHits = new List<AudioClip>();
+        God.InitializeAudioList(hardHits, "Vehicles/Damage SFX/Hard Hit ");
 
         setUp = true;
     }
@@ -115,6 +126,58 @@ public class Vehicle : MonoBehaviour
         }
 
         on = turnOn;
+    }
+
+    public void Damage(float damage, float knockback, Vector3 from, DamageType damageType, int team)
+    {
+        //Knockback, if any
+        if (knockback > 0)
+            rBody.AddExplosionForce(knockback, from, 1000);
+
+        //if(damage > )
+    }
+
+    protected void OnCollisionEnter(Collision collision)
+    {
+        float impactSpeed = collision.relativeVelocity.magnitude;
+
+        if (impactSpeed < 12)
+            generalAudio.PlayOneShot(God.RandomClip(lightHits), impactSpeed / 12.0f);
+        else if(impactSpeed < 40)
+        {
+            generalAudio.PlayOneShot(God.RandomClip(mediumHits), impactSpeed / 40.0f);
+
+            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed);
+        }
+        else
+        {
+            generalAudio.PlayOneShot(God.RandomClip(hardHits), impactSpeed / 60.0f);
+
+            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed);
+        }
+    }
+
+    protected void DamageParts(Vector3 contactPoint, float radius, float impactSpeed)
+    {
+        Debug.Log("damaging parts");
+
+        foreach (Transform part in transform)
+        {
+            //Determine if part is allowed to be damaged
+            if (!part.CompareTag("Untagged") || Vector3.Distance(part.position, contactPoint) > radius)
+                continue;
+
+            //Remember original position
+            Vector3 originalLocalPosition = part.localPosition;
+
+            //Rotate and translate part
+            part.Rotate(-contactPoint.y * (impactSpeed / 6.0f), contactPoint.x * (impactSpeed / 6.0f), 0.0f, Space.Self);
+            part.Translate(0.0f, 0.0f, Mathf.Clamp(-contactPoint.z * impactSpeed * 0.005f, -0.4f, 0.4f), Space.Self);
+
+            //This means the part moved away from the center of the vehicle and thus could now be floating in midair so undo translation to prevent that
+            if (part.localPosition.magnitude > originalLocalPosition.magnitude)
+                part.localPosition = originalLocalPosition;
+        }
     }
 
     public void UpdateSpeedometer()

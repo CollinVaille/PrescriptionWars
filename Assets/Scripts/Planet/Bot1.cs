@@ -25,9 +25,9 @@ public class Bot1 : Pill
         SetShadowsRecursively(transform, false);
     }
 
-    /* public override void Damage (float amount)
+    /* public override void ApplyDamage (float amount)
     {
-        base.Damage(amount);
+        base.ApplyDamage(amount);
     }   */
 
     protected override void Die ()

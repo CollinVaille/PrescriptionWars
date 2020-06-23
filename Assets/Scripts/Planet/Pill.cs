@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Pill : MonoBehaviour
+public class Pill : MonoBehaviour, Damageable
 {
     //References
     protected Rigidbody rBody;
@@ -34,7 +34,7 @@ public class Pill : MonoBehaviour
         name = GetRandomPillName();
     }
 
-    public virtual void Damage (float amount)
+    public virtual void ApplyDamage (float amount)
     {
         if (dead || amount <= 0)
             return;
@@ -75,18 +75,18 @@ public class Pill : MonoBehaviour
         //Pointy (layer 8) and blunt (layer 9) objects can damage pills upon contact
         if (holding && (layerHit == 8 || layerHit == 9))
         {
+            Damageable hitObject = collision.GetContact(0).otherCollider.GetComponent<Damageable>();
             Pill hitPill = collision.GetContact(0).otherCollider.GetComponent<Pill>();
 
-            if (hitPill)
+            if (hitObject != null)
             {
-                //Hit enemy
-                if (hitPill.team != team)
+                if (holding.IsStabbing())
                 {
-                    if (holding.IsStabbing())
-                    {
-                        //Apply damage and knockback
-                        hitPill.ApplyHit(holding.meleeDamage, holding.meleeKnockback, transform.position);
+                    //Apply damage and knockback
+                    hitObject.Damage(holding.meleeDamage, holding.meleeKnockback, transform.position, DamageType.Melee, team);
 
+                    if(hitPill && hitPill.team != team)
+                    {
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
 
@@ -94,11 +94,14 @@ public class Pill : MonoBehaviour
                         if (gameObject.activeInHierarchy) //... so this surpresses the warning for playing from disabled source
                             mainAudioSource.PlayOneShot(holding.stab);
                     }
-                    else if (layerHit == 8) //Pointy objects (layer 8) can scrape when not stabbing (but not blunt objects)
-                    {
-                        //Apply damage
-                        hitPill.ApplyHit(holding.meleeDamage / 2, 0, Vector3.zero);
+                }
+                else if (layerHit == 8) //Pointy objects (layer 8) can scrape when not stabbing (but not blunt objects)
+                {
+                    //Apply damage
+                    hitObject.Damage(holding.meleeDamage / 2, 0, Vector3.zero, DamageType.Scrape, team);
 
+                    if(hitPill && hitPill.team != team)
+                    {
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
 
@@ -107,8 +110,6 @@ public class Pill : MonoBehaviour
                             mainAudioSource.PlayOneShot(holding.scrape);
                     }
                 }
-                else if (holding.IsStabbing()) //Stabbed teammate
-                    mainAudioSource.PlayOneShot(God.god.jab);
             }
             else if (holding.IsStabbing())
             {
@@ -120,12 +121,23 @@ public class Pill : MonoBehaviour
         }
     }
 
-    public void ApplyHit (float damage, float knockback, Vector3 from)
+    public void Damage (float damage, float knockback, Vector3 from, DamageType damageType, int team)
     {
+        //Friendly fire is prevented!
+        if (this.team == team)
+        {
+            if(damageType == DamageType.Melee)
+                mainAudioSource.PlayOneShot(God.god.jab);
+
+            return;
+        }
+
+        //Knockback, if any
         if(knockback > 0)
             rBody.AddExplosionForce(knockback, from, 1000);
 
-        Damage(damage);
+        //Damage
+        ApplyDamage(damage);
     }
 
     public bool IsDead () { return dead; }

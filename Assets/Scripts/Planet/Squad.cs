@@ -36,7 +36,7 @@ public class Squad : MonoBehaviour
         army = Army.GetArmy(0);
         //for(int x = 0; x < 25; x++)
         if(squadType == SquadType.Mobilized)
-            army.Comms().Send(new RadioTranmission(this, TransmissionType.ReportingIn));
+            army.Comms().Send(new RadioTransmission(this, TransmissionType.ReportingIn));
 
         //Create marker for squad on the planet map
         if(squadType == SquadType.Mobilized)

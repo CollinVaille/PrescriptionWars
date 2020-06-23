@@ -73,17 +73,21 @@ public class Gun : Item
             RaycastHit hit;
             if(holder.RaycastShoot(transform, range, out hit))
             {
+                Damageable hitObject = hit.collider.GetComponent<Damageable>();
                 Pill hitPill = hit.collider.GetComponent<Pill>();
 
-                if (hitPill && hitPill.team != holder.team)
+                if (hitObject != null)
                 {
-                    hitPill.ApplyHit(bulletDamage, bulletKnockback, transform.position);
+                    hitObject.Damage(bulletDamage, bulletKnockback, transform.position, DamageType.Projectile, holder.team);
 
-                    hitPill.AlertOfAttacker(holder, true);
-                    if (hitPill.squad != null)
-                        hitPill.squad.AlertSquadOfAttacker(holder, hitPill, Random.Range(3, 6));
-                    if (holder.squad != null)
-                        holder.squad.AlertSquadOfAttacker(hitPill, holder, Random.Range(3, 6));
+                    if (hitPill && hitPill.team != holder.team)
+                    {
+                        hitPill.AlertOfAttacker(holder, true);
+                        if (hitPill.squad != null)
+                            hitPill.squad.AlertSquadOfAttacker(holder, hitPill, Random.Range(3, 6));
+                        if (holder.squad != null)
+                            holder.squad.AlertSquadOfAttacker(hitPill, holder, Random.Range(3, 6));
+                    }
                 }
 
                 //Hit marker sounds for player

@@ -346,9 +346,9 @@ public class Player : Pill
         }
     }
 
-    public override void Damage (float amount)
+    public override void ApplyDamage (float amount)
     {
-        base.Damage(amount);
+        base.ApplyDamage(amount);
 
         //Display player's health after damage
         Vector3 healthBarScale = healthBar.GetComponent<RectTransform>().localScale;

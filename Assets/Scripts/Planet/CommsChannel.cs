@@ -8,7 +8,7 @@ public class CommsChannel : MonoBehaviour
     private Army army;
 
     //Management variables
-    private Queue<RadioTranmission> commsChannel;
+    private Queue<RadioTransmission> commsChannel;
     private List<AudioSource> channelReceivers;
     private float pitch = 1.0f;
 
@@ -23,7 +23,7 @@ public class CommsChannel : MonoBehaviour
         this.army = army;
 
         //Initialization
-        commsChannel = new Queue<RadioTranmission>();
+        commsChannel = new Queue<RadioTransmission>();
         channelReceivers = new List<AudioSource>();
 
         InitializeCommonAudio();
@@ -53,7 +53,7 @@ public class CommsChannel : MonoBehaviour
 
     public void AddChannelReceiver(AudioSource newReceiver) { channelReceivers.Add(newReceiver); }
 
-    public void Send(RadioTranmission tranmission) { commsChannel.Enqueue(tranmission); }
+    public void Send(RadioTransmission tranmission) { commsChannel.Enqueue(tranmission); }
 
     private IEnumerator CommsChannelManager()
     {
@@ -70,7 +70,7 @@ public class CommsChannel : MonoBehaviour
             yield return new WaitWhile(() => commsChannel.Count == 0);
 
             //Get the next message
-            RadioTranmission rt = commsChannel.Dequeue();
+            RadioTransmission rt = commsChannel.Dequeue();
 
             Debug.Log("Beginning of transmission: " + rt.transmissionType);
 
@@ -81,7 +81,7 @@ public class CommsChannel : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayTransmission(RadioTranmission rt)
+    private IEnumerator PlayTransmission(RadioTransmission rt)
     {
         //Start sound
         pitch = 1.0f;
@@ -131,12 +131,12 @@ public class CommsChannel : MonoBehaviour
 
 public enum TransmissionType { ReportingIn }
 
-public class RadioTranmission
+public class RadioTransmission
 {
     public TransmissionType transmissionType = TransmissionType.ReportingIn;
     public Squad sender = null;
 
-    public RadioTranmission(Squad sender, TransmissionType transmissionType)
+    public RadioTransmission(Squad sender, TransmissionType transmissionType)
     {
         this.sender = sender;
         this.transmissionType = transmissionType;
