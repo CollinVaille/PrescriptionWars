@@ -67,6 +67,7 @@ public class Empire
 
     //Resources
     public float credits;
+    public float prescriptions;
 
     public Color GetLabelColor()
     {
@@ -83,6 +84,23 @@ public class Empire
     {
         float creditsPerTurn = 0.0f;
 
+        for(int x = 0; x < planetsOwned.Count; x++)
+        {
+            creditsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn;
+        }
+
         return creditsPerTurn;
+    }
+
+    public float GetPrescriptionsPerTurn()
+    {
+        float prescriptionsPerTurn = 0.0f;
+
+        for (int x = 0; x < planetsOwned.Count; x++)
+        {
+            prescriptionsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn;
+        }
+
+        return prescriptionsPerTurn;
     }
 }

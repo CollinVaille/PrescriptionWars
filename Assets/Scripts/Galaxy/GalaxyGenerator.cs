@@ -35,8 +35,6 @@ public class GalaxyGenerator : MonoBehaviour
     public List<Material> hellMaterials;
     public List<Material> forestMaterials;
 
-    //Planet.Biome lol = Planet.Biome.Unknown;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +45,7 @@ public class GalaxyGenerator : MonoBehaviour
         GeneratePlanets();
         GenerateHyperspaceLanes();
         GenerateEmpires();
+        GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols);
         //Physics.CheckSphere()
     }
@@ -62,6 +61,28 @@ public class GalaxyGenerator : MonoBehaviour
         numberOfPlanets = NewGameMenu.numberOfPlanets;
         numberOfEmpires = NewGameMenu.numberOfEmpires;
         playerEmpireName = NewGameMenu.empireName;
+    }
+
+
+    //Generates each planet's stats.
+    private void GeneratePlanetStats()
+    {
+        foreach(Empire empire in Empire.empires)
+        {
+            for(int x = 0; x < empire.planetsOwned.Count; x++)
+            {
+                if(x == 0)
+                {
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn = 2.0f;
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn = 2.0f;
+                }
+                else
+                {
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn = 1.0f;
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn = 1.0f;
+                }
+            }
+        }
     }
 
     private void GenerateEmpires()

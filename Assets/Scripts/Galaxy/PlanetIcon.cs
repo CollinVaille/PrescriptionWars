@@ -16,7 +16,10 @@ public class PlanetIcon : MonoBehaviour
     //Planet culture
     public Empire.Culture culture;
 
+    //Planet information
     public int ownerID = -1;
+    public float creditsPerTurn;
+    public float prescriptionsPerTurn;
 
     Vector3 rotation;
 
@@ -89,6 +92,9 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUp ()
     {
-        Debug.Log("Clicked on " + name);
+        if(ownerID == GalaxyManager.playerID)
+        {
+            Debug.Log("Clicked on " + name);
+        }
     }
 }

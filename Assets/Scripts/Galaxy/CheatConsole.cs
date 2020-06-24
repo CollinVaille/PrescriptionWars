@@ -10,22 +10,45 @@ public class CheatConsole : MonoBehaviour
 
     public Text commandHistoryText;
 
+    List<string> previousCommands;
+
+    int previousCommandSelected;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        previousCommands = new List<string>();
+
+        previousCommandSelected = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(commandInputField.isFocused && Input.GetKeyDown(KeyCode.UpArrow) && previousCommands.Count > 0)
+        {
+            commandInputField.text = previousCommands[previousCommandSelected];
+
+            if (previousCommandSelected > 0)
+                previousCommandSelected--;
+        }
+        if (!commandInputField.isFocused)
+        {
+            previousCommandSelected = previousCommands.Count - 1;
+        }
     }
 
     public void EnterCommand()
     {
-        commandHistoryText.text += "\n" + commandInputField.text;
-        RunThroughCommands(commandInputField.text);
+        if(commandInputField.text != "" && Input.GetKeyDown(KeyCode.Return))
+        {
+            previousCommands.Add(commandInputField.text);
+            commandHistoryText.text += "\n" + commandInputField.text;
+
+            RunThroughCommands(commandInputField.text);
+
+            commandInputField.text = "";
+        }
     }
 
     void RunThroughCommands(string command)
@@ -50,10 +73,29 @@ public class CheatConsole : MonoBehaviour
         {
             SetPlanetCulture(command);
         }
+        else if (command.ToLower().StartsWith("prescriptions"))
+        {
+            AddPrescriptions(command);
+        }
         else
         {
             commandHistoryText.text += "\nInvalid Command";
         }
+    }
+
+    void AddPrescriptions(string command)
+    {
+        try
+        {
+            Empire.empires[GalaxyManager.playerID].prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+        }
+        catch (Exception e)
+        {
+            commandHistoryText.text += "\nInvalid Amount";
+            return;
+        }
+
+        commandHistoryText.text += "\nSuccess";
     }
 
     void SetPlanetCulture(string command)       //Doesn't work atm.
@@ -145,7 +187,10 @@ public class CheatConsole : MonoBehaviour
         catch(Exception e)
         {
             commandHistoryText.text += "\nInvalid Amount";
+            return;
         }
+
+        commandHistoryText.text += "\nSuccess";
     }
 
     public void ClearConsole()

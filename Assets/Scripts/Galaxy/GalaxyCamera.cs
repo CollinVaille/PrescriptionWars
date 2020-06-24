@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GalaxyCamera : MonoBehaviour
 {
@@ -9,9 +10,11 @@ public class GalaxyCamera : MonoBehaviour
     private Vector3 movementVector = Vector3.zero;
     private Vector3 previousMousePosition = Vector3.zero;
 
+    public InputField consoleInputField;
+
     private void Update ()
     {
-        
+
         //Speed up/slow down
         /*if (Input.GetButton("Sprint"))
             moveSpeed += 25 * Time.deltaTime;
@@ -19,8 +22,16 @@ public class GalaxyCamera : MonoBehaviour
             moveSpeed -= 25 * Time.deltaTime;*/
 
         //WASD and scrollwheel movement
-        movementVector.x = Input.GetAxis("Horizontal");
-        movementVector.y = Input.GetAxis("Vertical");
+        if (!consoleInputField.isFocused)
+        {
+            movementVector.x = Input.GetAxis("Horizontal");
+            movementVector.y = Input.GetAxis("Vertical");
+        }
+        else
+        {
+            movementVector.x = 0.0f;
+            movementVector.y = 0.0f;
+        }
         movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
@@ -49,7 +60,5 @@ public class GalaxyCamera : MonoBehaviour
 
         //Clean up at end of update
         previousMousePosition = Input.mousePosition;
-
-        //50 -> 15, 300 -> 130
     }
 }

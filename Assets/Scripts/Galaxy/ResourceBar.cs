@@ -10,6 +10,7 @@ public class ResourceBar : MonoBehaviour
 
     public GameObject empireNameText;
     public GameObject creditsText;
+    public GameObject prescriptionsText;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,8 @@ public class ResourceBar : MonoBehaviour
         empireNameText.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
         creditsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
         creditsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
+        prescriptionsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
+        prescriptionsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
     }
 
     string GetResourceString(float amount)
