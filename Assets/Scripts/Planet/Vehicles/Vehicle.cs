@@ -157,15 +157,15 @@ public class Vehicle : MonoBehaviour
         float impactSpeed = collision.relativeVelocity.magnitude;
 
         //Based on impact speed, apply vehicle damage
-        if (impactSpeed < 12)
+        if (impactSpeed < 12 || transform.InverseTransformPoint(collision.GetContact(0).point).y < 0) //Harmless bump
             generalAudio.PlayOneShot(God.RandomClip(lightHits), impactSpeed / 12.0f);
-        else if(impactSpeed < 40)
+        else if(impactSpeed < 40) //Light damage
         {
             generalAudio.PlayOneShot(God.RandomClip(mediumHits), impactSpeed / 40.0f);
 
             DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed);
         }
-        else
+        else //Heavy damage
         {
             generalAudio.PlayOneShot(God.RandomClip(hardHits), impactSpeed / 60.0f);
 
@@ -307,4 +307,6 @@ public class Vehicle : MonoBehaviour
 
         engines.Remove(engine);
     }
+
+    public bool PoweredOn () { return on; }
 }

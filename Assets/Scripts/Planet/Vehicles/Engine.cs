@@ -6,11 +6,18 @@ public class Engine : VehiclePart
 {
     public ParticleSystem exhaustCloud, exhaustStream;
 
+    public Vector3 center = Vector3.zero;
+
+    private float initialHealth;
+    private Fire engineFire = null;
+
     protected override void Start()
     {
         base.Start();
 
         belongsTo.AddEngine(this);
+
+        initialHealth = health;
     }
 
     protected override void PartFailure()
@@ -22,9 +29,20 @@ public class Engine : VehiclePart
         belongsTo.RemoveEngine(this);
     }
 
+    protected override void DamageHealth(float amount)
+    {
+        base.DamageHealth(amount);
+
+        if (belongsTo.PoweredOn())
+            UpdateEngineFire();
+    }
+
     //Shut on/off exhaust based on power
     public void SetPower(bool on)
     {
+        if (on)
+            UpdateEngineFire();
+
         if (!working)
             return;
 
@@ -65,5 +83,19 @@ public class Engine : VehiclePart
         else
             exhaustRotation.y = 180;
         exhaustStream.transform.localEulerAngles = exhaustRotation;
+    }
+
+    private void UpdateEngineFire()
+    {
+        //Start fire if applicable
+        if(health < initialHealth / 2.0f && !engineFire)
+        {
+            engineFire = Instantiate(Planet.planet.firePrefab).GetComponent<Fire>();
+            engineFire.Ignite(transform, center);
+        }
+
+        //Update intensity of fire
+        if (engineFire)
+            engineFire.intensity = Mathf.Min(initialHealth / health, 2.5f);
     }
 }

@@ -42,6 +42,9 @@ public class Planet : MonoBehaviour
     public GameObject cityPrefab;
     [HideInInspector] public List<City> cities;
 
+    //Special effects
+    public GameObject firePrefab;
+
     //START UP STUFF------------------------------------------------------------------------------------------------
 
     private void Awake () { planet = this; }

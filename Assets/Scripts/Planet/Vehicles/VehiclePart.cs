@@ -27,8 +27,6 @@ public class VehiclePart : MonoBehaviour, Damageable
 
     public void Damage(float damage, float knockback, Vector3 from, DamageType damageType, int team)
     {
-        Debug.Log("hit " + name);
-
         //Translate/rotate part(s)
         if (damageType == DamageType.Explosive)
             belongsTo.DamageParts(partCollider.ClosestPointOnBounds(from), 1000, damage);
@@ -38,7 +36,7 @@ public class VehiclePart : MonoBehaviour, Damageable
         DamageHealth(damage);
     }
 
-    private void DamageHealth(float amount)
+    protected virtual void DamageHealth(float amount)
     {
         health -= amount;
 
@@ -50,10 +48,9 @@ public class VehiclePart : MonoBehaviour, Damageable
             if (!working)
                 return;
 
-            working = false;
             PartFailure();
         }
     }
 
-    protected virtual void PartFailure() { }
+    protected virtual void PartFailure() { working = false; }
 }
