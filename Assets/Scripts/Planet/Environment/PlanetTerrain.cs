@@ -1,0 +1,798 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlanetTerrain : MonoBehaviour
+{
+    public static PlanetTerrain planetTerrain;
+
+    public Terrain terrain;
+    public GameObject flatAreaPrefab;
+    public Material horizonMaterial;
+    public Transform horizonTransform; //13594
+
+    public TerrainCustomization customization;
+    public TerrainOffsets offsets;
+
+    private int areaSize = 50;
+    private int[,] areaSteepness;
+    private int[,] areaHeight;
+
+    public void Awake () { planetTerrain = this; }
+
+    public void RegenerateTerrain (TerrainCustomization customization, TerrainOffsets offsets, PlanetJSON savedPlanet)
+    {
+        StartCoroutine(GenerateTerrain(customization, offsets, savedPlanet));
+    }
+
+    //TERRAIN FUNCTIONS--------------------------------------------------------------------------------------------
+
+    //Call this to perform the whole generation (heightmap, painting, trees, areas, etc.)
+    public IEnumerator GenerateTerrain (
+        TerrainCustomization customization, TerrainOffsets offsets = null, PlanetJSON savedPlanet = null)
+    {
+        //If not supplied offsets, generate new random ones
+        if (offsets == null)
+            offsets = new TerrainOffsets();
+
+        //Remember parameters
+        this.customization = customization;
+        this.offsets = offsets;
+
+        //Height map
+        GenerateTerrainHeightmap();
+
+        //Horizon (planes that surround terrain)
+        SetHorizons();
+
+        //Divide terrain into square areas for purposes of finding flat area to generate features on
+        ComputeAllTerrainAreas();
+
+        //Generate cities after terrain heightmap and area system have been set up
+        //But also before painting so painting reflects any elevation changes made by city generation
+        Planet.planet.GenerateCities(savedPlanet);
+        //Temporary---------------------------------------------------------------------------------------------------
+        //Transform spawn = Instantiate(spawnZonePrefab, Vector3.zero, Quaternion.identity).transform;
+        //Transform spawn2 = Instantiate(badGuySpawnZonePrefab, ReserveTerrainPosition(Random.Range(0, 3),
+        //    (int)seabedHeight + Random.Range(0, 4), 500, 25, true), Quaternion.identity).transform;
+        //spawn2.Translate(Vector3.up * spawn2.localScale.y / 2);
+        //------------------------------------------------------------------------------------------------------------
+
+        GenerateTrees();
+
+        //Wait a couple frames for all terrain edits to complete
+        yield return null;
+        yield return null;
+
+        //Terrain textures (do after everything else to make sure painting is up to date)
+        PaintTerrain();
+    }
+
+    //TERRAIN GENERATION FUNCTIONS------------------------------------------------------------------------------------
+
+    //Defaults: NGS- 40, AGS- 8, AP- 3, NS- 0.5, All offsets: Random.Range(0.0f, 10000.0f)
+    private void GenerateTerrainHeightmap ()
+    {
+        TerrainData terrainData = terrain.terrainData;
+
+        int width = customization.smallTerrain ? 1024 : 2048;
+        int length = width;
+
+        terrainData.size = new Vector3(width, 512, length);
+        terrainData.heightmapResolution = (int)(terrainData.size.x + 1);
+
+        float[,] heights = new float[length, width];
+
+        //Terrain gets its randomness through random offsets applied to perlin noise
+        float noiseOffsetX = offsets.noiseOffsetX;
+        float noiseOffsetZ = offsets.noiseOffsetZ;
+        float amplitudeOffsetX = offsets.amplitudeOffsetX;
+        float amplitudeOffsetZ = offsets.amplitudeOffsetZ;
+
+        //Ground scales (smaller actually kinda means larger)
+        float noiseGroundScale = customization.noiseGroundScale; //Scale of small bumps in terrain
+        float amplitudeGroundScale = customization.amplitudeGroundScale; //Scale of larger land features
+
+        //Other customization
+        float noiseStrength = customization.noiseStrength;
+        int amplitudePower = customization.amplitudePower;
+
+        float boundaryHeight = 0.25f;
+        int boundaryWidth = customization.smallTerrain ? 125 : 250;
+
+        float noise, amplitude;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < length; z++)
+            {
+                //Base terrain noise (small bumps)
+                noise = Mathf.PerlinNoise(noiseOffsetX + x * noiseGroundScale / width,
+                                           noiseOffsetZ + z * noiseGroundScale / length) * noiseStrength;
+
+                //Randomly amplify the noise to differentiate terrain (large land features)
+                amplitude = Mathf.PerlinNoise(amplitudeOffsetX + x * amplitudeGroundScale / width,
+                                              amplitudeOffsetZ + z * amplitudeGroundScale / length);
+
+                //Terrain boundaries
+                float terrainEdgePercentage = TerrainEdgePercentage(x, z, width, boundaryWidth);
+                if (terrainEdgePercentage > 0)
+                {
+                    if (customization.lowBoundaries) //Edge of terrain goes to 0 height
+                    {
+                        noise -= terrainEdgePercentage * 0.6f;
+                        amplitude = Mathf.Max(amplitude - terrainEdgePercentage * 2.0f, 0);
+                    }
+                    else //Edge of terrain is mountain range that is capped to a certain height
+                    {
+                        noise += terrainEdgePercentage * 0.6f;
+                        amplitude += terrainEdgePercentage * 0.6f;
+                    }
+                }
+
+                //Apply computation (after amplifying the amplitude and putting cap on height for boundary points)
+                if (terrainEdgePercentage == 0) //Not a boundary point
+                    heights[z, x] = noise * Mathf.Pow(amplitude, amplitudePower);
+                else //Boundary point
+                    heights[z, x] = Mathf.Min(noise * Mathf.Pow(amplitude, amplitudePower), boundaryHeight);
+            }
+        }
+
+        terrainData.SetHeights(0, 0, heights);
+
+        //Debug.Log("NGS: " + noiseGroundScale + ", AGS: " + amplitudeGroundScale + ", AP: " + amplitudePower +
+        //", NS: " + noiseStrength);
+    }
+
+    //Returns 0 if point not within boundary width
+    //Returns percentage (0-1) to very edge of map if within boundary width
+    //where 0 = beginning of boundary and 1 = very edge of map
+    //Used to make smooth map boundaries
+    private float TerrainEdgePercentage (float x, float z, int terrainWidth, int boundaryWidth)
+    {
+        float[] boundaryPercentages = new float[] { 0, 0, 0, 0 };
+
+        if (x < boundaryWidth)
+            boundaryPercentages[0] = 1 - x / boundaryWidth;
+        else if (terrainWidth < x + boundaryWidth)
+            boundaryPercentages[2] = 1 - (terrainWidth - x) / boundaryWidth;
+
+        if (z < boundaryWidth)
+            boundaryPercentages[1] = 1 - z / boundaryWidth;
+        else if (terrainWidth < z + boundaryWidth)
+            boundaryPercentages[3] = 1 - (terrainWidth - z) / boundaryWidth;
+
+        float max = boundaryPercentages[0];
+        for (int boundary = 1; boundary < 4; boundary++)
+        {
+            if (boundaryPercentages[boundary] > max)
+                max = boundaryPercentages[boundary];
+        }
+
+        return max;
+    }
+
+    private void GenerateHill (float[,] heights, int xStart, int zStart, int xLength, int zLength, float height)
+    {
+        //heights[z + zStart, x + xStart] = 1.0f / (Mathf.Abs(x - xLength / 2) + 1);
+
+        for (int x = 0; x < xLength; x++)
+        {
+            for (int z = 0; z < zLength; z++)
+                heights[z + zStart, x + xStart] = Mathf.PerlinNoise(x / 500.0f, z / 500.0f);
+        }
+    }
+
+    private void PaintTerrain ()
+    {
+        TerrainData terrainData = terrain.terrainData;
+
+        //Create terrain layers--------------------------------------------------------------------------------------
+
+        List<TerrainLayer> terrainTextureList = new List<TerrainLayer>();
+
+        TerrainLayer groundLayer = new TerrainLayer();
+        groundLayer.diffuseTexture = customization.groundTexture;
+        groundLayer.tileSize = new Vector2(2, 2);
+
+        TerrainLayer cliffLayer = new TerrainLayer();
+        cliffLayer.diffuseTexture = customization.cliffTexture;
+        cliffLayer.tileSize = new Vector2(2, 2);
+
+        TerrainLayer seabedLayer = new TerrainLayer();
+        seabedLayer.diffuseTexture = customization.seabedTexture;
+        seabedLayer.tileSize = new Vector2(2, 2);
+
+        TerrainLayerEffects(groundLayer, cliffLayer, seabedLayer);
+
+        terrainTextureList.Add(groundLayer);
+        terrainTextureList.Add(cliffLayer);
+        terrainTextureList.Add(seabedLayer);
+
+        terrainData.terrainLayers = terrainTextureList.ToArray();
+
+        //Use terrain layers to paint terrain-----------------------------------------------------------------------
+
+        float[,,] splatmapData = new float[terrainData.alphamapWidth, terrainData.alphamapHeight, terrainData.alphamapLayers];
+
+        int heightmapX, heightmapZ;
+        for (int x = 0; x < terrainData.alphamapWidth; x++)
+        {
+            for (int z = 0; z < terrainData.alphamapHeight; z++)
+            {
+                heightmapZ = (int)((float)x * terrainData.heightmapResolution / terrainData.alphamapWidth);
+                heightmapX = (int)((float)z * terrainData.heightmapResolution / terrainData.alphamapHeight);
+
+                if (terrainData.GetHeight(heightmapX, heightmapZ) < customization.seabedHeight) //SEABED
+                {
+                    splatmapData[x, z, 0] = 0; //Ground
+                    splatmapData[x, z, 1] = 0; //Cliff
+                    splatmapData[x, z, 2] = 1; //Seabed
+                }
+                else
+                {
+                    float terrainSteepness = terrainData.GetSteepness(((float)z) / terrainData.alphamapHeight,
+                                                                      ((float)x) / terrainData.alphamapWidth);
+
+                    if (terrainSteepness > 35) //CLIFF
+                    {
+                        splatmapData[x, z, 0] = 0; //Ground
+                        splatmapData[x, z, 1] = 1; //Cliff
+                        splatmapData[x, z, 2] = 0; //Seabed
+                    }
+                    else //GROUND
+                    {
+                        splatmapData[x, z, 0] = 1; //Ground
+                        splatmapData[x, z, 1] = 0; //Cliff
+                        splatmapData[x, z, 2] = 0; //Seabed
+                    }
+                }
+            }
+        }
+
+        terrainData.SetAlphamaps(0, 0, splatmapData);
+    }
+
+    private void TerrainLayerEffects (TerrainLayer groundLayer, TerrainLayer cliffLayer, TerrainLayer seabedLayer)
+    {
+        if (Planet.planet.biome == Planet.Biome.Hell)
+        {
+            groundLayer.metallic = 1;
+            cliffLayer.metallic = 1;
+            seabedLayer.metallic = 1;
+            seabedLayer.smoothness = 1;
+
+            //Make horizon blend in with terrain
+            horizonMaterial.SetFloat("_Metallic", 1);
+        }
+        else if(Planet.planet.biome == Planet.Biome.Spirit)
+        {
+            cliffLayer.metallic = 1;
+            cliffLayer.smoothness = 1;
+
+            seabedLayer.metallic = 0.2f;
+            seabedLayer.smoothness = 0.8f;
+        }
+        else
+            horizonMaterial.SetFloat("_Metallic", 0);
+    }
+
+    private void SetHorizons ()
+    {
+        //Set ground texture
+        horizonMaterial.SetTexture("_MainTex", customization.groundTexture);
+
+        //Set height
+        if (customization.lowBoundaries)
+            horizonTransform.Translate(Vector3.down * 128);
+
+        //Move to squeeze around small terrain
+        if (customization.smallTerrain)
+        {
+            horizonTransform.Find("Front Horizon").localPosition = new Vector3(0.0f, 127.99f, 10524.0f);
+            horizonTransform.Find("Right Horizon").localPosition = new Vector3(10524.0f, 127.99f, 0.0f);
+        }
+    }
+
+    //TERRAIN FEATURE FUNCTIONS------------------------------------------------------------------------------------
+
+    private void ComputeAllTerrainAreas ()
+    {
+        TerrainData terrainData = terrain.terrainData;
+
+        areaSteepness = new int[1 + terrainData.heightmapResolution / areaSize, 1 + terrainData.heightmapResolution / areaSize];
+        areaHeight = new int[1 + terrainData.heightmapResolution / areaSize, 1 + terrainData.heightmapResolution / areaSize];
+
+        //Results for one area: X coord = steepness of area, y coord = height of area
+        Vector2Int results;
+
+        //Compute all areas, one at a time (one per iteration)
+        for (int x = 0; x < terrainData.heightmapResolution; x += areaSize)
+        {
+            for (int z = 0; z < terrainData.heightmapResolution; z += areaSize)
+            {
+                //Flipped b/c terrain orientation is wack
+                results = ComputeSingleTerrainArea(terrainData, x, z);
+
+                areaSteepness[z / areaSize, x / areaSize] = results.x;
+                areaHeight[z / areaSize, x / areaSize] = results.y;
+
+                /*
+                if (IsFlatArea(terrainData, x, z, brushSize, maxSteepness))
+                {
+                    Transform cube = Instantiate(flatAreaPrefab, new Vector3(-500, 25, -500), Quaternion.Euler(0, 0, 0)).transform;
+
+                    cube.localScale = new Vector3(brushSize, 100, brushSize);
+                    cube.position += new Vector3(z, 0, x);
+                    
+                }   */
+            }
+        }
+    }
+
+    private Vector2Int ComputeSingleTerrainArea (TerrainData terrainData, int xStart, int zStart)
+    {
+        //Out of bounds = no go (pretend like area is really steep and high so we never use it)
+        if (xStart + areaSize > terrainData.heightmapResolution)
+            return new Vector2Int(9999, 9999);
+        else if (zStart + areaSize > terrainData.heightmapResolution)
+            return new Vector2Int(9999, 9999);
+
+        //Set the steepness of the area to the steepest point within the area
+        //And the height of the area to the highest point within the area
+        int maxSteepness = 0;
+        int currentSteepness = 0;
+        int maxHeight = 0;
+        int currentHeight = 0;
+        for (int x = xStart; x < xStart + areaSize; x++)
+        {
+            for (int z = zStart; z < zStart + areaSize; z++)
+            {
+                if (TerrainEdgePercentage(x, z, terrainData.heightmapResolution, customization.smallTerrain ? 125 : 250) > 0)
+                    return new Vector2Int(9999, 9999);
+
+                //Steepness...
+
+                currentSteepness = (int)terrainData.GetSteepness(((float)z) / terrainData.heightmapResolution,
+                                                                  ((float)x) / terrainData.heightmapResolution);
+
+                if (currentSteepness > maxSteepness)
+                    maxSteepness = currentSteepness;
+
+                //Height...
+
+                currentHeight = (int)terrainData.GetHeight(z, x);
+
+                if (currentHeight > maxHeight)
+                    maxHeight = currentHeight;
+            }
+        }
+
+        return new Vector2Int(currentSteepness, currentHeight);
+    }
+
+    //Generate cubes over areas that have steepness < max steepness and height within range
+    private void ShowAreas (int maxSteepness, int minHeight, int maxHeight)
+    {
+        for (int x = 0; x < areaSteepness.GetLength(0); x++)
+        {
+            for (int z = 0; z < areaSteepness.GetLength(1); z++)
+            {
+                //areaSteepness[x, z] <= maxSteepness && areaHeight[x, z] <= maxHeight && 
+
+                if (areaHeight[x, z] >= minHeight)
+                {
+                    Transform cube = Instantiate(flatAreaPrefab, new Vector3(-500, 25, -500), Quaternion.Euler(0, 0, 0)).transform;
+
+                    cube.localScale = new Vector3(areaSize, 100, areaSize);
+                    cube.position += new Vector3(x * areaSize, 0, z * areaSize);
+                }
+            }
+        }
+    }
+
+    public Vector3 ReserveTerrainPosition (float preferredSteepness, int minHeight, int maxHeight, int radius, bool flatten)
+    {
+        //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
+        if (flatten)
+            radius *= 2;
+
+        int xCoord = 0;
+        int zCoord = 0;
+        float smallestDifference = 9999;
+
+        //Go through all the areas and remember the one that had the closest steepness value to preferred steepness
+        for (int x = 0; x < areaSteepness.GetLength(0); x++)
+        {
+            for (int z = 0; z < areaSteepness.GetLength(1); z++)
+            {
+                //Look for candidate with best steepness value
+                if (Mathf.Abs(areaSteepness[x, z] - preferredSteepness) < smallestDifference)
+                {
+                    //Make sure it is safe
+                    if (SelectedAreasAreSafe(x, z, 0, 500, radius))
+                    {
+                        //Found new best area
+                        smallestDifference = Mathf.Abs(areaSteepness[x, z] - preferredSteepness);
+                        xCoord = x;
+                        zCoord = z;
+                    }
+                }
+            }
+        }
+
+        //Now that we have concluded which area(s) to reserve, reserve it/them...
+        ReserveSelectedAreas(xCoord, zCoord, minHeight, radius, flatten);
+
+        //Compute the starting point of the area we just reserved (in world coordinates)
+        Vector3 worldPosition = new Vector3(-500 + xCoord * areaSize, 9999, -500 + zCoord * areaSize);
+
+        //Translate from starting point to center point of area
+        worldPosition.x += areaSize / 2;
+        worldPosition.z += areaSize / 2;
+
+        //Compute the y value
+        RaycastHit raycastHit;
+        Physics.Raycast(worldPosition, Vector3.down, out raycastHit);
+        worldPosition.y = raycastHit.point.y;
+
+        //Return computed, height-adjusted, center point
+        return worldPosition;
+    }
+
+    private bool SelectedAreasAreSafe (int xCoord, int zCoord, int minHeight, int maxHeight, int radius)
+    {
+        int areasLong = Mathf.CeilToInt(radius * 2.0f / areaSize);
+
+        int xStart = xCoord - (areasLong / 2); //Leftmost x included
+        int zStart = zCoord - (areasLong / 2); //Bottommost z included
+
+        //Go through each included area from bottom left corner to top right corner
+        for (int x = xStart; x < xStart + areasLong; x++)
+        {
+            for (int z = zStart; z < zStart + areasLong; z++)
+            {
+                //For each area we will include...
+
+                //Check lower boundaries
+                if (x < 0 || z < 0)
+                    return false;
+
+                //Check upper boundaries
+                if (x >= areaHeight.Length || z >= areaHeight.Length)
+                    return false;
+
+                //Check height
+                if (areaHeight[x, z] < minHeight || areaHeight[x, z] > maxHeight)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, int radius, bool flatten)
+    {
+        int areasLong = Mathf.CeilToInt(radius * 2.0f / areaSize);
+
+        int xStart = xCoord - (areasLong / 2); //Leftmost x included
+        int zStart = zCoord - (areasLong / 2); //Bottommost z included
+
+        //Mark selected areas as taken
+        for (int x = xStart; x < xStart + areasLong; x++)
+        {
+            for (int z = zStart; z < zStart + areasLong; z++)
+            {
+                areaSteepness[x, z] = 9999;
+                areaHeight[x, z] = 9999;
+            }
+        }
+
+        //Flatten selected areas (all to the sample height of the center of the selection)
+        if (flatten)
+        {
+            int selectionSize = areaSize * areasLong;
+
+            float[,] heights = new float[selectionSize, selectionSize];
+
+            //Figure out what height to level the selection to (sample height from middle of selection)
+            float newHeight = terrain.terrainData.GetHeight((int)(xStart * areaSize + selectionSize * 0.5f),
+                                                            (int)(zStart * areaSize + selectionSize * 0.5f));
+
+            //Make sure height is above min height
+            if (newHeight < minHeight + 1)
+                newHeight = minHeight + 1;
+
+            //Convert from world coordinates to terrain heightmap coordinates
+            newHeight /= 512.0f;
+
+            //Set every point in the area to have that height except boundary points transition back to normal terrain
+            for (int x = 0; x < heights.GetLength(0); x++)
+            {
+                for (int z = 0; z < heights.GetLength(1); z++)
+                {
+                    float edgePercentage = TerrainEdgePercentage(x, z, selectionSize, selectionSize / 4);
+
+                    if (edgePercentage == 0)
+                        heights[x, z] = newHeight;
+                    else
+                    {
+                        float oldHeight = terrain.terrainData.GetHeight(xStart * areaSize + z,
+                                                                        zStart * areaSize + x)
+                                                                        / 512.0f;
+
+                        heights[x, z] = Mathf.Lerp(newHeight, oldHeight, edgePercentage);
+                    }
+                }
+            }
+
+            //Apply changes to terrain
+            terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
+        }
+    }
+
+    //Return the index of the texture that is painted at the specified point
+    public int GetTextureIndexAtPoint (Vector3 point)
+    {
+        //Adjust the point from world coordinates to terrain coordinates
+        point.x += 500;
+        point.z += 500;
+        point.x /= 4;
+        point.z /= 4;
+
+        //Return the index of the layer with an alpha value of 1...
+
+        //Get alphamaps at point
+        float[,,] alphamaps = terrain.terrainData.GetAlphamaps((int)point.x, (int)point.z, 1, 1);
+
+        //Search through them
+        for (int x = 0; x < alphamaps.GetLength(2); x++)
+            if (alphamaps[0, 0, x] == 1)
+                return x;
+
+        //Default, shouldn't get here b/c all points should be painted on some layer
+        return 0;
+    }
+
+    private void GenerateTrees ()
+    {
+        //int idealTreeCount, int maxSteepness, float seabedHeight, params string[] treeNames
+
+        TerrainData terrainData = terrain.terrainData;
+
+        //Load tree models...
+        string[] treeNames = customization.treeNames;
+        TreePrototype[] treePrototypes = new TreePrototype[treeNames.Length];
+        for (int x = 0; x < treeNames.Length; x++)
+        {
+            TreePrototype newPrototype = new TreePrototype();
+
+            newPrototype.prefab = Resources.Load<GameObject>("Planet/Trees/" + treeNames[x]);
+            newPrototype.bendFactor = 0;
+
+            treePrototypes[x] = newPrototype;
+        }
+        terrainData.treePrototypes = treePrototypes;
+
+        List<TreeInstance> trees = new List<TreeInstance>();
+
+        //Set generation parameters...
+
+        int idealTreeCount = customization.idealTreeCount;
+        int maxSteepness = customization.maxTreeSteepness;
+
+        int maxAttempts = idealTreeCount * 2;
+
+        int minHeight = -10;
+        if (Planet.planet.hasOcean)
+            minHeight = (int)Mathf.Max(Planet.planet.oceanTransform.position.y, customization.seabedHeight);
+
+        int maxHeight = 120;
+
+        //Attempt to generate one tree per iteration; if attempt fails no reattempt is made, moves onto next tree
+        for (int treesPlanted = 0, attempts = 0; treesPlanted < idealTreeCount && attempts < maxAttempts; attempts++)
+        {
+            //Generate new place to put tree
+            Vector3 newTreePosition = new Vector3(Random.value, 0.0f, Random.value);
+
+            //Check if placement is ok...
+
+            //Ground must be level enough
+            if (terrainData.GetSteepness(newTreePosition.x, newTreePosition.z) > maxSteepness)
+                continue;
+
+            //Ground cannot be lower than sea level
+            int heightmapX = (int)(newTreePosition.x * terrainData.heightmapResolution);
+            int heightmapZ = (int)(newTreePosition.z * terrainData.heightmapResolution);
+
+            float height = terrainData.GetHeight(heightmapX, heightmapZ);
+            if (height < minHeight || height > maxHeight)
+                continue;
+
+            //If got to this point, we passed all tests so proceed with creating tree...
+            treesPlanted++;
+
+            //Create tree instance
+            TreeInstance newTree = new TreeInstance();
+            newTree.color = Color.white;
+            newTree.lightmapColor = Color.white;
+            newTree.prototypeIndex = Random.Range(0, treeNames.Length);
+            newTree.widthScale = 1;
+            newTree.heightScale = 1;
+            newTree.rotation = 0;
+            newTree.position = newTreePosition;
+
+            //Add it to list of trees
+            trees.Add(newTree);
+        }
+
+        //Debug.Log("Tree Count: " + trees.Count);
+
+        terrainData.SetTreeInstances(trees.ToArray(), true);
+
+        terrain.Flush();
+    }
+
+    public float GetSeabedHeight () { return customization.seabedHeight; }
+
+    //PLANET MANAGEMENT FUNCTIONS----------------------------------------------------------------------------------
+
+    public void SetTreeVisibility (bool visible) { terrain.drawTreesAndFoliage = visible; }
+}
+
+[System.Serializable]
+public class PlanetTerrainJSON
+{
+    public PlanetTerrainJSON (PlanetTerrain planetTerrain)
+    {
+        //Customization: Heightmap
+        noiseGroundScale = planetTerrain.customization.noiseGroundScale;
+        amplitudeGroundScale = planetTerrain.customization.amplitudeGroundScale;
+        amplitudePower = planetTerrain.customization.amplitudePower;
+        noiseStrength = planetTerrain.customization.noiseStrength;
+
+        //Customization: Trees
+        idealTreeCount = planetTerrain.customization.idealTreeCount;
+        maxTreeSteepness = planetTerrain.customization.maxTreeSteepness;
+        treeNames = planetTerrain.customization.treeNames;
+
+        //Customization: Misc
+        lowBoundaries = planetTerrain.customization.lowBoundaries;
+        smallTerrain = planetTerrain.customization.smallTerrain;
+        seabedHeight = planetTerrain.customization.seabedHeight;
+        groundTexture = planetTerrain.customization.groundTexture.name;
+        cliffTexture = planetTerrain.customization.cliffTexture.name;
+        seabedTexture = planetTerrain.customization.seabedTexture.name;
+
+        //Offsets
+        noiseOffsetX = planetTerrain.offsets.noiseOffsetX;
+        noiseOffsetZ = planetTerrain.offsets.noiseOffsetZ;
+        amplitudeOffsetX = planetTerrain.offsets.amplitudeOffsetX;
+        amplitudeOffsetZ = planetTerrain.offsets.amplitudeOffsetZ;
+    }
+
+    public void RestorePlanetTerrain (PlanetTerrain planetTerrain, PlanetJSON savedPlanet)
+    {
+        //Customization: Heightmap
+        TerrainCustomization customization = new TerrainCustomization(noiseGroundScale, amplitudeGroundScale,
+            amplitudePower, noiseStrength);
+
+        //Customization: Trees
+        customization.idealTreeCount = idealTreeCount;
+        customization.maxTreeSteepness = maxTreeSteepness;
+        customization.treeNames = treeNames;
+
+        //Customization: Misc
+        customization.lowBoundaries = lowBoundaries;
+        customization.smallTerrain = smallTerrain;
+        customization.seabedHeight = seabedHeight;
+        customization.groundTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + groundTexture);
+        customization.cliffTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + cliffTexture);
+        customization.seabedTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + seabedTexture);
+
+        //Offsets
+        TerrainOffsets offsets = new TerrainOffsets(noiseOffsetX, noiseOffsetZ, amplitudeOffsetX, amplitudeOffsetZ);
+
+        //Now that all terrain parameters have been restored, use them to regenerate the terrain
+        planetTerrain.RegenerateTerrain(customization, offsets, savedPlanet);
+    }
+
+    //Customization: Heightmap
+    public float noiseGroundScale, amplitudeGroundScale;
+    public int amplitudePower;
+    public float noiseStrength;
+
+    //Customization: Trees
+    public int idealTreeCount, maxTreeSteepness;
+    public string[] treeNames;
+
+    //Customization: Misc
+    public bool lowBoundaries, smallTerrain;
+    public float seabedHeight;
+    public string groundTexture, cliffTexture, seabedTexture;
+
+    //Offsets
+    public float noiseOffsetX, noiseOffsetZ;
+    public float amplitudeOffsetX, amplitudeOffsetZ;
+}
+
+public class TerrainCustomization
+{
+    //Heightmap
+    public float noiseGroundScale; //Inverse X-Z scale of noise
+    public float amplitudeGroundScale; //Inverse X-Z scale of amplitude
+    public int amplitudePower; //How dramatic the height difference is between landforms
+    public float noiseStrength; //How big the hills are
+
+    //Trees
+    public int idealTreeCount, maxTreeSteepness;
+    public string[] treeNames;
+
+    //Misc
+    public bool lowBoundaries, smallTerrain;
+    public float seabedHeight;
+    public Texture2D groundTexture, cliffTexture, seabedTexture;
+
+    //Remember old terrain customization (for purpose of regenerating terrain to be like old one)
+    public TerrainCustomization(float noiseGroundScale, float amplitudeGroundScale, int amplitudePower, float noiseStrength)
+    {
+        InitializeParametersToDefaults();
+
+        this.noiseGroundScale = noiseGroundScale;
+        this.amplitudeGroundScale = amplitudeGroundScale;
+        this.amplitudePower = amplitudePower;
+        this.noiseStrength = noiseStrength;
+    }
+
+    //Generate default customization (for purpose of generating new random terrain)
+    public TerrainCustomization() { InitializeParametersToDefaults(); }
+
+    public void InitializeParametersToDefaults()
+    {
+        noiseGroundScale = 40;
+        amplitudeGroundScale = 8;
+        amplitudePower = 3;
+        noiseStrength = 0.5f;
+
+        idealTreeCount = 0;
+        maxTreeSteepness = 30;
+        treeNames = new string[1];
+        treeNames[0] = "Palm Tree";
+
+        lowBoundaries = true;
+        smallTerrain = false;
+        seabedHeight = 7;
+
+        groundTexture = null;
+        cliffTexture = null;
+        seabedTexture = null;
+    }
+
+    public void SetTreeNames(params string[] newNames) { treeNames = newNames; }
+}
+
+public class TerrainOffsets
+{
+    public float noiseOffsetX, noiseOffsetZ;
+    public float amplitudeOffsetX, amplitudeOffsetZ;
+
+    //Remember old terrain offsets (for purpose of regenerating terrain to be like old one)
+    public TerrainOffsets(float noiseOffsetX, float noiseOffsetZ, float amplitudeOffsetX, float amplitudeOffsetZ)
+    {
+        this.noiseOffsetX = noiseOffsetX;
+        this.noiseOffsetZ = noiseOffsetZ;
+
+        this.amplitudeOffsetX = amplitudeOffsetX;
+        this.amplitudeOffsetZ = amplitudeOffsetZ;
+    }
+
+    //Generate new offsets (for purpose of generating new random terrain)
+    public TerrainOffsets()
+    {
+        noiseOffsetX = Random.Range(0.0f, 10000.0f);
+        noiseOffsetZ = Random.Range(0.0f, 10000.0f);
+
+        amplitudeOffsetX = Random.Range(0.0f, 10000.0f);
+        amplitudeOffsetZ = Random.Range(0.0f, 10000.0f);
+    }
+}

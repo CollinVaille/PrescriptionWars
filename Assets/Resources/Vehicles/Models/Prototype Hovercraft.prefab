@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 4999935335000459058}
   - component: {fileID: 1612253314897656779}
   - component: {fileID: 9026028131841074476}
+  - component: {fileID: 7414532497799579940}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -186,6 +187,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.023000006, y: 2.6187115, z: 0.02300002}
   m_Center: {x: 9.313227e-10, y: 1.3088923, z: -0.000000009778887}
+--- !u!114 &7414532497799579940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036683152878833431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d660104562e25a84fa18f8f678939a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 500
+  exhaustCloud: {fileID: 4264657143761105392}
+  exhaustStream: {fileID: 4264657143761089540}
 --- !u!1 &1943689229526989017
 GameObject:
   m_ObjectHideFlags: 0
@@ -5220,7 +5236,7 @@ MonoBehaviour:
   gasPedal: 0
   steeringWheel: 0
   thrustPower: 2000
-  breakPower: 1500
+  brakePower: 1500
   turnStrength: 90
   floorPosition: -0.1
   gears: 000000000f0000001e0000003c000000
@@ -5234,14 +5250,6 @@ MonoBehaviour:
   power: 2500
   airCushion: 0.5
   hoverCloud: {fileID: 7317725155940592398}
-  engineExhaust:
-  - {fileID: 4264657143761105392}
-  - {fileID: 4264657143761089540}
-  - {fileID: 2524869268136125488}
-  - {fileID: 3541150385028437883}
-  exhaustStream:
-  - {fileID: 4264657143761089540}
-  - {fileID: 3541150385028437883}
 --- !u!54 &3046276885877308491
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -20656,6 +20664,7 @@ GameObject:
   - component: {fileID: 1326097616550405029}
   - component: {fileID: 4709559779728645980}
   - component: {fileID: 3046276886818390459}
+  - component: {fileID: 7184904933304962927}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -20737,6 +20746,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.023000006, y: 2.6187115, z: 0.02300002}
   m_Center: {x: 9.313227e-10, y: 1.3088923, z: -0.0000000023283069}
+--- !u!114 &7184904933304962927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6442225159224126336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d660104562e25a84fa18f8f678939a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 500
+  exhaustCloud: {fileID: 2524869268136125488}
+  exhaustStream: {fileID: 3541150385028437883}
 --- !u!1 &6951626651757188405
 GameObject:
   m_ObjectHideFlags: 0

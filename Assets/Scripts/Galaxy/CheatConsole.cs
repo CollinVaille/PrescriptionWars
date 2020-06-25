@@ -89,7 +89,7 @@ public class CheatConsole : MonoBehaviour
         {
             Empire.empires[GalaxyManager.playerID].prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
-        catch (Exception e)
+        catch (Exception)
         {
             commandHistoryText.text += "\nInvalid Amount";
             return;
@@ -116,7 +116,7 @@ public class CheatConsole : MonoBehaviour
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             commandHistoryText.text += "\nInvalid Planet Name";
             return;
@@ -143,7 +143,7 @@ public class CheatConsole : MonoBehaviour
                 GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Blue;
             }
         }
-        catch(Exception e)
+        catch (Exception)
         {
             commandHistoryText.text += "\nInvalid Culture";
             return;
@@ -161,7 +161,7 @@ public class CheatConsole : MonoBehaviour
         {
             id = int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
-        catch(Exception e)
+        catch (Exception)
         {
             commandHistoryText.text += "\nID Invalid";
             return;
@@ -184,7 +184,7 @@ public class CheatConsole : MonoBehaviour
         {
             Empire.empires[GalaxyManager.playerID].credits += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
-        catch(Exception e)
+        catch (Exception)
         {
             commandHistoryText.text += "\nInvalid Amount";
             return;
