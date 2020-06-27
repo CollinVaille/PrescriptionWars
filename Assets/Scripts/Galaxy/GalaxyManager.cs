@@ -12,10 +12,16 @@ public class GalaxyManager : MonoBehaviour
 
     public static List<Sprite> flagSymbols;
 
+    public static bool togglePlanetManagementMenu;
+
+    public GameObject planetManagementMenu;
+
     public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
+
+        togglePlanetManagementMenu = false;
     }
 
     // Start is called before the first frame update
@@ -38,6 +44,12 @@ public class GalaxyManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.BackQuote))
         {
             commandConsole.SetActive(!commandConsole.activeInHierarchy);
+        }
+
+        if (togglePlanetManagementMenu)
+        {
+            planetManagementMenu.SetActive(true);
+            togglePlanetManagementMenu = false;
         }
     }
 }

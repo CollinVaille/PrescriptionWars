@@ -94,7 +94,8 @@ public class PlanetIcon : MonoBehaviour
     {
         if(ownerID == GalaxyManager.playerID)
         {
-            Debug.Log("Clicked on " + name);
+            PlanetManagementMenu.planetSelected = transform.gameObject;
+            GalaxyManager.togglePlanetManagementMenu = true;
         }
     }
 }
