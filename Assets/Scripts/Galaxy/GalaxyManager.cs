@@ -14,12 +14,13 @@ public class GalaxyManager : MonoBehaviour
 
     public static bool togglePlanetManagementMenu;
 
-    public GameObject planetManagementMenu;
+    public static GameObject planetManagementMenu;
 
-    public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList)
+    public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
+        planetManagementMenu = menuOfPlanetManagement;
 
         togglePlanetManagementMenu = false;
     }

@@ -12,6 +12,10 @@ public class GalaxyCamera : MonoBehaviour
 
     public InputField consoleInputField;
 
+    public GameObject planetManagementMenu;
+
+    public bool mouseOverPlanetManagementMenu;
+
     private void Update ()
     {
 
@@ -35,7 +39,10 @@ public class GalaxyCamera : MonoBehaviour
         movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
-        if (Input.GetMouseButton(0))
+        if (!planetManagementMenu.activeInHierarchy)
+            mouseOverPlanetManagementMenu = false;
+
+        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
@@ -60,5 +67,10 @@ public class GalaxyCamera : MonoBehaviour
 
         //Clean up at end of update
         previousMousePosition = Input.mousePosition;
+    }
+
+    public void ToggleMouseOverPlanetManagementMenu()
+    {
+        mouseOverPlanetManagementMenu = !mouseOverPlanetManagementMenu;
     }
 }

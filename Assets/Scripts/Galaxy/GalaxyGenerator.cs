@@ -24,6 +24,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     List<GameObject> planets;
     public GameObject hyperspaceLanesManager;
+    public GameObject planetManagementMenu;
 
     public List<Sprite> flagSymbols;
 
@@ -46,7 +47,7 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateHyperspaceLanes();
         GenerateEmpires();
         GeneratePlanetStats();
-        GalaxyManager.Initialize(planets, flagSymbols);
+        GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
         //Physics.CheckSphere()
     }
 

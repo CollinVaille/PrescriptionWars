@@ -20,7 +20,6 @@ public class PlanetIcon : MonoBehaviour
     public int ownerID = -1;
     public float creditsPerTurn;
     public float prescriptionsPerTurn;
-
     Vector3 rotation;
 
     public void InitializePlanet (string planetName)
@@ -92,7 +91,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUp ()
     {
-        if(ownerID == GalaxyManager.playerID)
+        if(ownerID == GalaxyManager.playerID && !GalaxyManager.planetManagementMenu.activeInHierarchy)
         {
             PlanetManagementMenu.planetSelected = transform.gameObject;
             GalaxyManager.togglePlanetManagementMenu = true;
