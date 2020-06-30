@@ -7,14 +7,14 @@ public class Fire : MonoBehaviour
     public float intensity = 1.0f;
     public AudioClip extinguish;
 
-    public void Ignite(Transform toIgnite, Vector3 firePosition)
+    public void Ignite(Transform toIgnite, Vector3 localFirePosition)
     {
         if (transform.parent)
             return;
 
         //Place fire on object to ignite
         transform.parent = toIgnite;
-        transform.localPosition = firePosition;
+        transform.localPosition = localFirePosition;
         transform.localScale = Vector3.one;
 
         //Start fire
@@ -39,6 +39,9 @@ public class Fire : MonoBehaviour
 
         //Damage
         Damageable damageable = transform.parent.GetComponent<Damageable>();
+
+        //Make fire able to spread
+        GetComponent<Collider>().enabled = true;
 
         //Fire loop
         bool extinguishImmediately = false;
@@ -66,6 +69,9 @@ public class Fire : MonoBehaviour
             if (damageable != null)
                 damageable.Damage(intensity, 0, transform.position, DamageType.Fire, -69);
 
+            //Blacken burning objects
+            BlackenBurningMaterials(transform.parent);
+
             //Delay
             yield return new WaitForSeconds(0.1f);
         }
@@ -78,6 +84,9 @@ public class Fire : MonoBehaviour
         }
         else
         {
+            //Make fire unable to spread
+            GetComponent<Collider>().enabled = false;
+
             //Remove fire visual
             GetComponent<ParticleSystem>().Stop();
 
@@ -101,5 +110,69 @@ public class Fire : MonoBehaviour
     private bool SubmersedInWater()
     {
         return Planet.planet.hasOcean && Planet.planet.oceanTransform.position.y >= transform.position.y;
+    }
+
+    private void BlackenBurningMaterials(Transform burning)
+    {
+        //Determine rate of blackening based on fire intensity
+        float blackenFactor = 1.2f / Mathf.Pow(intensity + 0.25f, 0.25f);
+
+        //Fire is not intense enough to blacken subjects
+        if (blackenFactor >= 1)
+            return;
+
+        //Apply blackening to each subject individually
+        Renderer[] possibleSubjects = burning.GetComponentsInChildren<Renderer>();
+        foreach (Renderer possibleSubject in possibleSubjects)
+            BlackenBurningMaterial(possibleSubject, blackenFactor);    
+    }
+
+    private void BlackenBurningMaterial(Renderer toBlacken, float blackenFactor)
+    {
+        //Can only darken existing renderers that are not themselves fire!
+        if (!toBlacken || toBlacken.gameObject == gameObject)
+            return;
+
+        toBlacken.material.color *= blackenFactor;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Damageable newSubject = other.GetComponent<Damageable>();
+
+        //Something flammable came into contact with fire
+        if (newSubject != null)
+        {
+            //Determine if subject is already on fire
+            Fire subjectFire = GetSubjectFire(other.transform);
+
+            if (subjectFire) //Subject already on fire... should we amplify it???
+            {
+                //Of course!
+                if (subjectFire.intensity < intensity)
+                    subjectFire.intensity = intensity;
+            }
+            else //Spread fire to new subject
+            {
+                Fire newFire = Instantiate(Planet.planet.firePrefab).GetComponent<Fire>();
+                newFire.Ignite(other.transform, Vector3.zero);
+                newFire.intensity = intensity * 0.8f;
+            }
+        }
+    }
+
+    private Fire GetSubjectFire(Transform subject)
+    {
+        Fire subjectFire = null;
+
+        foreach(Transform subjectPart in subject)
+        {
+            subjectFire = subjectPart.GetComponent<Fire>();
+
+            if (subjectFire)
+                break;
+        }
+
+        return subjectFire;
     }
 }

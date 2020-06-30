@@ -178,7 +178,10 @@ public class Spawner : MonoBehaviour
     private void SetSpawnPositionAndRotation (Pill pill)
     {
         if (city)
+        {
             pill.transform.position = pill.spawnPoint;
+            pill.transform.eulerAngles = Vector3.zero;
+        }
         else
         {
             Transform pillTransform = pill.transform;

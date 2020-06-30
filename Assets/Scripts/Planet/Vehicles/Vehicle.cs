@@ -40,6 +40,7 @@ public class Vehicle : MonoBehaviour
     protected AudioSource generalAudio, engineAudio;
     protected Rigidbody rBody;
     private List<Collider> vehicleColliders;
+    private Transform[] parts;
 
     //Thrusting, braking, and steering
     [HideInInspector] public float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
@@ -85,6 +86,9 @@ public class Vehicle : MonoBehaviour
         vehicleColliders = new List<Collider>();
         AddCollidersRecursive(transform);
 
+        //Initialize parts array
+        parts = GetComponentsInChildren<Transform>();
+
         //Initialize traction
         tractionControl = traction > 0;
     }
@@ -94,7 +98,7 @@ public class Vehicle : MonoBehaviour
         if (!on)
             return;
         
-        //Update speed
+        //Update speed reading
         int newSpeed = (int)rBody.velocity.magnitude;
         if (newSpeed + 10 < currentSpeed)
             generalAudio.PlayOneShot(slowDown, (currentSpeed - newSpeed) / 50.0f);
@@ -163,23 +167,23 @@ public class Vehicle : MonoBehaviour
         {
             generalAudio.PlayOneShot(God.RandomClip(mediumHits), impactSpeed / 40.0f);
 
-            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed);
+            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed, true);
         }
         else //Heavy damage
         {
             generalAudio.PlayOneShot(God.RandomClip(hardHits), impactSpeed / 60.0f);
 
-            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed);
+            DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed, true);
         }
     }
 
-    public void DamageParts(Vector3 contactPoint, float radius, float impactSpeed)
+    public void DamageParts(Vector3 contactPoint, float radius, float impactSpeed, bool recursive)
     {
-        foreach (Transform part in transform)
-            DamagePart(part, contactPoint, radius, impactSpeed);
+        foreach (Transform part in parts)
+            DamagePart(part, contactPoint, radius, impactSpeed, recursive);
     }
 
-    public void DamagePart(Transform part, Vector3 contactPoint, float radius, float impactSpeed)
+    public void DamagePart(Transform part, Vector3 contactPoint, float radius, float impactSpeed, bool recursive)
     {
         //Determine if part is allowed to be damaged
         if (!part.CompareTag("Untagged") || Vector3.Distance(part.position, contactPoint) > radius)
@@ -198,6 +202,23 @@ public class Vehicle : MonoBehaviour
         //This means the part moved away from the center of the vehicle and thus could now be floating in midair so undo translation to prevent that
         if (part.localPosition.magnitude > originalLocalPosition.magnitude)
             part.localPosition = originalLocalPosition;
+
+        //"Recursively" apply damage
+        //I know this recursive system is confusing but it came about from a long effort to make
+        //a part-specific damage system that can take damage both from the root transform detecting crash collisions
+        //and the children detecting point damage from things like bullets, punches, explosions, fire, etc.
+        if (recursive && part.GetComponent<Damageable>() != null)
+            part.GetComponent<Damageable>().Damage(impactSpeed, 0, contactPoint, DamageType.Melee, -53); //Don't change -53
+    }
+
+    public void PlayDamageSound(float damageAmount)
+    {
+        if (damageAmount <= 12) //Harmless bump
+            generalAudio.PlayOneShot(God.RandomClip(lightHits), damageAmount / 12.0f);
+        else if (damageAmount < 40) //Light damage
+            generalAudio.PlayOneShot(God.RandomClip(mediumHits), damageAmount / 40.0f);
+        else //Heavy damage
+            generalAudio.PlayOneShot(God.RandomClip(hardHits), damageAmount / 60.0f);
     }
 
     public void UpdateSpeedometer()
@@ -309,4 +330,6 @@ public class Vehicle : MonoBehaviour
     }
 
     public bool PoweredOn () { return on; }
+
+    public AudioSource GetGeneralAudio () { return generalAudio; }
 }

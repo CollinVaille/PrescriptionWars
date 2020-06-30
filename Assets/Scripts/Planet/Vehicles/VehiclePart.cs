@@ -10,6 +10,8 @@ public class VehiclePart : MonoBehaviour, Damageable
     public float health = 500;
     protected bool working = true;
 
+    public AudioClip partFailure;
+
     protected virtual void Start()
     {
         //Determine which vehicle part belongs to
@@ -29,11 +31,22 @@ public class VehiclePart : MonoBehaviour, Damageable
     {
         //Translate/rotate part(s)
         if (damageType == DamageType.Explosive)
-            belongsTo.DamageParts(partCollider.ClosestPointOnBounds(from), 1000, damage);
+        {
+            belongsTo.DamageParts(partCollider.ClosestPointOnBounds(from), 1000, damage, true);
+            //Damage is applied on subsequent recursive call
+        }
         else
-            belongsTo.DamagePart(transform, partCollider.ClosestPointOnBounds(from), 1, damage);
+        {
+            if (team != -53) //-53 is special code indicating DamagePart called this function
+            {
+                belongsTo.DamagePart(transform, partCollider.ClosestPointOnBounds(from), 1, damage, false);
 
-        DamageHealth(damage);
+                if(damageType != DamageType.Fire)
+                    belongsTo.PlayDamageSound(damage);
+            }
+
+            DamageHealth(damage);
+        }
     }
 
     protected virtual void DamageHealth(float amount)
@@ -52,5 +65,11 @@ public class VehiclePart : MonoBehaviour, Damageable
         }
     }
 
-    protected virtual void PartFailure() { working = false; }
+    protected virtual void PartFailure()
+    {
+        working = false;
+
+        if(belongsTo.PoweredOn())
+            belongsTo.GetGeneralAudio().PlayOneShot(partFailure);
+    }
 }
