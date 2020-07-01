@@ -15,6 +15,7 @@ public class Fire : MonoBehaviour
         //Place fire on object to ignite
         transform.parent = toIgnite;
         transform.localPosition = localFirePosition;
+        transform.localEulerAngles = Vector3.zero;
         transform.localScale = Vector3.one;
 
         //Start fire
@@ -36,6 +37,25 @@ public class Fire : MonoBehaviour
         float minMult = flamesMain.startSize.constantMin / intensity;
         float maxMult = flamesMain.startSize.constantMax / intensity;
         ParticleSystem.MinMaxCurve flameSize = flamesMain.startSize;
+
+        //Visual effects: embers
+        ParticleSystem embers = null;
+        ParticleSystem.EmissionModule embersEmission;
+        ParticleSystem.MinMaxCurve embersOverTime = flameSize; //Initialization only to avoid "use of assigned" error
+        float minEmbersMult = 0.0f;
+        float maxEmbersMult = 0.0f;
+        if (transform.Find("Embers"))
+        {
+            embers = transform.Find("Embers").GetComponent<ParticleSystem>();
+            embersEmission = embers.emission;
+            embersOverTime = embersEmission.rateOverTime;
+            minEmbersMult = embers.emission.rateOverTime.constantMin / intensity;
+            maxEmbersMult = embers.emission.rateOverTime.constantMax / intensity;
+        }
+
+        //Visual effects: light emitted by fire
+        Light fireLight = GetComponent<Light>();
+        fireLight.enabled = true;
 
         //Damage
         Damageable damageable = transform.parent.GetComponent<Damageable>();
@@ -65,6 +85,17 @@ public class Fire : MonoBehaviour
             flameSize.constantMax = maxMult * intensity;
             flamesMain.startSize = flameSize;
 
+            //Update embers based on intensity
+            if(embers)
+            {
+                embersOverTime.constantMin = minEmbersMult * intensity;
+                embersOverTime.constantMax = maxEmbersMult * intensity;
+                embersEmission.rateOverTime = embersOverTime;
+            }
+
+            //Update light based on intensity
+            fireLight.intensity = intensity + Random.Range(-0.3f, 0.3f);
+
             //Apply damage
             if (damageable != null)
                 damageable.Damage(intensity, 0, transform.position, DamageType.Fire, -69);
@@ -88,7 +119,10 @@ public class Fire : MonoBehaviour
             GetComponent<Collider>().enabled = false;
 
             //Remove fire visual
-            GetComponent<ParticleSystem>().Stop();
+            GetComponent<ParticleSystem>().Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+            fireLight.enabled = false;
+            if(embers)
+                embers.Stop(false, ParticleSystemStopBehavior.StopEmitting);
 
             //Stop fire sound
             sfx.Stop();
@@ -115,7 +149,7 @@ public class Fire : MonoBehaviour
     private void BlackenBurningMaterials(Transform burning)
     {
         //Determine rate of blackening based on fire intensity
-        float blackenFactor = 1.2f / Mathf.Pow(intensity + 0.25f, 0.25f);
+        float blackenFactor = 1.0f - intensity / 300.0f;
 
         //Fire is not intense enough to blacken subjects
         if (blackenFactor >= 1)
