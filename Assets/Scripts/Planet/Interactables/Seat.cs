@@ -8,7 +8,6 @@ public class Seat : Interactable
     public Vehicle controls = null;
     private Vehicle belongsTo = null;
 
-    public float radius;
     private bool ejecting = false;
     private CollisionDetectionMode occupantsPriorMode;
 
@@ -100,15 +99,8 @@ public class Seat : Interactable
         ejecting = false;
     }
 
-    public void UpdateSeatBelt()
-    {
-        if(Input.GetKey(KeyCode.Y))
-        occupant.GetRigidbody().AddForce(
-            (transform.position + Vector3.up - occupant.transform.position) * Time.fixedDeltaTime * 5000);
-    }
-
     public bool EjectingOccupant()
     {
-        return ejecting || Vector3.Distance(occupant.transform.position, transform.position) > radius;
+        return ejecting;
     }
 }

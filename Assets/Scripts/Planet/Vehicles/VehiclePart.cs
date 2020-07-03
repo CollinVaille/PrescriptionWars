@@ -69,7 +69,6 @@ public class VehiclePart : MonoBehaviour, Damageable
     {
         working = false;
 
-        if(belongsTo.PoweredOn())
-            belongsTo.GetGeneralAudio().PlayOneShot(partFailure);
+        belongsTo.GetGeneralAudio().PlayOneShot(partFailure);
     }
 }

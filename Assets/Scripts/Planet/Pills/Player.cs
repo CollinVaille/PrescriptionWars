@@ -1228,9 +1228,6 @@ public class Player : Pill
             POVInputUpdate();
             SquadInputUpdate();
 
-            //Update seatbelt
-            seat.UpdateSeatBelt();
-
             //Update vehicle GUI
             if (vehicleUnderControl)
             {
@@ -1253,7 +1250,7 @@ public class Player : Pill
             Vehicle.gearIndicator.enabled = false;
         }
 
-        seat.ReleaseControl(!dead && !seat.EjectingOccupant());
+        seat.ReleaseControl(!dead);
     }
 
     private void SetSprinting (bool sprinting)

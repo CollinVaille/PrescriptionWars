@@ -33,15 +33,13 @@ public class Engine : VehiclePart
     {
         base.DamageHealth(amount);
 
-        if (belongsTo.PoweredOn())
-            UpdateEngineFire();
+        UpdateEngineFire();
     }
 
     //Shut on/off exhaust based on power
     public void SetPower(bool on)
     {
-        if (on)
-            UpdateEngineFire();
+        UpdateEngineFire();
 
         if (!working)
             return;
@@ -95,7 +93,7 @@ public class Engine : VehiclePart
         }
 
         //Update intensity of fire
-        if (engineFire)
+        if (engineFire && belongsTo.PoweredOn())
             engineFire.intensity = Mathf.Min(initialHealth / health, 2.5f);
     }
 }
