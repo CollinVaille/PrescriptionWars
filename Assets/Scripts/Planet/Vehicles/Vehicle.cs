@@ -40,7 +40,9 @@ public class Vehicle : MonoBehaviour
     protected AudioSource generalAudio, engineAudio;
     protected Rigidbody rBody;
     private List<Collider> vehicleColliders;
-    private Transform[] parts;
+    private List<Transform> parts;
+    private List<Vector3> originalPartPositions;
+    private List<Quaternion> originalPartRotations;
 
     //Thrusting, braking, and steering
     [HideInInspector] public float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
@@ -61,6 +63,7 @@ public class Vehicle : MonoBehaviour
     //Damage
     private float lastImpactTime = 0.0f;
     protected List<Engine> engines;
+    private float thrustPerEngine = 0.0f, brakingPerEngine = 0.0f;
 
     private void Awake()
     {
@@ -86,8 +89,15 @@ public class Vehicle : MonoBehaviour
         vehicleColliders = new List<Collider>();
         AddCollidersRecursive(transform);
 
-        //Initialize parts array
-        parts = GetComponentsInChildren<Transform>();
+        //Initialize parts arrays
+        parts = new List<Transform>(GetComponentsInChildren<Transform>());
+        originalPartPositions = new List<Vector3>(parts.Count);
+        originalPartRotations = new List<Quaternion>(parts.Count);
+        for (int x = 0; x < parts.Count; x++)
+        {
+            originalPartPositions.Add(parts[x].localPosition);
+            originalPartRotations.Add(parts[x].localRotation);
+        }
 
         //Initialize traction
         tractionControl = traction > 0;
@@ -318,18 +328,46 @@ public class Vehicle : MonoBehaviour
         }
     }
 
-    public void AddEngine (Engine engine) { engines.Add(engine); }
+    public void AddEngine (Engine engine, bool onStartUp)
+    {
+        engines.Add(engine);
+
+        if(onStartUp)
+        {
+            thrustPerEngine = thrustPower / engines.Count;
+            brakingPerEngine = brakePower / engines.Count;
+        }
+        else
+        {
+            thrustPower += thrustPerEngine;
+            brakePower += brakingPerEngine;
+        }
+    }
 
     public void RemoveEngine (Engine engine)
     {
-        //Lose thrust and brake power proportional to engine count
-        thrustPower *= (engines.Count - 1.0f) / engines.Count;
-        brakePower *= (engines.Count - 1.0f) / engines.Count;
-
         engines.Remove(engine);
+
+        thrustPower -= thrustPerEngine;
+        brakePower -= brakingPerEngine;
     }
 
     public bool PoweredOn () { return on; }
 
     public AudioSource GetGeneralAudio () { return generalAudio; }
+
+    public void FixPart (Transform part, float repairPoints)
+    {
+        int partIndex = parts.IndexOf(part);
+
+        if (partIndex < 0 || partIndex >= parts.Count)
+            return;
+
+        part.localPosition = Vector3.Lerp(part.localPosition, originalPartPositions[partIndex], 0.5f);
+        part.localRotation = Quaternion.Lerp(part.localRotation, originalPartRotations[partIndex], 0.5f);
+
+        VehiclePart vehiclePart = part.GetComponent<VehiclePart>();
+        if (vehiclePart)
+            vehiclePart.Repair(repairPoints);
+    }
 }

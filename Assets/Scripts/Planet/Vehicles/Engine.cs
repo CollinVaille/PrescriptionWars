@@ -8,16 +8,13 @@ public class Engine : VehiclePart
 
     public Vector3 center = Vector3.zero;
 
-    private float initialHealth;
     private Fire engineFire = null;
 
     protected override void Start()
     {
         base.Start();
 
-        belongsTo.AddEngine(this);
-
-        initialHealth = health;
+        belongsTo.AddEngine(this, true);
     }
 
     protected override void PartFailure()
@@ -27,6 +24,13 @@ public class Engine : VehiclePart
         base.PartFailure();
 
         belongsTo.RemoveEngine(this);
+    }
+
+    protected override void PartRecovery()
+    {
+        base.PartRecovery();
+
+        belongsTo.AddEngine(this, false);
     }
 
     protected override void DamageHealth(float amount)

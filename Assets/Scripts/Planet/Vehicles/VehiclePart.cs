@@ -9,6 +9,7 @@ public class VehiclePart : MonoBehaviour, Damageable
 
     public float health = 500;
     protected bool working = true;
+    protected float initialHealth;
 
     public AudioClip partFailure;
 
@@ -25,6 +26,9 @@ public class VehiclePart : MonoBehaviour, Damageable
 
         //Get other references
         partCollider = GetComponent<Collider>();
+
+        //Remember initial health
+        initialHealth = health;
     }
 
     public void Damage(float damage, float knockback, Vector3 from, DamageType damageType, int team)
@@ -70,5 +74,22 @@ public class VehiclePart : MonoBehaviour, Damageable
         working = false;
 
         belongsTo.GetGeneralAudio().PlayOneShot(partFailure);
+    }
+
+    protected virtual void PartRecovery()
+    {
+        working = true;
+    }
+
+    public void Repair(float repairPoints)
+    {
+        //Add health points
+        health += repairPoints;
+        if (health > initialHealth)
+            health = initialHealth;
+
+        //Part has recovered if goes back above zero
+        if (!working && health > 0)
+            PartRecovery();
     }
 }
