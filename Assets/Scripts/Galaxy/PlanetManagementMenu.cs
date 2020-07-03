@@ -11,6 +11,7 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public Text planetNameText;
     public Text buildingsListText;
+    public Text buildingQueueListText;
 
     public static GameObject planetSelected;
 
@@ -21,10 +22,13 @@ public class PlanetManagementMenu : MonoBehaviour
     public Scrollbar buildingsCompletedScrollbar;
     public Scrollbar buildingQueueScrollbar;
 
+    public float updatesPerSecond;
+    float timer;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        timer = 0.0f;
     }
 
     // Update is called once per frame
@@ -36,24 +40,31 @@ public class PlanetManagementMenu : MonoBehaviour
             CloseMenu();
         }
 
-        //Sets the color of the foreground and all of the dividers based on the player empire's label color.
-        foregroundImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
-        foreach(Image divider in dividers)
+        timer += Time.deltaTime;
+        if(timer >= (1 / updatesPerSecond))
         {
-            divider.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
-        }
-
-        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-
-        if(planetSelected != null)
-        {
-            planetNameText.text = planetSelected.name;
-
-            if (tabs[0].activeInHierarchy)
+            //Sets the color of the foreground and all of the dividers based on the player empire's label color.
+            foregroundImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+            foreach (Image divider in dividers)
             {
-                SetBuildingsListText();
+                divider.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
             }
+
+            buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
+            buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
+
+            if (planetSelected != null)
+            {
+                planetNameText.text = planetSelected.name;
+
+                if (tabs[0].activeInHierarchy)
+                {
+                    SetBuildingsListText();
+                    SetBuildingQueueListText();
+                }
+            }
+
+            timer = 0.0f;
         }
     }
 
@@ -105,6 +116,59 @@ public class PlanetManagementMenu : MonoBehaviour
                 else
                 {
                     buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText()[x];
+                }
+            }
+        }
+    }
+
+    public void SetBuildingQueueListText()
+    {
+        buildingQueueListText.text = "";
+
+        if (planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count <= 4)
+        {
+            for (int x = 0; x < planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count; x++)
+            {
+                if (x == 0)
+                {
+                    buildingQueueListText.text = planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                }
+                else
+                {
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                }
+            }
+        }
+        else
+        {
+            int possibleValues = planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count - 3;
+
+            int closestIndex = 0;
+
+            for (int x = 0; x < GetValueNumbers(possibleValues).Count; x++)
+            {
+                if (x == 0)
+                {
+                    closestIndex = 0;
+                }
+                else
+                {
+                    if (Mathf.Abs(GetValueNumbers(possibleValues)[x] - buildingQueueScrollbar.value) < Mathf.Abs(GetValueNumbers(possibleValues)[closestIndex] - buildingQueueScrollbar.value))
+                    {
+                        closestIndex = x;
+                    }
+                }
+            }
+
+            for (int x = closestIndex; x < closestIndex + 4; x++)
+            {
+                if (x == closestIndex)
+                {
+                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                }
+                else
+                {
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
                 }
             }
         }

@@ -163,7 +163,7 @@ public class GalaxyBuilding
 
 public class BuildingQueue
 {
-    public List<GalaxyBuilding> buildingsQueued;
+    public List<GalaxyBuilding> buildingsQueued = new List<GalaxyBuilding>();
 
     public List<string> GetQueueText()
     {

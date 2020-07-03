@@ -12,24 +12,33 @@ public class ResourceBar : MonoBehaviour
     public GameObject creditsText;
     public GameObject prescriptionsText;
 
+    public float updatesPerSecond;
+    float timer;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        timer = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected];
-        flagBackground.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.z, 1.0f);
-        flagSymbol.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.z, 1.0f);
-        empireNameText.GetComponent<Text>().text = Empire.empires[GalaxyManager.playerID].empireName;
-        empireNameText.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
-        creditsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
-        creditsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
-        prescriptionsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
-        prescriptionsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
+        timer += Time.deltaTime;
+        if(timer >= (1 / updatesPerSecond))
+        {
+            flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected];
+            flagBackground.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.z, 1.0f);
+            flagSymbol.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.z, 1.0f);
+            empireNameText.GetComponent<Text>().text = Empire.empires[GalaxyManager.playerID].empireName;
+            empireNameText.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
+            creditsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
+            creditsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
+            prescriptionsText.GetComponent<Text>().text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
+            prescriptionsText.GetComponent<Text>().text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
+
+            timer = 0.0f;
+        }
     }
 
     string GetResourceString(float amount)
