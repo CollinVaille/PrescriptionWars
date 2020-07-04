@@ -382,12 +382,12 @@ public class Player : Pill
         healthBar.GetComponent<RectTransform>().localScale = healthBarScale;
     }
 
-    public override void Equip (Item item)
+    public override void Equip (Item item, bool dropOldItem = true)
     {
         Item oldHolding = holding;
 
         //Do the item switching
-        base.Equip(item);
+        base.Equip(item, dropOldItem);
 
         //Set up new item
         if (holding)
@@ -403,7 +403,7 @@ public class Player : Pill
             itemInfo.text = "";
 
         //Finish discarding old item
-        if (oldHolding)
+        if (oldHolding && dropOldItem)
         {
             oldHolding.gameObject.AddComponent<DroppedSFX>();
 

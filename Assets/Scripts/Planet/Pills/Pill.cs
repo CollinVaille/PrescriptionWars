@@ -146,7 +146,7 @@ public class Pill : MonoBehaviour, Damageable
 
     public AudioSource GetAudioSource () { return mainAudioSource; }
 
-    public virtual void Equip (Item item)
+    public virtual void Equip (Item item, bool dropOldItem = true)
     {
         //Unequip previous item so we have room to equip new item
         if (holding)
@@ -155,15 +155,18 @@ public class Pill : MonoBehaviour, Damageable
             holding.transform.Translate(Vector3.down * 0.25f, Space.Self);
             holding.transform.parent = null;
 
-            //Give it a rigidbody
-            holding.gameObject.AddComponent<Rigidbody>();
+            if(dropOldItem)
+            {
+                //Give it a rigidbody
+                holding.gameObject.AddComponent<Rigidbody>();
 
-            //Can now grab it off ground
-            holding.gameObject.layer = 10;
+                //Can now grab it off ground
+                holding.gameObject.layer = 10;
 
-            //Need trigger collider again since we're putting it back on ground
-            if (holding.GetComponent<Collider>())
-                holding.GetComponent<Collider>().enabled = true;
+                //Need trigger collider again since we're putting it back on ground
+                if (holding.GetComponent<Collider>())
+                    holding.GetComponent<Collider>().enabled = true;
+            }
 
             //Set status stuff (do last)
             holding.RetireFromHand();
@@ -321,7 +324,9 @@ public class Pill : MonoBehaviour, Damageable
         }
     }
 
-    public Rigidbody GetRigidbody() { return rBody; }
+    public Rigidbody GetRigidbody () { return rBody; }
+
+    public Item GetItemInHand () { return holding; }
 
     private string GetRandomPillName ()
     {

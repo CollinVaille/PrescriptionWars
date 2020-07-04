@@ -643,10 +643,10 @@ public class Bot1 : Pill
         return usingAgent;
     }
 
-    public override void Equip (Item item)
+    public override void Equip (Item item, bool dropOldItem = true)
     {
         //Do the item switching
-        base.Equip(item);
+        base.Equip(item, dropOldItem);
 
         //Set up new item
         if (holding)

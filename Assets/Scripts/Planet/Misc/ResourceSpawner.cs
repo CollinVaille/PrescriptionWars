@@ -5,10 +5,16 @@ using UnityEngine;
 public class ResourceSpawner : MonoBehaviour
 {
     public PossibleResource[] possibleResources;
+    public bool makeResourceChild = false;
 
     private void Start()
     {
-        //Get random resource
+        LoadRandomResource();
+    }
+
+    private void LoadRandomResource()
+    {
+        //Determine which resource to load randomly
         string resourceName = GetRandomResourceName();
 
         if (resourceName.Equals(""))
@@ -16,6 +22,13 @@ public class ResourceSpawner : MonoBehaviour
 
         //Spawn resource
         Transform resourceInstance = Instantiate(Resources.Load<GameObject>(resourceName)).transform;
+
+        //Get rid of (Clone) part of name
+        resourceInstance.name = resourceInstance.name.Substring(0, resourceInstance.name.Length - 7);
+
+        //Parent resource?
+        if (makeResourceChild)
+            resourceInstance.parent = transform;
 
         //Move/rotate resource
         resourceInstance.position = transform.position;
