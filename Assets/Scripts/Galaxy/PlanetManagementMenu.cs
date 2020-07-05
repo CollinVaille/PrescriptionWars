@@ -15,6 +15,13 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public static GameObject planetSelected;
 
+    public GameObject chooseCityMenu;
+    public List<GameObject> cities;
+    public List<Image> cityImages;
+    public List<Text> cityTexts;
+
+    public GameObject cityManagementMenu;
+
     public List<Shadow> shadows;
 
     public List<GameObject> tabs;
@@ -22,8 +29,12 @@ public class PlanetManagementMenu : MonoBehaviour
     public Scrollbar buildingsCompletedScrollbar;
     public Scrollbar buildingQueueScrollbar;
 
+    public Sprite desertCitySprite;
+
     public float updatesPerSecond;
     float timer;
+
+    public int citySelected;
 
     // Start is called before the first frame update
     void Start()
@@ -68,27 +79,64 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
+    public void ClickOnCity(int cityNum)
+    {
+        citySelected = cityNum;
+        chooseCityMenu.SetActive(false);
+        cityManagementMenu.SetActive(true);
+    }
+
+    public void ResetChooseCityMenu()
+    {
+        //Sets the correct number of cities active.
+        for(int x = 0; x < cities.Count; x++)
+        {
+            if (x < planetSelected.GetComponent<PlanetIcon>().cities.Count)
+                cities[x].SetActive(true);
+            else
+                cities[x].SetActive(false);
+        }
+
+        //Resets the image of each city based on the biome.
+        foreach(Image cityImage in cityImages)
+        {
+            cityImage.sprite = GetCityImage(planetSelected.GetComponent<PlanetIcon>().biome);
+        }
+
+        //Resets the name of each city.
+        for(int x = 0; x < cityTexts.Count; x++)
+        {
+            if(cities[x].activeInHierarchy)
+                cityTexts[x].text = planetSelected.GetComponent<PlanetIcon>().cities[x].cityName;
+        }
+    }
+
+    Sprite GetCityImage(Planet.Biome biome)
+    {
+        return desertCitySprite;
+    }
+
     public void SetBuildingsListText()
     {
         buildingsListText.text = "";
 
-        if(planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText().Count <= 4)
+        if(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count <= 4)
         {
-            for(int x = 0; x < planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText().Count; x++)
+            for(int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count; x++)
             {
                 if(x == 0)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText()[x];
+                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText()[x];
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
                 }
             }
         }
         else
         {
-            int possibleValues = planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText().Count - 3;
+            int possibleValues = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count - 3;
 
             int closestIndex = 0;
 
@@ -111,11 +159,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == closestIndex)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText()[x];
+                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().GetBuildingsListText()[x];
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
                 }
             }
         }
@@ -125,23 +173,23 @@ public class PlanetManagementMenu : MonoBehaviour
     {
         buildingQueueListText.text = "";
 
-        if (planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count <= 4)
+        if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count <= 4)
         {
-            for (int x = 0; x < planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count; x++)
+            for (int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count; x++)
             {
                 if (x == 0)
                 {
-                    buildingQueueListText.text = planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                    buildingQueueListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
                 }
             }
         }
         else
         {
-            int possibleValues = planetSelected.GetComponent<PlanetIcon>().buildingQueue.buildingsQueued.Count - 3;
+            int possibleValues = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count - 3;
 
             int closestIndex = 0;
 
@@ -164,11 +212,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == closestIndex)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().buildingQueue.GetQueueText()[x];
+                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
                 }
             }
         }
@@ -200,13 +248,18 @@ public class PlanetManagementMenu : MonoBehaviour
     public void CloseMenu()
     {
         //Resets all of the shadows on text.
-        foreach(Shadow shadow in shadows)
+        foreach (Shadow shadow in shadows)
         {
             shadow.enabled = false;
         }
 
+        //Resets the buildings tab.
+        citySelected = 0;
+        chooseCityMenu.SetActive(true);
+        cityManagementMenu.SetActive(false);
+
         //Sets the selected tab back to the first tab (currently the buildings tab).
-        for(int x = 0; x < tabs.Count; x++)
+        for (int x = 0; x < tabs.Count; x++)
         {
             if (x == 0)
                 tabs[x].SetActive(true);

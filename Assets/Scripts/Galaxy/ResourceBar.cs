@@ -8,6 +8,8 @@ public class ResourceBar : MonoBehaviour
     public Image flagBackground;
     public Image flagSymbol;
 
+    int flagSymbolNum = -1;
+
     public GameObject empireNameText;
     public GameObject creditsText;
     public GameObject prescriptionsText;
@@ -27,7 +29,10 @@ public class ResourceBar : MonoBehaviour
         timer += Time.deltaTime;
         if(timer >= (1 / updatesPerSecond))
         {
-            flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected];
+            //Updates the flag's symbol.
+            if(flagSymbolNum != Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected)
+                flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected];
+
             flagBackground.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.z, 1.0f);
             flagSymbol.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.z, 1.0f);
             empireNameText.GetComponent<Text>().text = Empire.empires[GalaxyManager.playerID].empireName;

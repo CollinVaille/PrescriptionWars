@@ -50,6 +50,7 @@ public class GalaxyManager : MonoBehaviour
         if (togglePlanetManagementMenu)
         {
             planetManagementMenu.SetActive(true);
+            planetManagementMenu.GetComponent<PlanetManagementMenu>().ResetChooseCityMenu();
             togglePlanetManagementMenu = false;
         }
     }
@@ -99,7 +100,7 @@ public class Empire
 
         for(int x = 0; x < planetsOwned.Count; x++)
         {
-            creditsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn;
+            creditsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn();
         }
 
         return creditsPerTurn;
@@ -111,7 +112,7 @@ public class Empire
 
         for (int x = 0; x < planetsOwned.Count; x++)
         {
-            prescriptionsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn;
+            prescriptionsPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn();
         }
 
         return prescriptionsPerTurn;

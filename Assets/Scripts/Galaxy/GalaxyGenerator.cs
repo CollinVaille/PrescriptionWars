@@ -74,13 +74,11 @@ public class GalaxyGenerator : MonoBehaviour
             {
                 if(x == 0)
                 {
-                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn = 2.0f;
-                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn = 2.0f;
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().GenerateCities(true);
                 }
                 else
                 {
-                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().creditsPerTurn = 1.0f;
-                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().prescriptionsPerTurn = 1.0f;
+                    planets[empire.planetsOwned[x]].GetComponent<PlanetIcon>().GenerateCities(false);
                 }
             }
         }
