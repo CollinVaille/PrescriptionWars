@@ -18,6 +18,7 @@ public class PlanetIcon : MonoBehaviour
 
     //Planet information
     public int ownerID = -1;
+    public bool isCapital;
 
     public float creditsPerTurn()
     {

@@ -29,7 +29,21 @@ public class PlanetManagementMenu : MonoBehaviour
     public Scrollbar buildingsCompletedScrollbar;
     public Scrollbar buildingQueueScrollbar;
 
+    //City sprite here.
     public Sprite desertCitySprite;
+    public Sprite frozenCitySprite;
+    public Sprite temperateCitySprite;
+    public Sprite swampCitySprite;
+    public Sprite hellCitySprite;
+    public Sprite forestCitySprite;
+    public Sprite spiritCitySprite;
+
+    //Info tab stuff here.
+    public Text infoCultureText;
+    public Text infoCitiesText;
+    public Text infoCapitalText;
+    public Text infoIncomeText;
+    public Text infoPrescriptionText;
 
     public float updatesPerSecond;
     float timer;
@@ -54,28 +68,43 @@ public class PlanetManagementMenu : MonoBehaviour
         timer += Time.deltaTime;
         if(timer >= (1 / updatesPerSecond))
         {
-            //Sets the color of the foreground and all of the dividers based on the player empire's label color.
-            foregroundImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
-            foreach (Image divider in dividers)
-            {
-                divider.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
-            }
-
-            buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-            buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-
-            if (planetSelected != null)
-            {
-                planetNameText.text = planetSelected.name;
-
-                if (tabs[0].activeInHierarchy)
-                {
-                    SetBuildingsListText();
-                    SetBuildingQueueListText();
-                }
-            }
+            UpdateUI();
 
             timer = 0.0f;
+        }
+    }
+
+    public void UpdateUI()
+    {
+        //Sets the color of the foreground and all of the dividers based on the player empire's label color.
+        foregroundImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+        foreach (Image divider in dividers)
+        {
+            divider.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+        }
+
+        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
+
+        if (planetSelected != null)
+        {
+            PlanetIcon planetSelectedScript = planetSelected.GetComponent<PlanetIcon>();
+
+            planetNameText.text = planetSelectedScript.nameLabel.text;
+
+            if (tabs[0].activeInHierarchy || timer < (1 / updatesPerSecond))
+            {
+                SetBuildingsListText();
+                SetBuildingQueueListText();
+            }
+            if (tabs[2].activeInHierarchy || timer < (1 / updatesPerSecond))
+            {
+                infoCultureText.text = "Culture: " + planetSelectedScript.culture;
+                infoCitiesText.text = "Cities: " + planetSelectedScript.cities.Count;
+                infoCapitalText.text = "Capital: " + planetSelectedScript.isCapital;
+                infoIncomeText.text = "Income: " + planetSelectedScript.creditsPerTurn();
+                infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
+            }
         }
     }
 
@@ -111,9 +140,29 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
+    //Returns the sample city image for the appropriate biome.
     Sprite GetCityImage(Planet.Biome biome)
     {
-        return desertCitySprite;
+        switch(biome)
+        {
+            case Planet.Biome.Frozen:
+                return frozenCitySprite;
+            case Planet.Biome.Temperate:
+                return temperateCitySprite;
+            case Planet.Biome.Desert:
+                return desertCitySprite;
+            case Planet.Biome.Swamp:
+                return swampCitySprite;
+            case Planet.Biome.Hell:
+                return hellCitySprite;
+            case Planet.Biome.Forest:
+                return forestCitySprite;
+            case Planet.Biome.Spirit:
+                return spiritCitySprite;
+
+            default:
+                return desertCitySprite;
+        }
     }
 
     public void SetBuildingsListText()

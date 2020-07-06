@@ -52,6 +52,7 @@ public class GalaxyManager : MonoBehaviour
             planetManagementMenu.SetActive(true);
             planetManagementMenu.GetComponent<PlanetManagementMenu>().ResetChooseCityMenu();
             togglePlanetManagementMenu = false;
+            planetManagementMenu.GetComponent<PlanetManagementMenu>().UpdateUI();
         }
     }
 }

@@ -251,6 +251,7 @@ public class GalaxyGenerator : MonoBehaviour
                     Empire.empires[x].planetsOwned.Add(y);
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+                    planets[y].GetComponent<PlanetIcon>().isCapital = true;
                     sourcePlanet = planets[y];
                     break;
                 }
@@ -279,6 +280,7 @@ public class GalaxyGenerator : MonoBehaviour
                 Empire.empires[x].planetsOwned.Add(indexToAdd);
                 planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                 planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+                planets[indexToAdd].GetComponent<PlanetIcon>().isCapital = false;
             }
         }
 
@@ -295,6 +297,7 @@ public class GalaxyGenerator : MonoBehaviour
                     Empire.empires[iteration].planetsOwned.Add(y);
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(iteration);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[iteration].empireCulture;
+                    planets[y].GetComponent<PlanetIcon>().isCapital = false;
                     break;
                 }
             }
