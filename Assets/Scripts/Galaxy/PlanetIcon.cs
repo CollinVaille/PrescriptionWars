@@ -69,6 +69,8 @@ public class PlanetIcon : MonoBehaviour
             GalaxyCity galaxyCity = new GalaxyCity();
 
             galaxyCity.cityName = "Test Name";
+            galaxyCity.citySize = 5;
+
             galaxyCity.creditsPerTurn = 1.0f;
             galaxyCity.prescriptionsPerTurn = 1.0f;
 
@@ -150,10 +152,12 @@ public class GalaxyBuilding
     public enum BuildingType
     {
         ResearchFacility,
-        Factory,
+        Depot,
         Prescriptor,
         TradePost
     }
+
+    public static List<BuildingType> buildingEnums = new List<BuildingType>() {BuildingType.ResearchFacility, BuildingType.Depot, BuildingType.Prescriptor, BuildingType.TradePost };
 
     public BuildingType type;
 }
@@ -178,11 +182,12 @@ public class BuildingQueue
 public class GalaxyCity
 {
     //Buildings
-    public List<GalaxyBuilding> buildings = new List<GalaxyBuilding>();
+    public List<GalaxyBuilding> buildingsCompleted = new List<GalaxyBuilding>();
     public BuildingQueue buildingQueue = new BuildingQueue();
 
     //Information
     public string cityName;
+    public int citySize;
 
     //Resources
     public float creditsPerTurn;
@@ -192,7 +197,7 @@ public class GalaxyCity
     {
         List<string> buildingsListText = new List<string>();
 
-        foreach (GalaxyBuilding galaxyBuilding in buildings)
+        foreach (GalaxyBuilding galaxyBuilding in buildingsCompleted)
         {
             buildingsListText.Add("" + galaxyBuilding.type);
         }

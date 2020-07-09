@@ -10,8 +10,6 @@ public class PlanetManagementMenu : MonoBehaviour
     public List<Image> dividers;
 
     public Text planetNameText;
-    public Text buildingsListText;
-    public Text buildingQueueListText;
 
     public static GameObject planetSelected;
 
@@ -26,8 +24,24 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public List<GameObject> tabs;
 
+    public Sprite unselectedButtonSprite;
+    public Sprite selectedButtonSprite;
+
+    //City management menu stuff here.
     public Scrollbar buildingsCompletedScrollbar;
     public Scrollbar buildingQueueScrollbar;
+    public Text buildingsListText;
+    public Text buildingQueueListText;
+    public Text buildingsLimitText;
+    public Text buildButtonText;
+    public Text buildingDescriptionText;
+    public Text buildingTitleText;
+    public List<Button> cityManagementMenuButtons;
+    public int buildingSelected;
+    int buildingDisplayed = -1;
+    public List<Sprite> buildingSprites;
+    public List<string> buildingDescriptions;
+    public Image buildingImage;
 
     //City sprite here.
     public Sprite desertCitySprite;
@@ -85,7 +99,9 @@ public class PlanetManagementMenu : MonoBehaviour
 
         buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
         buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        buildButtonText.color = Empire.empires[GalaxyManager.playerID].empireColor;
 
+        //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
         {
             PlanetIcon planetSelectedScript = planetSelected.GetComponent<PlanetIcon>();
@@ -96,6 +112,14 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 SetBuildingsListText();
                 SetBuildingQueueListText();
+                buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].citySize;
+                if(buildingSelected != buildingDisplayed)
+                {
+                    buildingTitleText.text = GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
+                    buildingDescriptionText.text = buildingDescriptions[buildingSelected];
+                    buildingImage.sprite = buildingSprites[buildingSelected];
+                    buildingDisplayed = buildingSelected;
+                }
             }
             if (tabs[2].activeInHierarchy || timer < (1 / updatesPerSecond))
             {
@@ -106,6 +130,82 @@ public class PlanetManagementMenu : MonoBehaviour
                 infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
             }
         }
+    }
+
+    string GetEnumText(string text)
+    {
+        List<char> charList = new List<char>();
+        char[] charArray = text.ToCharArray();
+        foreach(char c in charArray)
+        {
+            charList.Add(c);
+        }
+
+        for(int x = text.Length - 1; x > -1; x--)
+        {
+            if (char.IsUpper(charList[x]) && x != 0)
+            {
+                charList.Insert(x, ' ');
+            }
+        }
+
+        string finalText = "";
+        foreach(char c in charList)
+        {
+            finalText += c;
+        }
+
+        return finalText;
+    }
+
+    public void ChangeBuildingSelected(string direction)
+    {
+        if (direction.Equals("right"))
+        {
+            if(buildingSelected < GalaxyBuilding.buildingEnums.Count - 1)
+            {
+                buildingSelected++;
+            }
+            else
+            {
+                buildingSelected = 0;
+            }
+        }
+        else if (direction.Equals("left"))
+        {
+            if(buildingSelected > 0)
+            {
+                buildingSelected--;
+            }
+            else
+            {
+                buildingSelected = GalaxyBuilding.buildingEnums.Count - 1;
+            }
+        }
+    }
+
+    //Adds a new galaxy building to a city's building queue.
+    public void AddBuildingToQueue()
+    {
+        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].citySize)
+        {
+            //Creates the galaxy building.
+            GalaxyBuilding galaxyBuilding = new GalaxyBuilding();
+            galaxyBuilding.type = GalaxyBuilding.buildingEnums[buildingSelected];
+
+            //Adds the galaxy building to the city's building queue.
+            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Add(galaxyBuilding);
+        }
+    }
+
+    public void OnButtonEnter(Image buttonImage)
+    {
+        buttonImage.sprite = selectedButtonSprite;
+    }
+
+    public void OnButtonExit(Image buttonImage)
+    {
+        buttonImage.sprite = unselectedButtonSprite;
     }
 
     public void ClickOnCity(int cityNum)
@@ -175,11 +275,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == 0)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
+                    buildingsListText.text = GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
+                    buildingsListText.text += "\n" + GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
             }
         }
@@ -208,11 +308,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == closestIndex)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
+                    buildingsListText.text = GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x];
+                    buildingsListText.text += "\n" + GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
             }
         }
@@ -228,11 +328,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == 0)
                 {
-                    buildingQueueListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
+                    buildingQueueListText.text = GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
+                    buildingQueueListText.text += "\n" + GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
             }
         }
@@ -261,11 +361,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == closestIndex)
                 {
-                    buildingsListText.text = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
+                    buildingQueueListText.text = GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x];
+                    buildingQueueListText.text += "\n" + GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
             }
         }
@@ -300,6 +400,12 @@ public class PlanetManagementMenu : MonoBehaviour
         foreach (Shadow shadow in shadows)
         {
             shadow.enabled = false;
+        }
+
+        //Resets all of the button textures.
+        foreach(Button button in cityManagementMenuButtons)
+        {
+            button.image.sprite = unselectedButtonSprite;
         }
 
         //Resets the buildings tab.
