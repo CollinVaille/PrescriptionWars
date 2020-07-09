@@ -90,7 +90,7 @@ public class City : MonoBehaviour
         GenerateNavMesh();
 
         //Set the name after all possible influencing factors on the name have been set
-        gameObject.name = GenerateCityName();
+        gameObject.name = CityGenerator.GenerateCityName(Planet.planet.biome, radius);
 
         OnCityStart();
     }
@@ -626,6 +626,7 @@ public class City : MonoBehaviour
         fencePost.localPosition = position;
     }
 
+    //OBSELETE
     public string GenerateCityName ()
     {
         string cityName = "";
@@ -666,8 +667,7 @@ public class City : MonoBehaviour
             }
 
             string[] stationSuffixes = new string[] { " Station", " Outpost", " Camp", " Settlement",
-                " Installation", " Base", " Post", " Retreat", " Village", " Point", " Holdout",
-                " Hideout", " Hideaway", " Redoubt", " Slum" };
+                " Installation", " Base", " Post", " Retreat", " Village", " Point", " Holdout", " Lookout" };
 
             //Finish the city name with a suffix indicating it's not a major city
             cityName = stationName + stationSuffixes[Random.Range(0, stationSuffixes.Length)];

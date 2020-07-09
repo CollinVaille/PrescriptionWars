@@ -148,6 +148,155 @@ public class CityGenerator : MonoBehaviour
 
         return toReturn;
     }
+
+    //Not guaranteed to be unique
+    public static string GenerateCityName(Planet.Biome biome, int radius)
+    {
+        string cityName = "";
+
+        if (radius < 60) //Station
+        {
+            List<string> stationSuffixes = new List<string>(18){" Station", " Outpost", " Installation", " Base", " Point"};
+
+            if (biome == Planet.Biome.Temperate)
+            {
+                stationSuffixes.Add(" Village");
+                stationSuffixes.Add(" Lookout");
+                stationSuffixes.Add(" Holdout");
+                stationSuffixes.Add(" Camp");
+                stationSuffixes.Add(" Settlement");
+                stationSuffixes.Add(" Retreat");
+                stationSuffixes.Add(" Post");
+
+                //Get list of prefixes
+                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Village Name Prefixes");
+                string[] prefixes = prefixFile.text.Split('\n');
+
+                //Get list of suffixes
+                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Village Name Suffixes");
+                string[] suffixes = suffixFile.text.Split('\n');
+
+                //Determine prefix and suffix
+                string suffix = suffixes[Random.Range(0, suffixes.Length)];
+                string prefix = prefixes[Random.Range(0, prefixes.Length)];
+                if (Random.Range(0, 2) == 0 || prefix.Contains("'"))
+                    suffix = " " + suffix;
+                else
+                    suffix = suffix.ToLower();
+
+                //Put them together
+                cityName = prefix + suffix;
+            }
+            else if(biome == Planet.Biome.Forest || biome == Planet.Biome.Swamp)
+            {
+                stationSuffixes.Add(" Village");
+                stationSuffixes.Add(" Ruins");
+
+                string[] babble = new string[] { "Wagga", "DiDi", "Uuka", "Wooka", "Yauli", "Uga", "Yadda", "Waka",
+                "Tata", "Zidi", "Eika", "Wi", "Jawa"};
+
+                //Create name that's a random mash up of babble
+                cityName = babble[Random.Range(0, babble.Length)];
+                for (int x = 1; x <= Random.Range(2, 4); x++)
+                {
+                    if (Random.Range(0, 2) == 0)
+                        cityName += " " + babble[Random.Range(0, babble.Length)];
+                    else
+                        cityName += babble[Random.Range(0, babble.Length)].ToLower();
+                }
+            }
+            else if (biome == Planet.Biome.Frozen)
+            {
+                stationSuffixes.Add(" Ruins");
+            }
+            else if(biome == Planet.Biome.Desert)
+            {
+                stationSuffixes.Add(" Spaceport");
+                stationSuffixes.Add(" Cosmodrome");
+            }
+            else if(biome == Planet.Biome.Hell)
+            {
+                stationSuffixes.Add(" Juncture");
+                stationSuffixes.Add(" Firebase");
+                stationSuffixes.Add(" Hell Hole");
+                stationSuffixes.Add(" Compound");
+                stationSuffixes.Add(" Complex");
+
+                string[] lexicons = new string[] { "Xi", "Zeta", "Yi", "Ra", "Tau", "Rho", "Psi", "Zhao", "Xu"};
+
+                //Create name that's a random mash up of babble
+                cityName = lexicons[Random.Range(0, lexicons.Length)];
+                for (int x = 1; x <= Random.Range(2, 4); x++)
+                {
+                    if (Random.Range(0, 2) == 0)
+                        cityName += " " + lexicons[Random.Range(0, lexicons.Length)];
+                    else
+                        cityName += "-" + lexicons[Random.Range(0, lexicons.Length)];
+                }
+            }
+
+            //Default station names are defined in military station names file
+            if(cityName.Equals(""))
+            {
+                //Get list of station names
+                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Military Station Names");
+                string[] stationNames = stationNamesFile.text.Split('\n');
+
+                //Pick a random name from list
+                cityName = stationNames[Random.Range(0, stationNames.Length)];
+            }
+
+            //Finish the city name with a suffix indicating it's not a major city
+            cityName += stationSuffixes[Random.Range(0, stationSuffixes.Count)];
+        }
+        else //Major city
+        {
+            if (biome == Planet.Biome.Temperate)
+            {
+                string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
+                    "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
+
+                string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
+                    "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
+
+                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+            }
+            else if (biome == Planet.Biome.Forest || biome == Planet.Biome.Swamp)
+            {
+                if(Random.Range(0, 3) == 0)
+                {
+                    string[] ghettoNames = new string[] { "Nal Hutta", "Mon Cala", "Mu Cephei", "Stros M'kai",
+                    "Io Stiiciis", "Altyr Miydys", "Chickamauga", "Sangheili", "Nibenay", "Orinoco", "Vahl Balrah",
+                    "Honi Bardgh"};
+
+                    cityName = ghettoNames[Random.Range(0, ghettoNames.Length)];
+                }
+            }
+            else if(biome == Planet.Biome.Hell || biome == Planet.Biome.Spirit)
+            {
+                string[] part1 = new string[] { "Staavan", "Volks", "Korvan", "Weyro", "Teyro", "Vail", "Rhen",
+                    "Bhor", "Vel", "Galto", "Vogh", "Mons", "Forel" };
+
+                string[] part2 = new string[] { "gar", "gaard", "var", "boro", "baro", " Koros", "kura",
+                    "brunnr", "kyyge", "kuldhir", "touhm", "thume" };
+
+                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+            }
+
+            //Default city names are defined in the city names file
+            if (cityName.Equals(""))
+            {
+                //Get list of city names
+                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/City Names");
+                string[] cityNames = cityNamesFile.text.Split('\n');
+
+                //Pick a random name from list
+                cityName = cityNames[Random.Range(0, cityNames.Length)];
+            }
+        }
+
+        return cityName;
+    }
 }
 
 
