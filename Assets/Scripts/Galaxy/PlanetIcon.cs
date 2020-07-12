@@ -59,17 +59,37 @@ public class PlanetIcon : MonoBehaviour
 
     public void GenerateCities(bool isCapital)
     {
-        int numberOfCities = 2;
+        int totalBuildings = isCapital ? Random.Range(15, 20) : Random.Range(7, 14);
 
-        if (isCapital)
-            numberOfCities = 3;
+        int minimumBuildingsPerCity = 3;
 
-        for(int x = 0; x < numberOfCities; x++)
+        while(totalBuildings > 0)
         {
             GalaxyCity galaxyCity = new GalaxyCity();
 
-            galaxyCity.cityName = "Test Name";
-            galaxyCity.citySize = 5;
+            galaxyCity.buildingLimit = Random.Range(minimumBuildingsPerCity, 7);
+            totalBuildings -= galaxyCity.buildingLimit;
+
+            //If next city is too small, then just make this the last city and give it the remaining size
+            if(totalBuildings < minimumBuildingsPerCity)
+            {
+                galaxyCity.buildingLimit += totalBuildings;
+                totalBuildings = 0;
+            }
+
+            //Generates a random city name and ensures no duplicate city names on the same planet.
+            bool goodCityName = false;
+            while (!goodCityName)
+            {
+                goodCityName = true;
+                galaxyCity.cityName = CityGenerator.GenerateCityName(biome, galaxyCity.buildingLimit * 15);
+
+                foreach(GalaxyCity city in cities)
+                {
+                    if (city.cityName.Equals(galaxyCity.cityName))
+                        goodCityName = false;
+                }
+            }
 
             galaxyCity.creditsPerTurn = 1.0f;
             galaxyCity.prescriptionsPerTurn = 1.0f;
@@ -187,7 +207,7 @@ public class GalaxyCity
 
     //Information
     public string cityName;
-    public int citySize;
+    public int buildingLimit;
 
     //Resources
     public float creditsPerTurn;

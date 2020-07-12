@@ -112,13 +112,19 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 SetBuildingsListText();
                 SetBuildingQueueListText();
-                buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].citySize;
+                buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].buildingLimit;
                 if(buildingSelected != buildingDisplayed)
                 {
                     buildingTitleText.text = GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
                     buildingDescriptionText.text = buildingDescriptions[buildingSelected];
                     buildingImage.sprite = buildingSprites[buildingSelected];
                     buildingDisplayed = buildingSelected;
+                }
+
+                //Changes the planet name text to include the city name before it.
+                if (cityManagementMenu.activeInHierarchy)
+                {
+                    planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.nameLabel.text;
                 }
             }
             if (tabs[2].activeInHierarchy || timer < (1 / updatesPerSecond))
@@ -187,7 +193,7 @@ public class PlanetManagementMenu : MonoBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].citySize)
+        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit)
         {
             //Creates the galaxy building.
             GalaxyBuilding galaxyBuilding = new GalaxyBuilding();
@@ -213,6 +219,7 @@ public class PlanetManagementMenu : MonoBehaviour
         citySelected = cityNum;
         chooseCityMenu.SetActive(false);
         cityManagementMenu.SetActive(true);
+        UpdateUI();
     }
 
     public void ResetChooseCityMenu()
