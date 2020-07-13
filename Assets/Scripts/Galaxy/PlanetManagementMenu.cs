@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class PlanetManagementMenu : MonoBehaviour
 {
+    //General stuff.
+    public AudioClip openMenuAudioClip;
+
     public Image foregroundImage;
 
     public List<Image> dividers;
@@ -13,6 +16,7 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public static GameObject planetSelected;
 
+    //Choose city menu stuff.
     public GameObject chooseCityMenu;
     public List<GameObject> cities;
     public List<Image> cityImages;

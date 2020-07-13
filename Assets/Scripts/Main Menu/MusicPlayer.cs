@@ -8,8 +8,8 @@ public class MusicPlayer : MonoBehaviour
 
     public List<AudioClip> songs;
 
-    List<int> songsQueued;
-    List<int> songsAvailable;
+    static List<int> songsQueued;
+    static List<int> songsAvailable;
 
     // Start is called before the first frame update
     void Start()

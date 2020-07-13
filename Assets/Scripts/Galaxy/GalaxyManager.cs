@@ -6,6 +6,10 @@ public class GalaxyManager : MonoBehaviour
 {
     public GameObject commandConsole;
 
+    //Audio stuff.
+    public AudioSource musicSource;
+    public AudioSource sfxSource;
+
     public static int playerID = 0;
 
     public static List<GameObject> planets;
@@ -49,10 +53,13 @@ public class GalaxyManager : MonoBehaviour
 
         if (togglePlanetManagementMenu)
         {
+            PlanetManagementMenu planetManagementMenuScript = planetManagementMenu.GetComponent<PlanetManagementMenu>();
+
             planetManagementMenu.SetActive(true);
-            planetManagementMenu.GetComponent<PlanetManagementMenu>().ResetChooseCityMenu();
+            planetManagementMenuScript.ResetChooseCityMenu();
             togglePlanetManagementMenu = false;
-            planetManagementMenu.GetComponent<PlanetManagementMenu>().UpdateUI();
+            planetManagementMenuScript.UpdateUI();
+            sfxSource.PlayOneShot(planetManagementMenuScript.openMenuAudioClip);
         }
     }
 }
