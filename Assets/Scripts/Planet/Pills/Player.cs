@@ -1177,12 +1177,17 @@ public class Player : Pill
         {
             if (overrider is Seat)
                 StartCoroutine(PlayerSit((Seat)overrider));
+            else if(overrider is Ladder)
+                StartCoroutine(PlayerStrongOverride(overrider));
             else
-                StartCoroutine(PlayerDefaultOverride(overrider));
+                StartCoroutine(PlayerWeakOverride(overrider));
+
+            //Ladder override is only for player and is handled within Ladder.cs
         }
     }
 
-    private IEnumerator PlayerDefaultOverride (Interactable overrider)
+    //Dying or pressing any key besides 360 POV key will break this override
+    private IEnumerator PlayerWeakOverride (Interactable overrider)
     {
         do
         {
@@ -1199,6 +1204,27 @@ public class Player : Pill
         while (!dead && (!Input.anyKeyDown || Input.GetButtonDown("360 View")));
 
         overrider.ReleaseControl(!dead);
+    }
+
+    //Only death or outside interference will break this override
+    //Updates all but movement as well
+    private IEnumerator PlayerStrongOverride (Interactable overrider)
+    {
+        //Wait a frame so item update doesn't get called twice in first frame
+        yield return null;
+
+        while (!dead && controlOverride)
+        {
+            RotationInputUpdate();
+            ItemInputUpdate();
+            POVInputUpdate();
+            SquadInputUpdate();
+
+            yield return null;
+        }
+
+        if (controlOverride)
+            overrider.ReleaseControl(!dead);
     }
 
     private IEnumerator PlayerSit (Seat seat)

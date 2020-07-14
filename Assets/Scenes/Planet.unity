@@ -1771,7 +1771,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 515587971}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 127.99, z: 11547}
+  m_LocalPosition: {x: 0, y: 128.01, z: 11542}
   m_LocalScale: {x: 2000, y: 1, z: 2000}
   m_Children: []
   m_Father: {fileID: 1234580675}
@@ -4733,7 +4733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 0
+  biome: 3
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
   moon: {fileID: 0}
@@ -6155,7 +6155,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1450640867}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11547, y: 128, z: 0}
+  m_LocalPosition: {x: 11542, y: 128.02, z: 0}
   m_LocalScale: {x: 2000, y: 1, z: 2000}
   m_Children: []
   m_Father: {fileID: 1234580675}
@@ -6902,53 +6902,53 @@ MonoBehaviour:
   biomeMaterials:
   - name: Frozen
     wallMaterials:
-    - Concrete Wall
-    - Concrete Wall 2
+    - Concrete/Concrete Wall
+    - Concrete/Concrete Wall 2
     floorMaterials:
-    - Concrete Floor
+    - Concrete/Concrete Floor
   - name: Temperate
     wallMaterials:
-    - Brick Wall
-    - Plaster Wall
+    - Village/Brick Wall
+    - Village/Plaster Wall
     floorMaterials:
-    - Wood Floor
-    - Slate Tile Floor
+    - Village/Wood Floor
+    - Desert/Slate Tile Floor
   - name: Desert
     wallMaterials:
-    - Sand Wall
-    - Sand Wall 2
-    - Cobblestone Wall
+    - Desert/Sand Wall
+    - Desert/Sand Wall 2
+    - Desert/Cobblestone Wall
     floorMaterials:
-    - Sand Wall
-    - Sand Wall 2
-    - Slate Tile Floor
+    - Desert/Sand Wall
+    - Desert/Sand Wall 2
+    - Desert/Slate Tile Floor
   cityTypes:
   - name: Slum
     spawnChance: 1
     biomes: []
     buildings:
-    - Hotel
-    - Hovel Ruins
-    - Mini Garage
-    - Retail Hole in the Wall
-    - Swamp Ass Hovel
-    - Dome Hut
-    - Water Tower
-    - Slum Depot
+    - Slum/Hotel
+    - Slum/Hovel Ruins
+    - Slum/Mini Garage
+    - Slum/Retail Hole in the Wall
+    - Slum/Swamp Ass Hovel
+    - Slum/Dome Hut
+    - Slum/Water Tower
+    - Slum/Depot
     wallSections:
-    - Wall Slab
-    - Half Slab Half Bars
+    - Slum/Wall Slab
+    - Slum/Half Slab Half Bars
     gates:
-    - Slum Gate
-    - Slum Gate 2
-    - Slum Gate 3
-    - Slum Gate 4
-    - Slum Anti-Gate
-    - Slum Anti-Gate 2
+    - Slum/Gate
+    - Slum/Gate 2
+    - Slum/Gate 3
+    - Slum/Gate 4
+    - Slum/Anti-Gate
+    - Slum/Anti-Gate 2
     fencePostChance: 0.5
     fencePosts:
-    - Fence Post Slab
-    - Fence Post Slab 2
+    - Slum/Fence Post Slab
+    - Slum/Fence Post Slab 2
     wallMaterials: []
     floorMaterials: []
 --- !u!1 &1779026122

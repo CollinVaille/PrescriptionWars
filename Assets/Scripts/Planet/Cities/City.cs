@@ -46,12 +46,13 @@ public class City : MonoBehaviour
     public void ReserveTerrainLocation ()
     {
         //Reserve location for city
-        Vector3 cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(Random.Range(0, 3),
+        Vector3 cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(Random.Range(0, 10),
             (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4), 500, (int)(radius * 1.2f), true);
 
         //Place city at slight offset to location
-        cityLocation.x -= 20;
-        cityLocation.z -= 20;
+        cityLocation.x -= 10;
+        cityLocation.z -= 10;
+
         transform.position = cityLocation;
     }
 
@@ -205,8 +206,8 @@ public class City : MonoBehaviour
             Vector3 buildingPosition = Vector3.zero;
 
             //Center building within allocated area and convert from area space to local coordinates
-            buildingPosition.x = (newX + (areaLength / 2) - areaTaken.GetLength(0) / 2) * areaSize;
-            buildingPosition.z = (newZ + (areaLength / 2) - areaTaken.GetLength(1) / 2) * areaSize;
+            buildingPosition.x = (newX + (areaLength / 2.0f) - areaTaken.GetLength(0) / 2.0f) * areaSize;
+            buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
             newBuilding.localPosition = buildingPosition;
 
@@ -397,8 +398,9 @@ public class City : MonoBehaviour
 
     private Vector3 AreaCoordToLocalCoord (Vector3 areaCoord)
     {
-        areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) / 2) * areaSize;
-        areaCoord.z = (areaCoord.z - areaTaken.GetLength(1) / 2) * areaSize;
+        //Used to be / 2 (int math)
+        areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) / 2.0f) * areaSize;
+        areaCoord.z = (areaCoord.z - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
         return areaCoord;
     }
@@ -476,11 +478,13 @@ public class City : MonoBehaviour
 
         float cityWidth = areaSize * areaTaken.GetLength(0);
 
-        float startX = -cityWidth / 2.0f;
+        float startX = -cityWidth / 2.0f + 5;
         int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
 
-        float startZ = -cityWidth / 2.0f;
+        float startZ = -cityWidth / 2.0f + 5;
         int verticalSections = horizontalSections;
+
+        //Debug.Log("Radius: " + radius + ", Start X: " + startX + ", Start Z: " + startZ);
 
         //HORIZONTAL WALLS-------------------------------------------------------------------------------------
 
@@ -516,17 +520,22 @@ public class City : MonoBehaviour
         skipWallSection[closestWallSectionIndex] = true;
 
         //Now that the wall section locations have been determined, place them
+        float minZ = startZ - wallLength / 2.0f;
+        float maxZ = startZ + verticalSections * wallLength - wallLength / 2.0f;
         for (int x = 0; x < skipWallSection.Length; x++)
         {
             bool nextIsGate = false;
             if (x < horizontalSections - 1)
                 nextIsGate = skipWallSection[x + 1];
 
+            //Front walls
             PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, startZ - wallLength / 2.0f, 0);
+                startX + x * wallLength, placementHeight, minZ, 0);
+
+            //Back walls
             PlaceWallSection(skipWallSection[x], nextIsGate || x == horizontalSections - 1,
                 startX + x * wallLength, placementHeight,
-                startZ + verticalSections * wallLength - wallLength / 2.0f, 0);
+                maxZ, 0);
         }
 
         bool firstHorSectionIsGate = skipWallSection[0];
@@ -566,6 +575,8 @@ public class City : MonoBehaviour
         skipWallSection[closestWallSectionIndex] = true;
 
         //Now that the wall section locations have been determined, place them
+        float minX = startX - wallLength / 2.0f;
+        float maxX = startX + horizontalSections * wallLength - wallLength / 2.0f;
         for (int z = 0; z < skipWallSection.Length; z++)
         {
             bool nextIsGate = false;
@@ -573,10 +584,10 @@ public class City : MonoBehaviour
                 nextIsGate = skipWallSection[z + 1];
 
             PlaceWallSection(skipWallSection[z], nextIsGate,
-                startX - wallLength / 2.0f, placementHeight, startZ + z * wallLength, 90);
+                minX, placementHeight, startZ + z * wallLength, 90);
+
             PlaceWallSection(skipWallSection[z], nextIsGate || z == verticalSections - 1,
-                startX + horizontalSections * wallLength - wallLength / 2.0f,
-                placementHeight, startZ + z * wallLength, 90);
+                maxX, placementHeight, startZ + z * wallLength, 90);
         }
 
         //Place fence post at near corner if no fence gates there
@@ -624,88 +635,6 @@ public class City : MonoBehaviour
         Transform fencePost = Instantiate(fencePostPrefab, walls).transform;
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
-    }
-
-    //OBSELETE
-    public string GenerateCityName ()
-    {
-        string cityName = "";
-
-        if (radius < 60) //Small station name
-        {
-            string stationName;
-
-            if(Random.Range(0, 2) == 0) //Predefined station names
-            {
-                //Get list of station names
-                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Station Names");
-                string[] stationNames = stationNamesFile.text.Split('\n');
-
-                //Pick a random name from list
-                stationName = stationNames[Random.Range(0, stationNames.Length)];
-            }
-            else //Two-part randomized station names
-            {
-                //Get list of prefixes
-                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Station Name Prefixes");
-                string[] prefixes = prefixFile.text.Split('\n');
-
-                //Get list of suffixes
-                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Station Name Suffixes");
-                string[] suffixes = suffixFile.text.Split('\n');
-
-                //Determine suffix
-                string suffix = suffixes[Random.Range(0, suffixes.Length)];
-                string prefix = prefixes[Random.Range(0, prefixes.Length)];
-                if (Random.Range(0, 2) == 0 || prefix.Contains("'"))
-                    suffix = " " + suffix;
-                else
-                    suffix = suffix.ToLower();
-
-                //Determine prefix and get station name
-                stationName = prefix + suffix;
-            }
-
-            string[] stationSuffixes = new string[] { " Station", " Outpost", " Camp", " Settlement",
-                " Installation", " Base", " Post", " Retreat", " Village", " Point", " Holdout", " Lookout" };
-
-            //Finish the city name with a suffix indicating it's not a major city
-            cityName = stationName + stationSuffixes[Random.Range(0, stationSuffixes.Length)];
-        }
-        else //Major city name
-        {
-            if(Random.Range(0, 4) == 0) //Two part generic city name
-            {
-                string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
-                    "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
-
-                string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
-                    "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
-
-                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
-            }
-            else if (Random.Range(0, 4) == 0) //Two part nordic/dwarven city name
-            {
-                string[] part1 = new string[] { "Staavan", "Volks", "Korvan", "Weyro", "Teyro", "Vail", "Rhen",
-                    "Bhor", "Vel", "Galto", "Vogh", "Mons", "Forel" };
-
-                string[] part2 = new string[] { "gar", "gaard", "var", "boro", "baro", " Koros", "kura",
-                    "brunnr", "kyyge", "kuldhir", "touhm", "thume" };
-
-                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
-            }
-            else //Normal city name
-            {
-                //Get list of city names
-                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/City Names");
-                string[] cityNames = cityNamesFile.text.Split('\n');
-
-                //Pick a random name
-                cityName = cityNames[Random.Range(0, cityNames.Length)];
-            }
-        }
-
-        return cityName;
     }
 }
 
