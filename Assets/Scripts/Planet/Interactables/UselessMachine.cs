@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UselessMachine : Interactable
 {
-    private bool latchSet = false;
+    private bool latchSet = false, machineRunning = false;
     private float aggrevation = 0.0f;
     private AudioSource sfxSource;
 
@@ -42,27 +42,37 @@ public class UselessMachine : Interactable
         if (set == latchSet)
             return;
 
+        latchSet = set;
+
+        sfxSource.pitch = 1.0f;
+
         if (set)
         {
-            aggrevation += Random.Range(6.0f, 8.0f + aggrevation);
+            aggrevation += Random.Range(10.0f, 15.0f + aggrevation);
+            if (aggrevation > 250)
+                aggrevation = 250;
 
             latch.localEulerAngles = new Vector3(-30, 0, 0);
             sfxSource.PlayOneShot(setLatch);
 
-            StartCoroutine(ActivateMachine());
+            if(!machineRunning)
+                StartCoroutine(ActivateMachine());
         }
         else
         {
             latch.localEulerAngles = Vector3.zero;
             sfxSource.PlayOneShot(resetLatch);
         }
-
-        latchSet = set;
     }
 
     private IEnumerator ActivateMachine()
     {
-        while(true)
+        if (machineRunning)
+            yield break;
+
+        machineRunning = true;
+
+        while(latchSet)
         {
             bool attackThisTime = DetermineResponse(
             out float openMult, out float resetDelay, out float closeDelay, out float closeMult);
@@ -98,6 +108,31 @@ public class UselessMachine : Interactable
             if (closeDelay > 0)
                 yield return new WaitForSeconds(closeDelay);
 
+            //Latch set again before we finished...
+            if (latchSet && aggrevation > Random.Range(10.0f, 15.0f))
+            {
+                //Rapid back and forth loop
+                while(latchSet)
+                {
+                    //Fast push back
+                    if (Random.Range(0, aggrevation) > 15)
+                    {
+                        yield return StartCoroutine(PushLatchBack(25.0f / aggrevation, 25.0f / aggrevation));
+
+                        //Passive aggressive stare down after fast push back
+                        if (Random.Range(0, 4) == 0)
+                            yield return new WaitForSeconds(Random.Range(0.05f, 0.1f) * aggrevation);
+                    }
+                    else
+                    {
+                        if (aggrevation > 10.0f) //Passive aggressive stare down
+                            yield return new WaitForSeconds(Random.Range(0.5f, aggrevation / 10.0f));
+
+                        break;
+                    }
+                }
+            }
+
             sfxSource.pitch = closeMult;
             sfxSource.PlayOneShot(closeLid);
 
@@ -118,11 +153,9 @@ public class UselessMachine : Interactable
             //Finalize transformation
             lid.localEulerAngles = Vector3.zero;
             arm.localPosition = new Vector3(0.0f, 0.15f, -0.25f);
-
-            //Real loop guard
-            if (attackThisTime)
-                break;
         }
+
+        machineRunning = false;
     }
 
     private IEnumerator PushLatchBack(float pushDuration, float pullDuration)
@@ -157,6 +190,8 @@ public class UselessMachine : Interactable
         arm.localPosition = new Vector3(0.0f, 0.3f, -0.25f);
     }
 
+    //Returns whether to reset latch during response
+    //Delays are in seconds, 1.0f is normal speed for multipliers, 2.0f is twice as fast, etc.
     private bool DetermineResponse(out float openMult, out float resetDelay, out float closeDelay, out float closeMult)
     {
         if(aggrevation < Random.Range(7.5f, 10.0f)) //Normal
@@ -169,10 +204,10 @@ public class UselessMachine : Interactable
         }
         else if(aggrevation < Random.Range(15.0f, 20.0f)) //Impatient
         {
-            openMult = aggrevation / 12.5f;
+            openMult = aggrevation / 7.5f;
             resetDelay = 0.0f;
             closeDelay = 0.0f;
-            closeMult = aggrevation / 12.5f;
+            closeMult = aggrevation / 7.5f;
             return true;
         }
         else //Passive aggressive

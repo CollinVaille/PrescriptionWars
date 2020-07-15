@@ -169,11 +169,11 @@ public class CityGenerator : MonoBehaviour
                 stationSuffixes.Add(" Post");
 
                 //Get list of prefixes
-                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Village Name Prefixes");
+                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Location Names/Village Name Prefixes");
                 string[] prefixes = prefixFile.text.Split('\n');
 
                 //Get list of suffixes
-                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Village Name Suffixes");
+                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Location Names/Village Name Suffixes");
                 string[] suffixes = suffixFile.text.Split('\n');
 
                 //Determine prefix and suffix
@@ -239,7 +239,7 @@ public class CityGenerator : MonoBehaviour
             if(cityName.Equals(""))
             {
                 //Get list of station names
-                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Military Station Names");
+                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Location Names/Military Station Names");
                 string[] stationNames = stationNamesFile.text.Split('\n');
 
                 //Pick a random name from list
@@ -287,7 +287,7 @@ public class CityGenerator : MonoBehaviour
             if (cityName.Equals(""))
             {
                 //Get list of city names
-                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/City Names");
+                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/Location Names/City Names");
                 string[] cityNames = cityNamesFile.text.Split('\n');
 
                 //Pick a random name from list

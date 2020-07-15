@@ -552,7 +552,7 @@ public class GalaxyGenerator : MonoBehaviour
     private void ReadInPlanetNames()
     {
         //Get list of planet names
-        TextAsset planetNamesFile = Resources.Load<TextAsset>("Text/Planet Names");
+        TextAsset planetNamesFile = Resources.Load<TextAsset>("Text/Location Names/Planet Names");
         planetNames = planetNamesFile.text.Split('\n');
     }
 

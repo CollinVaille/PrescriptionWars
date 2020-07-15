@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class Pill : MonoBehaviour, Damageable
 {
+    private static string[] pillNames;
+
     //References
     protected Rigidbody rBody;
     protected AudioSource mainAudioSource;
@@ -332,73 +334,15 @@ public class Pill : MonoBehaviour, Damageable
     {
         string pillName = "";
 
-        int picker = Random.Range(0, 62);
-
-        switch (picker)
+        //Get list of pill names
+        if (pillNames == null)
         {
-            case 0: pillName = "Abilify"; break;
-            case 1: pillName = "Accutane"; break;
-            case 2: pillName = "Acetaminophen"; break;
-            case 3: pillName = "Aspirin"; break;
-            case 4: pillName = "Codeine"; break;
-            case 5: pillName = "Tylenol"; break;
-            case 6: pillName = "Cyanide"; break;
-            case 7: pillName = "Acular"; break;
-            case 8: pillName = "Advil"; break;
-            case 9: pillName = "Adenosine"; break;
-            case 10: pillName = "Epinephrine"; break;
-            case 11: pillName = "Benadryl"; break;
-            case 12: pillName = "Bevyxxa"; break;
-            case 13: pillName = "Targretrin"; break;
-            case 14: pillName = "Buprenorphine"; break;
-            case 15: pillName = "Bumex"; break;
-            case 16: pillName = "Sotalol"; break;
-            case 17: pillName = "Betapace"; break;
-            case 18: pillName = "Lotensin"; break;
-            case 19: pillName = "Benazepril"; break;
-            case 20: pillName = "Baraclude"; break;
-            case 21: pillName = "Celebrex"; break;
-            case 22: pillName = "Capoten"; break;
-            case 23: pillName = "Diazepam"; break;
-            case 24: pillName = "Bentyl"; break;
-            case 25: pillName = "Dicyclomine"; break;
-            case 26: pillName = "Methadone"; break;
-            case 27: pillName = "Dolophine"; break;
-            case 28: pillName = "Morphine"; break;
-            case 29: pillName = "Drisdol"; break;
-            case 30: pillName = "Hydrocodone"; break;
-            case 31: pillName = "Hydrochlorothiazide"; break;
-            case 32: pillName = "Montelukast"; break;
-            case 33: pillName = "Singulair"; break;
-            case 34: pillName = "Crestor"; break;
-            case 35: pillName = "Vyvanse"; break;
-            case 36: pillName = "Januvia"; break;
-            case 37: pillName = "Adderall"; break;
-            case 38: pillName = "Insulin Glargine"; break;
-            case 39: pillName = "Levothyroxine"; break;
-            case 40: pillName = "Synthroid"; break;
-            case 41: pillName = "Decongestant"; break;
-            case 42: pillName = "Ibuprofen"; break;
-            case 43: pillName = "Roids"; break;
-            case 44: pillName = "Viagra"; break;
-            case 45: pillName = "Penicillin"; break;
-            case 46: pillName = "Valium"; break;
-            case 47: pillName = "EZ Nite Sleep"; break;
-            case 48: pillName = "Xanax"; break;
-            case 49: pillName = "Klonopin"; break;
-            case 50: pillName = "Vicodin"; break;
-            case 51: pillName = "Ketamine"; break;
-            case 52: pillName = "Tramadol"; break;
-            case 53: pillName = "Motrin"; break;
-            case 54: pillName = "Antihistamine"; break;
-            case 55: pillName = "Zyrtec"; break;
-            case 56: pillName = "Xyzal"; break;
-            case 57: pillName = "Allegra"; break;
-            case 58: pillName = "Lithium"; break;
-            case 59: pillName = "Diphenhydramine"; break;
-            case 60: pillName = "Aller-Tec"; break;
-            default: pillName = "Placebo"; break;
+            TextAsset pillNamesFile = Resources.Load<TextAsset>("Text/Pill Names/Pill Names");
+            pillNames = pillNamesFile.text.Split('\n');
         }
+
+        //Randomly choose pill name
+        pillName = pillNames[Random.Range(0, pillNames.Length)];
 
         if (Random.Range(0, 2) == 0)
             pillName = "Pvt. " + pillName;
