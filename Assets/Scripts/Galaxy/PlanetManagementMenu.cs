@@ -11,7 +11,9 @@ public class PlanetManagementMenu : MonoBehaviour
     public AudioClip openMenuAudioClip;
     public AudioClip clickOnCityAudioClip;
     public AudioClip clickOnTabAudioClip;
-    public AudioClip addToQueueAudioClip;
+    public AudioClip clickThreeAudioClip;
+    public AudioClip cancelAudioClip;
+    public AudioClip demolishAudioClip;
 
     //General stuff.
     public Image foregroundImage;
@@ -38,7 +40,11 @@ public class PlanetManagementMenu : MonoBehaviour
     //City management menu stuff here.
     public GameObject cityManagementMenu;
     public Scrollbar buildingsCompletedScrollbar;
+    public List<Image> demolishBuildingImages;
+    int buildingsListTextStartIndex;
     public Scrollbar buildingQueueScrollbar;
+    public List<Image> cancelBuildingQueuedImages;
+    int buildingQueueListTextStartIndex;
     public Text buildingsListText;
     public Text buildingQueueListText;
     public Text buildingsLimitText;
@@ -120,7 +126,9 @@ public class PlanetManagementMenu : MonoBehaviour
             if (tabs[0].activeInHierarchy || timer < (1 / updatesPerSecond))
             {
                 SetBuildingsListText();
+                CheckDemolishBuildingSymbols();
                 SetBuildingQueueListText();
+                CheckCancelBuildingQueuedSymbols();
                 buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].buildingLimit;
                 if(buildingSelected != buildingDisplayed)
                 {
@@ -145,6 +153,78 @@ public class PlanetManagementMenu : MonoBehaviour
                 infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
             }
         }
+    }
+
+
+    //Updates the demolish building symbol images.
+    public void CheckDemolishBuildingSymbols()
+    {
+        int numberOfLines = buildingsListText.text.Split('\n').Length;
+
+        if (buildingsListText.text.Equals(""))
+            numberOfLines = 0;
+
+        for(int x = 0; x < demolishBuildingImages.Count; x++)
+        {
+            if (x < numberOfLines)
+            {
+                if (!demolishBuildingImages[x].gameObject.activeInHierarchy)
+                    demolishBuildingImages[x].gameObject.SetActive(true);
+            }
+            else if (demolishBuildingImages[x].gameObject.activeInHierarchy)
+                demolishBuildingImages[x].gameObject.SetActive(false);
+        }
+    }
+
+    //Updates the cancel queued building symbol images.
+    public void CheckCancelBuildingQueuedSymbols()
+    {
+        int numberOfLines = buildingQueueListText.text.Split('\n').Length;
+
+        if (buildingQueueListText.text.Equals(""))
+            numberOfLines = 0;
+
+        for(int x = 0; x < cancelBuildingQueuedImages.Count; x++)
+        {
+            if (x < numberOfLines)
+            {
+                if (!cancelBuildingQueuedImages[x].gameObject.activeInHierarchy)
+                    cancelBuildingQueuedImages[x].gameObject.SetActive(true);
+            }
+            else if (cancelBuildingQueuedImages[x].gameObject.activeInHierarchy)
+                cancelBuildingQueuedImages[x].gameObject.SetActive(false);
+        }
+    }
+
+    public void DemolishBuilding(int num)
+    {
+        //Figures out which index to remove at.
+        int indexToDemolish = buildingsListTextStartIndex + num;
+
+        //Removes the building at the requested index.
+        planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
+
+        //Plays the demolish and cancel sound effects.
+        sfxSource.PlayOneShot(cancelAudioClip);
+        sfxSource.PlayOneShot(demolishAudioClip);
+
+        //Updates the ui.
+        UpdateUI();
+    }
+
+    public void CancelBuildingQueued(int num)
+    {
+        //Figures out which index to remove at.
+        int indexToCancel = buildingQueueListTextStartIndex + num;
+
+        //Removes the building in the queue at the requested index.
+        planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
+
+        //Plays the removal/cancel sound effect.
+        sfxSource.PlayOneShot(cancelAudioClip);
+
+        //Updates the ui.
+        UpdateUI();
     }
 
     public void PlayOpenMenuSFX()
@@ -202,6 +282,9 @@ public class PlanetManagementMenu : MonoBehaviour
                 buildingSelected = GalaxyBuilding.buildingEnums.Count - 1;
             }
         }
+
+        //Plays the sound effect.
+        sfxSource.PlayOneShot(clickThreeAudioClip);
     }
 
     //Adds a new galaxy building to a city's building queue.
@@ -217,7 +300,7 @@ public class PlanetManagementMenu : MonoBehaviour
             planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Add(galaxyBuilding);
 
             //Plays the add to queue sound effect.
-            sfxSource.PlayOneShot(addToQueueAudioClip);
+            sfxSource.PlayOneShot(clickThreeAudioClip);
         }
     }
 
@@ -301,6 +384,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
         if(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count <= 4)
         {
+            buildingsListTextStartIndex = 0;
+
             for(int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count; x++)
             {
                 if(x == 0)
@@ -334,6 +419,8 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
             }
 
+            buildingsListTextStartIndex = closestIndex;
+
             for(int x = closestIndex; x < closestIndex + 4; x++)
             {
                 if(x == closestIndex)
@@ -354,6 +441,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
         if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count <= 4)
         {
+            buildingQueueListTextStartIndex = 0;
+
             for (int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count; x++)
             {
                 if (x == 0)
@@ -386,6 +475,8 @@ public class PlanetManagementMenu : MonoBehaviour
                     }
                 }
             }
+
+            buildingQueueListTextStartIndex = closestIndex;
 
             for (int x = closestIndex; x < closestIndex + 4; x++)
             {
@@ -468,6 +559,9 @@ public class PlanetManagementMenu : MonoBehaviour
 
         //Deactivates the whole planet management menu.
         transform.gameObject.SetActive(false);
+
+        //Plays the sound effect.
+        PlayOpenMenuSFX();
     }
 
     public void ToggleShadow(Shadow shadow)
