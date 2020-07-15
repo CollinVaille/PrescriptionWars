@@ -5,9 +5,15 @@ using UnityEngine.UI;
 
 public class PlanetManagementMenu : MonoBehaviour
 {
-    //General stuff.
-    public AudioClip openMenuAudioClip;
+    //Audio stuff.
+    public AudioSource sfxSource;
 
+    public AudioClip openMenuAudioClip;
+    public AudioClip clickOnCityAudioClip;
+    public AudioClip clickOnTabAudioClip;
+    public AudioClip addToQueueAudioClip;
+
+    //General stuff.
     public Image foregroundImage;
 
     public List<Image> dividers;
@@ -16,14 +22,6 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public static GameObject planetSelected;
 
-    //Choose city menu stuff.
-    public GameObject chooseCityMenu;
-    public List<GameObject> cities;
-    public List<Image> cityImages;
-    public List<Text> cityTexts;
-
-    public GameObject cityManagementMenu;
-
     public List<Shadow> shadows;
 
     public List<GameObject> tabs;
@@ -31,7 +29,14 @@ public class PlanetManagementMenu : MonoBehaviour
     public Sprite unselectedButtonSprite;
     public Sprite selectedButtonSprite;
 
+    //Choose city menu stuff.
+    public GameObject chooseCityMenu;
+    public List<GameObject> cities;
+    public List<Image> cityImages;
+    public List<Text> cityTexts;
+
     //City management menu stuff here.
+    public GameObject cityManagementMenu;
     public Scrollbar buildingsCompletedScrollbar;
     public Scrollbar buildingQueueScrollbar;
     public Text buildingsListText;
@@ -142,6 +147,11 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
+    public void PlayOpenMenuSFX()
+    {
+        sfxSource.PlayOneShot(openMenuAudioClip);
+    }
+
     string GetEnumText(string text)
     {
         List<char> charList = new List<char>();
@@ -205,6 +215,9 @@ public class PlanetManagementMenu : MonoBehaviour
 
             //Adds the galaxy building to the city's building queue.
             planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Add(galaxyBuilding);
+
+            //Plays the add to queue sound effect.
+            sfxSource.PlayOneShot(addToQueueAudioClip);
         }
     }
 
@@ -220,10 +233,16 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public void ClickOnCity(int cityNum)
     {
+        //Sets which city the player selected.
         citySelected = cityNum;
+
+        //Changes the menu and updates the ui.
         chooseCityMenu.SetActive(false);
         cityManagementMenu.SetActive(true);
         UpdateUI();
+
+        //Plays sound effect.
+        sfxSource.PlayOneShot(clickOnCityAudioClip);
     }
 
     public void ResetChooseCityMenu()
@@ -396,13 +415,27 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public void ClickOnTab(int num)
     {
-        for(int x = 0; x < tabs.Count; x++)
+        if (!tabs[num].activeInHierarchy)
         {
-            if (x == num)
-                tabs[x].SetActive(true);
-            else
-                tabs[x].SetActive(false);
+            //Switches the active tab.
+            for (int x = 0; x < tabs.Count; x++)
+            {
+                if (x == num)
+                    tabs[x].SetActive(true);
+                else
+                    tabs[x].SetActive(false);
+            }
         }
+
+        //Resets the buildings tab.
+        chooseCityMenu.SetActive(true);
+        cityManagementMenu.SetActive(false);
+
+        //Updates the ui.
+        UpdateUI();
+
+        //Plays the click on tab sound effect.
+        sfxSource.PlayOneShot(clickOnTabAudioClip);
     }
 
     public void CloseMenu()

@@ -966,13 +966,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f21580cf4dcad4bbcaf5c88f77f16a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxSource: {fileID: 1492085428}
   openMenuAudioClip: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  clickOnCityAudioClip: {fileID: 8300000, guid: d854309ef3c24fb469a70776756b4e29,
+    type: 3}
+  clickOnTabAudioClip: {fileID: 8300000, guid: f0081c0fe56f5d945a663f81c255c819, type: 3}
+  addToQueueAudioClip: {fileID: 8300000, guid: b45c4c0bfcbc30343bcad066d6b90f41, type: 3}
   foregroundImage: {fileID: 1532299849}
   dividers:
   - {fileID: 1951895793}
   - {fileID: 559453111}
   - {fileID: 934954017}
   planetNameText: {fileID: 40335810}
+  shadows:
+  - {fileID: 1617868012}
+  - {fileID: 1854559175}
+  - {fileID: 1640689984}
+  - {fileID: 459600750}
+  tabs:
+  - {fileID: 530660496}
+  - {fileID: 1682137501}
+  - {fileID: 1244651377}
+  unselectedButtonSprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc,
+    type: 3}
+  selectedButtonSprite: {fileID: 21300000, guid: 3e70017136d27e24aa6537970eba0e0b,
+    type: 3}
   chooseCityMenu: {fileID: 1731292070}
   cities:
   - {fileID: 17704021}
@@ -996,19 +1014,6 @@ MonoBehaviour:
   - {fileID: 595182684}
   - {fileID: 1262135071}
   cityManagementMenu: {fileID: 2028888934}
-  shadows:
-  - {fileID: 1617868012}
-  - {fileID: 1854559175}
-  - {fileID: 1640689984}
-  - {fileID: 459600750}
-  tabs:
-  - {fileID: 530660496}
-  - {fileID: 1682137501}
-  - {fileID: 1244651377}
-  unselectedButtonSprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc,
-    type: 3}
-  selectedButtonSprite: {fileID: 21300000, guid: 3e70017136d27e24aa6537970eba0e0b,
-    type: 3}
   buildingsCompletedScrollbar: {fileID: 1685975226}
   buildingQueueScrollbar: {fileID: 1856871674}
   buildingsListText: {fileID: 402502151}
@@ -1555,6 +1560,17 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 325615308}
           m_MethodName: CloseMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 325615308}
+          m_MethodName: PlayOpenMenuSFX
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

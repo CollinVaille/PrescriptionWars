@@ -59,7 +59,7 @@ public class GalaxyManager : MonoBehaviour
             planetManagementMenuScript.ResetChooseCityMenu();
             togglePlanetManagementMenu = false;
             planetManagementMenuScript.UpdateUI();
-            sfxSource.PlayOneShot(planetManagementMenuScript.openMenuAudioClip);
+            planetManagementMenuScript.PlayOpenMenuSFX();
         }
     }
 }
