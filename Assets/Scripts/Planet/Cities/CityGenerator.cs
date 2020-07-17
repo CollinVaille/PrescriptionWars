@@ -222,11 +222,11 @@ public class CityGenerator : MonoBehaviour
                 stationSuffixes.Add(" Compound");
                 stationSuffixes.Add(" Complex");
 
-                string[] lexicons = new string[] { "Xi", "Zeta", "Yi", "Ra", "Tau", "Rho", "Psi", "Zhao", "Xu"};
+                string[] lexicons = new string[] { "Xar", "Zeta", "Yax", "Ra", "Tarn", "Rhol", "Psii", "Zaao", "Xu", "Kaarn"};
 
                 //Create name that's a random mash up of babble
                 cityName = lexicons[Random.Range(0, lexicons.Length)];
-                for (int x = 1; x <= Random.Range(2, 4); x++)
+                for (int x = 1; x <= Random.Range(2, 3); x++)
                 {
                     if (Random.Range(0, 2) == 0)
                         cityName += " " + lexicons[Random.Range(0, lexicons.Length)];
