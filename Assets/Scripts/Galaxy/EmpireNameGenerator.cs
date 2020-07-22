@@ -9,14 +9,14 @@ public class EmpireNameGenerator
 
     private static List<int> availableFactions, availableAdjectives;
 
-    private static string capitalCity = "";
+    private static string capitalPlanet = "";
 
     //Should be unique, also parameter is optional
-    public static string GenerateEmpireName (string capitalCityName = "")
+    public static string GenerateEmpireName (string capitalPlanetName = "")
     {
         string empireName = "";
 
-        capitalCity = capitalCityName;
+        capitalPlanet = capitalPlanetName;
 
         int typePicker = Random.Range(1, 7);
 
@@ -128,9 +128,9 @@ public class EmpireNameGenerator
     {
         string adjective = "";
 
-        //Chance for adjective named after capital city
-        if (prefix && !capitalCity.Equals("") && Random.Range(0, 2) == 0)
-            return GetRandomEthnicName(capitalCity);
+        //Chance for adjective named after capital planet
+        if (prefix && !capitalPlanet.Equals("") && Random.Range(0, 2) == 0)
+            return GetRandomEthnicName(capitalPlanet);
 
         //Otherwise it's a normal adjective...
 
@@ -220,15 +220,31 @@ public class EmpireNameGenerator
             availableAdjectives.Add(x);
     }
 
-    //This assumes cityName is not empty
-    public static string GetRandomEthnicName(string cityName)
+    //This assumes planetName is not empty
+    public static string GetRandomEthnicName(string planetName)
     {
-        if (cityName.Length <= 6)
-            return AppendEthnicSuffix(cityName);
-        else if(cityName[5] == ' ')
-            return AppendEthnicSuffix(cityName.Substring(0, 5));
+        //Remove any spaces from name by just selecting first "word"
+        planetName = GetFirstWord(planetName);
+
+        if (planetName.Length <= 6)
+            return AppendEthnicSuffix(planetName);
         else
-            return AppendEthnicSuffix(cityName.Substring(0, 6));
+            return AppendEthnicSuffix(planetName.Substring(0, 6));
+    }
+
+    private static string GetFirstWord(string sentence)
+    {
+        int x = 0;
+        for (; x < sentence.Length; x++)
+        {
+            if (sentence[x] == ' ')
+                break;
+        }
+
+        if (x == sentence.Length || x == 0)
+            return sentence;
+        else
+            return sentence.Substring(0, x);
     }
 
     private static string AppendEthnicSuffix(string baseName)

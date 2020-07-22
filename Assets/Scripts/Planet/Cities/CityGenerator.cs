@@ -227,12 +227,14 @@ public class CityGenerator : MonoBehaviour
 
                 //Create name that's a random mash up of babble
                 cityName = lexicons[Random.Range(0, lexicons.Length)];
-                for (int x = 1; x <= Random.Range(2, 3); x++)
+                if(Random.Range(0, 2) == 0)
                 {
-                    if (Random.Range(0, 2) == 0)
+                    if (Random.Range(0, 3) == 0)
                         cityName += " " + lexicons[Random.Range(0, lexicons.Length)];
-                    else
+                    else if(Random.Range(0, 2) == 0)
                         cityName += "-" + lexicons[Random.Range(0, lexicons.Length)];
+                    else
+                        cityName += lexicons[Random.Range(0, lexicons.Length)].ToLower();
                 }
             }
 
