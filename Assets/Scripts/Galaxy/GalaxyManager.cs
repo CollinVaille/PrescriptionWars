@@ -11,6 +11,7 @@ public class GalaxyManager : MonoBehaviour
     public AudioSource sfxSource;
 
     public static int playerID = 0;
+    public static int turnNumber = 0;
 
     public static List<GameObject> planets;
 
@@ -61,6 +62,25 @@ public class GalaxyManager : MonoBehaviour
             planetManagementMenuScript.UpdateUI();
             planetManagementMenuScript.PlayOpenMenuSFX();
         }
+    }
+
+    public void EndTurn()
+    {
+        //Everyone makes their moves for the turn.
+        for(int x = 0; x < Empire.empires.Count; x++)
+        {
+            if (x != playerID)
+                Empire.empires[x].PlayAI();
+        }
+
+        //Stuff is calculated and added after everyone's turn.
+        foreach(Empire empire in Empire.empires)
+        {
+            empire.EndTurn();
+        }
+
+        //Logs that a turn has been completed.
+        turnNumber++;
     }
 }
 
@@ -124,5 +144,20 @@ public class Empire
         }
 
         return prescriptionsPerTurn;
+    }
+
+    public void PlayAI()
+    {
+
+    }
+
+    public void EndTurn()
+    {
+        foreach(int planetID in planetsOwned)
+        {
+            PlanetIcon planetScript = GalaxyManager.planets[planetID].GetComponent<PlanetIcon>();
+
+            planetScript.EndTurn();
+        }
     }
 }

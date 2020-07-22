@@ -26,7 +26,7 @@ public class PlanetIcon : MonoBehaviour
 
         foreach(GalaxyCity galaxyCity in cities)
         {
-            credits += galaxyCity.creditsPerTurn;
+            credits += galaxyCity.GetCreditsPerTurn();
         }
 
         return credits;
@@ -38,7 +38,7 @@ public class PlanetIcon : MonoBehaviour
 
         foreach(GalaxyCity galaxyCity in cities)
         {
-            prescriptions += galaxyCity.prescriptionsPerTurn;
+            prescriptions += galaxyCity.GetPrescriptionsPerTurn();
         }
 
         return prescriptions;
@@ -91,8 +91,9 @@ public class PlanetIcon : MonoBehaviour
                 }
             }
 
-            galaxyCity.creditsPerTurn = 1.0f;
-            galaxyCity.prescriptionsPerTurn = 1.0f;
+            galaxyCity.baseCreditsPerTurn = 1.0f;
+            galaxyCity.basePrescriptionsPerTurn = 1.0f;
+            galaxyCity.baseProductionPerTurn = 1.0f;
 
             cities.Add(galaxyCity);
         }
@@ -165,6 +166,19 @@ public class PlanetIcon : MonoBehaviour
             GalaxyManager.togglePlanetManagementMenu = true;
         }
     }
+
+    public void EndTurn()
+    {
+        foreach(GalaxyCity city in cities)
+        {
+            //Adds each city's resources per turn to the empire.
+            Empire.empires[ownerID].credits += city.GetCreditsPerTurn();
+            Empire.empires[ownerID].prescriptions += city.GetPrescriptionsPerTurn();
+
+            //Progresses the building queue.
+            city.buildingQueue.EndTurn(city.GetProductionPerTurn(), city);
+        }
+    }
 }
 
 public class GalaxyBuilding
@@ -179,12 +193,32 @@ public class GalaxyBuilding
 
     public static List<BuildingType> buildingEnums = new List<BuildingType>() {BuildingType.ResearchFacility, BuildingType.Depot, BuildingType.Prescriptor, BuildingType.TradePost };
 
+    public static float GetBaseProductionCost(BuildingType buildingType)
+    {
+        switch (buildingType)
+        {
+            case BuildingType.ResearchFacility:
+                return 10.0f;
+            case BuildingType.Depot:
+                return 10.0f;
+            case BuildingType.Prescriptor:
+                return 10.0f;
+            case BuildingType.TradePost:
+                return 10.0f;
+
+            default:
+                return 100.0f;
+        }
+    }
+
     public BuildingType type;
 }
 
 public class BuildingQueue
 {
     public List<GalaxyBuilding> buildingsQueued = new List<GalaxyBuilding>();
+
+    public float production = 0.0f;
 
     public List<string> GetQueueText()
     {
@@ -196,6 +230,41 @@ public class BuildingQueue
         }
 
         return queueText;
+    }
+
+    public void EndTurn(float productionToAdd, GalaxyCity city)
+    {
+        production += productionToAdd;
+
+        if(buildingsQueued.Count < 1)
+        {
+            //Sets the production back to zero if there is absolutely nothing in the queue.
+            production = 0;
+        }
+        else
+        {
+            for(int x = 0; x < buildingsQueued.Count; x++)
+            {
+                if(production >= GalaxyBuilding.GetBaseProductionCost(buildingsQueued[x].type))
+                {
+                    //Removes the amount of production that it took to construct the building.
+                    production -= GalaxyBuilding.GetBaseProductionCost(buildingsQueued[x].type);
+
+                    //Adds the building to the completed buildings list in the city.
+                    city.buildingsCompleted.Add(buildingsQueued[x]);
+
+                    //Removes the building from the building queue.
+                    buildingsQueued.RemoveAt(x);
+
+                    x--;
+                }
+                else
+                {
+                    //This ensures that if the first building in the queue cannot yet be constructed but the second one can, then it won't skip over the first one and waste its production on the second (example).
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -210,8 +279,24 @@ public class GalaxyCity
     public int buildingLimit;
 
     //Resources
-    public float creditsPerTurn;
-    public float prescriptionsPerTurn;
+    public float baseCreditsPerTurn;
+    public float basePrescriptionsPerTurn;
+    public float baseProductionPerTurn;
+
+    public float GetCreditsPerTurn()
+    {
+        return baseCreditsPerTurn;
+    }
+
+    public float GetPrescriptionsPerTurn()
+    {
+        return basePrescriptionsPerTurn;
+    }
+
+    public float GetProductionPerTurn()
+    {
+        return baseProductionPerTurn;
+    }
 
     public List<string> GetBuildingsListText()
     {

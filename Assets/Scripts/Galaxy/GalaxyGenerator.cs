@@ -242,7 +242,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             Empire.empires[x].planetsOwned = new List<int>();
 
-            GameObject sourcePlanet = new GameObject();
+            GameObject sourcePlanet = planets[0];
             for (int y = 0; y < planets.Count; y++)
             {
                 sourcePlanet = planets[y];

@@ -20,6 +20,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public List<Image> dividers;
 
+    public Image tabUnderlineImage;
+
     public Text planetNameText;
 
     public static GameObject planetSelected;
@@ -115,6 +117,7 @@ public class PlanetManagementMenu : MonoBehaviour
         buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
         buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
         buildButtonText.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        tabUnderlineImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
@@ -143,6 +146,19 @@ public class PlanetManagementMenu : MonoBehaviour
                 {
                     planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.nameLabel.text;
                 }
+
+                //Updates the tabs unerline image location.
+                if (tabs[0].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != -105)
+                {
+                    tabUnderlineImage.gameObject.transform.localPosition = new Vector3(-105, tabUnderlineImage.gameObject.transform.localPosition.y, tabUnderlineImage.gameObject.transform.localPosition.z);
+                }
+            }
+            if(tabs[1].activeInHierarchy || timer < (1 / updatesPerSecond))
+            {
+                if (tabs[1].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != 0)
+                {
+                    tabUnderlineImage.gameObject.transform.localPosition = new Vector3(0, tabUnderlineImage.gameObject.transform.localPosition.y, tabUnderlineImage.gameObject.transform.localPosition.z);
+                }
             }
             if (tabs[2].activeInHierarchy || timer < (1 / updatesPerSecond))
             {
@@ -151,6 +167,11 @@ public class PlanetManagementMenu : MonoBehaviour
                 infoCapitalText.text = "Capital: " + planetSelectedScript.isCapital;
                 infoIncomeText.text = "Income: " + planetSelectedScript.creditsPerTurn();
                 infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
+
+                if(tabs[2].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != 105)
+                {
+                    tabUnderlineImage.gameObject.transform.localPosition = new Vector3(105, tabUnderlineImage.gameObject.transform.localPosition.y, tabUnderlineImage.gameObject.transform.localPosition.z);
+                }
             }
         }
     }
