@@ -134,34 +134,6 @@ public class GalaxyGenerator : MonoBehaviour
             Empire.empires[x].empireCulture = empireCulture;
 
             //----------------------------------------------------------------------------------------------------
-            //Generate the empire's name.
-
-            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
-                Empire.empires[x].empireName = playerEmpireName;
-            else
-            {
-                string empireName = "";
-                while (true)
-                {
-                    empireName = Empire.empires[x].empireCulture + " Empire";
-
-                    if (x == 0)
-                        break;
-
-                    bool goodName = true;
-                    for(int y = 0; y < x; y++)
-                    {
-                        if (Empire.empires[y].empireName.Equals(empireName))
-                            goodName = false;
-                    }
-
-                    if(goodName)
-                        break;
-                }
-                Empire.empires[x].empireName = empireName;
-            }
-
-            //----------------------------------------------------------------------------------------------------
             //Generates the empire's flag.
 
             Empire.empires[x].empireFlag = new Flag();
@@ -281,6 +253,34 @@ public class GalaxyGenerator : MonoBehaviour
                 planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                 planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
                 planets[indexToAdd].GetComponent<PlanetIcon>().isCapital = false;
+            }
+
+            //----------------------------------------------------------------------------------------------------
+            //Generate the empire's name.
+
+            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized && !playerEmpireName.Equals(""))
+                Empire.empires[x].empireName = playerEmpireName;
+            else
+            {
+                string empireName = "";
+                while (true)
+                {
+                    empireName = EmpireNameGenerator.GenerateEmpireName(planets[Empire.empires[x].planetsOwned[0]].GetComponent<PlanetIcon>().nameLabel.text);
+
+                    if (x == 0)
+                        break;
+
+                    bool goodName = true;
+                    for (int y = 0; y < x; y++)
+                    {
+                        if (Empire.empires[y].empireName.Equals(empireName))
+                            goodName = false;
+                    }
+
+                    if (goodName)
+                        break;
+                }
+                Empire.empires[x].empireName = empireName;
             }
         }
 
