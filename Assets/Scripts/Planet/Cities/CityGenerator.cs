@@ -222,7 +222,8 @@ public class CityGenerator : MonoBehaviour
                 stationSuffixes.Add(" Compound");
                 stationSuffixes.Add(" Complex");
 
-                string[] lexicons = new string[] { "Xar", "Zeta", "Yax", "Ra", "Tarn", "Rhol", "Psii", "Zaao", "Xu", "Kaarn"};
+                string[] lexicons = new string[] { "Xar", "Zeta", "Yax", "Ra", "Tarn", "Rhol", "Psii", "Zaao", "Xu", "Kaarn",
+                "Har", "Fax", "Qar"};
 
                 //Create name that's a random mash up of babble
                 cityName = lexicons[Random.Range(0, lexicons.Length)];
@@ -253,23 +254,36 @@ public class CityGenerator : MonoBehaviour
         {
             if (biome == Planet.Biome.Temperate)
             {
-                string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
+                if(Random.Range(0, 3) == 0)
+                {
+                    string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
                     "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
 
-                string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
+                    string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
                     "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
 
-                cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+                    cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
+                }
             }
             else if (biome == Planet.Biome.Forest || biome == Planet.Biome.Swamp)
             {
-                if(Random.Range(0, 3) == 0)
+                if(Random.Range(0, 2) == 0)
                 {
-                    string[] ghettoNames = new string[] { "Nal Hutta", "Mon Cala", "Mu Cephei", "Stros M'kai",
-                    "Io Stiiciis", "Altyr Miydys", "Chickamauga", "Sangheili", "Nibenay", "Orinoco", "Vahl Balrah",
-                    "Honi Bardgh"};
+                    //Get list of city names
+                    TextAsset swampCityNamesFile = Resources.Load<TextAsset>("Text/Location Names/Swamp Ass City Names");
+                    string[] swampCityNames = swampCityNamesFile.text.Split('\n');
 
-                    cityName = ghettoNames[Random.Range(0, ghettoNames.Length)];
+                    //Pick a random name from list
+                    cityName = swampCityNames[Random.Range(0, swampCityNames.Length)];
+                }
+                else
+                {
+                    string[] part1 = new string[] { "Eika", "Weigga", "Gieiga", "Eeiita", "Weiika", "Yykieka", "Wakka-waka" };
+
+                    string[] part2 = new string[] { " Eiiga", " Weika", " Ooka", " Ahga", " Eiita", " Yiekah", " Yah",
+                        " Yugha", " Lakha", " Tata", " Xita", " Uiyga" };
+
+                    cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
                 }
             }
             else if(biome == Planet.Biome.Hell || biome == Planet.Biome.Spirit)
@@ -278,7 +292,7 @@ public class CityGenerator : MonoBehaviour
                     "Bhor", "Vel", "Galto", "Vogh", "Mons", "Forel" };
 
                 string[] part2 = new string[] { "gar", "gaard", "var", "boro", "baro", " Koros", "kura",
-                    "brunnr", "kyyge", "kuldhir", "touhm", "thume" };
+                    "brunnr", "kyyge", "kuldhir", "touhm", "thume", "heiligen", "semane" };
 
                 cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
             }

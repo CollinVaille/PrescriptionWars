@@ -1176,18 +1176,18 @@ public class Player : Pill
         if (overrider)
         {
             if (overrider is Seat)
-                StartCoroutine(PlayerSit((Seat)overrider));
+                StartCoroutine(PlayerSitOverride((Seat)overrider));
             else if(overrider is Ladder)
-                StartCoroutine(PlayerStrongOverride(overrider));
+                StartCoroutine(PlayerLadderOverride(overrider));
             else
-                StartCoroutine(PlayerWeakOverride(overrider));
+                StartCoroutine(PlayerSleepOverride(overrider));
 
             //Ladder override is only for player and is handled within Ladder.cs
         }
     }
 
     //Dying or pressing any key besides 360 POV key will break this override
-    private IEnumerator PlayerWeakOverride (Interactable overrider)
+    private IEnumerator PlayerSleepOverride (Interactable overrider)
     {
         do
         {
@@ -1208,7 +1208,7 @@ public class Player : Pill
 
     //Only death or outside interference will break this override
     //Updates all but movement as well
-    private IEnumerator PlayerStrongOverride (Interactable overrider)
+    private IEnumerator PlayerLadderOverride (Interactable overrider)
     {
         //Wait a frame so item update doesn't get called twice in first frame
         yield return null;
@@ -1227,17 +1227,19 @@ public class Player : Pill
             overrider.ReleaseControl(!dead);
     }
 
-    private IEnumerator PlayerSit (Seat seat)
+    private IEnumerator PlayerSitOverride (Seat seat)
     {
         Vehicle vehicleUnderControl = seat.controls;
 
         //Player set up
         head.localEulerAngles = Vector3.zero;
-        Vehicle.speedometer.enabled = true;
-        Vehicle.gearIndicator.enabled = true;
 
         if (vehicleUnderControl)
+        {
             vehicleUnderControl.UpdateGearIndicator();
+            Vehicle.speedometer.enabled = true;
+            Vehicle.gearIndicator.enabled = true;
+        }
 
         while (!dead && !seat.EjectingOccupant())
         {
