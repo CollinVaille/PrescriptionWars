@@ -92,6 +92,10 @@ public class Bot1 : Pill
             if(Random.Range(0, 3) == 0)
                 transform.Rotate(Vector3.up, Random.Range(-20, 20), Space.World);
 
+            //Chance for idle remark
+            if (voice && Random.Range(0, 150) == 0)
+                Say(voice.GetIdleBanter(), false);
+
             //Check for enemies
             target = LookForEnemy();
 
@@ -250,6 +254,10 @@ public class Bot1 : Pill
         //Stay in formation loop
         while (NoInterruptions() && SameOrdersID(ordersID))
         {
+            //Chance for eager banter
+            if (voice && Random.Range(0, 40) == 0)
+                Say(voice.GetEagerBanter(), false);
+
             //Check for enemies
             target = LookForEnemy();
 

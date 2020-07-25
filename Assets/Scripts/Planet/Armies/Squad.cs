@@ -76,6 +76,21 @@ public class Squad : MonoBehaviour
         //This is used by formation orders to determine the location and rotation of the formation
         transform.position = leader.transform.position;
         transform.eulerAngles = new Vector3(0, leader.transform.rotation.y, 0); //Only copy y rotation
+
+        //Verbalization
+        ShoutOrders();
+
+        //Affirmation from squadlings
+        foreach(Pill member in members)
+        {
+            if (member.voice && member != leader)
+            {
+                if(Random.Range(0, 5) == 0)
+                    member.Say(member.voice.GetEagerBanter(), false, Random.Range(1.0f, 2.0f));
+                else
+                    member.Say(member.voice.GetCopy(), false, Random.Range(1.0f, 2.0f));
+            }
+        }
     }
 
     public Orders GetOrders () { return orders; }
@@ -354,6 +369,21 @@ public class Squad : MonoBehaviour
                 //Remember time of day
                 timeOfDay = newTimeOfDay;
             }
+        }
+    }
+
+    private void ShoutOrders()
+    {
+        if (!leader || !leader.voice)
+            return;
+
+        switch(orders)
+        {
+            case Orders.HoldPosition: leader.Say(leader.voice.holdPosition, true); break;
+            case Orders.Follow: leader.Say(leader.voice.follow, true); break;
+            case Orders.FormSquare: leader.Say(leader.voice.formSquare, true); break;
+            case Orders.FormLine: leader.Say(leader.voice.formLine, true); break;
+            case Orders.Roam: leader.Say(leader.voice.roam, true); break;
         }
     }
 }

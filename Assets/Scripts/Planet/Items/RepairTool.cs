@@ -56,10 +56,17 @@ public class RepairTool : Item
 
         if (holder.RaycastShoot(transform, 5, out RaycastHit hit))
         {
-            Vehicle owningVehicle = GetOwningVehicle(hit.collider.transform);
+            Pill pill = hit.collider.GetComponent<Pill>();
 
-            if (owningVehicle)
-                owningVehicle.FixPart(hit.collider.transform, repairPoints);
+            if (pill)
+                pill.Repair(repairPoints / 2.0f);
+            else
+            {
+                Vehicle owningVehicle = GetOwningVehicle(hit.collider.transform);
+
+                if (owningVehicle)
+                    owningVehicle.FixPart(hit.collider.transform, repairPoints);
+            }
 
             //Move spark to hit location
             repairSpark.position = hit.point;

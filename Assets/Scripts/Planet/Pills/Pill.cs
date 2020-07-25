@@ -13,6 +13,8 @@ public class Pill : MonoBehaviour, Damageable
     protected Spawner spawner;
     protected Collider navigationZone;
     public Squad squad;
+    protected Item holding = null;
+    public Voice voice = null;
 
     //Status variables
     public int team = 0;
@@ -22,13 +24,12 @@ public class Pill : MonoBehaviour, Damageable
     [HideInInspector] public bool performingAction = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
-    protected Item holding = null;
-
     protected virtual void Start ()
     {
         //Set references
         rBody = GetComponent<Rigidbody>();
         mainAudioSource = GetComponent<AudioSource>();
+        voice = Voice.GetVoice("Carmine");
 
         //Set status variables
         maxHealth = health;
@@ -125,6 +126,9 @@ public class Pill : MonoBehaviour, Damageable
 
     public void Damage (float damage, float knockback, Vector3 from, DamageType damageType, int team)
     {
+        if(voice)
+            Say(voice.GetOof(), damageType != DamageType.Fire, Random.Range(0.2f, 0.4f));
+
         //Friendly fire is prevented!
         if (this.team == team)
         {
@@ -140,6 +144,20 @@ public class Pill : MonoBehaviour, Damageable
 
         //Damage
         ApplyDamage(damage);
+    }
+
+    //Same as heal but this has chance for pill to say thanks
+    public void Repair (float repairPoints)
+    {
+        Heal(repairPoints);
+
+        if (voice && Random.Range(0, 10) == 0)
+        {
+            if (health > maxHealth - 1)
+                Say(voice.GetImGood(), false);
+            else
+                Say(voice.GetThanks(), false);
+        }
     }
 
     public bool IsDead () { return dead; }
@@ -354,5 +372,24 @@ public class Pill : MonoBehaviour, Damageable
             pillName = "Lt. " + pillName;
 
         return pillName;
+    }
+
+    public void Say(AudioClip dialogue, bool interruptPrevious, float delay = 0.0f)
+    {
+        //Deal with possibility of interrupting dialogue that is still playing
+        if(mainAudioSource.isPlaying)
+        {
+            if (interruptPrevious)
+                mainAudioSource.Stop();
+            else
+                return;
+        }
+
+        //Play new dialogue
+        mainAudioSource.clip = dialogue;
+        if (delay > 0)
+            mainAudioSource.PlayDelayed(delay);
+        else
+            mainAudioSource.Play();
     }
 }

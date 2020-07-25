@@ -53,6 +53,7 @@ public class God : MonoBehaviour
 
         //Call for restart of all static initialization
         Vehicle.setUp = false;
+        Voice.InitialSetUp();
 
         //Variable initialization
         currentScreen = MenuScreen.PauseMenu;
