@@ -211,6 +211,24 @@ public class GalaxyBuilding
         }
     }
 
+    public static float GetBuildingEffect(BuildingType buildingType)
+    {
+        switch (buildingType)
+        {
+            case BuildingType.ResearchFacility:
+                return 1.0f;
+            case BuildingType.Depot:
+                return 1.0f;
+            case BuildingType.Prescriptor:
+                return 1.0f;
+            case BuildingType.TradePost:
+                return 1.0f;
+
+            default:
+                return 0.0f;
+        }
+    }
+
     public BuildingType type;
 }
 
@@ -285,17 +303,41 @@ public class GalaxyCity
 
     public float GetCreditsPerTurn()
     {
-        return baseCreditsPerTurn;
+        float credits = baseCreditsPerTurn;
+
+        foreach(GalaxyBuilding building in buildingsCompleted)
+        {
+            if (building.type == GalaxyBuilding.BuildingType.TradePost)
+                credits += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.TradePost);
+        }
+
+        return credits;
     }
 
     public float GetPrescriptionsPerTurn()
     {
-        return basePrescriptionsPerTurn;
+        float prescriptions = basePrescriptionsPerTurn;
+
+        foreach(GalaxyBuilding building in buildingsCompleted)
+        {
+            if (building.type == GalaxyBuilding.BuildingType.Prescriptor)
+                prescriptions += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Prescriptor);
+        }
+
+        return prescriptions;
     }
 
     public float GetProductionPerTurn()
     {
-        return baseProductionPerTurn;
+        float production = baseProductionPerTurn;
+
+        foreach(GalaxyBuilding building in buildingsCompleted)
+        {
+            if (building.type == GalaxyBuilding.BuildingType.Depot)
+                production += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Depot);
+        }
+
+        return production;
     }
 
     public List<string> GetBuildingsListText()

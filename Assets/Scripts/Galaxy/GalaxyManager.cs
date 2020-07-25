@@ -49,7 +49,7 @@ public class GalaxyManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.BackQuote))
         {
-            commandConsole.SetActive(!commandConsole.activeInHierarchy);
+            commandConsole.GetComponent<CheatConsole>().ToggleConsole();
         }
 
         if (togglePlanetManagementMenu)

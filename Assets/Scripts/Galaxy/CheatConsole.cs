@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -196,6 +197,11 @@ public class CheatConsole : MonoBehaviour
     public void ClearConsole()
     {
         commandHistoryText.text = "Command History:";
+    }
+
+    public void ToggleConsole()
+    {
+        transform.gameObject.SetActive(!transform.gameObject.activeInHierarchy);
     }
 
     void ChangeEmpireBasedOnCulture(string command)
