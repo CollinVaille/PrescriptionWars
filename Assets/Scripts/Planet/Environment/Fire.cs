@@ -167,7 +167,13 @@ public class Fire : MonoBehaviour
         if (!toBlacken || toBlacken.gameObject == gameObject)
             return;
 
-        toBlacken.material.color *= blackenFactor;
+        try
+        {
+            //Not all materials have a color property so we just catch the error and do nothing
+            //when they don't
+            toBlacken.material.color *= blackenFactor;
+        }
+        catch (System.Exception) { }
     }
 
     private void OnTriggerEnter(Collider other)
