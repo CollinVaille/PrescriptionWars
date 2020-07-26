@@ -13,6 +13,7 @@ public class GalaxyCamera : MonoBehaviour
     public InputField consoleInputField;
 
     public GameObject planetManagementMenu;
+    public GameObject galaxyView;
 
     public bool mouseOverPlanetManagementMenu;
 
@@ -26,7 +27,7 @@ public class GalaxyCamera : MonoBehaviour
             moveSpeed -= 25 * Time.deltaTime;*/
 
         //WASD and scrollwheel movement
-        if (!consoleInputField.isFocused)
+        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy)
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");
@@ -36,13 +37,14 @@ public class GalaxyCamera : MonoBehaviour
             movementVector.x = 0.0f;
             movementVector.y = 0.0f;
         }
-        movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
+        if(galaxyView.activeInHierarchy)
+            movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
         if (!planetManagementMenu.activeInHierarchy)
             mouseOverPlanetManagementMenu = false;
 
-        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu)
+        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && galaxyView.activeInHierarchy)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;

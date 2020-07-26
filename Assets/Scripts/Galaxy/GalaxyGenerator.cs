@@ -48,6 +48,7 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateEmpires();
         GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
+        GenerateTech();
         //Physics.CheckSphere()
     }
 
@@ -64,6 +65,80 @@ public class GalaxyGenerator : MonoBehaviour
         playerEmpireName = NewGameMenu.empireName;
     }
 
+
+    //Generates each empire's available tech.
+    private void GenerateTech()
+    {
+        //1
+        TechTotem firstTotem = new TechTotem();
+
+        Tech one = new Tech();
+        one.name = "First Test";
+        one.description = "It's the first.";
+        one.level = 1;
+        one.cost = 1.0f;
+
+        firstTotem.techsAvailable.Add(one);
+        firstTotem.RandomizeTechDisplayed();
+        TechManager.initialTechTotems.Add(firstTotem);
+
+        //2
+        TechTotem secondTotem = new TechTotem();
+
+        Tech two = new Tech();
+        two.name = "Second Test";
+        two.description = "It's the second.";
+        two.level = 1;
+        two.cost = 1.0f;
+
+        secondTotem.techsAvailable.Add(two);
+        secondTotem.RandomizeTechDisplayed();
+        TechManager.initialTechTotems.Add(secondTotem);
+
+        //3
+        TechTotem thirdTotem = new TechTotem();
+
+        Tech three = new Tech();
+        three.name = "Third Test";
+        three.description = "It's the third.";
+        three.level = 1;
+        three.cost = 1.0f;
+
+        thirdTotem.techsAvailable.Add(three);
+        thirdTotem.RandomizeTechDisplayed();
+        TechManager.initialTechTotems.Add(thirdTotem);
+
+        //4
+        TechTotem fourthTotem = new TechTotem();
+
+        Tech four = new Tech();
+        four.name = "Fourth Test";
+        four.description = "It's the fourth.";
+        four.level = 1;
+        four.cost = 1.0f;
+
+        fourthTotem.techsAvailable.Add(four);
+        fourthTotem.RandomizeTechDisplayed();
+        TechManager.initialTechTotems.Add(fourthTotem);
+
+        //5
+        TechTotem fifthTotem = new TechTotem();
+
+        Tech five = new Tech();
+        five.name = "Fifth Test";
+        five.description = "It's the fifth.";
+        five.level = 1;
+        five.cost = 1.0f;
+
+        fifthTotem.techsAvailable.Add(five);
+        fifthTotem.RandomizeTechDisplayed();
+        TechManager.initialTechTotems.Add(fifthTotem);
+
+        foreach(Empire empire in Empire.empires)
+        {
+            empire.techManager.techTotems = new List<TechTotem>(TechManager.initialTechTotems);
+        }
+    }
 
     //Generates each planet's stats.
     private void GeneratePlanetStats()
@@ -91,6 +166,13 @@ public class GalaxyGenerator : MonoBehaviour
         for (int x = 0; x < numberOfEmpires; x++)
         {
             Empire.empires.Add(new Empire());
+
+            //----------------------------------------------------------------------------------------------------
+            //Sets the empire's ID and creates the empire's tech manager.
+
+            Empire.empires[x].empireID = x;
+            Empire.empires[x].techManager = new TechManager();
+            Empire.empires[x].techManager.ownerEmpireID = x;
 
             //----------------------------------------------------------------------------------------------------
             //Determines if the empire is being controlled by the player.

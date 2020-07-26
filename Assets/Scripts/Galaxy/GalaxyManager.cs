@@ -101,15 +101,20 @@ public class Empire
     //General Information
     public string empireName;
     public Culture empireCulture;
-    public bool playerEmpire;
     public Color empireColor;
+    public int empireID;
+    public bool playerEmpire;
 
     //Flags
     public Flag empireFlag;
 
+    //Tech
+    public TechManager techManager;
+
     //Resources
     public float credits;
     public float prescriptions;
+    public float science;
 
     public Color GetLabelColor()
     {
@@ -148,7 +153,45 @@ public class Empire
 
     public void PlayAI()
     {
+        //Checks to make sure that a tech is selected.
+        if(techManager.techTotemSelected < 0 || techManager.techTotemSelected >= techManager.techTotems.Count)
+        {
+            //Determines the lowest level of tech the ai can pick.
+            int lowestLevelPossible = 0;
+            bool oneTotemEvaluated = false;
+            for(int x = 0; x < techManager.techTotems.Count; x++)
+            {
+                if(techManager.techTotems[x].techsAvailable.Count > 0)
+                {
+                    if (techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level < lowestLevelPossible || !oneTotemEvaluated)
+                    {
+                        lowestLevelPossible = techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level;
+                        oneTotemEvaluated = true;
+                    }
+                }
+            }
 
+            if (oneTotemEvaluated)
+            {
+                //Gets a list of the tech totems whos displayed tech has the lowest possible tech level the ai can pick.
+                List<int> possibleTechTotems = new List<int>();
+                for (int x = 0; x < techManager.techTotems.Count; x++)
+                {
+                    if(techManager.techTotems[x].techsAvailable.Count > 0)
+                    {
+                        if (techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level == lowestLevelPossible)
+                            possibleTechTotems.Add(x);
+                    }
+                }
+
+                //Picks a random tech totem to research out of the list that was just generated above.
+                techManager.techTotemSelected = possibleTechTotems[Random.Range(0, possibleTechTotems.Count)];
+            }
+            else
+            {
+                techManager.techTotemSelected = -1;
+            }
+        }
     }
 
     public void EndTurn()
@@ -158,6 +201,105 @@ public class Empire
             PlanetIcon planetScript = GalaxyManager.planets[planetID].GetComponent<PlanetIcon>();
 
             planetScript.EndTurn();
+            techManager.EndTurn(1);
         }
     }
+}
+
+public class TechManager
+{
+    public static List<TechTotem> initialTechTotems = new List<TechTotem>();
+
+    public List<TechTotem> techTotems;
+
+    public int techTotemSelected = -1;
+    public int ownerEmpireID;
+
+    public void EndTurn(float scienceToAdd)
+    {
+        Empire.empires[ownerEmpireID].science += scienceToAdd;
+
+        bool researchingSomething = true;
+        //Detects if a valid tech totem is selected.
+        if (techTotemSelected > -1 && techTotemSelected < techTotems.Count)
+        {
+            if (techTotems[techTotemSelected].techsAvailable.Count > 0)
+            {
+                //Detects if the empire has enough science to complete the selected tech.
+                if (Empire.empires[ownerEmpireID].science >= techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed].cost)
+                {
+                    //Removes the tech's cost from the total science.
+                    Empire.empires[ownerEmpireID].science -= techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed].cost;
+
+                    //Removes the completed tech from the available techs list and adds it to the techs completed list.
+                    techTotems[techTotemSelected].techsCompleted.Add(techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]);
+                    techTotems[techTotemSelected].techsAvailable.RemoveAt(techTotems[techTotemSelected].techDisplayed);
+
+                    //Randomizes what tech will be displayed next.
+                    techTotems[techTotemSelected].RandomizeTechDisplayed();
+
+                    //Makes it to where no tech totem is selected.
+                    techTotemSelected = -1;
+                }
+            }
+            else
+                researchingSomething = false;
+        }
+        else
+        {
+            researchingSomething = false;
+        }
+
+        if (!researchingSomething)
+        {
+            //If the player has nothing researching for an entire turn, the science is set back to zero as a sort of punishment. :)
+            Empire.empires[ownerEmpireID].science = 0;
+        }
+    }
+}
+
+public class TechTotem
+{
+    public List<Tech> techsCompleted = new List<Tech>();
+    public List<Tech> techsAvailable = new List<Tech>();
+
+    public int techDisplayed;
+
+    public void RandomizeTechDisplayed()
+    {
+        if (techsAvailable.Count > 0)
+        {
+            int lowestPossibleLevel = 0;
+            for (int x = 0; x < techsAvailable.Count; x++)
+            {
+                if (techsAvailable[x].level < lowestPossibleLevel || x == 0)
+                    lowestPossibleLevel = techsAvailable[x].level;
+            }
+
+            List<int> possibleTechs = new List<int>();
+            for (int x = 0; x < techsAvailable.Count; x++)
+            {
+                if (techsAvailable[x].level == lowestPossibleLevel)
+                    possibleTechs.Add(x);
+            }
+
+            techDisplayed = possibleTechs[Random.Range(0, possibleTechs.Count)];
+        }
+        else
+        {
+            techDisplayed = -1;
+        }
+    }
+}
+
+public class Tech
+{
+    public string name;
+    public string description;
+
+    public int level;
+
+    public float cost;
+
+    public Sprite image;
 }
