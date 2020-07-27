@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class GalaxyManager : MonoBehaviour
 {
     public GameObject commandConsole;
+    public GameObject researchView;
 
     //Audio stuff.
     public AudioSource musicSource;
@@ -62,6 +64,12 @@ public class GalaxyManager : MonoBehaviour
             planetManagementMenuScript.UpdateUI();
             planetManagementMenuScript.PlayOpenMenuSFX();
         }
+    }
+
+    public void SwitchToResearchView()
+    {
+        researchView.SetActive(true);
+        transform.gameObject.SetActive(false);
     }
 
     public void EndTurn()
@@ -151,6 +159,18 @@ public class Empire
         return prescriptionsPerTurn;
     }
 
+    public float GetSciencePerTurn()
+    {
+        float sciencePerTurn = 0.0f;
+
+        for(int x = 0; x < planetsOwned.Count; x++)
+        {
+            sciencePerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().sciencePerTurn();
+        }
+
+        return sciencePerTurn;
+    }
+
     public void PlayAI()
     {
         //Checks to make sure that a tech is selected.
@@ -163,9 +183,9 @@ public class Empire
             {
                 if(techManager.techTotems[x].techsAvailable.Count > 0)
                 {
-                    if (techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level < lowestLevelPossible || !oneTotemEvaluated)
+                    if (Tech.entireTechList[techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed]].level < lowestLevelPossible || !oneTotemEvaluated)
                     {
-                        lowestLevelPossible = techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level;
+                        lowestLevelPossible = Tech.entireTechList[techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed]].level;
                         oneTotemEvaluated = true;
                     }
                 }
@@ -179,7 +199,7 @@ public class Empire
                 {
                     if(techManager.techTotems[x].techsAvailable.Count > 0)
                     {
-                        if (techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed].level == lowestLevelPossible)
+                        if (Tech.entireTechList[techManager.techTotems[x].techsAvailable[techManager.techTotems[x].techDisplayed]].level == lowestLevelPossible)
                             possibleTechTotems.Add(x);
                     }
                 }
@@ -201,35 +221,35 @@ public class Empire
             PlanetIcon planetScript = GalaxyManager.planets[planetID].GetComponent<PlanetIcon>();
 
             planetScript.EndTurn();
-            techManager.EndTurn(1);
+            techManager.EndTurn();
         }
     }
 }
 
 public class TechManager
 {
-    public static List<TechTotem> initialTechTotems = new List<TechTotem>();
-
-    public List<TechTotem> techTotems;
+    public List<TechTotem> techTotems = new List<TechTotem>();
 
     public int techTotemSelected = -1;
     public int ownerEmpireID;
 
-    public void EndTurn(float scienceToAdd)
-    {
-        Empire.empires[ownerEmpireID].science += scienceToAdd;
+    public float baseCreditsProductionAmount = 0.0f;
+    public float tradePostCreditsProductionAmount = 0.0f;
+    public float baseProductionProductionAmount = 0.0f;
 
-        bool researchingSomething = true;
+    public void EndTurn()
+    {
+        bool researchingSomething = false;
         //Detects if a valid tech totem is selected.
         if (techTotemSelected > -1 && techTotemSelected < techTotems.Count)
         {
             if (techTotems[techTotemSelected].techsAvailable.Count > 0)
             {
                 //Detects if the empire has enough science to complete the selected tech.
-                if (Empire.empires[ownerEmpireID].science >= techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed].cost)
+                if (Empire.empires[ownerEmpireID].science >= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost)
                 {
                     //Removes the tech's cost from the total science.
-                    Empire.empires[ownerEmpireID].science -= techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed].cost;
+                    Empire.empires[ownerEmpireID].science -= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost;
 
                     //Removes the completed tech from the available techs list and adds it to the techs completed list.
                     techTotems[techTotemSelected].techsCompleted.Add(techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]);
@@ -240,14 +260,13 @@ public class TechManager
 
                     //Makes it to where no tech totem is selected.
                     techTotemSelected = -1;
+
+                    //Updates the effects the empire gets from its technology.
+                    UpdateTechnologyEffects();
                 }
+
+                researchingSomething = true;
             }
-            else
-                researchingSomething = false;
-        }
-        else
-        {
-            researchingSomething = false;
         }
 
         if (!researchingSomething)
@@ -256,12 +275,45 @@ public class TechManager
             Empire.empires[ownerEmpireID].science = 0;
         }
     }
+
+    public void UpdateTechnologyEffects()
+    {
+        baseCreditsProductionAmount = 0.0f;
+        tradePostCreditsProductionAmount = 0.0f;
+        baseProductionProductionAmount = 0.0f;
+
+        foreach(TechTotem totem in techTotems)
+        {
+            foreach(int indexCompleted in totem.techsCompleted)
+            {
+                foreach(TechEffect techEffect in Tech.entireTechList[indexCompleted].effects)
+                {
+                    TechEffect.TechEffectType techEffectType = techEffect.effectType;
+
+                    switch (techEffectType)
+                    {
+                        case TechEffect.TechEffectType.BaseCreditsProduction:
+                            baseCreditsProductionAmount += techEffect.amount;
+                            break;
+                        case TechEffect.TechEffectType.TradePostCreditsProduction:
+                            tradePostCreditsProductionAmount += techEffect.amount;
+                            break;
+                        case TechEffect.TechEffectType.BaseProductionProduction:
+                            baseProductionProductionAmount += techEffect.amount;
+                            break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 public class TechTotem
 {
-    public List<Tech> techsCompleted = new List<Tech>();
-    public List<Tech> techsAvailable = new List<Tech>();
+    public List<int> techsCompleted = new List<int>();
+    public List<int> techsAvailable = new List<int>();
+
+    public string name;
 
     public int techDisplayed;
 
@@ -272,14 +324,14 @@ public class TechTotem
             int lowestPossibleLevel = 0;
             for (int x = 0; x < techsAvailable.Count; x++)
             {
-                if (techsAvailable[x].level < lowestPossibleLevel || x == 0)
-                    lowestPossibleLevel = techsAvailable[x].level;
+                if (Tech.entireTechList[techsAvailable[x]].level < lowestPossibleLevel || x == 0)
+                    lowestPossibleLevel = Tech.entireTechList[techsAvailable[x]].level;
             }
 
             List<int> possibleTechs = new List<int>();
             for (int x = 0; x < techsAvailable.Count; x++)
             {
-                if (techsAvailable[x].level == lowestPossibleLevel)
+                if (Tech.entireTechList[techsAvailable[x]].level == lowestPossibleLevel)
                     possibleTechs.Add(x);
             }
 
@@ -292,14 +344,34 @@ public class TechTotem
     }
 }
 
+[System.Serializable]
 public class Tech
 {
+    public static List<Tech> entireTechList = new List<Tech>();
+
     public string name;
     public string description;
+    public string totemName;
 
     public int level;
+    public int spriteNum;
 
     public float cost;
 
-    public Sprite image;
+    public List<TechEffect> effects;
+}
+
+[System.Serializable]
+public class TechEffect
+{
+    public enum TechEffectType
+    {
+        BaseCreditsProduction,
+        TradePostCreditsProduction,
+        BaseProductionProduction
+    }
+
+    public TechEffectType effectType;
+
+    public float amount;
 }

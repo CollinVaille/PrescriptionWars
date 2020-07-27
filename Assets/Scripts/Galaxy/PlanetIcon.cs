@@ -26,7 +26,7 @@ public class PlanetIcon : MonoBehaviour
 
         foreach(GalaxyCity galaxyCity in cities)
         {
-            credits += galaxyCity.GetCreditsPerTurn();
+            credits += galaxyCity.GetCreditsPerTurn(ownerID);
         }
 
         return credits;
@@ -38,10 +38,22 @@ public class PlanetIcon : MonoBehaviour
 
         foreach(GalaxyCity galaxyCity in cities)
         {
-            prescriptions += galaxyCity.GetPrescriptionsPerTurn();
+            prescriptions += galaxyCity.GetPrescriptionsPerTurn(ownerID);
         }
 
         return prescriptions;
+    }
+
+    public float sciencePerTurn()
+    {
+        float science = 0.0f;
+
+        foreach(GalaxyCity galaxyCity in cities)
+        {
+            science += galaxyCity.GetSciencePerTurn(ownerID);
+        }
+
+        return science;
     }
 
     Vector3 rotation;
@@ -94,6 +106,7 @@ public class PlanetIcon : MonoBehaviour
             galaxyCity.baseCreditsPerTurn = 1.0f;
             galaxyCity.basePrescriptionsPerTurn = 1.0f;
             galaxyCity.baseProductionPerTurn = 1.0f;
+            galaxyCity.baseSciencePerTurn = 1.0f;
 
             cities.Add(galaxyCity);
         }
@@ -172,11 +185,12 @@ public class PlanetIcon : MonoBehaviour
         foreach(GalaxyCity city in cities)
         {
             //Adds each city's resources per turn to the empire.
-            Empire.empires[ownerID].credits += city.GetCreditsPerTurn();
-            Empire.empires[ownerID].prescriptions += city.GetPrescriptionsPerTurn();
+            Empire.empires[ownerID].credits += city.GetCreditsPerTurn(ownerID);
+            Empire.empires[ownerID].prescriptions += city.GetPrescriptionsPerTurn(ownerID);
+            Empire.empires[ownerID].science += city.GetSciencePerTurn(ownerID);
 
             //Progresses the building queue.
-            city.buildingQueue.EndTurn(city.GetProductionPerTurn(), city);
+            city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerID), city);
         }
     }
 }
@@ -211,7 +225,7 @@ public class GalaxyBuilding
         }
     }
 
-    public static float GetBuildingEffect(BuildingType buildingType)
+    public static float GetBuildingEffect(BuildingType buildingType, int ownerID)
     {
         switch (buildingType)
         {
@@ -222,7 +236,7 @@ public class GalaxyBuilding
             case BuildingType.Prescriptor:
                 return 1.0f;
             case BuildingType.TradePost:
-                return 1.0f;
+                return 1.0f + Empire.empires[ownerID].techManager.tradePostCreditsProductionAmount;
 
             default:
                 return 0.0f;
@@ -300,44 +314,62 @@ public class GalaxyCity
     public float baseCreditsPerTurn;
     public float basePrescriptionsPerTurn;
     public float baseProductionPerTurn;
+    public float baseSciencePerTurn;
 
-    public float GetCreditsPerTurn()
+    public float GetCreditsPerTurn(int ownerID)
     {
         float credits = baseCreditsPerTurn;
+
+        credits += Empire.empires[ownerID].techManager.baseCreditsProductionAmount;
 
         foreach(GalaxyBuilding building in buildingsCompleted)
         {
             if (building.type == GalaxyBuilding.BuildingType.TradePost)
-                credits += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.TradePost);
+                credits += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.TradePost, ownerID);
         }
 
         return credits;
     }
 
-    public float GetPrescriptionsPerTurn()
+    public float GetPrescriptionsPerTurn(int ownerID)
     {
         float prescriptions = basePrescriptionsPerTurn;
 
         foreach(GalaxyBuilding building in buildingsCompleted)
         {
             if (building.type == GalaxyBuilding.BuildingType.Prescriptor)
-                prescriptions += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Prescriptor);
+                prescriptions += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Prescriptor, ownerID);
         }
 
         return prescriptions;
     }
 
-    public float GetProductionPerTurn()
+    public float GetProductionPerTurn(int ownerID)
     {
         float production = baseProductionPerTurn;
+
+        production += Empire.empires[ownerID].techManager.baseProductionProductionAmount;
 
         foreach(GalaxyBuilding building in buildingsCompleted)
         {
             if (building.type == GalaxyBuilding.BuildingType.Depot)
-                production += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Depot);
+                production += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.Depot, ownerID);
         }
 
         return production;
+    }
+
+    public float GetSciencePerTurn(int ownerID)
+    {
+        float science = baseSciencePerTurn;
+
+        foreach(GalaxyBuilding building in buildingsCompleted)
+        {
+            if (building.type == GalaxyBuilding.BuildingType.ResearchFacility)
+                science += GalaxyBuilding.GetBuildingEffect(GalaxyBuilding.BuildingType.ResearchFacility, ownerID);
+        }
+
+        return science;
     }
 
     public List<string> GetBuildingsListText()

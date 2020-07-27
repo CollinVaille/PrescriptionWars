@@ -13,6 +13,7 @@ public class ResourceBar : MonoBehaviour
     public Text empireNameText;
     public Text creditsText;
     public Text prescriptionsText;
+    public Text scienceText;
     public Text turnText;
 
     public float updatesPerSecond;
@@ -42,6 +43,8 @@ public class ResourceBar : MonoBehaviour
             creditsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
             prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
             prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
+            scienceText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].science);
+            scienceText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetSciencePerTurn();
             turnText.text = "Turn: " + GalaxyManager.turnNumber;
 
             timer = 0.0f;

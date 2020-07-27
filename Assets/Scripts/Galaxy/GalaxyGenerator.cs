@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GalaxyGenerator : MonoBehaviour
 {
+    public List<Tech> techs;
+    public List<string> techTotems;
+    
     string[] planetNames;
 
     public int numberOfPlanets;
@@ -69,74 +72,40 @@ public class GalaxyGenerator : MonoBehaviour
     //Generates each empire's available tech.
     private void GenerateTech()
     {
-        //1
-        TechTotem firstTotem = new TechTotem();
-
-        Tech one = new Tech();
-        one.name = "First Test";
-        one.description = "It's the first.";
-        one.level = 1;
-        one.cost = 1.0f;
-
-        firstTotem.techsAvailable.Add(one);
-        firstTotem.RandomizeTechDisplayed();
-        TechManager.initialTechTotems.Add(firstTotem);
-
-        //2
-        TechTotem secondTotem = new TechTotem();
-
-        Tech two = new Tech();
-        two.name = "Second Test";
-        two.description = "It's the second.";
-        two.level = 1;
-        two.cost = 1.0f;
-
-        secondTotem.techsAvailable.Add(two);
-        secondTotem.RandomizeTechDisplayed();
-        TechManager.initialTechTotems.Add(secondTotem);
-
-        //3
-        TechTotem thirdTotem = new TechTotem();
-
-        Tech three = new Tech();
-        three.name = "Third Test";
-        three.description = "It's the third.";
-        three.level = 1;
-        three.cost = 1.0f;
-
-        thirdTotem.techsAvailable.Add(three);
-        thirdTotem.RandomizeTechDisplayed();
-        TechManager.initialTechTotems.Add(thirdTotem);
-
-        //4
-        TechTotem fourthTotem = new TechTotem();
-
-        Tech four = new Tech();
-        four.name = "Fourth Test";
-        four.description = "It's the fourth.";
-        four.level = 1;
-        four.cost = 1.0f;
-
-        fourthTotem.techsAvailable.Add(four);
-        fourthTotem.RandomizeTechDisplayed();
-        TechManager.initialTechTotems.Add(fourthTotem);
-
-        //5
-        TechTotem fifthTotem = new TechTotem();
-
-        Tech five = new Tech();
-        five.name = "Fifth Test";
-        five.description = "It's the fifth.";
-        five.level = 1;
-        five.cost = 1.0f;
-
-        fifthTotem.techsAvailable.Add(five);
-        fifthTotem.RandomizeTechDisplayed();
-        TechManager.initialTechTotems.Add(fifthTotem);
-
-        foreach(Empire empire in Empire.empires)
+        foreach(Tech tech in techs)
         {
-            empire.techManager.techTotems = new List<TechTotem>(TechManager.initialTechTotems);
+            Tech.entireTechList.Add(tech);
+        }
+
+        for(int x = 0; x < Empire.empires.Count; x++)
+        {
+            //Adds all of the totems to the empire.
+            foreach(string techTotemName in techTotems)
+            {
+                TechTotem totem = new TechTotem();
+                totem.name = techTotemName;
+
+                Empire.empires[x].techManager.techTotems.Add(totem);
+            }
+
+            //Adds every tech to its appropriate totem.
+            for(int y = 0; y < Tech.entireTechList.Count; y++)
+            {
+                foreach(TechTotem totem in Empire.empires[x].techManager.techTotems)
+                {
+                    if (Tech.entireTechList[y].totemName.Equals(totem.name))
+                    {
+                        totem.techsAvailable.Add(y);
+                        break;
+                    }
+                }
+            }
+
+            //Randomizes what tech is displayed on each totem.
+            foreach(TechTotem totem in Empire.empires[x].techManager.techTotems)
+            {
+                totem.RandomizeTechDisplayed();
+            }
         }
     }
 
