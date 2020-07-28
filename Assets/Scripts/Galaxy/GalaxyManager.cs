@@ -236,6 +236,13 @@ public class TechManager
     public float baseCreditsProductionAmount = 0.0f;
     public float tradePostCreditsProductionAmount = 0.0f;
     public float baseProductionProductionAmount = 0.0f;
+    public float researchFacilityScienceProductionAmount = 0.0f;
+    float riotShieldEnabledAmount = 0.0f;
+    float repairToolsEnabledAmount = 0.0f;
+
+
+    public bool riotShieldsEnabled = false;
+    public bool repairToolsEnabled = false;
 
     public void EndTurn()
     {
@@ -281,6 +288,12 @@ public class TechManager
         baseCreditsProductionAmount = 0.0f;
         tradePostCreditsProductionAmount = 0.0f;
         baseProductionProductionAmount = 0.0f;
+        researchFacilityScienceProductionAmount = 0.0f;
+        riotShieldEnabledAmount = 0.0f;
+        repairToolsEnabledAmount = 0.0f;
+
+        riotShieldsEnabled = false;
+        repairToolsEnabled = false;
 
         foreach(TechTotem totem in techTotems)
         {
@@ -301,10 +314,24 @@ public class TechManager
                         case TechEffect.TechEffectType.BaseProductionProduction:
                             baseProductionProductionAmount += techEffect.amount;
                             break;
+                        case TechEffect.TechEffectType.EnableRiotShields:
+                            riotShieldEnabledAmount += techEffect.amount;
+                            break;
+                        case TechEffect.TechEffectType.ResearchFacilityScienceProduction:
+                            researchFacilityScienceProductionAmount += techEffect.amount;
+                            break;
+                        case TechEffect.TechEffectType.EnableRepairTools:
+                            repairToolsEnabledAmount += techEffect.amount;
+                            break;
                     }
                 }
             }
         }
+
+        if (riotShieldEnabledAmount > 0)
+            riotShieldsEnabled = true;
+        if (repairToolsEnabledAmount > 0)
+            repairToolsEnabled = true;
     }
 }
 
@@ -368,7 +395,10 @@ public class TechEffect
     {
         BaseCreditsProduction,
         TradePostCreditsProduction,
-        BaseProductionProduction
+        BaseProductionProduction,
+        EnableRiotShields,
+        ResearchFacilityScienceProduction,
+        EnableRepairTools
     }
 
     public TechEffectType effectType;

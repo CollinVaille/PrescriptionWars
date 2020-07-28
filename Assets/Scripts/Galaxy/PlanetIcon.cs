@@ -230,7 +230,7 @@ public class GalaxyBuilding
         switch (buildingType)
         {
             case BuildingType.ResearchFacility:
-                return 1.0f;
+                return 1.0f + Empire.empires[ownerID].techManager.researchFacilityScienceProductionAmount;
             case BuildingType.Depot:
                 return 1.0f;
             case BuildingType.Prescriptor:
