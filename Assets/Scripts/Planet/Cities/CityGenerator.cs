@@ -187,7 +187,7 @@ public class CityGenerator : MonoBehaviour
                 //Put them together
                 cityName = prefix + suffix;
             }
-            else if(biome == Planet.Biome.Forest || biome == Planet.Biome.Swamp)
+            else if(biome == Planet.Biome.Swamp)
             {
                 stationSuffixes.Add(" Village");
                 stationSuffixes.Add(" Ruins");
@@ -267,7 +267,7 @@ public class CityGenerator : MonoBehaviour
                     cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
                 }
             }
-            else if (biome == Planet.Biome.Forest || biome == Planet.Biome.Swamp)
+            else if (biome == Planet.Biome.Swamp)
             {
                 if(Random.Range(0, 2) == 0)
                 {

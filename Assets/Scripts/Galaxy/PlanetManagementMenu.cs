@@ -66,7 +66,6 @@ public class PlanetManagementMenu : MonoBehaviour
     public Sprite temperateCitySprite;
     public Sprite swampCitySprite;
     public Sprite hellCitySprite;
-    public Sprite forestCitySprite;
     public Sprite spiritCitySprite;
 
     //Info tab stuff here.
@@ -389,8 +388,6 @@ public class PlanetManagementMenu : MonoBehaviour
                 return swampCitySprite;
             case Planet.Biome.Hell:
                 return hellCitySprite;
-            case Planet.Biome.Forest:
-                return forestCitySprite;
             case Planet.Biome.Spirit:
                 return spiritCitySprite;
 

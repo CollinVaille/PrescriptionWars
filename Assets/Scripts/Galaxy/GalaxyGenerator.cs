@@ -37,7 +37,6 @@ public class GalaxyGenerator : MonoBehaviour
     public List<Material> desertMaterials;
     public List<Material> swampMaterials;
     public List<Material> hellMaterials;
-    public List<Material> forestMaterials;
 
     // Start is called before the first frame update
     void Start()
@@ -552,10 +551,6 @@ public class GalaxyGenerator : MonoBehaviour
         {
             return hellMaterials[Random.Range(0, hellMaterials.Count)];
         }
-        else if (biome == Planet.Biome.Forest)
-        {
-            return forestMaterials[Random.Range(0, forestMaterials.Count)];
-        }
         else if (biome == Planet.Biome.Spirit)
         {
             return spiritMaterials[Random.Range(0, spiritMaterials.Count)];
@@ -567,7 +562,7 @@ public class GalaxyGenerator : MonoBehaviour
     //Method the randomly generates a biome for a planet.
     private Planet.Biome GenerateBiome()
     {
-        int random = Random.Range(0, 7);
+        int random = Random.Range(0, 6);
 
         if (random == 0)
             return Planet.Biome.Frozen;
@@ -580,8 +575,6 @@ public class GalaxyGenerator : MonoBehaviour
         else if (random == 4)
             return Planet.Biome.Hell;
         else if (random == 5)
-            return Planet.Biome.Forest;
-        else if (random == 6)
             return Planet.Biome.Spirit;
 
         return Planet.Biome.Unknown;

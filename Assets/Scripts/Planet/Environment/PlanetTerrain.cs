@@ -255,15 +255,16 @@ public class PlanetTerrain : MonoBehaviour
 
     private void TerrainLayerEffects (TerrainLayer groundLayer, TerrainLayer cliffLayer, TerrainLayer seabedLayer)
     {
+        //Effects dependent on biome
         if (Planet.planet.biome == Planet.Biome.Hell)
         {
             groundLayer.metallic = 1;
+            groundLayer.smoothness = 0.85f;
+
             cliffLayer.metallic = 1;
+
             seabedLayer.metallic = 1;
             seabedLayer.smoothness = 1;
-
-            //Make horizon blend in with terrain
-            horizonMaterial.SetFloat("_Metallic", 1);
         }
         else if(Planet.planet.biome == Planet.Biome.Spirit)
         {
@@ -273,8 +274,18 @@ public class PlanetTerrain : MonoBehaviour
             seabedLayer.metallic = 0.2f;
             seabedLayer.smoothness = 0.8f;
         }
+
+        //Update horizon to have same effects as terrain
+        if(Planet.planet.hasOcean && customization.lowBoundaries)
+        {
+            horizonMaterial.SetFloat("_Metallic", seabedLayer.metallic);
+            horizonMaterial.SetFloat("_Glossiness", seabedLayer.smoothness);
+        }
         else
-            horizonMaterial.SetFloat("_Metallic", 0);
+        {
+            horizonMaterial.SetFloat("_Metallic", groundLayer.metallic);
+            horizonMaterial.SetFloat("_Glossiness", groundLayer.smoothness);
+        }
     }
 
     private void SetHorizons ()

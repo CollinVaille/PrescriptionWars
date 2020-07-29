@@ -10,31 +10,20 @@ public class PlanetGenerator : MonoBehaviour
 
     private IEnumerator GeneratePlanetImplement(Planet planet)
     {
-        //FIRST, GENERATE SUN--------------------------------------------------------------------------------------
-
         //Day length
         //dayLength = Random.Range(60, 500);
 
-        //Sun type (affects following environmental conditions...)
-        SunType sunType = SunType.GetRandomType();
+        //FIRST, DETERMINE BIOME--------------------------------------------------------------------------
 
-        //Lens flare for sun
-        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Lens Flares/" + sunType.flareName);
+        SelectBiome(planet);
 
-        //Sunlight color
-        planet.sun.GetComponent<Light>().color = sunType.sunlightColor;
-
-        //Sunlight intensity
-        planet.sun.GetComponent<Light>().intensity = sunType.intensity;
-
-        //THEN, USE SUN TO GENERATE BIOME--------------------------------------------------------------------------
+        //THEN, GENERATE BIOME----------------------------------------------------------------------------
 
         //Set up stuff for biomes
         planet.SetOcean(-10, Planet.OceanType.Normal); //By default ocean is disabled (negative height disables ocean)
 
-        planet.SelectBiome(sunType.intensity);
-
-        GenerateBiome(planet, sunType.intensity, out TerrainCustomization terrainCustomization);
+        //This also generates the sun based on the biome
+        GenerateBiome(planet, out TerrainCustomization terrainCustomization);
 
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
@@ -49,13 +38,38 @@ public class PlanetGenerator : MonoBehaviour
 
     //BIOME GENERATION----------------------------------------------------------------------------------------
 
-    private void GenerateBiome(Planet planet, float intensity, out TerrainCustomization terrainCustomization)
+    public void SelectBiome(Planet planet)
+    {
+        //Already set biome as test case
+        if (planet.biome != Planet.Biome.Unknown)
+            return;
+
+        //Randomly select
+        int picker = Random.Range(0, 6);
+        switch (picker)
+        {
+            case 0: planet.biome = Planet.Biome.Frozen; break;
+            case 1: planet.biome = Planet.Biome.Temperate; break;
+            case 2: planet.biome = Planet.Biome.Desert; break;
+            case 3: planet.biome = Planet.Biome.Swamp; break;
+            case 4: planet.biome = Planet.Biome.Hell; break;
+            default: planet.biome = Planet.Biome.Spirit; break;
+        }
+    }
+
+    private void GenerateBiome(Planet planet, out TerrainCustomization terrainCustomization)
     {
         terrainCustomization = new TerrainCustomization();
 
         if (planet.biome == Planet.Biome.Frozen) //Frozen
         {
-            planet.biome = Planet.Biome.Frozen;
+            //Sun
+            if (Random.Range(0, 3) == 0)
+                GenerateSun(planet, Random.Range(0.05f, 0.5f));
+            else if (Random.Range(0, 2) == 0)
+                GenerateSun(planet, Random.Range(0.2f, 0.6f));
+            else
+                GenerateSun(planet, Random.Range(0.3f, 0.85f));
 
             //Terrain textures
             terrainCustomization.groundTexture = planet.LoadTexture("Snow", "Snow 0087", "Snow 0096");
@@ -80,7 +94,7 @@ public class PlanetGenerator : MonoBehaviour
             //Water
             if (Random.Range(0, 2) == 0)
             {
-                if (Random.Range(0, intensity) < 0.35f)
+                if (Random.Range(0, planet.sun.GetComponent<Light>().intensity) < 0.35f)
                     planet.SetOcean(Random.Range(1, 10), Planet.OceanType.Frozen);
                 else
                 {
@@ -92,11 +106,12 @@ public class PlanetGenerator : MonoBehaviour
             //Seabed height relative to water level
             terrainCustomization.seabedHeight = planet.oceanTransform.position.y - Random.Range(1.5f, 3.0f);
 
-            FinishNormalBiomeSetUp(planet, intensity);
+            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
         else if (planet.biome == Planet.Biome.Temperate) //Temperate
         {
-            planet.biome = Planet.Biome.Temperate;
+            //Sun
+            GenerateSun(planet, Random.Range(0.85f, 1.15f));
 
             //Terrain textures
             terrainCustomization.groundTexture = planet.LoadTexture("Grass 0043", "Grass 0103", "Common Ground", "Twisted Hills");
@@ -165,7 +180,7 @@ public class PlanetGenerator : MonoBehaviour
 
                     if (Random.Range(0, 2) == 0) //Thick forest
                     {
-                        planet.biome = Planet.Biome.Forest;
+                        planet.biomeSubType = Planet.BiomeSubType.Forest;
 
                         terrainCustomization.groundTexture = planet.LoadTexture("Common Ground", "Darkland Forest");
                         terrainCustomization.cliffTexture = planet.LoadTexture("Faulted Range", "Fractured Flow");
@@ -180,11 +195,15 @@ public class PlanetGenerator : MonoBehaviour
                 }
             }
 
-            FinishNormalBiomeSetUp(planet, intensity);
+            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
         else if (planet.biome == Planet.Biome.Desert) //Desert
         {
-            planet.biome = Planet.Biome.Desert;
+            //Sun
+            if (Random.Range(0, 3) == 0)
+                GenerateSun(planet, Random.Range(1.0f, 1.3f));
+            else
+                GenerateSun(planet, Random.Range(1.0f, 1.2f));
 
             //Terrain textures
             terrainCustomization.groundTexture = planet.LoadTexture("Sahara", "Soil Beach 0052", "Soil Beach 0079");
@@ -211,10 +230,12 @@ public class PlanetGenerator : MonoBehaviour
             if (Random.Range(0, 2) == 0)
                 planet.SetOcean(Random.Range(1, 7), Planet.OceanType.Normal);
 
-            FinishNormalBiomeSetUp(planet, intensity);
+            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
         else if (planet.biome == Planet.Biome.Swamp) //Swamp
         {
+            GenerateSun(planet, Random.Range(1.0f, 1.2f), SunType.GetColorRGB(185, 145, 0));
+
             terrainCustomization.groundTexture = planet.LoadTexture("Sulfur Wasteland");
             terrainCustomization.cliffTexture = planet.LoadTexture("Rock Grassy 0030");
             terrainCustomization.seabedTexture = planet.LoadTexture("Egg Veins", "Carburetor Resin");
@@ -231,8 +252,6 @@ public class PlanetGenerator : MonoBehaviour
             RenderSettings.fog = true;
             RenderSettings.fogDensity = Random.Range(0.01f, 0.03f);
             RenderSettings.fogColor = SunType.GetColorRGB(108, 100, 4);
-
-            planet.sun.GetComponent<Light>().color = SunType.GetColorRGB(185, 145, 0);
 
             //Terrain heightmap
             terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
@@ -260,9 +279,11 @@ public class PlanetGenerator : MonoBehaviour
         }
         else if (planet.biome == Planet.Biome.Hell) //Hell
         {
-            terrainCustomization.groundTexture = planet.LoadTexture("Searing Gorge");
+            GenerateSun(planet, Random.Range(1.3f, 1.75f), SunType.GetColorRGB(255, 76, 0));
+
+            terrainCustomization.groundTexture = planet.LoadTexture("Searing Gorge", "Pele's Lake", "Lava Cracks");
             terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
-            terrainCustomization.seabedTexture = planet.LoadTexture("Noxious Melt");
+            terrainCustomization.seabedTexture = planet.LoadTexture("Noxious Melt", "Mt Etna", "Iodine Atmosphere");
 
             planet.LoadSkybox(true, "AllSky_Space_AnotherPlanet", "Gloomy", "RedYellowNebular", "RedOrangeYellowNebular");
             planet.LoadSkybox(false, planet.daySkybox.name);
@@ -273,9 +294,6 @@ public class PlanetGenerator : MonoBehaviour
             RenderSettings.fog = true;
             RenderSettings.fogDensity = 0.0035f;
             RenderSettings.fogColor = SunType.GetColorRGB(67, 52, 52);
-
-            planet.sun.GetComponent<Light>().intensity = Random.Range(1.3f, 1.5f);
-            planet.sun.GetComponent<Light>().color = SunType.GetColorRGB(255, 76, 0);
 
             planet.SetUnderwaterColor(new Color(255 / 255.0f, 78 / 255.0f, 0 / 255.0f, 0.5f));
 
@@ -312,13 +330,17 @@ public class PlanetGenerator : MonoBehaviour
         }
         else if (planet.biome == Planet.Biome.Spirit) //Spirit
         {
-            if (Random.Range(0, 2) == 0)
+            if (Random.Range(0, 2) == 0) //Warm rock
             {
+                GenerateSun(planet, Random.Range(1.3f, 1.5f), SunType.GetColorRGB(210, 240, 255));
+
                 terrainCustomization.groundTexture = planet.LoadTexture("Sputnik");
                 planet.LoadGroundFootsteps("Rock");
             }
-            else
+            else //Cool snow
             {
+                GenerateSun(planet, Random.Range(1.1f, 1.3f), SunType.GetColorRGB(210, 240, 255));
+
                 terrainCustomization.groundTexture = planet.LoadTexture("Snow");
                 planet.LoadGroundFootsteps("Snow");
             }
@@ -336,9 +358,6 @@ public class PlanetGenerator : MonoBehaviour
 
             RenderSettings.fog = false;
 
-            planet.sun.GetComponent<Light>().intensity = Random.Range(1.3f, 1.5f);
-            planet.sun.GetComponent<Light>().color = SunType.GetColorRGB(210, 240, 255);
-
             planet.SetUnderwaterColor(new Color(0 / 255.0f, 136 / 255.0f, 255 / 255.0f, 0.5f));
             planet.SetOcean(Random.Range(7, 15), Planet.OceanType.Glowing);
 
@@ -355,6 +374,7 @@ public class PlanetGenerator : MonoBehaviour
         }
     }
 
+    //For Frozen, Temperate, and Desert only
     private void FinishNormalBiomeSetUp(Planet planet, float intensity)
     {
         //Fog (more likely for cold planets, impossible for hot planets)
@@ -376,6 +396,7 @@ public class PlanetGenerator : MonoBehaviour
         SelectNightSkyboxAndAmbience(planet, intensity);
     }
 
+    //For Frozen, Temperate, and Desert only
     private void SelectDaySkyboxAndAmbience(Planet planet, float intensity)
     {
         //If there's fog, fog dominates skybox and ambience choice
@@ -394,11 +415,11 @@ public class PlanetGenerator : MonoBehaviour
             planet.LoadSkybox(true, "Cold Sunset", "AllSky_Overcast4_Low");
             planet.dayAmbience = planet.LoadAmbience("Light Winter Wind");
         }
-        else if (planet.biome == Planet.Biome.Temperate || planet.biome == Planet.Biome.Forest) //Temperate
+        else if (planet.biome == Planet.Biome.Temperate) //Temperate
         {
             planet.LoadSkybox(true, "Epic_GloriousPink", "Epic_BlueSunset", "SkyBrightMorning", "Day_BlueSky_Nothing", "Blue Cloud");
 
-            if (planet.biome == Planet.Biome.Forest)
+            if (planet.biomeSubType == Planet.BiomeSubType.Forest)
                 planet.dayAmbience = planet.LoadAmbience("Rainforest");
             else
                 planet.dayAmbience = planet.LoadAmbience("Morning Country Birds", "Quiet Lake with Birds");
@@ -410,6 +431,7 @@ public class PlanetGenerator : MonoBehaviour
         }
     }
 
+    //For Frozen, Temperate, and Desert only
     private void SelectNightSkyboxAndAmbience(Planet planet, float intensity)
     {
         //Temperature dictates skybox and ambience choice...
@@ -427,15 +449,15 @@ public class PlanetGenerator : MonoBehaviour
             else
                 planet.nightAmbience = planet.LoadAmbience("Howling Wind", "Light Winter Wind");
         }
-        else if (planet.biome == Planet.Biome.Temperate || planet.biome == Planet.Biome.Forest) //Temperate
+        else if (planet.biome == Planet.Biome.Temperate) //Temperate
         {
             if (RenderSettings.fog)
                 planet.LoadSkybox(false, "SkyEarlyDusk", "Cartoon Base NightSky");
             else
                 planet.LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Galaxy Field 1", "Galaxy Field 2");
 
-            //Ambience (biome and fog play a factor here)
-            if (planet.biome == Planet.Biome.Forest)
+            //Ambience (biome sub types and fog play a factor here)
+            if (planet.biomeSubType == Planet.BiomeSubType.Forest)
                 planet.nightAmbience = planet.LoadAmbience("Rainforest");
             else if (RenderSettings.fog)
                 planet.nightAmbience = planet.LoadAmbience("Howling Wind");
@@ -449,6 +471,193 @@ public class PlanetGenerator : MonoBehaviour
             else
                 planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy");
             planet.nightAmbience = planet.LoadAmbience("Summer Night");
+        }
+    }
+
+    //SUN GENERATION----------------------------------------------------------------------------------------
+
+    private void GenerateSun(Planet planet, float intensity)
+    {
+        SunType sunType = new SunType(intensity);
+
+        ApplySunType(planet, sunType);
+    }
+
+    private void GenerateSun(Planet planet, float intensity, Color sunColor)
+    {
+        SunType sunType = new SunType(intensity, sunColor);
+
+        ApplySunType(planet, sunType);
+    }
+
+    private void ApplySunType(Planet planet, SunType sunType)
+    {
+        //Lens flare for sun
+        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Lens Flares/" + sunType.flareName);
+
+        //Sunlight color
+        planet.sun.GetComponent<Light>().color = sunType.sunlightColor;
+
+        //Sunlight intensity
+        planet.sun.GetComponent<Light>().intensity = sunType.intensity;
+    }
+}
+
+class SunType
+{
+    public string flareName;
+    public Color sunlightColor;
+    public float intensity; //Measure of coldness (1 = normal temp, 0.5 = frigid, 1.5 = blazing)
+
+    //Below are a bunch of helper functions...
+
+    //Converts 0-255 (human readable) to 0-1 (unity format)
+    public static Color GetColorRGB(int r, int g, int b)
+    {
+        return new Color(r / 255.0f, g / 255.0f, b / 255.0f);
+    }
+
+    //Converts 0-360/0-100/0-100 (human readable) to 0-1 (unity format)
+    public static Color GetColorHSV(int h, int s, int v)
+    {
+        return Color.HSVToRGB(h / 360.0f, s / 100.0f, v / 100.0f);
+    }
+
+    //NEW SUN SYSTEM------------------------------------------------------------
+
+    public SunType(float intensity) { CreateSunType(intensity, Color.white); }
+
+    public SunType(float intensity, Color sunColor) { CreateSunType(intensity, sunColor); }
+
+    private void CreateSunType(float intensity, Color sunColor)
+    {
+        //Remember intensity
+        this.intensity = intensity;
+
+        //Determine sunlight color
+        sunlightColor = Color.white;
+        if (intensity > 1)
+        {
+            sunlightColor.b = 2 - intensity;
+            sunlightColor.g = 2 - intensity;
+        }
+        else if (intensity < 1)
+        {
+            sunlightColor.r = intensity;
+            sunlightColor.g = Random.Range(intensity, 1.0f);
+        }
+
+        //Warm temperate suns most likely have full green value, meaning yellowish hue
+        if (intensity > 1.0f && intensity < 1.15f && Random.Range(0, 4) != 0)
+            sunlightColor.g = 1;
+
+        //Determine flare name
+        DetermineFlareName();
+    }
+
+    private void DetermineFlareName()
+    {
+        bool makeAnotherSelection = true;
+        for(int attempt = 1; makeAnotherSelection && attempt <= 500; attempt++)
+        {
+            //Assume we don't need to pick another color afterwards until proven otherwise
+            makeAnotherSelection = false;
+
+            int picker = Random.Range(0, 16);
+
+            switch (picker)
+            {
+                case 0:
+                    flareName = "6 Blade Aperture";
+                    break;
+                case 1:
+                    flareName = "35mm Lens";
+                    //sunlightColor = GetColorRGB(203, 237, 255);
+
+                    //Must be some shade of blue
+                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.85f)
+                        makeAnotherSelection = true;
+
+                    break;
+                case 2:
+                    flareName = "85mm Lens";
+                    break;
+                case 3:
+                    flareName = "Cheap Plastic Lens";
+                    //sunlightColor = GetColorRGB(255, 255, 255);
+
+                    //Must be white
+                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
+                        makeAnotherSelection = true;
+
+                    break;
+                case 4:
+                    flareName = "Cold Clear Sun";
+                    //sunlightColor = GetColorRGB(255, 255, 255);
+
+                    //Must be white
+                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
+                        makeAnotherSelection = true;
+
+                    break;
+                case 5:
+                    flareName = "Concert";
+                    break;
+                case 6:
+                    flareName = "Digicam Lens";
+                    //sunlightColor = GetColorRGB(255, 252, 223);
+
+                    //Must be white
+                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
+                        makeAnotherSelection = true;
+
+                    break;
+                case 7:
+                    flareName = "Digital Camera";
+                    break;
+                case 8:
+                    flareName = "Halogen Bulb";
+                    //sunlightColor = GetColorRGB(105, 184, 255);
+
+                    //Must be deep blue
+                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.5f)
+                        makeAnotherSelection = true;
+
+                    break;
+                case 9:
+                    flareName = "Laser";
+                    break;
+                case 10:
+                    flareName = "Subtle1";
+                    break;
+                case 11:
+                    flareName = "Subtle2";
+                    break;
+                case 12:
+                    flareName = "Subtle3";
+                    break;
+                case 13:
+                    flareName = "Subtle4";
+                    break;
+                case 14:
+                    flareName = "Sun (from space)";
+                    //sunlightColor = GetColorRGB(255, 255, 255);
+
+                    //Must be white
+                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
+                        makeAnotherSelection = true;
+
+                    break;
+                default:
+                    flareName = "Welding";
+                    //sunlightColor = GetColorRGB(114, 218, 255);
+
+                    //Must be deep blue
+                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.5f)
+                        makeAnotherSelection = true;
+
+                    break;
+            }
         }
     }
 }

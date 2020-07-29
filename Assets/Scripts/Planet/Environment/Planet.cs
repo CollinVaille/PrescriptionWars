@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class Planet : MonoBehaviour
 {
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
-    public enum Biome { Unknown, Frozen, Temperate, Desert, Swamp, Hell, Forest, Spirit }
+    public enum Biome { Unknown, Frozen, Temperate, Desert, Swamp, Hell, Spirit }
+    public enum BiomeSubType { Default, Forest }
     public enum OceanType { Normal, Frozen, Lava, Glowing }
 
     public static Planet planet;
@@ -16,6 +17,7 @@ public class Planet : MonoBehaviour
     //General
     [HideInInspector] public string planetName = "";
     public Biome biome = Biome.Unknown;
+    public BiomeSubType biomeSubType = BiomeSubType.Default;
     public PlanetGenerator generator;
 
     //Day/night cycle
@@ -74,36 +76,6 @@ public class Planet : MonoBehaviour
     }
 
     //BIOME FUNCTIONS------------------------------------------------------------------------------------------------
-
-    public void SelectBiome (float intensity)
-    {
-        //Already set biome as test case
-        if (biome != Biome.Unknown)
-            return;
-
-        //Chance for special biomes
-        if (Random.Range(0, 3) == 0)
-        {
-            if (intensity > 1.075f) //Hot biomes
-            {
-                if (Random.Range(0, 2) == 0 || intensity > 1.3f)
-                    biome = Biome.Hell;
-                else
-                    biome = Biome.Swamp;
-            }
-        }
-
-        //Special biomes chance failed so just do normal biomes
-        if (biome == Biome.Unknown)
-        {
-            if (intensity < 0.85f)
-                biome = Biome.Frozen;
-            else if (intensity < 1.15f)
-                biome = Biome.Temperate;
-            else
-                biome = Biome.Desert;
-        }
-    }
 
     public void LoadSkybox (bool daySkybox, params string[] skyboxNames)
     {
@@ -561,6 +533,7 @@ public class PlanetJSON
         //General
         planetName = planet.planetName;
         biome = planet.biome;
+        biomeSubType = planet.biomeSubType;
 
         //Sun
         sunFlare = planet.sun.GetComponent<Light>().flare.name;
@@ -605,6 +578,7 @@ public class PlanetJSON
         //General
         planet.planetName = planetName;
         planet.biome = biome;
+        planet.biomeSubType = biomeSubType;
 
         //Sun
         planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Lens Flares/" + sunFlare);
@@ -640,6 +614,7 @@ public class PlanetJSON
     //General
     public string planetName;
     public Planet.Biome biome;
+    public Planet.BiomeSubType biomeSubType;
 
     //Sun
     public string sunFlare;
@@ -670,125 +645,4 @@ public class PlanetJSON
 
     //Cities
     public List<CityJSON> cities;
-}
-
-class SunType
-{
-    public string flareName;
-    public Color sunlightColor;
-    public float intensity; //Measure of coldness (1 = normal temp, 0.5 = frigid, 1.5 = blazing)
-
-    public SunType (string flareName, Color sunlightColor)
-    {
-        this.flareName = flareName;
-        this.sunlightColor = sunlightColor;
-
-        //Calculates intensity based on ratio of red (hot) to blue (cold)
-        intensity = Mathf.Max(0.5f + sunlightColor.r - sunlightColor.b / 2.0f, 0.25f);
-    }
-
-    public static SunType GetRandomType ()
-    {
-        string flareName = "";
-        Color sunlightColor = Color.magenta;
-        int picker = Random.Range(0, 16);
-
-        switch (picker)
-        {
-            case 0:
-                flareName = "6 Blade Aperture";
-                sunlightColor = GetRandomColor();
-                break;
-            case 1:
-                flareName = "35mm Lens";
-                sunlightColor = GetColorRGB(203, 237, 255);
-                break;
-            case 2:
-                flareName = "85mm Lens";
-                sunlightColor = GetRandomColor();
-                break;
-            case 3:
-                flareName = "Cheap Plastic Lens";
-                sunlightColor = GetColorRGB(255, 255, 255);
-                break;
-            case 4:
-                flareName = "Cold Clear Sun";
-                sunlightColor = GetColorRGB(255, 255, 255);
-                break;
-            case 5:
-                flareName = "Concert";
-                sunlightColor = GetRandomColor();
-                break;
-            case 6:
-                flareName = "Digicam Lens";
-                sunlightColor = GetColorRGB(255, 252, 223);
-                break;
-            case 7:
-                flareName = "Digital Camera";
-                sunlightColor = GetRandomColor();
-                break;
-            case 8:
-                flareName = "Halogen Bulb";
-                sunlightColor = GetColorRGB(105, 184, 255);
-                break;
-            case 9:
-                flareName = "Laser";
-                sunlightColor = GetRandomColor();
-                break;
-            case 10:
-                flareName = "Subtle1";
-                sunlightColor = GetRandomColor();
-                break;
-            case 11:
-                flareName = "Subtle2";
-                sunlightColor = GetRandomColor();
-                break;
-            case 12:
-                flareName = "Subtle3";
-                sunlightColor = GetRandomColor();
-                break;
-            case 13:
-                flareName = "Subtle4";
-                sunlightColor = GetRandomColor();
-                break;
-            case 14:
-                flareName = "Sun (from space)";
-                sunlightColor = GetColorRGB(255, 255, 255);
-                break;
-            default:
-                flareName = "Welding";
-                sunlightColor = GetColorRGB(114, 218, 255);
-                break;
-        }
-
-        return new SunType(flareName, sunlightColor);
-    }
-
-    //Below are a bunch of helper functions...
-
-    //Converts 0-255 (human readable) to 0-1 (unity format)
-    public static Color GetColorRGB (int r, int g, int b)
-    {
-        return new Color(r / 255.0f, g / 255.0f, b / 255.0f);
-    }
-
-    //Converts 0-360/0-100/0-100 (human readable) to 0-1 (unity format)
-    private static Color GetColorHSV (int h, int s, int v)
-    {
-        return Color.HSVToRGB(h / 360.0f, s / 100.0f, v / 100.0f);
-    }
-
-    private static Color GetRandomColor ()
-    {
-        if (Random.Range(0, 3) == 0) //White
-            return Color.white;
-        else if (Random.Range(0, 5) == 0) //Whitish yellow
-            return GetColorRGB(255, 255, Random.Range(200, 256));
-        else if (Random.Range(0, 3) == 0) //Hot
-            return GetColorHSV(Random.Range(0, 60), Random.Range(25, 60), 100);
-        else if (Random.Range(0, 5) != 0) //Random light tint
-            return GetColorHSV(Random.Range(0, 361), Random.Range(0, 30), 100);
-        else //Random harsh tint
-            return GetColorHSV(Random.Range(0, 361), Random.Range(30, 101), 100);
-    }
 }
