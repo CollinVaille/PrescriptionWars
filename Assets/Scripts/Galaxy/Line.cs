@@ -31,10 +31,17 @@ public class Line : MonoBehaviour
 
         line.startColor = Color.yellow;
         line.endColor = Color.yellow;
+
+        UpdatePosition();
     }
 
     // Update is called once per frame
     void Update()
+    {
+
+    }
+
+    public void UpdatePosition()
     {
         // Check if the GameObjects are not null
         if (gameObject1 != null && gameObject2 != null)

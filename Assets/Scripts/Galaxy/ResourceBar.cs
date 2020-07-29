@@ -12,8 +12,11 @@ public class ResourceBar : MonoBehaviour
 
     public Text empireNameText;
     public Text creditsText;
+    public Text creditsHoverText;
     public Text prescriptionsText;
+    public Text prescriptionsHoverText;
     public Text scienceText;
+    public Text scienceHoverText;
     public Text turnText;
 
     public float updatesPerSecond;
@@ -41,10 +44,13 @@ public class ResourceBar : MonoBehaviour
             empireNameText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             creditsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
             creditsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
+            creditsHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
             prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
+            prescriptionsHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             scienceText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].science);
             scienceText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetSciencePerTurn();
+            scienceHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             turnText.text = "Turn: " + GalaxyManager.turnNumber;
 
             timer = 0.0f;
@@ -86,5 +92,20 @@ public class ResourceBar : MonoBehaviour
     public void ToggleEmpireName()
     {
         empireNameText.gameObject.SetActive(!empireNameText.gameObject.activeInHierarchy);
+    }
+
+    public void ToggleCreditsHoverText()
+    {
+        creditsHoverText.gameObject.SetActive(!creditsHoverText.gameObject.activeInHierarchy);
+    }
+
+    public void TogglePrescriptionsHoverText()
+    {
+        prescriptionsHoverText.gameObject.SetActive(!prescriptionsHoverText.gameObject.activeInHierarchy);
+    }
+
+    public void ToggleScienceHoverText()
+    {
+        scienceHoverText.gameObject.SetActive(!scienceHoverText.gameObject.activeInHierarchy);
     }
 }

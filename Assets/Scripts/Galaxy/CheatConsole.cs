@@ -43,7 +43,7 @@ public class CheatConsole : MonoBehaviour
     {
         if(commandInputField.text != "" && Input.GetKeyDown(KeyCode.Return))
         {
-            previousCommands.Add(commandInputField.text);
+            previousCommands.Add(commandInputField.text.ToLower());
             commandHistoryText.text += "\n" + commandInputField.text;
 
             RunThroughCommands(commandInputField.text);
@@ -54,34 +54,155 @@ public class CheatConsole : MonoBehaviour
 
     void RunThroughCommands(string command)
     {
-        if (command.ToLower().StartsWith("play_empire_culture"))
+        string startsWithText = command;
+
+        if (command.Contains(" "))
         {
-            ChangeEmpireBasedOnCulture(command);
+            startsWithText = command.Substring(0, command.IndexOf(' '));
         }
-        else if (command.ToLower().StartsWith("clear"))
+
+        switch (startsWithText)
         {
-            ClearConsole();
+            case "play_empire_culture":
+                ChangeEmpireBasedOnCulture(command);
+                break;
+            case "clear":
+                ClearConsole();
+                break;
+            case "credits":
+                AddCredits(command);
+                break;
+            case "play_empire_id":
+                ChangeEmpireBasedOnID(command);
+                break;
+            /*case "set_planet_culture":
+                SetPlanetCulture(command);
+                break;*/
+            case "prescriptions":
+                AddPrescriptions(command);
+                break;
+            case "science":
+                AddScience(command);
+                break;
+            case "randomize_displayed_tech":
+                RandomizeDisplayedTech(command);
+                break;
+            case "end_turn":
+                EndTurn();
+                break;
+            case "change_empire_name":
+                ChangeEmpireName(command);
+                break;
+            case "observe":
+                ToggleObservationMode();
+                break;
+            case "demolish_all_buildings":
+                DemolishAllBuildings();
+                break;
+            case "toggle_research_effects":
+                ToggleResearchEffects();
+                break;
+
+            default:
+                commandHistoryText.text += "\nInvalid Command";
+                break;
         }
-        else if (command.ToLower().StartsWith("credits"))
-        {
-            AddCredits(command);
-        }
-        else if (command.ToLower().StartsWith("play_empire_id"))
-        {
-            ChangeEmpireBasedOnID(command);
-        }
-        else if (command.ToLower().StartsWith("set_planet_culture"))
-        {
-            SetPlanetCulture(command);
-        }
-        else if (command.ToLower().StartsWith("prescriptions"))
-        {
-            AddPrescriptions(command);
-        }
+    }
+
+    void ToggleResearchEffects()
+    {
+        Empire.empires[GalaxyManager.playerID].receivesResearchEffects = !Empire.empires[GalaxyManager.playerID].receivesResearchEffects;
+        Empire.empires[GalaxyManager.playerID].techManager.UpdateTechnologyEffects();
+
+        if (Empire.empires[GalaxyManager.playerID].receivesResearchEffects)
+            commandHistoryText.text += "\nEnabled";
         else
+            commandHistoryText.text += "\nDisabled";
+    }
+
+    void DemolishAllBuildings()
+    {
+        foreach(int planetIndex in Empire.empires[GalaxyManager.playerID].planetsOwned)
         {
-            commandHistoryText.text += "\nInvalid Command";
+            foreach(GalaxyCity city in GalaxyManager.planets[planetIndex].GetComponent<PlanetIcon>().cities)
+            {
+                city.buildingsCompleted.Clear();
+            }
         }
+
+        commandHistoryText.text += "\nSuccess";
+    }
+
+    void ToggleObservationMode()
+    {
+        GalaxyManager.observationModeEnabled = !GalaxyManager.observationModeEnabled;
+
+        if (GalaxyManager.observationModeEnabled)
+            commandHistoryText.text += "\nEnabled";
+        else
+            commandHistoryText.text += "\nDisabled";
+    }
+
+    void ChangeEmpireName(string command)
+    {
+        try
+        {
+            Empire.empires[GalaxyManager.playerID].empireName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
+            commandHistoryText.text += "\nSuccess";
+        }
+        catch (Exception)
+        {
+            commandHistoryText.text += "\nInvalid Empire Name";
+        }
+    }
+
+    void EndTurn()
+    {
+        GalaxyManager.galaxyManager.EndTurn();
+    }
+
+    void RandomizeDisplayedTech(string command)
+    {
+        string techTotemName = "";
+
+        try
+        {
+            techTotemName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
+            techTotemName.ToLower();
+
+
+            foreach(TechTotem totem in Empire.empires[GalaxyManager.playerID].techManager.techTotems)
+            {
+                if (techTotemName.Equals(totem.name.ToLower()))
+                {
+                    totem.RandomizeTechDisplayed();
+                    commandHistoryText.text += "\nSuccess";
+                    return;
+                }
+            }
+
+            commandHistoryText.text += "\nInvalid Tech Totem Name";
+        }
+        catch (Exception)
+        {
+            commandHistoryText.text += "\nInvalid Tech Totem Name";
+            return;
+        }
+    }
+
+    void AddScience(string command)
+    {
+        try
+        {
+            Empire.empires[GalaxyManager.playerID].science += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+        }
+        catch (Exception)
+        {
+            commandHistoryText.text += "\nInvalid Amount";
+            return;
+        }
+
+        commandHistoryText.text += "\nSuccess";
     }
 
     void AddPrescriptions(string command)
@@ -107,7 +228,7 @@ public class CheatConsole : MonoBehaviour
 
         try
         {
-            planetName = command.Substring(command.IndexOf(' ') + 1, command.IndexOf(' ', command.IndexOf(' ') + 1) - (command.IndexOf(' ') + 1)).ToLower();
+            planetName = command.Substring(command.IndexOf(' ') + 1, command.IndexOf(' ', command.IndexOf(' ') + 1) - (command.IndexOf(' ') + 1));
 
             for(int x = 0; x < GalaxyManager.planets.Count; x++)
             {

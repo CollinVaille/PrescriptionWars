@@ -20,8 +20,10 @@ public class GalaxyManager : MonoBehaviour
     public static List<Sprite> flagSymbols;
 
     public static bool togglePlanetManagementMenu;
+    public static bool observationModeEnabled = false;
 
     public static GameObject planetManagementMenu;
+    public static GalaxyManager galaxyManager;
 
     public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement)
     {
@@ -35,7 +37,7 @@ public class GalaxyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        galaxyManager = this;
     }
 
     // Update is called once per frame
@@ -77,7 +79,7 @@ public class GalaxyManager : MonoBehaviour
         //Everyone makes their moves for the turn.
         for(int x = 0; x < Empire.empires.Count; x++)
         {
-            if (x != playerID)
+            if (x != playerID || observationModeEnabled)
                 Empire.empires[x].PlayAI();
         }
 
@@ -112,6 +114,7 @@ public class Empire
     public Color empireColor;
     public int empireID;
     public bool playerEmpire;
+    public bool receivesResearchEffects = true;
 
     //Flags
     public Flag empireFlag;
@@ -239,10 +242,12 @@ public class TechManager
     public float researchFacilityScienceProductionAmount = 0.0f;
     float riotShieldEnabledAmount = 0.0f;
     float repairToolsEnabledAmount = 0.0f;
+    float automaticWeaponsEnabledAmount = 0.0f;
 
 
     public bool riotShieldsEnabled = false;
     public bool repairToolsEnabled = false;
+    public bool automaticWeaponsEnabled = false;
 
     public void EndTurn()
     {
@@ -291,47 +296,58 @@ public class TechManager
         researchFacilityScienceProductionAmount = 0.0f;
         riotShieldEnabledAmount = 0.0f;
         repairToolsEnabledAmount = 0.0f;
+        automaticWeaponsEnabledAmount = 0.0f;
 
         riotShieldsEnabled = false;
         repairToolsEnabled = false;
+        automaticWeaponsEnabled = false;
 
-        foreach(TechTotem totem in techTotems)
+        if (Empire.empires[ownerEmpireID].receivesResearchEffects)
         {
-            foreach(int indexCompleted in totem.techsCompleted)
+            foreach (TechTotem totem in techTotems)
             {
-                foreach(TechEffect techEffect in Tech.entireTechList[indexCompleted].effects)
+                foreach (int indexCompleted in totem.techsCompleted)
                 {
-                    TechEffect.TechEffectType techEffectType = techEffect.effectType;
-
-                    switch (techEffectType)
+                    foreach (TechEffect techEffect in Tech.entireTechList[indexCompleted].effects)
                     {
-                        case TechEffect.TechEffectType.BaseCreditsProduction:
-                            baseCreditsProductionAmount += techEffect.amount;
-                            break;
-                        case TechEffect.TechEffectType.TradePostCreditsProduction:
-                            tradePostCreditsProductionAmount += techEffect.amount;
-                            break;
-                        case TechEffect.TechEffectType.BaseProductionProduction:
-                            baseProductionProductionAmount += techEffect.amount;
-                            break;
-                        case TechEffect.TechEffectType.EnableRiotShields:
-                            riotShieldEnabledAmount += techEffect.amount;
-                            break;
-                        case TechEffect.TechEffectType.ResearchFacilityScienceProduction:
-                            researchFacilityScienceProductionAmount += techEffect.amount;
-                            break;
-                        case TechEffect.TechEffectType.EnableRepairTools:
-                            repairToolsEnabledAmount += techEffect.amount;
-                            break;
+                        TechEffect.TechEffectType techEffectType = techEffect.effectType;
+
+                        switch (techEffectType)
+                        {
+                            case TechEffect.TechEffectType.BaseCreditsProduction:
+                                baseCreditsProductionAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.TradePostCreditsProduction:
+                                tradePostCreditsProductionAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.BaseProductionProduction:
+                                baseProductionProductionAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.EnableRiotShields:
+                                riotShieldEnabledAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.ResearchFacilityScienceProduction:
+                                researchFacilityScienceProductionAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.EnableRepairTools:
+                                repairToolsEnabledAmount += techEffect.amount;
+                                break;
+                            case TechEffect.TechEffectType.EnableAutomaticWeapons:
+                                automaticWeaponsEnabledAmount += techEffect.amount;
+                                break;
+
+                        }
                     }
                 }
             }
-        }
 
-        if (riotShieldEnabledAmount > 0)
-            riotShieldsEnabled = true;
-        if (repairToolsEnabledAmount > 0)
-            repairToolsEnabled = true;
+            if (riotShieldEnabledAmount > 0)
+                riotShieldsEnabled = true;
+            if (repairToolsEnabledAmount > 0)
+                repairToolsEnabled = true;
+            if (automaticWeaponsEnabledAmount > 0)
+                automaticWeaponsEnabled = true;
+        }
     }
 }
 
@@ -398,7 +414,8 @@ public class TechEffect
         BaseProductionProduction,
         EnableRiotShields,
         ResearchFacilityScienceProduction,
-        EnableRepairTools
+        EnableRepairTools,
+        EnableAutomaticWeapons
     }
 
     public TechEffectType effectType;
