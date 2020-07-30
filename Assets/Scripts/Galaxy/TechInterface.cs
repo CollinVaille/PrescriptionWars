@@ -9,6 +9,7 @@ public class TechInterface : MonoBehaviour
 
     public List<Sprite> techSprites;
 
+    public List<RawImage> researchProgressRawImages;
     public List<Image> techTotemImages;
     public List<int> techTotemImageIndexes;
 
@@ -53,6 +54,27 @@ public class TechInterface : MonoBehaviour
                 techTotemImageIndexes[x] = -1;
             }
         }
+
+        //Updates each tech totem's research progress image widths.
+        /*for(int x = 0; x < techTotemProgressImages.Count; x++)
+        {
+            bool goodTotem = true;
+
+            if(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected == x)
+            {
+                if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable.Count > 0)
+                    techTotemProgressImages[x].rectTransform.sizeDelta = new Vector2(techTotemProgressImages[x].rectTransform.sizeDelta.x, (Empire.empires[GalaxyManager.playerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techDisplayed]].cost) * 350);
+                else
+                    goodTotem = false;
+            }
+            else
+                goodTotem = false;
+
+            if (!goodTotem)
+            {
+                techTotemProgressImages[x].rectTransform.sizeDelta = new Vector2(techTotemProgressImages[x].rectTransform.sizeDelta.x, 0);
+            }
+        }*/
 
         //Updates each tech totem's top/title text.
         for(int x = 0; x < techTotemTopTexts.Count; x++)
