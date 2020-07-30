@@ -69,39 +69,47 @@ public class Gun : Item
             //Play sound effect
             holder.GetAudioSource().PlayOneShot(fire);
 
-            //Cast ray in place of bullet to see if we hit something
-            RaycastHit hit;
-            if(holder.RaycastShoot(transform, range, out hit))
+            EjectProjectile();
+        }
+    }
+
+    //Called by Shoot after all ammo, SFX, etc. management has been done to fire projectile
+    //Default behaviour is to perform a raycast shoot, but Launcher overrides this to fire
+    //an actual physical projectile
+    protected virtual void EjectProjectile ()
+    {
+        //Cast ray in place of bullet to see if we hit something
+        RaycastHit hit;
+        if (holder.RaycastShoot(transform, range, out hit))
+        {
+            Damageable hitObject = hit.collider.GetComponent<Damageable>();
+            Pill hitPill = hit.collider.GetComponent<Pill>();
+
+            if (hitObject != null)
             {
-                Damageable hitObject = hit.collider.GetComponent<Damageable>();
-                Pill hitPill = hit.collider.GetComponent<Pill>();
+                hitObject.Damage(bulletDamage, bulletKnockback, transform.position, DamageType.Projectile, holder.team);
 
-                if (hitObject != null)
+                if (hitPill && hitPill.team != holder.team)
                 {
-                    hitObject.Damage(bulletDamage, bulletKnockback, transform.position, DamageType.Projectile, holder.team);
-
-                    if (hitPill && hitPill.team != holder.team)
-                    {
-                        hitPill.AlertOfAttacker(holder, true);
-                        if (hitPill.squad != null)
-                            hitPill.squad.AlertSquadOfAttacker(holder, hitPill, Random.Range(3, 6));
-                        if (holder.squad != null)
-                            holder.squad.AlertSquadOfAttacker(hitPill, holder, Random.Range(3, 6));
-                    }
+                    hitPill.AlertOfAttacker(holder, true);
+                    if (hitPill.squad != null)
+                        hitPill.squad.AlertSquadOfAttacker(holder, hitPill, Random.Range(3, 6));
+                    if (holder.squad != null)
+                        holder.squad.AlertSquadOfAttacker(hitPill, holder, Random.Range(3, 6));
                 }
-
-                //Hit marker sounds for player
-                if(holderIsPlayer)
-                {
-                    if (hitPill)
-                        holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitMarker);
-                    else if(hit.collider.CompareTag("Gear"))
-                        holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitArmorMarker);
-                }
-
-                //Play ricochet sound effect if bullet hit nearby player
-                Player.player.BulletRicochet(hit);
             }
+
+            //Hit marker sounds for player
+            if (holderIsPlayer)
+            {
+                if (hitPill)
+                    holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitMarker);
+                else if (hit.collider.CompareTag("Gear"))
+                    holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitArmorMarker);
+            }
+
+            //Play ricochet sound effect if bullet hit nearby player
+            Player.player.BulletRicochet(hit);
         }
     }
 

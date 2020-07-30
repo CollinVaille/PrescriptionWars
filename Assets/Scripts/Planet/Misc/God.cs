@@ -21,9 +21,13 @@ public class God : MonoBehaviour
     public AudioClip mouseOver, buttonClick, pauseSound;
     public AudioClip deflection, jab, softItemImpact, hardItemImpact, genericImpact;
 
+    //Audio Managment
     //Parallel lists for pause/resuming audio sources on pause menu
     private List<AudioSource> managedAudioSources;
     private List<bool> wasPlaying;
+
+    //Projectile Management
+    private List<Projectile> managedProjectiles;
 
     //Loading screen
     public int loadingScreens = 2;
@@ -43,7 +47,7 @@ public class God : MonoBehaviour
     private Vector3 mapPosition = Vector3.zero;
 
     //Initialization
-    void Awake ()
+    private void Awake ()
     {
         god = this;
 
@@ -60,6 +64,7 @@ public class God : MonoBehaviour
         oneShotAudioSource = GetComponents<AudioSource>()[0];
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
+        managedProjectiles = new List<Projectile>();
         mapCamera = GetComponent<Camera>();
 
         //Refresh pause state to start out as resumed
@@ -70,7 +75,13 @@ public class God : MonoBehaviour
         LoadingScreen(true, false);
     }
 
-    void Update ()
+    //Delayed Initialization
+    private void Start ()
+    {
+        StartCoroutine(ManageProjectiles());
+    }
+
+    private void Update ()
     {
         //Can pause/resume with pause button on keyboard
         if (Input.GetButtonDown("Pause"))
@@ -465,4 +476,36 @@ public class God : MonoBehaviour
 
         return new string(modified);
     }
+
+    private IEnumerator ManageProjectiles ()
+    {
+        float stepTime = 0.033f;
+
+        float lastTime = Time.timeSinceLevelLoad;
+        float actualStepTime = stepTime;
+
+        while(true)
+        {
+            yield return new WaitForSeconds(stepTime);
+
+            actualStepTime = Time.timeSinceLevelLoad - lastTime;
+
+            for(int x = 0; x < managedProjectiles.Count; x++)
+            {
+                //Update projectile
+                Projectile original = managedProjectiles[x];
+                original.UpdateLaunchedProjectile(actualStepTime);
+
+                //If projectile was removed from list during update, adjust accordingly
+                if (x == managedProjectiles.Count || original != managedProjectiles[x])
+                    x--;
+            }
+
+            lastTime = Time.timeSinceLevelLoad;
+        }
+    }
+
+    public void ManageProjectile (Projectile projectile) { managedProjectiles.Add(projectile); }
+
+    public void UnmanageProjectile (Projectile projectile) { managedProjectiles.Remove(projectile); }
 }
