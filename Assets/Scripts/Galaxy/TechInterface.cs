@@ -18,6 +18,9 @@ public class TechInterface : MonoBehaviour
     public List<Text> techLevelTexts;
     public List<Text> techDescriptionTexts;
 
+    public AudioSource sfxSource;
+    public AudioClip bubblingAudioClip;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,15 +58,19 @@ public class TechInterface : MonoBehaviour
             }
         }
 
-        //Updates each tech totem's research progress image widths.
-        /*for(int x = 0; x < techTotemProgressImages.Count; x++)
+        //Updates each research progress raw image's position.
+        for(int x = 0; x < researchProgressRawImages.Count; x++)
         {
             bool goodTotem = true;
 
             if(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected == x)
             {
                 if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable.Count > 0)
-                    techTotemProgressImages[x].rectTransform.sizeDelta = new Vector2(techTotemProgressImages[x].rectTransform.sizeDelta.x, (Empire.empires[GalaxyManager.playerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techDisplayed]].cost) * 350);
+                {
+                    researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, (Empire.empires[GalaxyManager.playerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techDisplayed]].cost) * 350 + -400, researchProgressRawImages[x].transform.localPosition.z);
+                    if (researchProgressRawImages[x].transform.localPosition.y > -50)
+                        researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, -50, researchProgressRawImages[x].transform.localPosition.z);
+                }
                 else
                     goodTotem = false;
             }
@@ -72,9 +79,9 @@ public class TechInterface : MonoBehaviour
 
             if (!goodTotem)
             {
-                techTotemProgressImages[x].rectTransform.sizeDelta = new Vector2(techTotemProgressImages[x].rectTransform.sizeDelta.x, 0);
+                researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, -400, researchProgressRawImages[x].transform.localPosition.z);
             }
-        }*/
+        }
 
         //Updates each tech totem's top/title text.
         for(int x = 0; x < techTotemTopTexts.Count; x++)

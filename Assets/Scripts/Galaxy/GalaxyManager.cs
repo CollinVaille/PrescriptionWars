@@ -12,6 +12,9 @@ public class GalaxyManager : MonoBehaviour
     public AudioSource musicSource;
     public AudioSource sfxSource;
 
+    public AudioClip switchToResearchViewSFX;
+    public AudioClip techFinishedSFX;
+
     public static int playerID = 0;
     public static int turnNumber = 0;
 
@@ -72,10 +75,17 @@ public class GalaxyManager : MonoBehaviour
     {
         researchView.SetActive(true);
         transform.gameObject.SetActive(false);
+
+        //Plays the switch to research view sound effect.
+        sfxSource.PlayOneShot(switchToResearchViewSFX);
     }
 
     public void EndTurn()
     {
+        //Closes the planet management menu if it is currently open.
+        if (planetManagementMenu.activeInHierarchy)
+            planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+
         //Everyone makes their moves for the turn.
         for(int x = 0; x < Empire.empires.Count; x++)
         {
@@ -275,6 +285,10 @@ public class TechManager
 
                     //Updates the effects the empire gets from its technology.
                     UpdateTechnologyEffects();
+
+                    //Plays the tech finished sound effect if it is the player that has completed the tech.
+                    if(ownerEmpireID == GalaxyManager.playerID)
+                        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(GalaxyManager.galaxyManager.techFinishedSFX, 0.5f);
                 }
 
                 researchingSomething = true;

@@ -8,14 +8,15 @@ public class MusicPlayer : MonoBehaviour
 
     public List<AudioClip> songs;
 
-    static List<int> songsQueued;
-    static List<int> songsAvailable;
+    static List<int> songsQueued = new List<int>();
+    static List<int> songsAvailable = new List<int>();
+
+    static int previousSong = -1;
 
     // Start is called before the first frame update
     void Start()
     {
-        songsQueued = new List<int>();
-        songsAvailable = new List<int>();
+
     }
 
     // Update is called once per frame
@@ -30,6 +31,7 @@ public class MusicPlayer : MonoBehaviour
 
             musicSource.clip = songs[songsQueued[0]];
             musicSource.Play();
+            previousSong = songsQueued[0];
             songsQueued.RemoveAt(0);
         }
     }
@@ -39,16 +41,29 @@ public class MusicPlayer : MonoBehaviour
         songsQueued.Clear();
         songsAvailable.Clear();
 
+        List<int> previousSongPlayed = new List<int>();
         for (int x = 0; x < songs.Count; x++)
         {
-            songsAvailable.Add(x);
+            if (x != previousSong)
+                songsAvailable.Add(x);
+            else
+                previousSongPlayed.Add(x);
         }
+        foreach(int previousSongIndex in previousSongPlayed)
+            songsAvailable.Add(previousSongIndex);
 
+        bool firstSong = true;
         while (songsAvailable.Count != 0)
         {
-            int random = Random.Range(0, songsAvailable.Count);
+            int random;
+            if (firstSong)
+                random = Random.Range(0, songsAvailable.Count - previousSongPlayed.Count);
+            else
+                random = Random.Range(0, songsAvailable.Count);
+
             songsQueued.Add(songsAvailable[random]);
             songsAvailable.RemoveAt(random);
+            firstSong = false;
         }
     }
 }
