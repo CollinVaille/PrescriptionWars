@@ -6,6 +6,8 @@ public class GalaxyGenerator : MonoBehaviour
 {
     public List<Tech> techs;
     public List<string> techTotems;
+
+    public Material skyboxMaterial;
     
     string[] planetNames;
 

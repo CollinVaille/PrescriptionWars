@@ -6,6 +6,11 @@ using UnityEngine.UI;
 public class TechInterface : MonoBehaviour
 {
     public GameObject galaxyView;
+    public GameObject techListMenu;
+
+    public Material skyboxMaterial;
+
+    public Scrollbar techListMenuScrollbar;
 
     public List<Sprite> techSprites;
 
@@ -15,11 +20,15 @@ public class TechInterface : MonoBehaviour
 
     public List<Text> techTotemTopTexts;
     public List<Text> techNameTexts;
-    public List<Text> techLevelTexts;
     public List<Text> techDescriptionTexts;
+    public List<Text> techLevelTexts;
+    public List<Text> techCostTexts;
 
     public AudioSource sfxSource;
     public AudioClip bubblingAudioClip;
+    public AudioClip openTechListMenuAudioClip;
+
+    int techTotemTechListSelected;
 
     // Start is called before the first frame update
     void Start()
@@ -127,16 +136,56 @@ public class TechInterface : MonoBehaviour
                 techLevelTexts[x].text = "Level: None";
             }
         }
+
+
+        //Updates each tech totem's tech cost text.
+        for(int x = 0; x < techCostTexts.Count; x++)
+        {
+            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            {
+                techCostTexts[x].text = "Cost: " + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].cost;
+            }
+            else
+            {
+                techCostTexts[x].text = "Cost: None";
+            }
+        }
     }
 
     public void SwitchToGalaxy()
     {
+        if (techListMenu.activeInHierarchy)
+            CloseTechListMenu();
+
         galaxyView.SetActive(true);
+        RenderSettings.skybox = galaxyView.GetComponent<GalaxyGenerator>().skyboxMaterial;
         transform.gameObject.SetActive(false);
     }
 
     public void ClickOnTotem(int num)
     {
         Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = num;
+    }
+
+    public void ClickOnTotemTechListButton(int num)
+    {
+        //Sets which tech totem the menu is displaying info for.
+        techTotemTechListSelected = num;
+        //Activates the tech list menu object.
+        techListMenu.SetActive(true);
+
+        //Plays the open/close sound effect.
+        sfxSource.PlayOneShot(openTechListMenuAudioClip);
+    }
+
+    public void CloseTechListMenu()
+    {
+        //Resets the scrollbar's value.
+        techListMenuScrollbar.value = 0;
+        //Deactivates the tech list menu object.
+        techListMenu.SetActive(false);
+
+        //Plays the open/close sound effect.
+        sfxSource.PlayOneShot(openTechListMenuAudioClip);
     }
 }

@@ -74,6 +74,7 @@ public class GalaxyManager : MonoBehaviour
     public void SwitchToResearchView()
     {
         researchView.SetActive(true);
+        RenderSettings.skybox = researchView.GetComponent<TechInterface>().skyboxMaterial;
         transform.gameObject.SetActive(false);
 
         //Plays the switch to research view sound effect.
