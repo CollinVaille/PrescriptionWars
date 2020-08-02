@@ -1286,14 +1286,14 @@ public class Player : Pill
             if(!this.sprinting) //Start sprinting
             {
                 this.sprinting = true;
-                moveSpeed += 5;
+                moveSpeed *= 1.3333f;
                 feet.clip = running;
             }
         }
         else if(this.sprinting) //Stop sprinting
         {
             this.sprinting = false;
-            moveSpeed -= 5;
+            moveSpeed *= 0.75f;
             feet.clip = walking;
         }
     }

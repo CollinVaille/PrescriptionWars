@@ -212,16 +212,25 @@ public class Gun : Item
 
         //Bounce back (forwards)
         duration = 0.2f;
+        Vector3 returnVector = new Vector3(0, 0, -transform.localPosition.z / duration);
         for (float t = 0.0f; t < duration; t += Time.deltaTime)
         {
             if (!holder || (holder.performingAction && !aiming))
                 yield break;
 
-            //Move back
-            transform.Translate(Vector3.forward * 0.1f * Time.deltaTime / duration, Space.Self);
+            //Return to z = 0 by moving forward again
+            transform.Translate(returnVector * Time.deltaTime, Space.Self);
 
             //Wait a frame
             yield return null;
+        }
+
+        //Finalize return to z = 0 unless we're being overriden by something
+        if ((holder && !holder.performingAction) || (holder && aiming))
+        {
+            returnVector = transform.localPosition;
+            returnVector.z = 0;
+            transform.localPosition = returnVector;
         }
     }
 

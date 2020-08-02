@@ -285,6 +285,14 @@ public class PlanetGenerator : MonoBehaviour
             terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
             terrainCustomization.seabedTexture = planet.LoadTexture("Noxious Melt", "Mt Etna", "Iodine Atmosphere");
 
+            terrainCustomization.groundMetallic = 1;
+            terrainCustomization.groundSmoothness = 0.85f;
+
+            terrainCustomization.cliffMetallic = 1;
+
+            terrainCustomization.seabedMetallic = 1;
+            terrainCustomization.seabedSmoothness = 1;
+
             planet.LoadSkybox(true, "AllSky_Space_AnotherPlanet", "Gloomy", "RedYellowNebular", "RedOrangeYellowNebular");
             planet.LoadSkybox(false, planet.daySkybox.name);
 
@@ -347,6 +355,12 @@ public class PlanetGenerator : MonoBehaviour
 
             terrainCustomization.cliffTexture = planet.LoadTexture("Dead Sea");
             terrainCustomization.seabedTexture = planet.LoadTexture("Magnified Frost");
+
+            terrainCustomization.cliffMetallic = 1;
+            terrainCustomization.cliffSmoothness = 1;
+
+            terrainCustomization.seabedMetallic = 0.2f;
+            terrainCustomization.seabedSmoothness = 0.8f;
 
             planet.LoadSeabedFootsteps("Snow");
 

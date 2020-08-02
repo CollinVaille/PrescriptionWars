@@ -255,25 +255,15 @@ public class PlanetTerrain : MonoBehaviour
 
     private void TerrainLayerEffects (TerrainLayer groundLayer, TerrainLayer cliffLayer, TerrainLayer seabedLayer)
     {
-        //Effects dependent on biome
-        if (Planet.planet.biome == Planet.Biome.Hell)
-        {
-            groundLayer.metallic = 1;
-            groundLayer.smoothness = 0.85f;
+        //Apply customization of metallic and smoothness properties to terrain layers
+        groundLayer.metallic = customization.groundMetallic;
+        groundLayer.smoothness = customization.groundSmoothness;
 
-            cliffLayer.metallic = 1;
+        cliffLayer.metallic = customization.cliffMetallic;
+        cliffLayer.smoothness = customization.cliffSmoothness;
 
-            seabedLayer.metallic = 1;
-            seabedLayer.smoothness = 1;
-        }
-        else if(Planet.planet.biome == Planet.Biome.Spirit)
-        {
-            cliffLayer.metallic = 1;
-            cliffLayer.smoothness = 1;
-
-            seabedLayer.metallic = 0.2f;
-            seabedLayer.smoothness = 0.8f;
-        }
+        seabedLayer.metallic = customization.seabedMetallic;
+        seabedLayer.smoothness = customization.seabedSmoothness;
 
         //Update horizon to have same effects as terrain
         if(Planet.planet.hasOcean && customization.lowBoundaries)
@@ -667,13 +657,21 @@ public class PlanetTerrainJSON
         maxTreeSteepness = planetTerrain.customization.maxTreeSteepness;
         treeNames = planetTerrain.customization.treeNames;
 
+        //Customization: Layers
+        groundTexture = planetTerrain.customization.groundTexture.name;
+        cliffTexture = planetTerrain.customization.cliffTexture.name;
+        seabedTexture = planetTerrain.customization.seabedTexture.name;
+        groundMetallic = planetTerrain.customization.groundMetallic;
+        groundSmoothness = planetTerrain.customization.groundSmoothness;
+        cliffMetallic = planetTerrain.customization.cliffMetallic;
+        cliffSmoothness = planetTerrain.customization.cliffSmoothness;
+        seabedMetallic = planetTerrain.customization.seabedMetallic;
+        seabedSmoothness = planetTerrain.customization.seabedSmoothness;
+
         //Customization: Misc
         lowBoundaries = planetTerrain.customization.lowBoundaries;
         smallTerrain = planetTerrain.customization.smallTerrain;
         seabedHeight = planetTerrain.customization.seabedHeight;
-        groundTexture = planetTerrain.customization.groundTexture.name;
-        cliffTexture = planetTerrain.customization.cliffTexture.name;
-        seabedTexture = planetTerrain.customization.seabedTexture.name;
 
         //Offsets
         noiseOffsetX = planetTerrain.offsets.noiseOffsetX;
@@ -693,13 +691,21 @@ public class PlanetTerrainJSON
         customization.maxTreeSteepness = maxTreeSteepness;
         customization.treeNames = treeNames;
 
+        //Customization: Layers
+        customization.groundTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + groundTexture);
+        customization.cliffTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + cliffTexture);
+        customization.seabedTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + seabedTexture);
+        customization.groundMetallic = groundMetallic;
+        customization.groundSmoothness = groundSmoothness;
+        customization.cliffMetallic = cliffMetallic;
+        customization.cliffSmoothness = cliffSmoothness;
+        customization.seabedMetallic = seabedMetallic;
+        customization.seabedSmoothness = seabedSmoothness;
+
         //Customization: Misc
         customization.lowBoundaries = lowBoundaries;
         customization.smallTerrain = smallTerrain;
         customization.seabedHeight = seabedHeight;
-        customization.groundTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + groundTexture);
-        customization.cliffTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + cliffTexture);
-        customization.seabedTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + seabedTexture);
 
         //Offsets
         TerrainOffsets offsets = new TerrainOffsets(noiseOffsetX, noiseOffsetZ, amplitudeOffsetX, amplitudeOffsetZ);
@@ -717,10 +723,13 @@ public class PlanetTerrainJSON
     public int idealTreeCount, maxTreeSteepness;
     public string[] treeNames;
 
+    //Customization: Layers
+    public string groundTexture, cliffTexture, seabedTexture;
+    public float groundMetallic, groundSmoothness, cliffMetallic, cliffSmoothness, seabedMetallic, seabedSmoothness;
+
     //Customization: Misc
     public bool lowBoundaries, smallTerrain;
     public float seabedHeight;
-    public string groundTexture, cliffTexture, seabedTexture;
 
     //Offsets
     public float noiseOffsetX, noiseOffsetZ;
@@ -739,10 +748,13 @@ public class TerrainCustomization
     public int idealTreeCount, maxTreeSteepness;
     public string[] treeNames;
 
+    //Layers
+    public Texture2D groundTexture, cliffTexture, seabedTexture;
+    public float groundMetallic, groundSmoothness, cliffMetallic, cliffSmoothness, seabedMetallic, seabedSmoothness;
+
     //Misc
     public bool lowBoundaries, smallTerrain;
     public float seabedHeight;
-    public Texture2D groundTexture, cliffTexture, seabedTexture;
 
     //Remember old terrain customization (for purpose of regenerating terrain to be like old one)
     public TerrainCustomization(float noiseGroundScale, float amplitudeGroundScale, int amplitudePower, float noiseStrength)
@@ -770,13 +782,19 @@ public class TerrainCustomization
         treeNames = new string[1];
         treeNames[0] = "Palm Tree";
 
-        lowBoundaries = true;
-        smallTerrain = false;
-        seabedHeight = 7;
-
         groundTexture = null;
         cliffTexture = null;
         seabedTexture = null;
+        groundMetallic = 0;
+        groundSmoothness = 0;
+        cliffMetallic = 0;
+        cliffSmoothness = 0;
+        seabedMetallic = 0;
+        seabedSmoothness = 0;
+
+        lowBoundaries = true;
+        smallTerrain = false;
+        seabedHeight = 7;
     }
 
     public void SetTreeNames(params string[] newNames) { treeNames = newNames; }
