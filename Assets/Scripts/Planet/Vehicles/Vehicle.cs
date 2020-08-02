@@ -91,10 +91,19 @@ public class Vehicle : MonoBehaviour
 
         //Initialize parts arrays
         parts = new List<Transform>(GetComponentsInChildren<Transform>());
-        originalPartPositions = new List<Vector3>(parts.Count);
-        originalPartRotations = new List<Quaternion>(parts.Count);
+        originalPartPositions = new List<Vector3>(parts.Count - 1);
+        originalPartRotations = new List<Quaternion>(parts.Count - 1);
         for (int x = 0; x < parts.Count; x++)
         {
+            //Don't allow root of vehicle in parts list
+            if(parts[x] == transform)
+            {
+                parts.RemoveAt(x);
+                x--;
+                continue;
+            }
+
+            //Create parallel arrays for part
             originalPartPositions.Add(parts[x].localPosition);
             originalPartRotations.Add(parts[x].localRotation);
         }
@@ -360,6 +369,7 @@ public class Vehicle : MonoBehaviour
     {
         int partIndex = parts.IndexOf(part);
 
+        //Part has to be preexisting in parts list to be repaired
         if (partIndex < 0 || partIndex >= parts.Count)
             return;
 
@@ -369,5 +379,10 @@ public class Vehicle : MonoBehaviour
         VehiclePart vehiclePart = part.GetComponent<VehiclePart>();
         if (vehiclePart)
             vehiclePart.Repair(repairPoints);
+
+        //Recursively fix ancestry
+        //So if knob on wing is being repaired and wing is parent of knob, wing gets repaired too
+        if (part.parent)
+            FixPart(part.parent, repairPoints);
     }
 }

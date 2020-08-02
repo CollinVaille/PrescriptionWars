@@ -5,9 +5,6 @@ using UnityEngine.AI;
 
 public class Bot1 : Pill
 {
-    //Fix these guys later
-    public GameObject corpsePrefab;
-
     //Status variables
     private Transform target, potentialTarget;
     private bool noAmmo = false;
@@ -25,27 +22,16 @@ public class Bot1 : Pill
         SetShadowsRecursively(transform, false);
     }
 
-    /* public override void ApplyDamage (float amount)
-    {
-        base.ApplyDamage(amount);
-    }   */
-
+    //Should only be called by Damage function
     protected override void Die ()
     {
         base.Die();
 
-        //Create corpse dummy
-        GameObject newCorpse = Instantiate(corpsePrefab, transform.position, transform.rotation);
-
-        //Make corpse dummy look like us!
-        newCorpse.GetComponent<MeshRenderer>().sharedMaterial = GetComponent<MeshRenderer>().sharedMaterial;
-        newCorpse.GetComponent<Rigidbody>().velocity = rBody.velocity;
-
         //We go into secret hiding
         gameObject.SetActive(false);
 
-        //Report our death
-        spawner.ReportDeath(this, true);
+        //Bot spawns corpse dummy on death whereas player spawns his on respawn
+        Spawner.SpawnCorpse(God.god.corpsePrefab, transform);
     }
 
     public override void OnCreationFromSpawner (Spawner spawner)
@@ -168,7 +154,7 @@ public class Bot1 : Pill
             }
             else if (Random.Range(0, 5) == 0) //Look around occassionally when stopped
             {
-                if (Random.Range(0, 2) == 0) //Look at player
+                if (Random.Range(0, 2) == 0) //Look at leader
                     transform.LookAt(leaderTransform);
                 else //Look randomly in another direction
                     transform.eulerAngles = new Vector3(0, Random.Range(0, 359), 0);

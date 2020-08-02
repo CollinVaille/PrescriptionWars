@@ -59,7 +59,7 @@ public class RepairTool : Item
             Pill pill = hit.collider.GetComponent<Pill>();
 
             if (pill)
-                pill.Repair(repairPoints / 2.0f);
+                pill.Heal(repairPoints / 2.0f);
             else
             {
                 Vehicle owningVehicle = GetOwningVehicle(hit.collider.transform);

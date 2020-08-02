@@ -9,6 +9,7 @@ public class Projectile : MonoBehaviour
     private float knockback = 200;
     private float range = 300;
     private int team = 0;
+    private bool fromPlayer = false;
 
     public float launchSpeed = 40;
 
@@ -21,17 +22,23 @@ public class Projectile : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody>();
         sfxSource = GetComponent<AudioSource>();
+
+        God.god.ManageAudioSource(sfxSource);
     }
 
-    public void Launch(float damage, float knockback, float range, int team)
+    public void Launch(float damage, float knockback, float range, int team, bool fromPlayer)
     {
         //First, remember our mission briefing
         this.damage = damage;
         this.knockback = knockback;
         this.range = range;
         this.team = team;
+        this.fromPlayer = fromPlayer;
 
-        //Then, proceed with launch
+        //Then, randomize initial rotation to make it look cooler
+        transform.Rotate(Vector3.forward * Random.Range(0, 90), Space.Self);
+
+        //Finally, proceed with launch
         distanceCovered = 0.0f;
 
         //Its a go houston
@@ -48,7 +55,7 @@ public class Projectile : MonoBehaviour
             God.god.ManageProjectile(this);
     }
 
-    //Used to update the collision detection, movement, and enforce the range limit of the projectile
+    //Used to update the collision detection, movement, etc...
     public void UpdateLaunchedProjectile(float stepTime)
     {
         float stepDistance = launchSpeed * stepTime;
@@ -56,6 +63,9 @@ public class Projectile : MonoBehaviour
         //Check for collision
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, stepDistance, ~0, QueryTriggerInteraction.Ignore))
             Impact(hit.transform);
+
+        //Spin for cool effect
+        transform.Rotate(Vector3.forward * stepTime * 720, Space.Self);
 
         //Move forward
         transform.Translate(Vector3.forward * stepDistance, Space.Self);
@@ -71,9 +81,14 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log("Hit " + hit.name);
 
-        Damageable victim = hit.GetComponent<Damageable>();
+        Damageable victim = God.GetDamageable(hit);
         if (victim != null)
+        {
             victim.Damage(damage, knockback, transform.position, DamageType.Projectile, team);
+
+            if (fromPlayer)
+                Player.player.GetAudioSource().PlayOneShot(Player.player.hitMarker);
+        }
 
         Decommission();
     }

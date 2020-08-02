@@ -26,7 +26,7 @@ public class God : MonoBehaviour
     private List<AudioSource> managedAudioSources;
     private List<bool> wasPlaying;
 
-    //Projectile Management
+    //Projectile management
     private List<Projectile> managedProjectiles;
 
     //Loading screen
@@ -45,6 +45,9 @@ public class God : MonoBehaviour
     private Vector3 movementVector = Vector3.zero;
     private Vector3 previousMousePosition = Vector3.zero;
     private Vector3 mapPosition = Vector3.zero;
+
+    //Corpse management
+    public GameObject corpsePrefab;
 
     //Initialization
     private void Awake ()

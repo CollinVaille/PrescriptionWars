@@ -21,7 +21,6 @@ public class Spawner : MonoBehaviour
     //Team info
     public int team = 0;
 
-    //Respawn variables
     //*Death* -> Death queue -> Respawn queue -> *Alive*
     private List<Pill> deathQueue, respawnQueue;
 
@@ -168,6 +167,10 @@ public class Spawner : MonoBehaviour
         alive++;
         prescriptions--;
 
+        //If player, spawn corpse dummy on respawn
+        if (toRespawn == Player.player.GetPill())
+            SpawnCorpse(God.god.corpsePrefab, toRespawn.transform);
+
         SetSpawnPositionAndRotation(toRespawn);
 
         SetSquad(toRespawn);
@@ -245,6 +248,16 @@ public class Spawner : MonoBehaviour
         }
 
         squad.ReportingForDuty(pill);
+    }
+
+    public static void SpawnCorpse (GameObject corpsePrefab, Transform fromPill)
+    {
+        //Create corpse dummy
+        GameObject newCorpse = Instantiate(corpsePrefab, fromPill.position, fromPill.rotation);
+
+        //Make corpse dummy look like us!
+        newCorpse.GetComponent<MeshRenderer>().sharedMaterial = fromPill.GetComponent<MeshRenderer>().sharedMaterial;
+        newCorpse.GetComponent<Rigidbody>().velocity = fromPill.GetComponent<Rigidbody>().velocity;
     }
 }
 

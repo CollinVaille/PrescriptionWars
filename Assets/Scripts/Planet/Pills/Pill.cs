@@ -37,14 +37,31 @@ public class Pill : MonoBehaviour, Damageable
         name = GetRandomPillName();
     }
 
-    public virtual void ApplyDamage (float amount)
+    public virtual void Damage (float damage, float knockback, Vector3 from, DamageType damageType, int team)
     {
-        if (dead || amount <= 0)
+        if (dead || damage <= 0)
             return;
 
-        health -= amount;
+        if (voice)
+            Say(voice.GetOof(), damageType != DamageType.Fire, Random.Range(0.2f, 0.4f));
 
-        if(health <= 0)
+        //Friendly fire is prevented!
+        if (this.team == team)
+        {
+            if (damageType == DamageType.Melee)
+                mainAudioSource.PlayOneShot(God.god.jab);
+
+            return;
+        }
+
+        //Knockback, if any
+        if (knockback > 0)
+            rBody.AddExplosionForce(knockback, from, 1000);
+
+        //Apply damage
+        health -= damage;
+
+        if (health <= 0)
         {
             health = 0;
             dead = true;
@@ -53,14 +70,7 @@ public class Pill : MonoBehaviour, Damageable
         }
     }
 
-    protected virtual void Die ()
-    {
-        controlOverride = false;
-
-        squad.ReportingDeparture(this);
-    }
-
-    public virtual void Heal (float amount)
+    public virtual void Heal (float amount, bool fromExternalSource = true)
     {
         if (dead || amount <= 0)
             return;
@@ -69,6 +79,25 @@ public class Pill : MonoBehaviour, Damageable
 
         if (health > maxHealth)
             health = maxHealth;
+
+        if (fromExternalSource && voice && Random.Range(0, 10) == 0)
+        {
+            if (health > maxHealth - 1)
+                Say(voice.GetImGood(), false);
+            else
+                Say(voice.GetThanks(), false);
+        }
+    }
+
+    //Should only be called by Damage function
+    protected virtual void Die ()
+    {
+        //Stop any override behaviours such as sleeping in bed, sitting in seat, climbing a ladder...
+        controlOverride = false;
+
+        //Report the sad news
+        squad.ReportingDeparture(this);
+        spawner.ReportDeath(this, true);
     }
 
     protected void OnCollisionEnter (Collision collision)
@@ -121,42 +150,6 @@ public class Pill : MonoBehaviour, Damageable
                 else //Hit wall or something
                     mainAudioSource.PlayOneShot(God.god.genericImpact);
             }
-        }
-    }
-
-    public void Damage (float damage, float knockback, Vector3 from, DamageType damageType, int team)
-    {
-        if(voice)
-            Say(voice.GetOof(), damageType != DamageType.Fire, Random.Range(0.2f, 0.4f));
-
-        //Friendly fire is prevented!
-        if (this.team == team)
-        {
-            if(damageType == DamageType.Melee)
-                mainAudioSource.PlayOneShot(God.god.jab);
-
-            return;
-        }
-
-        //Knockback, if any
-        if(knockback > 0)
-            rBody.AddExplosionForce(knockback, from, 1000);
-
-        //Damage
-        ApplyDamage(damage);
-    }
-
-    //Same as heal but this has chance for pill to say thanks
-    public void Repair (float repairPoints)
-    {
-        Heal(repairPoints);
-
-        if (voice && Random.Range(0, 10) == 0)
-        {
-            if (health > maxHealth - 1)
-                Say(voice.GetImGood(), false);
-            else
-                Say(voice.GetThanks(), false);
         }
     }
 

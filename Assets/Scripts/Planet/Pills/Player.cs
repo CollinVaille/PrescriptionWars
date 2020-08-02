@@ -346,9 +346,9 @@ public class Player : Pill
         }
     }
 
-    public override void ApplyDamage (float amount)
+    public override void Damage (float damage, float knockback, Vector3 from, DamageType damageType, int team)
     {
-        base.ApplyDamage(amount);
+        base.Damage(damage, knockback, from, damageType, team);
 
         //Display player's health after damage
         Vector3 healthBarScale = healthBar.GetComponent<RectTransform>().localScale;
@@ -356,6 +356,17 @@ public class Player : Pill
         healthBar.GetComponent<RectTransform>().localScale = healthBarScale;
     }
 
+    public override void Heal (float amount, bool fromExternalSource)
+    {
+        base.Heal(amount, fromExternalSource);
+
+        //Display player's health after heal
+        Vector3 healthBarScale = healthBar.GetComponent<RectTransform>().localScale;
+        healthBarScale.x = health / maxHealth;
+        healthBar.GetComponent<RectTransform>().localScale = healthBarScale;
+    }
+
+    //Should only be called by Damage function
     protected override void Die ()
     {
         base.Die();
@@ -368,18 +379,6 @@ public class Player : Pill
 
         //Not on feet anymore so no footsteps
         feet.Stop();
-
-        spawner.ReportDeath(this, true);
-    }
-
-    public override void Heal (float amount)
-    {
-        base.Heal(amount);
-
-        //Display player's health after heal
-        Vector3 healthBarScale = healthBar.GetComponent<RectTransform>().localScale;
-        healthBarScale.x = health / maxHealth;
-        healthBar.GetComponent<RectTransform>().localScale = healthBarScale;
     }
 
     public override void Equip (Item item, bool dropOldItem = true)
@@ -609,7 +608,7 @@ public class Player : Pill
             while (health < maxHealth && !dead)
             {
                 if(healthRegen > 0)
-                    Heal(healthRegen / 5);
+                    Heal(healthRegen / 5, false);
 
                 yield return new WaitForSeconds(0.2f);
             }
@@ -1223,8 +1222,7 @@ public class Player : Pill
             yield return null;
         }
 
-        if (controlOverride)
-            overrider.ReleaseControl(!dead);
+        overrider.ReleaseControl(!dead);
     }
 
     private IEnumerator PlayerSitOverride (Seat seat)
