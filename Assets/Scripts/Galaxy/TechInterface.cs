@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,11 +24,20 @@ public class TechInterface : MonoBehaviour
     public List<Text> techLevelTexts;
     public List<Text> techCostTexts;
 
+    public Text techListMenuTopText;
+    public Text techNamesListText;
+    public Text techLevelsListText;
+    public Text techCostsListText;
+
     public AudioSource sfxSource;
     public AudioClip bubblingAudioClip;
     public AudioClip openTechListMenuAudioClip;
 
-    int techTotemTechListSelected;
+    int techTotemTechListSelected = -1;
+
+    bool techListMenuPreviouslyActive = false;
+    bool techListMenuMoving = false;
+    Vector2 mouseToMenuDistance;
 
     // Start is called before the first frame update
     void Start()
@@ -150,6 +159,129 @@ public class TechInterface : MonoBehaviour
                 techCostTexts[x].text = "Cost: None";
             }
         }
+
+        //Updates the tech list menu's position if the player is currently dragging it.
+        if (techListMenuMoving)
+        {
+            techListMenu.transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
+
+            //Left barrier.
+            if(techListMenu.transform.localPosition.x < -275)
+            {
+                techListMenu.transform.localPosition = new Vector2(-275, techListMenu.transform.localPosition.y);
+
+                mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
+
+                if (mouseToMenuDistance.x < -245)
+                    mouseToMenuDistance.x = -245;
+            }
+            //Right barrier.
+            if(techListMenu.transform.localPosition.x > 275)
+            {
+                techListMenu.transform.localPosition = new Vector2(275, techListMenu.transform.localPosition.y);
+
+                mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
+
+                if (mouseToMenuDistance.x > 245)
+                    mouseToMenuDistance.x = 245;
+            }
+            //Top barrier.
+            if(techListMenu.transform.localPosition.y > 150)
+            {
+                techListMenu.transform.localPosition = new Vector2(techListMenu.transform.localPosition.x, 150);
+
+                mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
+
+                if (mouseToMenuDistance.y > 150)
+                    mouseToMenuDistance.y = 150;
+            }
+            //Bottom barrier.
+            if (techListMenu.transform.localPosition.y < -150)
+            {
+                techListMenu.transform.localPosition = new Vector2(techListMenu.transform.localPosition.x, -150);
+
+                mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
+
+                if (mouseToMenuDistance.y < -150)
+                    mouseToMenuDistance.y = -150;
+            }
+        }
+
+        //Updates the tech list menu's ui if it is up.
+        if (techListMenu.activeInHierarchy && !techListMenuPreviouslyActive && techTotemTechListSelected >= 0 && techTotemTechListSelected < Empire.empires[GalaxyManager.playerID].techManager.techTotems.Count)
+        {
+            UpdateTechListMenu();
+        }
+
+        techListMenuPreviouslyActive = techListMenu.activeInHierarchy;
+    }
+
+    public void UpdateTechListMenu()
+    {
+        techNamesListText.text = "";
+        techLevelsListText.text = "";
+        techCostsListText.text = "";
+
+        techListMenuTopText.text = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].name;
+        if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count <= 10)
+        {
+            List<int> techListInOrder = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].GetTechsInOrderList();
+
+            for (int x = 0; x < techListInOrder.Count; x++)
+            {
+                if (x > 0)
+                {
+                    techNamesListText.text += "\n";
+                    techLevelsListText.text += "\n";
+                    techCostsListText.text += "\n";
+                }
+                techNamesListText.text += Tech.entireTechList[techListInOrder[x]].name;
+                techLevelsListText.text += Tech.entireTechList[techListInOrder[x]].level;
+                techCostsListText.text += Tech.entireTechList[techListInOrder[x]].cost;
+            }
+        }
+        else
+        {
+            List<float> possibleValues = GetPossibleValues(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count - 9);
+            int closestIndex = 0;
+            for (int x = 1; x < possibleValues.Count; x++)
+            {
+                if (Mathf.Abs(possibleValues[x] - techListMenuScrollbar.value) <= Mathf.Abs(possibleValues[closestIndex] - techListMenuScrollbar.value))
+                    closestIndex = x;
+            }
+
+            List<int> techListInOrder = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].GetTechsInOrderList();
+
+            bool firstLoop = true;
+            for (int x = closestIndex; x < closestIndex + 10; x++)
+            {
+                if (!firstLoop)
+                {
+                    techNamesListText.text += "\n";
+                    techLevelsListText.text += "\n";
+                    techCostsListText.text += "\n";
+                }
+                techNamesListText.text += Tech.entireTechList[techListInOrder[x]].name;
+                techLevelsListText.text += Tech.entireTechList[techListInOrder[x]].level;
+                techCostsListText.text += Tech.entireTechList[techListInOrder[x]].cost;
+
+                firstLoop = false;
+            }
+        }
+    }
+
+    public List<float> GetPossibleValues(int numberOfPossibleValues)
+    {
+        List<float> possibleValues = new List<float>();
+
+        for(int x = 0; x < numberOfPossibleValues; x++)
+        {
+            float perAmount = 1.0f / (numberOfPossibleValues - 1);
+
+            possibleValues.Add(perAmount * x);
+        }
+
+        return possibleValues;
     }
 
     public void SwitchToGalaxy()
@@ -182,10 +314,33 @@ public class TechInterface : MonoBehaviour
     {
         //Resets the scrollbar's value.
         techListMenuScrollbar.value = 0;
+        //Resets whether the tech list menu is being dragged by the player.
+        PointerUpTechListMenu();
+        //Resets the tech list menu's location.
+        techListMenu.transform.localPosition = Vector2.zero;
         //Deactivates the tech list menu object.
         techListMenu.SetActive(false);
 
         //Plays the open/close sound effect.
         sfxSource.PlayOneShot(openTechListMenuAudioClip);
+    }
+
+    public void PointerDownTechListMenu()
+    {
+        //Tells the update function that the player is dragging the menu.
+        techListMenuMoving = true;
+
+        //Tells the update function the set difference between the mouse position and the menu's position.
+        mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
+        mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
+    }
+
+    public void PointerUpTechListMenu()
+    {
+        //Tells the update function that the player is no longer dragging the menu.
+        techListMenuMoving = false;
+
+        //Resets the vector that says the difference between the mouse position and the menu's position.
+        mouseToMenuDistance = Vector2.zero;
     }
 }

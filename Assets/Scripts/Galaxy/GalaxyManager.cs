@@ -400,6 +400,42 @@ public class TechTotem
             techDisplayed = -1;
         }
     }
+
+    public List<int> GetTechsInOrderList()
+    {
+        List<int> techsInOrder = new List<int>();
+        List<int> techsLeftToAdd = new List<int>();
+        foreach(int techNum in techsAvailable)
+        {
+            techsLeftToAdd.Add(techNum);
+        }
+
+        //Determines the lowest level of tech in the list.
+        int lowestLevel = 0;
+        for(int x = 0; x < techsLeftToAdd.Count; x++)
+        {
+            if (x == 0 || Tech.entireTechList[techsLeftToAdd[x]].level < lowestLevel)
+                lowestLevel = Tech.entireTechList[techsLeftToAdd[x]].level;
+        }
+
+        int checkingLevel = lowestLevel;
+        while(techsLeftToAdd.Count > 0)
+        {
+            for(int x = 0; x < techsLeftToAdd.Count; x++)
+            {
+                if(Tech.entireTechList[techsLeftToAdd[x]].level == checkingLevel)
+                {
+                    techsInOrder.Add(techsLeftToAdd[x]);
+                    techsLeftToAdd.RemoveAt(x);
+                    x--;
+                }
+            }
+
+            checkingLevel++;
+        }
+
+        return techsInOrder;
+    }
 }
 
 [System.Serializable]
