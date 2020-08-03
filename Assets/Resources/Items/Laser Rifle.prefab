@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1531228171902997547}
-  - component: {fileID: 1531228171902997543}
+  - component: {fileID: -3881461633772057438}
   - component: {fileID: 1531228171902997545}
   - component: {fileID: 1531228171902997544}
   m_Layer: 10
@@ -224,7 +224,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
---- !u!114 &1531228171902997543
+--- !u!114 &-3881461633772057438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1531228171902997540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7881291db261fe041b1a146f7e752589, type: 3}
+  m_Script: {fileID: 11500000, guid: 923454ddec741234c999e32f59899f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   meleeDamage: 50
@@ -245,16 +245,15 @@ MonoBehaviour:
   fire: {fileID: 8300000, guid: 3b3c7951984eabf4fba7f0dcc26e7b10, type: 3}
   dryFire: {fileID: 8300000, guid: 45ab9d496bf7bb241bf7cebb9aeb8011, type: 3}
   reload: {fileID: 8300000, guid: 8cb3e49ea9c9e6547bc701d7ab658d8c, type: 3}
-  loadedBullets: 7
-  clipSize: 7
-  spareClips: 9
+  loadedBullets: 8
+  clipSize: 8
+  spareClips: 8
   range: 300
   bulletDamage: 50
-  bulletKnockback: 200
+  bulletKnockback: 500
   cooldown: 0
+  projectileName: Laser
   aiming: 0
-  projectilePrefab: {fileID: 2141740928745583085, guid: 001dc669547c82f4eb8e67c6292fb05d,
-    type: 3}
 --- !u!65 &1531228171902997545
 BoxCollider:
   m_ObjectHideFlags: 0

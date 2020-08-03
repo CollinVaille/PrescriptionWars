@@ -12,6 +12,7 @@ public class Gun : Item
     public int loadedBullets, clipSize, spareClips;
     public int range, bulletDamage, bulletKnockback;
     public float cooldown = 0;
+    public string projectileName;
 
     //Status variables
     [HideInInspector]
@@ -44,6 +45,7 @@ public class Gun : Item
         StartCoroutine(Reload());
     }
 
+    //Call this to fire the gun
     public void Shoot ()
     {
         if (!holder || Time.timeSinceLevelLoad - lastFired <= cooldown)
@@ -69,14 +71,16 @@ public class Gun : Item
             //Play sound effect
             holder.GetAudioSource().PlayOneShot(fire);
 
-            EjectProjectile();
+            //Eject bullet/projectile from barrel
+            if (projectileName.Equals(""))
+                RaycastShoot();
+            else
+                ProjectileShoot();
         }
     }
 
-    //Called by Shoot after all ammo, SFX, etc. management has been done to fire projectile
-    //Default behaviour is to perform a raycast shoot, but Launcher overrides this to fire
-    //an actual physical projectile
-    protected virtual void EjectProjectile ()
+    //Called by Shoot to fire invisible bullet
+    private void RaycastShoot ()
     {
         //Cast ray in place of bullet to see if we hit something
         RaycastHit hit;
@@ -111,6 +115,20 @@ public class Gun : Item
             //Play ricochet sound effect if bullet hit nearby player
             Player.player.BulletRicochet(hit);
         }
+    }
+
+    //Called by Shoot to fire physical projectile
+    private void ProjectileShoot ()
+    {
+        Projectile projectile = Projectile.GetProjectile(projectileName);
+
+        //Put projectile in launch position
+        projectile.transform.rotation = transform.rotation;
+        projectile.transform.position = transform.position;
+        projectile.transform.Translate(Vector3.forward, Space.Self);
+
+        //Launch time!
+        projectile.Launch(bulletDamage, bulletKnockback, range, holder);
     }
 
     public IEnumerator Reload ()

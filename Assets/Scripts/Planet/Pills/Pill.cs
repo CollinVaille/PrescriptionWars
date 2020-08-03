@@ -348,7 +348,8 @@ public class Pill : MonoBehaviour, Damageable
         //Get list of pill names
         if (pillNames == null)
         {
-            TextAsset pillNamesFile = Resources.Load<TextAsset>("Text/Pill Names/Pill Names");
+            TextAsset pillNamesFile = Resources.Load<TextAsset>(Random.Range(0, 2) == 0 ? 
+                "Text/Pill Names/Pill Names" : "Text/Pill Names/Boring Names");
             pillNames = pillNamesFile.text.Split('\n');
         }
 

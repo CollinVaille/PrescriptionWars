@@ -4,14 +4,36 @@ using UnityEngine;
 
 public class Army : MonoBehaviour
 {
+    //STATIC ARMY MANAGEMENT----------------------------------------------------------------------------
+
     private static List<Army> armies;
+
+    public static Army GetArmy(int team)
+    {
+        Army army = null;
+
+        for (int x = 0; x < armies.Count; x++)
+        {
+            if (armies[x].team == team)
+            {
+                army = armies[x];
+                break;
+            }
+        }
+
+        return army;
+    }
+
+    //ARMY INSTANCE-------------------------------------------------------------------------------------
 
     //Army composition
     public List<Squad> squads;
     public Pill fieldGeneral;
     
-    //Faction allegience
+    //Faction data
     public int team = 0;
+    public Empire.Culture culture;
+    [HideInInspector] public Material plasma1, plasma2;
 
     //Comms channel
     private CommsChannel commsChannel;
@@ -22,26 +44,19 @@ public class Army : MonoBehaviour
         commsChannel = GetComponent<CommsChannel>();
         commsChannel.InitializeCommsChannel(this);
 
+        //Initialize resources
+        InitializeResources();
+
         //When done with set up, make army available for referencing
         if (armies == null)
             armies = new List<Army>();
         armies.Add(this);
     }
 
-    public static Army GetArmy (int team)
+    private void InitializeResources ()
     {
-        Army army = null;
-
-        for(int x = 0; x < armies.Count; x++)
-        {
-            if(armies[x].team == team)
-            {
-                army = armies[x];
-                break;
-            }
-        }
-
-        return army;
+        plasma1 = Resources.Load<Material>("Projectiles/Materials/" + culture.ToString() + " Plasma 1");
+        plasma2 = Resources.Load<Material>("Projectiles/Materials/" + culture.ToString() + " Plasma 2");
     }
 
     public void AddSquad ()
