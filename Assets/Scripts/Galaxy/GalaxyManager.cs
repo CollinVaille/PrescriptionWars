@@ -65,16 +65,24 @@ public class GalaxyManager : MonoBehaviour
 
             planetManagementMenu.SetActive(true);
             planetManagementMenuScript.ResetChooseCityMenu();
-            togglePlanetManagementMenu = false;
             planetManagementMenuScript.UpdateUI();
             planetManagementMenuScript.PlayOpenMenuSFX();
+
+            togglePlanetManagementMenu = false;
         }
     }
 
     public void SwitchToResearchView()
     {
+        //Closes the planet management menu if it is open.
+        if (planetManagementMenu.activeInHierarchy)
+            planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+
+        //Turns on the research view.
         researchView.SetActive(true);
+        //Switches the skybox material to the one assigned to the research view.
         RenderSettings.skybox = researchView.GetComponent<TechInterface>().skyboxMaterial;
+        //Turns off the galaxy view.
         transform.gameObject.SetActive(false);
 
         //Plays the switch to research view sound effect.

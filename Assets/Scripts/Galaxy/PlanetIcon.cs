@@ -173,7 +173,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUp ()
     {
-        if(ownerID == GalaxyManager.playerID && !GalaxyManager.planetManagementMenu.activeInHierarchy)
+        if(ownerID == GalaxyManager.playerID)
         {
             PlanetManagementMenu.planetSelected = transform.gameObject;
             GalaxyManager.togglePlanetManagementMenu = true;

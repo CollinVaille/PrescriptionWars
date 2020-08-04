@@ -80,6 +80,10 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public int citySelected;
 
+    //Menu dragging stuff here.
+    bool beingMoved = false;
+    Vector2 mouseToMenuDistance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -95,6 +99,53 @@ public class PlanetManagementMenu : MonoBehaviour
             CloseMenu();
         }
 
+        if (beingMoved)
+        {
+            transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
+
+            //Left barrier.
+            if (transform.localPosition.x < -175)
+            {
+                transform.localPosition = new Vector2(-175, transform.localPosition.y);
+
+                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+
+                if (mouseToMenuDistance.x < -440)
+                    mouseToMenuDistance.x = -440;
+            }
+            //Right barrier.
+            if (transform.localPosition.x > 175)
+            {
+                transform.localPosition = new Vector2(175, transform.localPosition.y);
+
+                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+
+                if (mouseToMenuDistance.x > 440)
+                    mouseToMenuDistance.x = 440;
+            }
+            //Top barrier.
+            if (transform.localPosition.y > 30)
+            {
+                transform.localPosition = new Vector2(transform.localPosition.x, 30);
+
+                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+
+                if (mouseToMenuDistance.y > 323)
+                    mouseToMenuDistance.y = 323;
+            }
+            //Bottom barrier.
+            if (transform.localPosition.y < -62)
+            {
+                transform.localPosition = new Vector2(transform.localPosition.x, -62);
+
+                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+
+                if (mouseToMenuDistance.y < -323)
+                    mouseToMenuDistance.y = -323;
+            }
+        }
+
+        //Updates the ui if the appropriate amount of time has passes (to increase performance).
         timer += Time.deltaTime;
         if(timer >= (1 / updatesPerSecond))
         {
@@ -175,6 +226,24 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
+    public void PointerDownPlanetManagementMenu()
+    {
+        //Tells the update function that the player is dragging the menu.
+        beingMoved = true;
+
+        //Tells the update function the set difference between the mouse position and the menu's position.
+        mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+        mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+    }
+
+    public void PointerUpPlanetManagementMenu()
+    {
+        //Tells the update function that the player is no longer dragging the menu.
+        beingMoved = false;
+
+        //Resets the vector that says the difference between the mouse position and the menu's position.
+        mouseToMenuDistance = Vector2.zero;
+    }
 
     //Updates the demolish building symbol images.
     public void CheckDemolishBuildingSymbols()
@@ -549,6 +618,11 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public void CloseMenu()
     {
+        //Resets whether the planet management menu is being dragged by the player.
+        PointerUpPlanetManagementMenu();
+        //Resets the planet managment menu's location.
+        transform.localPosition = Vector2.zero;
+
         //Resets all of the shadows on text.
         foreach (Shadow shadow in shadows)
         {
