@@ -161,24 +161,14 @@ public class PlanetGenerator : MonoBehaviour
             }
 
             //Trees
-            if (Random.Range(0, 3) != 0)
+            if (Random.Range(0, 1) == 0)
             {
-                if (planet.hasOcean && Random.Range(0, 3) != 0) //Palm trees
-                {
-                    terrainCustomization.idealTreeCount = Random.Range(50, 200);
-                    terrainCustomization.SetTreeNames("Palm Tree");
-                }
-                else if (Random.Range(0, 2) == 0) //Oak trees
-                {
-                    terrainCustomization.idealTreeCount = Random.Range(100, 250);
-                    terrainCustomization.SetTreeNames("Oak Tree");
-                }
-                else //Jungle trees
+                if (Random.Range(0, 1) == 0) //Jungle trees
                 {
                     terrainCustomization.SetTreeNames("Jungle Tree");
                     terrainCustomization.maxTreeSteepness = 20;
 
-                    if (Random.Range(0, 2) == 0) //Thick forest
+                    if (Random.Range(0, 1) == 0) //Thick forest
                     {
                         planet.biomeSubType = Planet.BiomeSubType.Forest;
 
@@ -192,6 +182,16 @@ public class PlanetGenerator : MonoBehaviour
                     }
                     else //Sparse forest
                         terrainCustomization.idealTreeCount = Random.Range(100, 200);
+                }
+                else if (planet.hasOcean && Random.Range(0, 2) == 0) //Palm trees
+                {
+                    terrainCustomization.idealTreeCount = Random.Range(50, 200);
+                    terrainCustomization.SetTreeNames("Palm Tree");
+                }
+                else
+                {
+                    terrainCustomization.idealTreeCount = Random.Range(100, 250);
+                    terrainCustomization.SetTreeNames("Oak Tree");
                 }
             }
 

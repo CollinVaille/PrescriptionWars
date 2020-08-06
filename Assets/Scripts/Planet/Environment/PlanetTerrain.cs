@@ -66,6 +66,8 @@ public class PlanetTerrain : MonoBehaviour
 
         //Terrain textures (do after everything else to make sure painting is up to date)
         PaintTerrain();
+
+        //ShowAreas(9999, -9999, 9999);
     }
 
     //TERRAIN GENERATION FUNCTIONS------------------------------------------------------------------------------------
@@ -392,6 +394,14 @@ public class PlanetTerrain : MonoBehaviour
         }
     }
 
+    private bool AreaAtPositionAvailable (float globalXPos, float globalZPos)
+    {
+        int x = (int)((globalXPos + 500) / areaSize);
+        int z = (int)((globalZPos + 500) / areaSize);
+
+        return areaHeight[x, z] < 9000;
+    }
+
     public Vector3 ReserveTerrainPosition (float preferredSteepness, int minHeight, int maxHeight, int radius, bool flatten)
     {
         //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
@@ -559,8 +569,6 @@ public class PlanetTerrain : MonoBehaviour
     {
         //int idealTreeCount, int maxSteepness, float seabedHeight, params string[] treeNames
 
-        TerrainData terrainData = terrain.terrainData;
-
         //Load tree models...
         string[] treeNames = customization.treeNames;
         TreePrototype[] treePrototypes = new TreePrototype[treeNames.Length];
@@ -573,22 +581,19 @@ public class PlanetTerrain : MonoBehaviour
 
             treePrototypes[x] = newPrototype;
         }
-        terrainData.treePrototypes = treePrototypes;
+        terrain.terrainData.treePrototypes = treePrototypes;
 
         List<TreeInstance> trees = new List<TreeInstance>();
 
         //Set generation parameters...
 
         int idealTreeCount = customization.idealTreeCount;
-        int maxSteepness = customization.maxTreeSteepness;
 
         int maxAttempts = idealTreeCount * 2;
 
-        int minHeight = -10;
+        float minHeight = -10;
         if (Planet.planet.hasOcean)
             minHeight = (int)Mathf.Max(Planet.planet.oceanTransform.position.y, customization.seabedHeight);
-
-        int maxHeight = 120;
 
         //Attempt to generate one tree per iteration; if attempt fails no reattempt is made, moves onto next tree
         for (int treesPlanted = 0, attempts = 0; treesPlanted < idealTreeCount && attempts < maxAttempts; attempts++)
@@ -596,18 +601,11 @@ public class PlanetTerrain : MonoBehaviour
             //Generate new place to put tree
             Vector3 newTreePosition = new Vector3(Random.value, 0.0f, Random.value);
 
+            //Choose randomly which type of tree to place
+            int prototypeIndex = Random.Range(0, treeNames.Length);
+
             //Check if placement is ok...
-
-            //Ground must be level enough
-            if (terrainData.GetSteepness(newTreePosition.x, newTreePosition.z) > maxSteepness)
-                continue;
-
-            //Ground cannot be lower than sea level
-            int heightmapX = (int)(newTreePosition.x * terrainData.heightmapResolution);
-            int heightmapZ = (int)(newTreePosition.z * terrainData.heightmapResolution);
-
-            float height = terrainData.GetHeight(heightmapX, heightmapZ);
-            if (height < minHeight || height > maxHeight)
+            if (!CanPlaceTreeHere(newTreePosition, minHeight))
                 continue;
 
             //If got to this point, we passed all tests so proceed with creating tree...
@@ -617,7 +615,7 @@ public class PlanetTerrain : MonoBehaviour
             TreeInstance newTree = new TreeInstance();
             newTree.color = Color.white;
             newTree.lightmapColor = Color.white;
-            newTree.prototypeIndex = Random.Range(0, treeNames.Length);
+            newTree.prototypeIndex = prototypeIndex;
             newTree.widthScale = 1;
             newTree.heightScale = 1;
             newTree.rotation = 0;
@@ -629,9 +627,46 @@ public class PlanetTerrain : MonoBehaviour
 
         //Debug.Log("Tree Count: " + trees.Count);
 
-        terrainData.SetTreeInstances(trees.ToArray(), true);
+        terrain.terrainData.SetTreeInstances(trees.ToArray(), true);
 
+        //Supposed to make all changes take effect...
         terrain.Flush();
+
+        //But in reality, tree colliders need the terrain collider to be toggled to work...
+        //(hours and hours wasted on this bug)
+        terrain.GetComponent<TerrainCollider>().enabled = false;
+        terrain.GetComponent<TerrainCollider>().enabled = true;
+    }
+
+    //Tree position is in terrain coordinates, that is: X and Z should be between 0 and 1, Y is ignored
+    private bool CanPlaceTreeHere (Vector3 treePosition, float minHeight)
+    {
+        TerrainData terrainData = terrain.terrainData;
+
+        //Ground must be level enough
+        if (terrainData.GetSteepness(treePosition.x, treePosition.z) > customization.maxTreeSteepness)
+            return false;
+
+        //Ground cannot be lower than sea level
+        int heightmapX = (int)(treePosition.x * terrainData.heightmapResolution);
+        int heightmapZ = (int)(treePosition.z * terrainData.heightmapResolution);
+
+        float height = terrainData.GetHeight(heightmapX, heightmapZ);
+        if (height < minHeight || height > 120)
+            return false;
+
+        //Ground must be clear of any obstacles (so we don't place trees inside of buildings for example)...
+
+        //Get world position of tree
+        Vector3 worldPos = treePosition;
+        worldPos.x *= terrain.terrainData.size.x;
+        worldPos.z *= terrain.terrainData.size.z;
+        worldPos += terrain.transform.position;
+
+        //Get the actual height of the terrain at that position in world coordinates
+        //worldPos.y = terrain.SampleHeight(worldPos);
+
+        return AreaAtPositionAvailable(worldPos.x, worldPos.z);
     }
 
     public float GetSeabedHeight () { return customization.seabedHeight; }

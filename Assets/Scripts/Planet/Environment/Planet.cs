@@ -17,7 +17,7 @@ public class Planet : MonoBehaviour
     //General
     [HideInInspector] public string planetName = "";
     public Biome biome = Biome.Unknown;
-    public BiomeSubType biomeSubType = BiomeSubType.Default;
+    [HideInInspector] public BiomeSubType biomeSubType = BiomeSubType.Default;
     public PlanetGenerator generator;
 
     //Day/night cycle
