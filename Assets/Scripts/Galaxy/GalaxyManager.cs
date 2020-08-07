@@ -14,6 +14,7 @@ public class GalaxyManager : MonoBehaviour
 
     public AudioClip switchToResearchViewSFX;
     public AudioClip techFinishedSFX;
+    public AudioClip endTurnSFX;
 
     public static int playerID = 0;
     public static int turnNumber = 0;
@@ -91,6 +92,9 @@ public class GalaxyManager : MonoBehaviour
 
     public void EndTurn()
     {
+        //Plays the end turn sound effect.
+        sfxSource.PlayOneShot(endTurnSFX);
+
         //Closes the planet management menu if it is currently open.
         if (planetManagementMenu.activeInHierarchy)
             planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
@@ -119,7 +123,9 @@ public class Empire
     {
         Red,
         Green,
-        Blue
+        Blue,
+        Purple,
+        Gold
     }
 
     public static List<Empire> empires;
@@ -150,9 +156,12 @@ public class Empire
     {
         Color labelColor = empireColor;
 
-        labelColor.r += 0.3f;
-        labelColor.g += 0.3f;
-        labelColor.b += 0.3f;
+        if(empireCulture == Culture.Red || empireCulture == Culture.Green || empireCulture == Culture.Blue)
+        {
+            labelColor.r += 0.3f;
+            labelColor.g += 0.3f;
+            labelColor.b += 0.3f;
+        }
 
         return labelColor;
     }
@@ -480,4 +489,49 @@ public class TechEffect
     public TechEffectType effectType;
 
     public float amount;
+}
+
+public class GalaxyHelperMethods
+{
+    public static string RemoveCarriageReturn(string text)
+    {
+        string returnText = "";
+        char[] charArray = text.ToCharArray();
+
+        foreach(char c in charArray)
+        {
+            if((int)c != 13)
+            {
+                returnText += c;
+            }
+        }
+
+        return returnText;
+    }
+
+    public static string GetEnumText(string text)
+    {
+        List<char> charList = new List<char>();
+        char[] charArray = text.ToCharArray();
+        foreach (char c in charArray)
+        {
+            charList.Add(c);
+        }
+
+        for (int x = text.Length - 1; x > -1; x--)
+        {
+            if (char.IsUpper(charList[x]) && x != 0)
+            {
+                charList.Insert(x, ' ');
+            }
+        }
+
+        string finalText = "";
+        foreach (char c in charList)
+        {
+            finalText += c;
+        }
+
+        return finalText;
+    }
 }

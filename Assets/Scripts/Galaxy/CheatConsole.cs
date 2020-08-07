@@ -102,11 +102,45 @@ public class CheatConsole : MonoBehaviour
             case "toggle_research_effects":
                 ToggleResearchEffects();
                 break;
+            case "conquer_planet":
+                ConquerPlanet(command);
+                break;
 
             default:
                 commandHistoryText.text += "\nInvalid Command";
                 break;
         }
+    }
+
+    void ConquerPlanet(string command)
+    {
+        string inputedPlanetName = "";
+
+        try
+        {
+            inputedPlanetName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)).ToLower();
+        }
+        catch (Exception)
+        {
+            commandHistoryText.text += "\nInvalid Planet Name";
+            return;
+        }
+
+        for(int x = 0; x < GalaxyManager.planets.Count; x++)
+        {
+            PlanetIcon planet = GalaxyManager.planets[x].GetComponent<PlanetIcon>();
+
+            string planetName = GalaxyHelperMethods.RemoveCarriageReturn(planet.nameLabel.text.ToLower());
+
+            if (inputedPlanetName.Equals(planetName))
+            {
+                planet.ConquerPlanet(GalaxyManager.playerID);
+                commandHistoryText.text += "\nSuccess";
+                return;
+            }
+        }
+
+        commandHistoryText.text += "\nNo " + inputedPlanetName + " Exists";
     }
 
     void ToggleResearchEffects()
@@ -252,17 +286,17 @@ public class CheatConsole : MonoBehaviour
 
         try
         {
-            if (command.Substring(command.IndexOf(' ', command.IndexOf(' ') + 1) + 1, command.Length - (command.IndexOf(' ', command.IndexOf(' ') + 1) + 1)).ToLower().Equals("red"))
+            switch(command.Substring(command.IndexOf(' ', command.IndexOf(' ') + 1) + 1, command.Length - (command.IndexOf(' ', command.IndexOf(' ') + 1) + 1)).ToLower())
             {
-                GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Red;
-            }
-            else if (command.Substring(command.IndexOf(' ', command.IndexOf(' ') + 1) + 1, command.Length - (command.IndexOf(' ', command.IndexOf(' ') + 1) + 1)).ToLower().Equals("green"))
-            {
-                GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Green;
-            }
-            else if (command.Substring(command.IndexOf(' ', command.IndexOf(' ') + 1) + 1, command.Length - (command.IndexOf(' ', command.IndexOf(' ') + 1) + 1)).ToLower().Equals("blue"))
-            {
-                GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Blue;
+                case "red":
+                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Red;
+                    break;
+                case "green":
+                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Green;
+                    break;
+                case "blue":
+                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Blue;
+                    break;
             }
         }
         catch (Exception)
@@ -331,32 +365,44 @@ public class CheatConsole : MonoBehaviour
 
         bool commandSuccessful = false;
 
-        if (command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)).ToLower().Equals("red"))
+        switch(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)).ToLower())
         {
-            selectedCulture = Empire.Culture.Red;
-            commandSuccessful = true;
-        }
-        else if (command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)).ToLower().Equals("green"))
-        {
-            selectedCulture = Empire.Culture.Green;
-            commandSuccessful = true;
-        }
-        else if (command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)).ToLower().Equals("blue"))
-        {
-            selectedCulture = Empire.Culture.Blue;
-            commandSuccessful = true;
+            case "red":
+                selectedCulture = Empire.Culture.Red;
+                commandSuccessful = true;
+                break;
+            case "green":
+                selectedCulture = Empire.Culture.Green;
+                commandSuccessful = true;
+                break;
+            case "blue":
+                selectedCulture = Empire.Culture.Blue;
+                commandSuccessful = true;
+                break;
+            case "purple":
+                selectedCulture = Empire.Culture.Purple;
+                commandSuccessful = true;
+                break;
+            case "gold":
+                selectedCulture = Empire.Culture.Gold;
+                commandSuccessful = true;
+                break;
         }
 
         if (commandSuccessful)
         {
+            bool empireFound = false;
             for (int x = 0; x < Empire.empires.Count; x++)
             {
                 if (Empire.empires[x].empireCulture == selectedCulture)
                 {
                     GalaxyManager.playerID = x;
+                    empireFound = true;
                     commandHistoryText.text += "\nSuccess";
                 }
             }
+            if (!empireFound)
+                commandHistoryText.text += "\nNo Empire Is Of " + selectedCulture + " Culture.";
         }
         else
         {

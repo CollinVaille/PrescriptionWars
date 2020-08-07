@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditorInternal.VR;
 
 public class NewGameMenu : MonoBehaviour
 {
@@ -120,11 +121,23 @@ public class NewGameMenu : MonoBehaviour
 
     public void ChangeEmpireCulture()
     {
-        if (empireCultureDropdown.value == 0)
-            empireCulture = Empire.Culture.Red;
-        if (empireCultureDropdown.value == 1)
-            empireCulture = Empire.Culture.Green;
-        if (empireCultureDropdown.value == 2)
-            empireCulture = Empire.Culture.Blue;
+        switch (empireCultureDropdown.value)
+        {
+            case 0:
+                empireCulture = Empire.Culture.Red;
+                break;
+            case 1:
+                empireCulture = Empire.Culture.Green;
+                break;
+            case 2:
+                empireCulture = Empire.Culture.Blue;
+                break;
+            case 3:
+                empireCulture = Empire.Culture.Purple;
+                break;
+            case 4:
+                empireCulture = Empire.Culture.Gold;
+                break;
+        }
     }
 }

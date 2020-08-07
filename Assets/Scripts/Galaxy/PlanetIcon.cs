@@ -18,6 +18,7 @@ public class PlanetIcon : MonoBehaviour
 
     //Planet information
     public int ownerID = -1;
+    public int planetID = -1;
     public bool isCapital;
 
     public float creditsPerTurn()
@@ -171,11 +172,43 @@ public class PlanetIcon : MonoBehaviour
         nameLabel.color = Empire.empires[this.ownerID].GetLabelColor();
     }
 
+    public void ConquerPlanet(int conquerorID)
+    {
+        //Removes the planet from the previous owner's list of owned planets.
+        if(ownerID != -1)
+        {
+            for(int x = 0; x < Empire.empires[ownerID].planetsOwned.Count; x++)
+            {
+                if(Empire.empires[ownerID].planetsOwned[x] == planetID)
+                {
+                    Empire.empires[ownerID].planetsOwned.RemoveAt(x);
+                    break;
+                }
+            }
+        }
+
+        //Adds the planet to the new owner's list of owned planets.
+        Empire.empires[conquerorID].planetsOwned.Add(planetID);
+
+        //Updates the color of the planet label.
+        nameLabel.color = Empire.empires[conquerorID].GetLabelColor();
+
+        //Sets the planet's owner id as the conqueror's id.
+        ownerID = conquerorID;
+    }
+
     private void OnMouseUp ()
     {
         if(ownerID == GalaxyManager.playerID)
         {
+            //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetSelected = transform.gameObject;
+            
+            //Closes the planet management menu if it is already open, this is purely just to reset it before we immediately reopen it.
+            if (GalaxyManager.planetManagementMenu.activeInHierarchy)
+                GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+
+            //Activates the planet management menu.
             GalaxyManager.togglePlanetManagementMenu = true;
         }
     }

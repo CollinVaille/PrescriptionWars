@@ -53,7 +53,6 @@ public class GalaxyGenerator : MonoBehaviour
         GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
         GenerateTech();
-        //Physics.CheckSphere()
     }
 
     // Update is called once per frame
@@ -163,13 +162,25 @@ public class GalaxyGenerator : MonoBehaviour
             {
                 while (true)
                 {
-                    int random = Random.Range(0, 3);
-                    if (random == 0)
-                        empireCulture = Empire.Culture.Red;
-                    else if (random == 1)
-                        empireCulture = Empire.Culture.Green;
-                    else if (random == 2)
-                        empireCulture = Empire.Culture.Blue;
+                    int random = Random.Range(0, 5);
+                    switch (random)
+                    {
+                        case 0:
+                            empireCulture = Empire.Culture.Red;
+                            break;
+                        case 1:
+                            empireCulture = Empire.Culture.Green;
+                            break;
+                        case 2:
+                            empireCulture = Empire.Culture.Blue;
+                            break;
+                        case 3:
+                            empireCulture = Empire.Culture.Purple;
+                            break;
+                        case 4:
+                            empireCulture = Empire.Culture.Gold;
+                            break;
+                    }
 
                     if (x == 0)
                         break;
@@ -198,18 +209,7 @@ public class GalaxyGenerator : MonoBehaviour
             else
             {
                 //Generates the symbol color of each empire's flag based on the empire's culture.
-                if (Empire.empires[x].empireCulture == Empire.Culture.Red)
-                {
-                    Empire.empires[x].empireFlag.symbolColor = new Vector3(Random.Range(0.25f, 1.0f), 0, 0);
-                }
-                else if (Empire.empires[x].empireCulture == Empire.Culture.Green)
-                {
-                    Empire.empires[x].empireFlag.symbolColor = new Vector3(0, Random.Range(0.25f, 1.0f), 0);
-                }
-                else if (Empire.empires[x].empireCulture == Empire.Culture.Blue)
-                {
-                    Empire.empires[x].empireFlag.symbolColor = new Vector3(0, 0, Random.Range(0.25f, 1.0f));
-                }
+                Empire.empires[x].empireFlag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[x].empireCulture);
 
                 //Generates the background color of each empire's flag.
                 if (Empire.empires[x].empireFlag.symbolColor.x + Empire.empires[x].empireFlag.symbolColor.y + Empire.empires[x].empireFlag.symbolColor.z < 0.6f)
@@ -243,18 +243,8 @@ public class GalaxyGenerator : MonoBehaviour
 
             if(x == GalaxyManager.playerID)
             {
-                if(Empire.empires[x].empireCulture == Empire.Culture.Red)
-                {
-                    Empire.empires[x].empireColor = new Color(Random.Range(0.25f, 1.0f), 0, 0, 1.0f);
-                }
-                else if(Empire.empires[x].empireCulture == Empire.Culture.Green)
-                {
-                    Empire.empires[x].empireColor = new Color(0, Random.Range(0.25f, 1.0f), 0, 1.0f);
-                }
-                else if (Empire.empires[x].empireCulture == Empire.Culture.Blue)
-                {
-                    Empire.empires[x].empireColor = new Color(0, 0, Random.Range(0.25f, 1.0f), 1.0f);
-                }
+                Vector3 randomColor = GetRandomColorBasedOnCulture(Empire.empires[x].empireCulture);
+                Empire.empires[x].empireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
             }
             else
             {
@@ -287,16 +277,11 @@ public class GalaxyGenerator : MonoBehaviour
 
                 for(int y = 0; y < planets.Count; y++)
                 {
-                    if(planets[y].GetComponent<PlanetIcon>().ownerID == -1)
+                    if(planets[y].GetComponent<PlanetIcon>().ownerID == -1 || Vector3.Distance(planets[y].transform.localPosition, sourcePlanet.transform.localPosition) < Vector3.Distance(planets[indexToAdd].transform.localPosition, sourcePlanet.transform.localPosition))
                     {
                         if(indexToAdd == -1)
                         {
                             indexToAdd = y;
-                        }
-                        else
-                        {
-                            if (Vector3.Distance(planets[y].transform.localPosition, sourcePlanet.transform.localPosition) < Vector3.Distance(planets[indexToAdd].transform.localPosition, sourcePlanet.transform.localPosition))
-                                indexToAdd = y;
                         }
                     }
                 }
@@ -356,6 +341,44 @@ public class GalaxyGenerator : MonoBehaviour
 
             iteration++;
         }
+    }
+
+    public Vector3 GetRandomColorBasedOnCulture(Empire.Culture culture)
+    {
+        switch (culture)
+        {
+            case Empire.Culture.Red:
+                return new Vector3(Random.Range(0.25f, 1.0f), 0, 0);
+            case Empire.Culture.Green:
+                return new Vector3(0, Random.Range(0.25f, 1.0f), 0);
+            case Empire.Culture.Blue:
+                return new Vector3(0, 0, Random.Range(0.25f, 1.0f));
+            case Empire.Culture.Purple:
+                List<Vector3> purpleColors = new List<Vector3>();
+                purpleColors.Add(new Vector3(186.0f / 255, 85.0f / 255, 211.0f / 255));         //Medium Orchid
+                purpleColors.Add(new Vector3(147.0f / 255, 112.0f / 255, 219.0f / 255));        //Medium Purple
+                purpleColors.Add(new Vector3(138.0f / 255, 43.0f / 255, 226.0f / 255));         //Blue Violet
+                purpleColors.Add(new Vector3(148.0f / 255, 0.0f / 255, 211.0f / 255));          //Dark Violet
+                purpleColors.Add(new Vector3(153.0f / 255, 50.0f / 255, 204.0f / 255));         //Dark Orchid
+                purpleColors.Add(new Vector3(139.0f / 255, 0.0f / 255, 139.0f / 255));          //Dark Magenta
+                purpleColors.Add(new Vector3(128.0f / 255, 0.0f / 255, 128.0f / 255));          //Purple
+                purpleColors.Add(new Vector3(75.0f / 255, 0.0f / 255, 130.0f / 255));           //Indigo
+                int random = Random.Range(0, purpleColors.Count);
+                return purpleColors[random];
+            case Empire.Culture.Gold:
+                List<Vector3> goldColors = new List<Vector3>();
+                goldColors.Add(new Vector3(238.0f / 255, 232.0f / 255, 170.0f / 255));          //Pale Golden Rod
+                goldColors.Add(new Vector3(240.0f / 255, 230.0f / 255, 140.0f / 255));          //Khaki
+                goldColors.Add(new Vector3(255.0f / 255, 215.0f / 255, 0.0f / 255));            //Gold
+                goldColors.Add(new Vector3(255.0f / 255, 223.0f / 255, 0.0f / 255));            //Golden Yellow
+                goldColors.Add(new Vector3(212.0f / 255, 175.0f / 255, 55.0f / 255));           //Metallic Gold
+                goldColors.Add(new Vector3(207.0f / 255, 181.0f / 255, 59.0f / 255));           //Old Gold
+                goldColors.Add(new Vector3(197.0f / 255, 179.0f / 255, 88.0f / 255));           //Vegas Gold
+                int randomIndex = Random.Range(0, goldColors.Count);
+                return goldColors[randomIndex];
+        }
+
+        return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
     private int PlanetsAttachedToEmpires()
@@ -492,6 +515,9 @@ public class GalaxyGenerator : MonoBehaviour
             newPlanet.transform.localScale = Vector3.one * GeneratePlanetScale();
             newPlanet.transform.localPosition = GeneratePlanetLocation(newPlanet.transform.localScale.x);
 
+            //Assigns a planet id to each planet.
+            newPlanet.GetComponent<PlanetIcon>().planetID = x;
+
             //Adds the planet to the list on planets.
             planets.Add(newPlanet);
         }
@@ -533,32 +559,24 @@ public class GalaxyGenerator : MonoBehaviour
     //Gets the material for the planet depending on the planet's randomly generated biome.
     private Material GetPlanetMaterial(Planet.Biome biome)
     {
-        if (biome == Planet.Biome.Frozen)
+        switch (biome)
         {
-            return frozenMaterials[Random.Range(0, frozenMaterials.Count)];
-        }
-        else if (biome == Planet.Biome.Temperate)
-        {
-            return temperateMaterials[Random.Range(0, temperateMaterials.Count)];
-        }
-        else if (biome == Planet.Biome.Desert)
-        {
-            return desertMaterials[Random.Range(0, desertMaterials.Count)];
-        }
-        else if (biome == Planet.Biome.Swamp)
-        {
-            return swampMaterials[Random.Range(0, swampMaterials.Count)];
-        }
-        else if (biome == Planet.Biome.Hell)
-        {
-            return hellMaterials[Random.Range(0, hellMaterials.Count)];
-        }
-        else if (biome == Planet.Biome.Spirit)
-        {
-            return spiritMaterials[Random.Range(0, spiritMaterials.Count)];
-        }
+            case Planet.Biome.Frozen:
+                return frozenMaterials[Random.Range(0, frozenMaterials.Count)];
+            case Planet.Biome.Temperate:
+                return temperateMaterials[Random.Range(0, temperateMaterials.Count)];
+            case Planet.Biome.Desert:
+                return desertMaterials[Random.Range(0, desertMaterials.Count)];
+            case Planet.Biome.Swamp:
+                return swampMaterials[Random.Range(0, swampMaterials.Count)];
+            case Planet.Biome.Hell:
+                return hellMaterials[Random.Range(0, hellMaterials.Count)];
+            case Planet.Biome.Spirit:
+                return spiritMaterials[Random.Range(0, spiritMaterials.Count)];
 
-        return frozenMaterials[0];
+            default:
+                return frozenMaterials[0];
+        }
     }
 
     //Method the randomly generates a biome for a planet.
@@ -566,20 +584,24 @@ public class GalaxyGenerator : MonoBehaviour
     {
         int random = Random.Range(0, 6);
 
-        if (random == 0)
-            return Planet.Biome.Frozen;
-        else if (random == 1)
-            return Planet.Biome.Temperate;
-        else if (random == 2)
-            return Planet.Biome.Desert;
-        else if (random == 3)
-            return Planet.Biome.Swamp;
-        else if (random == 4)
-            return Planet.Biome.Hell;
-        else if (random == 5)
-            return Planet.Biome.Spirit;
+        switch (random)
+        {
+            case 0:
+                return Planet.Biome.Frozen;
+            case 1:
+                return Planet.Biome.Temperate;
+            case 2:
+                return Planet.Biome.Desert;
+            case 3:
+                return Planet.Biome.Swamp;
+            case 4:
+                return Planet.Biome.Hell;
+            case 5:
+                return Planet.Biome.Spirit;
 
-        return Planet.Biome.Unknown;
+            default:
+                return Planet.Biome.Unknown;
+        }
     }
 
     //Method that detects if the planet name is already being used by another planet.
