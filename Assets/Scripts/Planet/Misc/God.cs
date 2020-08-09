@@ -62,6 +62,7 @@ public class God : MonoBehaviour
         Vehicle.setUp = false;
         Voice.InitialSetUp();
         Projectile.SetUpPooling();
+        Explosion.SetUpPooling();
 
         //Variable initialization
         currentScreen = MenuScreen.PauseMenu;
