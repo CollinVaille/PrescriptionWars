@@ -572,6 +572,7 @@ public class PlanetTerrain : MonoBehaviour
         //Load tree models...
         string[] treeNames = customization.treeNames;
         TreePrototype[] treePrototypes = new TreePrototype[treeNames.Length];
+        GameObject[] treePrefabs = new GameObject[treeNames.Length];
         for (int x = 0; x < treeNames.Length; x++)
         {
             TreePrototype newPrototype = new TreePrototype();
@@ -580,6 +581,8 @@ public class PlanetTerrain : MonoBehaviour
             newPrototype.bendFactor = 0;
 
             treePrototypes[x] = newPrototype;
+
+            treePrefabs[x] = newPrototype.prefab;
         }
         terrain.terrainData.treePrototypes = treePrototypes;
 
@@ -636,6 +639,87 @@ public class PlanetTerrain : MonoBehaviour
         //(hours and hours wasted on this bug)
         terrain.GetComponent<TerrainCollider>().enabled = false;
         terrain.GetComponent<TerrainCollider>().enabled = true;
+
+        //Finally, generate trees not on terrain, but on horizon
+        GenerateHorizonTrees(treePrefabs, idealTreeCount * 2);
+    }
+
+    private void GenerateHorizonTrees (GameObject[] treePrefabs, int idealTreeCount)
+    {
+        //Nowhere to generate trees, so we're just gonna give up bro
+        if (horizonTransform.position.y < 1 && Planet.planet.hasOcean)
+            return;
+
+        //First, create empty gameobject for containing all the trees
+        Transform horizonTrees = new GameObject("Trees").transform;
+        horizonTrees.parent = horizonTransform;
+        horizonTrees.localPosition = Vector3.zero;
+        horizonTrees.localEulerAngles = Vector3.zero;
+
+        //Then, define some tree positioning parameters
+
+        //EXACT BOUNDARIES: -500 to 1542 (for both x and y)
+        //LOOSE BOUNDARIES: -300 to 1342 (for both x and y)
+        float southPole = -300, northPole = 1342;
+        float midPole = (southPole + northPole) / 2.0f;
+
+        float treeRange = 3000, poleRange = northPole - southPole + treeRange;
+        float magicHeight = horizonTransform.position.y;
+
+        //Finally, attempt to generate horizon trees - one per iteration
+        int maxAttempts = idealTreeCount * 2;
+        for (int treesPlanted = 0, attempts = 0; treesPlanted < idealTreeCount && attempts < maxAttempts; attempts++)
+        {
+            //RANDOMLY GENERATE NEW TREE POSITION
+            Vector3 treePos;
+            
+            if(Random.Range(0, 2) == 0)
+                treePos = new Vector3(GetRandomTreePosition(treeRange, southPole, northPole), 1000,
+                                      GetRandomTreePosition(poleRange, midPole, midPole));
+            else
+                treePos = new Vector3(GetRandomTreePosition(poleRange, midPole, midPole), 1000,
+                                      GetRandomTreePosition(treeRange, southPole, northPole));
+
+            //TEST IF IT WORKS
+
+            //No ground to place tree on = FAILURE
+            if (!Physics.Raycast(treePos, Vector3.down, out RaycastHit hitInfo))
+                continue;
+
+            //Ground is terrain, not horizon = FAILURE
+            if (Mathf.Abs(magicHeight - hitInfo.point.y) > 2)
+                continue;
+
+            //PASSES TESTS, SO PLACE TREE
+            treesPlanted++;
+            Transform newTree = Instantiate(treePrefabs[Random.Range(0, treePrefabs.Length)]).transform;
+
+            //Parent and rotation
+            newTree.parent = horizonTrees;
+            newTree.localEulerAngles = Vector3.zero;
+
+            //Position
+            treePos.y = magicHeight;
+            newTree.position = treePos;
+        }
+    }
+
+    //Used by tree horizon generation to get random position of new tree
+    private float GetRandomTreePosition (float treeRange, float southPole, float northPole)
+    {
+        //Random distribution from:
+        //https://gamedev.stackexchange.com/questions/116832/random-number-in-a-range-biased-toward-the-low-end-of-the-range
+
+        //Generates random # between 0 and 1 with 0 being most likely, 1 being least likely
+        float treePos = Mathf.Abs(Random.Range(0.0f, 1.0f) - Random.Range(0.0f, 1.0f));
+
+        //Scale random # by treeRange and make it deviate from either south or north pole
+        if (Random.Range(0, 2) == 0)
+            treePos = northPole + (treePos * treeRange);
+        else
+            treePos = southPole - (treePos * treeRange);
+
+        return treePos;
     }
 
     //Tree position is in terrain coordinates, that is: X and Z should be between 0 and 1, Y is ignored
