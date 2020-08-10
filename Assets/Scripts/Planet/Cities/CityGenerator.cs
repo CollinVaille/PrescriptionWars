@@ -259,10 +259,10 @@ public class CityGenerator : MonoBehaviour
                 if(Random.Range(0, 3) == 0)
                 {
                     string[] part1 = new string[] { "East", "West", "North", "South", "White", "Gray", "Pale",
-                    "Black", "Mourn", "Hjaal", "Haa", "Frost", "Way", "Storm", "Baren", "Falk" };
+                    "Black", "Mourn", "Hjaal", "Grey", "Frost", "Way", "Storm", "Baren", "Falk" };
 
                     string[] part2 = new string[] { "march", "reach", "hold", "rest", "haven", "fold", "garden",
-                    "fingar", "run", "'s Hand", " Seed", " Harbour", " Solace" };
+                    "fingar", "run", "port", " Seed", " Harbour", " Solace" };
 
                     cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
                 }

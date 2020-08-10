@@ -134,6 +134,8 @@ public class Explosion : MonoBehaviour
 
                 if (rBody)
                     rBody.AddExplosionForce(actualDamage * 10, transform.position, currentRange);
+                else if (CanBeatUpObject(hit.transform))
+                    Debug.Log("Can beat up " + hit.transform.name);
             }
         }
     }
@@ -145,6 +147,11 @@ public class Explosion : MonoBehaviour
             return directHit.collider == target;
         else
             return false; //In this case, didn't hit anything... so I guess that's a no?
+    }
+
+    private bool CanBeatUpObject (Transform t)
+    {
+        return God.GetDamageable(t) == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>();
     }
 
     //Called to deactive the explosion and either... destroy it OR put it back in reserve pool
