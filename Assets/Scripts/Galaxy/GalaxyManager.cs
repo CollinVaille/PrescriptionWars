@@ -493,45 +493,5 @@ public class TechEffect
 
 public class GalaxyHelperMethods
 {
-    public static string RemoveCarriageReturn(string text)
-    {
-        string returnText = "";
-        char[] charArray = text.ToCharArray();
-
-        foreach(char c in charArray)
-        {
-            if((int)c != 13)
-            {
-                returnText += c;
-            }
-        }
-
-        return returnText;
-    }
-
-    public static string GetEnumText(string text)
-    {
-        List<char> charList = new List<char>();
-        char[] charArray = text.ToCharArray();
-        foreach (char c in charArray)
-        {
-            charList.Add(c);
-        }
-
-        for (int x = text.Length - 1; x > -1; x--)
-        {
-            if (char.IsUpper(charList[x]) && x != 0)
-            {
-                charList.Insert(x, ' ');
-            }
-        }
-
-        string finalText = "";
-        foreach (char c in charList)
-        {
-            finalText += c;
-        }
-
-        return finalText;
-    }
+    
 }

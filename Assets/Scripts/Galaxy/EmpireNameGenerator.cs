@@ -249,8 +249,6 @@ public class EmpireNameGenerator
 
     private static string AppendEthnicSuffix(string baseName)
     {
-        baseName = GalaxyHelperMethods.RemoveCarriageReturn(baseName);
-
         if (IsVowel(baseName[baseName.Length - 1]))
             return baseName + "n" + GetEthnicSuffix();
         else

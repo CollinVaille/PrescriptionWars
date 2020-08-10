@@ -186,7 +186,7 @@ public class PlanetManagementMenu : MonoBehaviour
                 buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].buildingLimit;
                 if(buildingSelected != buildingDisplayed)
                 {
-                    buildingTitleText.text = GalaxyHelperMethods.GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
+                    buildingTitleText.text = GeneralHelperMethods.GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
                     buildingDescriptionText.text = buildingDescriptions[buildingSelected];
                     buildingCostText.text = "" + GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]);
                     buildingCostText.color = Empire.empires[GalaxyManager.playerID].empireColor;
@@ -450,11 +450,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == 0)
                 {
-                    buildingsListText.text = GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
             }
         }
@@ -485,11 +485,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == closestIndex)
                 {
-                    buildingsListText.text = GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
                 }
             }
         }
@@ -507,11 +507,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == 0)
                 {
-                    buildingQueueListText.text = GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
                 else
                 {
-                    buildingQueueListText.text += "\n" + GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
             }
         }
@@ -542,11 +542,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == closestIndex)
                 {
-                    buildingQueueListText.text = GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
                 else
                 {
-                    buildingQueueListText.text += "\n" + GalaxyHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
                 }
             }
         }

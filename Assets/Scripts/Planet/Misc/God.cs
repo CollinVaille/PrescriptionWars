@@ -272,10 +272,7 @@ public class God : MonoBehaviour
     {
         //Get list of trivia lines (only need to do this on first loading screen in session)
         if(triviaLines == null)
-        {
-            TextAsset triviaLinesFile = Resources.Load<TextAsset>("Text/Trivia Lines");
-            triviaLines = triviaLinesFile.text.Split('\n');
-        }
+            triviaLines = GeneralHelperMethods.GetLinesFromFile("Trivia Lines", false);
 
         //Pick a random name
         return triviaLines[Random.Range(0, triviaLines.Length)];

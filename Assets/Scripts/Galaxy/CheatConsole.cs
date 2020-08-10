@@ -130,7 +130,8 @@ public class CheatConsole : MonoBehaviour
         {
             PlanetIcon planet = GalaxyManager.planets[x].GetComponent<PlanetIcon>();
 
-            string planetName = GalaxyHelperMethods.RemoveCarriageReturn(planet.nameLabel.text.ToLower());
+            //string planetName = GeneralHelperMethods.RemoveCarriageReturn(planet.nameLabel.text.ToLower());
+            string planetName = planet.nameLabel.text.ToLower();
 
             if (inputedPlanetName.Equals(planetName))
             {

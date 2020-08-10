@@ -169,12 +169,10 @@ public class CityGenerator : MonoBehaviour
                 stationSuffixes.Add(" Post");
 
                 //Get list of prefixes
-                TextAsset prefixFile = Resources.Load<TextAsset>("Text/Location Names/Village Name Prefixes");
-                string[] prefixes = prefixFile.text.Split('\n');
+                string[] prefixes = GeneralHelperMethods.GetLinesFromFile("Location Names/Village Name Prefixes");
 
                 //Get list of suffixes
-                TextAsset suffixFile = Resources.Load<TextAsset>("Text/Location Names/Village Name Suffixes");
-                string[] suffixes = suffixFile.text.Split('\n');
+                string[] suffixes = GeneralHelperMethods.GetLinesFromFile("Location Names/Village Name Suffixes");
 
                 //Determine prefix and suffix
                 string suffix = suffixes[Random.Range(0, suffixes.Length)];
@@ -239,15 +237,8 @@ public class CityGenerator : MonoBehaviour
             }
 
             //Default station names are defined in military station names file
-            if(cityName.Equals(""))
-            {
-                //Get list of station names
-                TextAsset stationNamesFile = Resources.Load<TextAsset>("Text/Location Names/Military Station Names");
-                string[] stationNames = stationNamesFile.text.Split('\n');
-
-                //Pick a random name from list
-                cityName = stationNames[Random.Range(0, stationNames.Length)];
-            }
+            if (cityName.Equals(""))
+                cityName = GeneralHelperMethods.GetLineFromFile("Location Names/Military Station Names");
 
             //Finish the city name with a suffix indicating it's not a major city
             cityName += stationSuffixes[Random.Range(0, stationSuffixes.Count)];
@@ -269,15 +260,8 @@ public class CityGenerator : MonoBehaviour
             }
             else if (biome == Planet.Biome.Swamp)
             {
-                if(Random.Range(0, 2) == 0)
-                {
-                    //Get list of city names
-                    TextAsset swampCityNamesFile = Resources.Load<TextAsset>("Text/Location Names/Swamp Ass City Names");
-                    string[] swampCityNames = swampCityNamesFile.text.Split('\n');
-
-                    //Pick a random name from list
-                    cityName = swampCityNames[Random.Range(0, swampCityNames.Length)];
-                }
+                if (Random.Range(0, 2) == 0)
+                    cityName = GeneralHelperMethods.GetLineFromFile("Location Names/Swamp Ass City Names");
                 else
                 {
                     string[] part1 = new string[] { "Eika", "Weigga", "Gieiga", "Eeiita", "Weiika", "Yykieka", "Wakka-waka" };
@@ -301,14 +285,7 @@ public class CityGenerator : MonoBehaviour
 
             //Default city names are defined in the city names file
             if (cityName.Equals(""))
-            {
-                //Get list of city names
-                TextAsset cityNamesFile = Resources.Load<TextAsset>("Text/Location Names/City Names");
-                string[] cityNames = cityNamesFile.text.Split('\n');
-
-                //Pick a random name from list
-                cityName = cityNames[Random.Range(0, cityNames.Length)];
-            }
+                cityName = GeneralHelperMethods.GetLineFromFile("Location Names/City Names");
         }
 
         return cityName;

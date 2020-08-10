@@ -53,6 +53,9 @@ public class GalaxyGenerator : MonoBehaviour
         GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
         GenerateTech();
+
+        //Clean up section :)
+        GeneralHelperMethods.ClearTextFileCache();
     }
 
     // Update is called once per frame
@@ -622,9 +625,7 @@ public class GalaxyGenerator : MonoBehaviour
     //Reads in the text file that stores planet names.
     private void ReadInPlanetNames()
     {
-        //Get list of planet names
-        TextAsset planetNamesFile = Resources.Load<TextAsset>("Text/Location Names/Planet Names");
-        planetNames = planetNamesFile.text.Split('\n');
+        planetNames = GeneralHelperMethods.GetLinesFromFile("Location Names/Planet Names");
     }
 
 
