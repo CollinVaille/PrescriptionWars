@@ -240,6 +240,24 @@ public class GalaxyBuilding
 
     public static List<BuildingType> buildingEnums = new List<BuildingType>() {BuildingType.ResearchFacility, BuildingType.Depot, BuildingType.Prescriptor, BuildingType.TradePost };
 
+    public static float GetCreditsCost(BuildingType buildingType)
+    {
+        switch (buildingType)
+        {
+            case BuildingType.ResearchFacility:
+                return 100.0f;
+            case BuildingType.Depot:
+                return 100.0f;
+            case BuildingType.Prescriptor:
+                return 100.0f;
+            case BuildingType.TradePost:
+                return 100.0f;
+
+            default:
+                return 1000;
+        }
+    }
+
     public static float GetBaseProductionCost(BuildingType buildingType)
     {
         switch (buildingType)
@@ -284,6 +302,15 @@ public class BuildingQueue
     public List<GalaxyBuilding> buildingsQueued = new List<GalaxyBuilding>();
 
     public float production = 0.0f;
+
+    public void AddBuildingToQueue(GalaxyBuilding.BuildingType buildingType)
+    {
+        GalaxyBuilding building = new GalaxyBuilding();
+
+        building.type = buildingType;
+
+        buildingsQueued.Add(building);
+    }
 
     public List<string> GetQueueText()
     {
@@ -348,6 +375,18 @@ public class GalaxyCity
     public float basePrescriptionsPerTurn;
     public float baseProductionPerTurn;
     public float baseSciencePerTurn;
+
+    public void AddBuildingToQueue(GalaxyBuilding.BuildingType buildingType, int ownerID)
+    {
+        if(Empire.empires[ownerID].credits >= GalaxyBuilding.GetCreditsCost(buildingType) && buildingsCompleted.Count + buildingQueue.buildingsQueued.Count < buildingLimit)
+        {
+            //Subtracts the appropriate amount of credits from the empire based on the building type.
+            Empire.empires[ownerID].credits -= GalaxyBuilding.GetCreditsCost(buildingType);
+
+            //Adds a new galaxy building to the building queue with the appropriate building type.
+            buildingQueue.AddBuildingToQueue(buildingType);
+        }
+    }
 
     public float GetCreditsPerTurn(int ownerID)
     {

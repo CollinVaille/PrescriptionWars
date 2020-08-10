@@ -53,6 +53,7 @@ public class PlanetManagementMenu : MonoBehaviour
     public Text buildButtonText;
     public Text buildingDescriptionText;
     public Text buildingTitleText;
+    public Text buildingCostText;
     public List<Button> cityManagementMenuButtons;
     public int buildingSelected;
     int buildingDisplayed = -1;
@@ -187,6 +188,8 @@ public class PlanetManagementMenu : MonoBehaviour
                 {
                     buildingTitleText.text = GalaxyHelperMethods.GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
                     buildingDescriptionText.text = buildingDescriptions[buildingSelected];
+                    buildingCostText.text = "" + GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]);
+                    buildingCostText.color = Empire.empires[GalaxyManager.playerID].empireColor;
                     buildingImage.sprite = buildingSprites[buildingSelected];
                     buildingDisplayed = buildingSelected;
                 }
@@ -353,14 +356,10 @@ public class PlanetManagementMenu : MonoBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit)
+        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.playerID].credits >= GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]))
         {
-            //Creates the galaxy building.
-            GalaxyBuilding galaxyBuilding = new GalaxyBuilding();
-            galaxyBuilding.type = GalaxyBuilding.buildingEnums[buildingSelected];
-
-            //Adds the galaxy building to the city's building queue.
-            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Add(galaxyBuilding);
+            //Adds a building of the specified type to the building queue.
+            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue(GalaxyBuilding.buildingEnums[buildingSelected], GalaxyManager.playerID);
 
             //Plays the add to queue sound effect.
             sfxSource.PlayOneShot(clickThreeAudioClip);

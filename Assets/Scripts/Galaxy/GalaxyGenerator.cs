@@ -277,9 +277,13 @@ public class GalaxyGenerator : MonoBehaviour
 
                 for(int y = 0; y < planets.Count; y++)
                 {
-                    if(planets[y].GetComponent<PlanetIcon>().ownerID == -1 || Vector3.Distance(planets[y].transform.localPosition, sourcePlanet.transform.localPosition) < Vector3.Distance(planets[indexToAdd].transform.localPosition, sourcePlanet.transform.localPosition))
+                    if(planets[y].GetComponent<PlanetIcon>().ownerID == -1)
                     {
                         if(indexToAdd == -1)
+                        {
+                            indexToAdd = y;
+                        }
+                        else if (Vector3.Distance(planets[y].transform.localPosition, sourcePlanet.transform.localPosition) < Vector3.Distance(planets[indexToAdd].transform.localPosition, sourcePlanet.transform.localPosition))
                         {
                             indexToAdd = y;
                         }
@@ -362,7 +366,6 @@ public class GalaxyGenerator : MonoBehaviour
                 purpleColors.Add(new Vector3(153.0f / 255, 50.0f / 255, 204.0f / 255));         //Dark Orchid
                 purpleColors.Add(new Vector3(139.0f / 255, 0.0f / 255, 139.0f / 255));          //Dark Magenta
                 purpleColors.Add(new Vector3(128.0f / 255, 0.0f / 255, 128.0f / 255));          //Purple
-                purpleColors.Add(new Vector3(75.0f / 255, 0.0f / 255, 130.0f / 255));           //Indigo
                 int random = Random.Range(0, purpleColors.Count);
                 return purpleColors[random];
             case Empire.Culture.Gold:
