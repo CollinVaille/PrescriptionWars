@@ -85,6 +85,8 @@ public class PlanetManagementMenu : MonoBehaviour
     bool beingMoved = false;
     Vector2 mouseToMenuDistance;
 
+    public static PlanetManagementMenu planetManagementMenu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -169,6 +171,7 @@ public class PlanetManagementMenu : MonoBehaviour
         buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
         buildButtonText.color = Empire.empires[GalaxyManager.playerID].empireColor;
         tabUnderlineImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+        buildingCostText.color = Empire.empires[GalaxyManager.playerID].empireColor;
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
@@ -189,7 +192,6 @@ public class PlanetManagementMenu : MonoBehaviour
                     buildingTitleText.text = GeneralHelperMethods.GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
                     buildingDescriptionText.text = buildingDescriptions[buildingSelected];
                     buildingCostText.text = "" + GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]);
-                    buildingCostText.color = Empire.empires[GalaxyManager.playerID].empireColor;
                     buildingImage.sprite = buildingSprites[buildingSelected];
                     buildingDisplayed = buildingSelected;
                 }
@@ -442,7 +444,9 @@ public class PlanetManagementMenu : MonoBehaviour
     {
         buildingsListText.text = "";
 
-        if(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count <= 4)
+        List<string> getBuildingsListText = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText();
+
+        if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count <= 4)
         {
             buildingsListTextStartIndex = 0;
 
@@ -450,11 +454,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == 0)
                 {
-                    buildingsListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text = GeneralHelperMethods.GetEnumText(getBuildingsListText[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(getBuildingsListText[x]);
                 }
             }
         }
@@ -464,7 +468,7 @@ public class PlanetManagementMenu : MonoBehaviour
 
             int closestIndex = 0;
 
-            for(int x = 0; x < GetValueNumbers(possibleValues).Count; x++)
+            for(int x = 0; x < GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues).Count; x++)
             {
                 if(x == 0)
                 {
@@ -472,7 +476,7 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
                 else
                 {
-                    if(Mathf.Abs(GetValueNumbers(possibleValues)[x] - buildingsCompletedScrollbar.value) < Mathf.Abs(GetValueNumbers(possibleValues)[closestIndex] - buildingsCompletedScrollbar.value))
+                    if(Mathf.Abs(GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues)[x] - buildingsCompletedScrollbar.value) < Mathf.Abs(GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues)[closestIndex] - buildingsCompletedScrollbar.value))
                     {
                         closestIndex = x;
                     }
@@ -485,11 +489,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if(x == closestIndex)
                 {
-                    buildingsListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text = GeneralHelperMethods.GetEnumText(getBuildingsListText[x]);
                 }
                 else
                 {
-                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText()[x]);
+                    buildingsListText.text += "\n" + GeneralHelperMethods.GetEnumText(getBuildingsListText[x]);
                 }
             }
         }
@@ -499,6 +503,8 @@ public class PlanetManagementMenu : MonoBehaviour
     {
         buildingQueueListText.text = "";
 
+        List<string> buildingQueueText = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText();
+
         if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count <= 4)
         {
             buildingQueueListTextStartIndex = 0;
@@ -507,11 +513,11 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == 0)
                 {
-                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(buildingQueueText[x]);
                 }
                 else
                 {
-                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(buildingQueueText[x]);
                 }
             }
         }
@@ -521,7 +527,7 @@ public class PlanetManagementMenu : MonoBehaviour
 
             int closestIndex = 0;
 
-            for (int x = 0; x < GetValueNumbers(possibleValues).Count; x++)
+            for (int x = 0; x < GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues).Count; x++)
             {
                 if (x == 0)
                 {
@@ -529,7 +535,7 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
                 else
                 {
-                    if (Mathf.Abs(GetValueNumbers(possibleValues)[x] - buildingQueueScrollbar.value) < Mathf.Abs(GetValueNumbers(possibleValues)[closestIndex] - buildingQueueScrollbar.value))
+                    if (Mathf.Abs(GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues)[x] - buildingQueueScrollbar.value) < Mathf.Abs(GalaxyHelperMethods.GetScrollbarValueNumbers(possibleValues)[closestIndex] - buildingQueueScrollbar.value))
                     {
                         closestIndex = x;
                     }
@@ -542,26 +548,14 @@ public class PlanetManagementMenu : MonoBehaviour
             {
                 if (x == closestIndex)
                 {
-                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text = GeneralHelperMethods.GetEnumText(buildingQueueText[x]);
                 }
                 else
                 {
-                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText()[x]);
+                    buildingQueueListText.text += "\n" + GeneralHelperMethods.GetEnumText(buildingQueueText[x]);
                 }
             }
         }
-    }
-
-    public List<float> GetValueNumbers(int num)
-    {
-        List<float> valueNumbers = new List<float>();
-
-        for(int x = 0; x < num; x++)
-        {
-            valueNumbers.Add(1.0f / (num - 1) * x);
-        }
-
-        return valueNumbers;
     }
 
     public void ClickOnTab(int num)
@@ -594,7 +588,7 @@ public class PlanetManagementMenu : MonoBehaviour
         //Resets whether the planet management menu is being dragged by the player.
         PointerUpPlanetManagementMenu();
         //Resets the planet managment menu's location.
-        transform.localPosition = Vector2.zero;
+        //transform.localPosition = Vector2.zero;
 
         //Resets all of the shadows on text.
         foreach (Shadow shadow in shadows)

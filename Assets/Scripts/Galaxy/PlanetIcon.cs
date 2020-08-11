@@ -21,6 +21,9 @@ public class PlanetIcon : MonoBehaviour
     public int planetID = -1;
     public bool isCapital;
 
+    //A list of all the planets this planet is connected to via the hyperspace lanes
+    public List<int> neighborPlanets;
+
     public float creditsPerTurn()
     {
         float credits = 0.0f;
@@ -206,10 +209,15 @@ public class PlanetIcon : MonoBehaviour
             
             //Closes the planet management menu if it is already open, this is purely just to reset it before we immediately reopen it.
             if (GalaxyManager.planetManagementMenu.activeInHierarchy)
+            {
                 GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+            }
 
             //Activates the planet management menu.
-            GalaxyManager.togglePlanetManagementMenu = true;
+            PlanetManagementMenu.planetManagementMenu.gameObject.SetActive(true);
+            PlanetManagementMenu.planetManagementMenu.ResetChooseCityMenu();
+            PlanetManagementMenu.planetManagementMenu.UpdateUI();
+            PlanetManagementMenu.planetManagementMenu.PlayOpenMenuSFX();
         }
     }
 

@@ -15,7 +15,7 @@ public class GalaxyCamera : MonoBehaviour
     public GameObject planetManagementMenu;
     public GameObject galaxyView;
 
-    public bool mouseOverPlanetManagementMenu;
+    public static bool mouseOverPlanetManagementMenu;
 
     private void Update ()
     {

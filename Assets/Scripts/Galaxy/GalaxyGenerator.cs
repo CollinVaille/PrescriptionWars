@@ -52,6 +52,7 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateEmpires();
         GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
+        PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
         GenerateTech();
 
         //Clean up section :)

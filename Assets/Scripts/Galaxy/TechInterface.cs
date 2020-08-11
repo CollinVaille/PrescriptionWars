@@ -242,7 +242,7 @@ public class TechInterface : MonoBehaviour
         }
         else
         {
-            List<float> possibleValues = GetPossibleValues(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count - 9);
+            List<float> possibleValues = GalaxyHelperMethods.GetScrollbarValueNumbers(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count - 9);
             int closestIndex = 0;
             for (int x = 1; x < possibleValues.Count; x++)
             {
@@ -268,20 +268,6 @@ public class TechInterface : MonoBehaviour
                 firstLoop = false;
             }
         }
-    }
-
-    public List<float> GetPossibleValues(int numberOfPossibleValues)
-    {
-        List<float> possibleValues = new List<float>();
-
-        for(int x = 0; x < numberOfPossibleValues; x++)
-        {
-            float perAmount = 1.0f / (numberOfPossibleValues - 1);
-
-            possibleValues.Add(perAmount * x);
-        }
-
-        return possibleValues;
     }
 
     public void SwitchToGalaxy()

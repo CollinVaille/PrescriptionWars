@@ -397,6 +397,8 @@ public class CheatConsole : MonoBehaviour
             {
                 if (Empire.empires[x].empireCulture == selectedCulture)
                 {
+                    if(GalaxyManager.playerID != x && PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
+                        PlanetManagementMenu.planetManagementMenu.CloseMenu();
                     GalaxyManager.playerID = x;
                     empireFound = true;
                     commandHistoryText.text += "\nSuccess";
