@@ -1792,6 +1792,7 @@ GameObject:
   - component: {fileID: 4983000057032569095}
   - component: {fileID: 4983000057032569094}
   - component: {fileID: 4983000057032569093}
+  - component: {fileID: 4085951240729561916}
   m_Layer: 0
   m_Name: Front Left Window
   m_TagString: Untagged
@@ -1873,6 +1874,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4085951240729561916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983000057032569115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &4983000057113804224
 GameObject:
   m_ObjectHideFlags: 0
@@ -1885,6 +1905,7 @@ GameObject:
   - component: {fileID: 4983000057113804236}
   - component: {fileID: 4983000057113804227}
   - component: {fileID: 4983000057113804226}
+  - component: {fileID: 5468057340332808040}
   m_Layer: 0
   m_Name: Front Right Window
   m_TagString: Untagged
@@ -1966,6 +1987,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5468057340332808040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983000057113804224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &4983000058256205808
 GameObject:
   m_ObjectHideFlags: 0

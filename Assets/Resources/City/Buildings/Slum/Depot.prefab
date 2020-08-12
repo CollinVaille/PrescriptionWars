@@ -773,6 +773,7 @@ GameObject:
   - component: {fileID: 377357658488191313}
   - component: {fileID: 377357658488191318}
   - component: {fileID: 377357658488191319}
+  - component: {fileID: 277871902009165919}
   m_Layer: 0
   m_Name: Long Window (2)
   m_TagString: Untagged
@@ -854,6 +855,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &277871902009165919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357658488191317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357658537871478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,6 +1351,7 @@ GameObject:
   - component: {fileID: 377357658905063666}
   - component: {fileID: 377357658905063667}
   - component: {fileID: 377357658905063664}
+  - component: {fileID: 6679069438554458443}
   m_Layer: 0
   m_Name: Long Window (7)
   m_TagString: Untagged
@@ -1412,6 +1433,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6679069438554458443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357658905063670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357658915673355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1716,6 +1756,7 @@ GameObject:
   - component: {fileID: 377357659128855494}
   - component: {fileID: 377357659128855495}
   - component: {fileID: 377357659128855492}
+  - component: {fileID: 7223940812710869058}
   m_Layer: 0
   m_Name: Long Window (4)
   m_TagString: Untagged
@@ -1797,6 +1838,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7223940812710869058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357659128855514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357659174634202
 GameObject:
   m_ObjectHideFlags: 0
@@ -2274,6 +2334,7 @@ GameObject:
   - component: {fileID: 377357659378683733}
   - component: {fileID: 377357659378683754}
   - component: {fileID: 377357659378683755}
+  - component: {fileID: 9083466447399037858}
   m_Layer: 0
   m_Name: Long Window (5)
   m_TagString: Untagged
@@ -2355,6 +2416,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9083466447399037858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357659378683753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357659477871937
 GameObject:
   m_ObjectHideFlags: 0
@@ -2367,6 +2447,7 @@ GameObject:
   - component: {fileID: 377357659477871949}
   - component: {fileID: 377357659477871938}
   - component: {fileID: 377357659477871939}
+  - component: {fileID: 1579384238955438825}
   m_Layer: 0
   m_Name: Long Window (1)
   m_TagString: Untagged
@@ -2448,6 +2529,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1579384238955438825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357659477871937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357659557243119
 GameObject:
   m_ObjectHideFlags: 0
@@ -2584,6 +2684,7 @@ GameObject:
   - component: {fileID: 377357659647541916}
   - component: {fileID: 377357659647541917}
   - component: {fileID: 377357659647541906}
+  - component: {fileID: 7996556978565635649}
   m_Layer: 0
   m_Name: Long Window (6)
   m_TagString: Untagged
@@ -2665,6 +2766,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7996556978565635649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357659647541904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357659714566095
 GameObject:
   m_ObjectHideFlags: 0
@@ -3434,6 +3554,7 @@ GameObject:
   - component: {fileID: 377357660330426604}
   - component: {fileID: 377357660330426605}
   - component: {fileID: 377357660330426594}
+  - component: {fileID: 124816099330611232}
   m_Layer: 0
   m_Name: Long Window (3)
   m_TagString: Untagged
@@ -3515,6 +3636,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &124816099330611232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377357660330426592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &377357660330437817
 GameObject:
   m_ObjectHideFlags: 0
@@ -5839,6 +5979,7 @@ GameObject:
   - component: {fileID: 7894046249860144197}
   - component: {fileID: 7894046249860144196}
   - component: {fileID: 7894046249860144219}
+  - component: {fileID: 4267961938974279391}
   m_Layer: 0
   m_Name: Long Window
   m_TagString: Untagged
@@ -5920,6 +6061,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4267961938974279391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7894046249860144217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2633314a37614b4bb8d310c238eb10f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dent: {fileID: 8300000, guid: 5b7dc5d84b3eacc4d8f719abdaccb9a1, type: 3}
+  shatter: {fileID: 8300000, guid: a869360c8d921a747ba81dc941c94129, type: 3}
+  dentPrefab: {fileID: 9211056043252847582, guid: 55739a93dc953c941a86a91b7e2a1f75,
+    type: 3}
+  shardPrefab: {fileID: 875487179284960803, guid: 09ae5cddabf425440aa0a3ea70fc742c,
+    type: 3}
+  health: 350
 --- !u!1 &7894046249871556483
 GameObject:
   m_ObjectHideFlags: 0
@@ -6024,7 +6184,7 @@ GameObject:
   - component: {fileID: 7894046249947816024}
   - component: {fileID: 1218276009050752481}
   m_Layer: 0
-  m_Name: Slum Depot
+  m_Name: Depot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
