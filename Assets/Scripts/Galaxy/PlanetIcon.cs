@@ -24,6 +24,21 @@ public class PlanetIcon : MonoBehaviour
     //A list of all the planets this planet is connected to via the hyperspace lanes
     public List<int> neighborPlanets;
 
+    public GameObject ship;
+
+    public void GenerateShip(GameObject shipDaddy, GameObject shipPrefab)
+    {
+        GameObject newShip = Instantiate(shipPrefab);
+        newShip.transform.parent = shipDaddy.transform;
+
+        newShip.transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z + 10);
+        newShip.GetComponent<PlanetShip>().attachedPlanetID = planetID;
+
+        newShip.GetComponent<MeshRenderer>().sharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerID].empireCulture];
+
+        ship = newShip;
+    }
+
     public float creditsPerTurn()
     {
         float credits = 0.0f;
@@ -167,6 +182,18 @@ public class PlanetIcon : MonoBehaviour
 
         //Rotates the planet.
         transform.localEulerAngles += rotation * Time.deltaTime;
+
+        //Updates the ship.
+        if(ownerID == GalaxyManager.playerID)
+        {
+            if (!ship.activeInHierarchy)
+                ship.SetActive(true);
+        }
+        else
+        {
+            if (ship.activeInHierarchy)
+                ship.SetActive(false);
+        }
     }
 
     public void SetPlanetOwner(int ownerID)
@@ -200,9 +227,9 @@ public class PlanetIcon : MonoBehaviour
         ownerID = conquerorID;
     }
 
-    private void OnMouseUp ()
+    private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.playerID)
+        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.mouseOverPlanetManagementMenu)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetSelected = transform.gameObject;

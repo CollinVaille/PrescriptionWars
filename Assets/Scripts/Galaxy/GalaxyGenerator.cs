@@ -40,6 +40,13 @@ public class GalaxyGenerator : MonoBehaviour
     public List<Material> swampMaterials;
     public List<Material> hellMaterials;
 
+    public GameObject shipPrefab;
+    public GameObject shipDaddy;
+
+    public List<Material> empireMaterials;
+
+    public GameObject armyManagementMenu;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +60,7 @@ public class GalaxyGenerator : MonoBehaviour
         GeneratePlanetStats();
         GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
+        ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GenerateTech();
 
         //Clean up section :)
@@ -256,6 +264,12 @@ public class GalaxyGenerator : MonoBehaviour
             }
 
             //----------------------------------------------------------------------------------------------------
+            //Sets the empire's material color.
+            int materialIndex = (int)Empire.empires[x].empireCulture;
+            empireMaterials[materialIndex].color = Empire.empires[x].empireColor;
+            GalaxyManager.empireMaterials[materialIndex] = empireMaterials[materialIndex];
+
+            //----------------------------------------------------------------------------------------------------
             //Generates the empire's planets.
 
             Empire.empires[x].planetsOwned = new List<int>();
@@ -270,6 +284,7 @@ public class GalaxyGenerator : MonoBehaviour
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
                     planets[y].GetComponent<PlanetIcon>().isCapital = true;
+                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
                     sourcePlanet = planets[y];
                     break;
                 }
@@ -298,6 +313,7 @@ public class GalaxyGenerator : MonoBehaviour
                 planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                 planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
                 planets[indexToAdd].GetComponent<PlanetIcon>().isCapital = false;
+                planets[indexToAdd].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -343,6 +359,7 @@ public class GalaxyGenerator : MonoBehaviour
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(iteration);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[iteration].empireCulture;
                     planets[y].GetComponent<PlanetIcon>().isCapital = false;
+                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
                     break;
                 }
             }
@@ -516,7 +533,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             //Assigns a biome to each planet;
             newPlanet.GetComponent<PlanetIcon>().biome = GenerateBiome();
-            newPlanet.GetComponent<MeshRenderer>().material = GetPlanetMaterial(newPlanet.GetComponent<PlanetIcon>().biome);
+            newPlanet.GetComponent<MeshRenderer>().sharedMaterial = GetPlanetMaterial(newPlanet.GetComponent<PlanetIcon>().biome);
 
             //Assigns a radius to each planet
             newPlanet.transform.localScale = Vector3.one * GeneratePlanetScale();
