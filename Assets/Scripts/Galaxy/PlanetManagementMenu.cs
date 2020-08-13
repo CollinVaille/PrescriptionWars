@@ -97,7 +97,7 @@ public class PlanetManagementMenu : MonoBehaviour
     void Update()
     {
         //Closes the whole planet management menu if the user presses escape.
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.childCount - 2)
         {
             CloseMenu();
         }
@@ -229,6 +229,12 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void BringToTopInHierarchy()
+    {
+        transform.SetAsLastSibling();
+        GalaxyManager.galaxyManager.endTurnButton.transform.SetAsLastSibling();
     }
 
     public void PointerDownPlanetManagementMenu()

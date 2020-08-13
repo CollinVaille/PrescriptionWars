@@ -23,7 +23,7 @@ public class ArmyManagementMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.childCount - 2)
         {
             CloseMenu();
         }
@@ -104,5 +104,11 @@ public class ArmyManagementMenu : MonoBehaviour
 
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
+    }
+
+    public void BringToTopInHierarchy()
+    {
+        transform.SetAsLastSibling();
+        GalaxyManager.galaxyManager.endTurnButton.transform.SetAsLastSibling();
     }
 }

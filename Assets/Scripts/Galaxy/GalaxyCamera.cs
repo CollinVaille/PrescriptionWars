@@ -13,9 +13,11 @@ public class GalaxyCamera : MonoBehaviour
     public InputField consoleInputField;
 
     public GameObject planetManagementMenu;
+    public GameObject armyManagementMenu;
     public GameObject galaxyView;
 
     public static bool mouseOverPlanetManagementMenu;
+    public static bool mouseOverArmyManagementMenu;
 
     private void Update ()
     {
@@ -43,8 +45,10 @@ public class GalaxyCamera : MonoBehaviour
         //Click and drag movement
         if (!planetManagementMenu.activeInHierarchy)
             mouseOverPlanetManagementMenu = false;
+        if (!armyManagementMenu.activeInHierarchy)
+            mouseOverArmyManagementMenu = false;
 
-        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && galaxyView.activeInHierarchy)
+        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && !mouseOverArmyManagementMenu && galaxyView.activeInHierarchy)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
@@ -74,5 +78,10 @@ public class GalaxyCamera : MonoBehaviour
     public void ToggleMouseOverPlanetManagementMenu()
     {
         mouseOverPlanetManagementMenu = !mouseOverPlanetManagementMenu;
+    }
+
+    public void ToggleMouseOverArmyManagementMenu()
+    {
+        mouseOverArmyManagementMenu = !mouseOverArmyManagementMenu;
     }
 }

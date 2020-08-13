@@ -229,7 +229,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.mouseOverPlanetManagementMenu)
+        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.mouseOverPlanetManagementMenu && !GalaxyCamera.mouseOverArmyManagementMenu)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetSelected = transform.gameObject;

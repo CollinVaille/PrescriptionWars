@@ -8,6 +8,7 @@ public class GalaxyManager : MonoBehaviour
 {
     public GameObject commandConsole;
     public GameObject researchView;
+    public GameObject endTurnButton;
 
     //Audio stuff.
     public AudioSource musicSource;

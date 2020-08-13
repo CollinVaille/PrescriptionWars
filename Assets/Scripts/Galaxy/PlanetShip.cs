@@ -8,7 +8,10 @@ public class PlanetShip : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        ArmyManagementMenu.armyManagementMenu.planetSelected = attachedPlanetID;
-        ArmyManagementMenu.armyManagementMenu.OpenMenu();
+        if (!GalaxyCamera.mouseOverArmyManagementMenu && !GalaxyCamera.mouseOverPlanetManagementMenu)
+        {
+            ArmyManagementMenu.armyManagementMenu.planetSelected = attachedPlanetID;
+            ArmyManagementMenu.armyManagementMenu.OpenMenu();
+        }
     }
 }
