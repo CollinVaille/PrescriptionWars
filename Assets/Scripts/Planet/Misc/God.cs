@@ -49,8 +49,11 @@ public class God : MonoBehaviour
     //Corpse management
     public GameObject corpsePrefab;
 
+    //City management
+    private List<City> citiesToUpdate;
+
     //Initialization
-    private void Awake ()
+    private void Awake()
     {
         god = this;
 
@@ -71,6 +74,7 @@ public class God : MonoBehaviour
         wasPlaying = new List<bool>();
         managedProjectiles = new List<Projectile>();
         mapCamera = GetComponent<Camera>();
+        citiesToUpdate = new List<City>();
 
         //Refresh pause state to start out as resumed
         paused = true;
@@ -81,12 +85,14 @@ public class God : MonoBehaviour
     }
 
     //Delayed Initialization
-    private void Start ()
+    private void Start()
     {
         StartCoroutine(ManageProjectiles());
     }
 
-    private void Update ()
+    //PAUSE MENU MANAGEMENT---------------------------------------------------------------------------
+
+    private void Update()
     {
         //Can pause/resume with pause button on keyboard
         if (Input.GetButtonDown("Pause"))
@@ -98,7 +104,7 @@ public class God : MonoBehaviour
         }
 
         //Update map
-        if(mapOpen)
+        if (mapOpen)
         {
             realDeltaTime = Time.realtimeSinceStartup - lastFrameTime;
 
@@ -127,11 +133,11 @@ public class God : MonoBehaviour
         }
     }
 
-    public void Pause (bool pause)
+    public void Pause(bool pause)
     {
-        if(pause)
+        if (pause)
         {
-            if(!paused) //Pause game
+            if (!paused) //Pause game
             {
                 paused = true;
 
@@ -159,11 +165,14 @@ public class God : MonoBehaviour
                     else
                         wasPlaying[x] = false;
                 }
+
+                //Perform computationally intensive updates on pause to avoid lag spikes in game
+                StartCoroutine(PerformUpdates());
             }
         }
         else
         {
-            if(paused) //Resume game
+            if (paused) //Resume game
             {
                 paused = false;
 
@@ -187,7 +196,7 @@ public class God : MonoBehaviour
         }
     }
 
-    public void SetMenuScreen (MenuScreen newScreen)
+    public void SetMenuScreen(MenuScreen newScreen)
     {
         //Hide previous menu screen
         pauseMenus[(int)currentScreen].gameObject.SetActive(false);
@@ -202,7 +211,7 @@ public class God : MonoBehaviour
         pauseMenus[(int)currentScreen].gameObject.SetActive(true);
     }
 
-    private void OnMenuScreenLoad (MenuScreen newScreen, MenuScreen oldScreen)
+    private void OnMenuScreenLoad(MenuScreen newScreen, MenuScreen oldScreen)
     {
         //Perform all needed menu screen initialization here
 
@@ -225,7 +234,7 @@ public class God : MonoBehaviour
             SwitchToFromMap(true);
     }
 
-    public void LoadingScreen (bool show, bool generateNew)
+    public void LoadingScreen(bool show, bool generateNew)
     {
         if (show)
         {
@@ -248,7 +257,7 @@ public class God : MonoBehaviour
 
                 newTrivia = loadingScreenTrivia;
             }
-            
+
             //Set artwork
             pauseMenus[(int)MenuScreen.LoadingScreen].Find("Artwork").GetComponent<Image>().sprite = newLoadingScreen;
 
@@ -268,17 +277,17 @@ public class God : MonoBehaviour
         }
     }
 
-    private string GetRandomTrivia ()
+    private string GetRandomTrivia()
     {
         //Get list of trivia lines (only need to do this on first loading screen in session)
-        if(triviaLines == null)
+        if (triviaLines == null)
             triviaLines = GeneralHelperMethods.GetLinesFromFile("Trivia Lines", false);
 
         //Pick a random name
         return triviaLines[Random.Range(0, triviaLines.Length)];
     }
 
-    public void OnButtonClick (Transform buttonTransform)
+    public void OnButtonClick(Transform buttonTransform)
     {
         oneShotAudioSource.PlayOneShot(buttonClick);
 
@@ -326,12 +335,12 @@ public class God : MonoBehaviour
         }
     }
 
-    public void OnButtonMouseOver (Transform buttonTransform)
+    public void OnButtonMouseOver(Transform buttonTransform)
     {
         oneShotAudioSource.PlayOneShot(mouseOver);
     }
 
-    private void BackOneScreen ()
+    private void BackOneScreen()
     {
         if (currentScreen == MenuScreen.SettingsMenu)
             SetMenuScreen(MenuScreen.PauseMenu);
@@ -341,7 +350,7 @@ public class God : MonoBehaviour
             Pause(false);
     }
 
-    private void SwitchToFromMap (bool toMap)
+    private void SwitchToFromMap(bool toMap)
     {
         Transform mapScreen = pauseMenus[(int)MenuScreen.MapMenu];
 
@@ -364,7 +373,7 @@ public class God : MonoBehaviour
             mapScreen.Find("Planet Name").GetComponent<Text>().text = Planet.planet.planetName;
 
             //Update water
-            if(Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
+            if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
             {
                 realWater = Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial;
                 mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
@@ -382,7 +391,7 @@ public class God : MonoBehaviour
         }
     }
 
-    private void ReadInSettingsFromDisplay ()
+    private void ReadInSettingsFromDisplay()
     {
         Transform menu = pauseMenus[(int)currentScreen];
 
@@ -404,13 +413,15 @@ public class God : MonoBehaviour
         Player.player.ApplyDisplaySettings();
     }
 
-    public void ManageAudioSource (AudioSource toManage)
+    //POOLING AND AUDIO MANAGEMENT--------------------------------------------------------------------
+
+    public void ManageAudioSource(AudioSource toManage)
     {
         managedAudioSources.Add(toManage);
         wasPlaying.Add(false);
     }
 
-    public void UnmanageAudioSource (AudioSource toUnmanage)
+    public void UnmanageAudioSource(AudioSource toUnmanage)
     {
         int parallelIndex = managedAudioSources.IndexOf(toUnmanage);
 
@@ -418,7 +429,73 @@ public class God : MonoBehaviour
         wasPlaying.RemoveAt(parallelIndex);
     }
 
-    public static void InitializeAudioList (List<AudioClip> audioList, string resourcesPath)
+    private IEnumerator ManageProjectiles()
+    {
+        float stepTime = 0.033f;
+
+        float lastTime = Time.timeSinceLevelLoad;
+        float actualStepTime = stepTime;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(stepTime);
+
+            actualStepTime = Time.timeSinceLevelLoad - lastTime;
+
+            for (int x = 0; x < managedProjectiles.Count; x++)
+            {
+                //Update projectile
+                Projectile original = managedProjectiles[x];
+                original.UpdateLaunchedProjectile(actualStepTime);
+
+                //If projectile was removed from list during update, adjust accordingly
+                if (x == managedProjectiles.Count || original != managedProjectiles[x])
+                    x--;
+            }
+
+            lastTime = Time.timeSinceLevelLoad;
+        }
+    }
+
+    public void ManageProjectile(Projectile projectile) { managedProjectiles.Add(projectile); }
+
+    public void UnmanageProjectile(Projectile projectile) { managedProjectiles.Remove(projectile); }
+
+    //PERIODIC UPDATES--------------------------------------------------------------------------------
+
+    //Indicates city's nav mesh needs to be updated
+    public void PaintCityDirty(City city)
+    {
+        if (!citiesToUpdate.Contains(city))
+            citiesToUpdate.Add(city);
+    }
+
+    //Performs computationally intensive operations, might cause lag if not called at right time
+    //Updates all nav meshes that need updating
+    private IEnumerator PerformUpdates()
+    {
+        while (citiesToUpdate.Count > 0)
+        {
+            //Get next city to update
+            City nextCity = citiesToUpdate[0];
+            citiesToUpdate.Remove(nextCity);
+
+            //Debug.Log("Updating " + nextCity.name + "'s nav mesh...");
+
+            //Start update
+            AsyncOperation navMeshUpdate = nextCity.UpdateNavMesh();
+
+            //Wait until it's done updating
+            while (!navMeshUpdate.isDone)
+                yield return null;
+
+            //Debug.Log(nextCity.name + "'s nav mesh successfully updated.");
+        }
+    }
+
+    //MISC HELPER FUNCTIONS--------------------------------------------------------------------------
+
+    public static void InitializeAudioList(List<AudioClip> audioList, string resourcesPath)
     {
         for (int x = 1; x <= 10000; x++)
         {
@@ -431,12 +508,12 @@ public class God : MonoBehaviour
         }
     }
 
-    public static AudioClip RandomClip (List<AudioClip> audioList)
+    public static AudioClip RandomClip(List<AudioClip> audioList)
     {
         return audioList[Random.Range(0, audioList.Count)];
     }
 
-    public static Damageable GetDamageable (Transform t)
+    public static Damageable GetDamageable(Transform t)
     {
         if (t.GetComponent<Damageable>() != null)
             return t.GetComponent<Damageable>();
@@ -446,14 +523,14 @@ public class God : MonoBehaviour
             return null;
     }
 
-    public static string SpaceOutString (string toSpaceOut)
+    public static string SpaceOutString(string toSpaceOut)
     {
         char[] original = toSpaceOut.ToCharArray();
 
         int newSize = original.Length;
 
         //Compute size of new array by incrementing it everytime we find a place to add a space character
-        for(int x = 0; x < original.Length; x++)
+        for (int x = 0; x < original.Length; x++)
         {
             if (x != 0 && original[x] >= 65 && original[x] <= 90)
                 newSize++;
@@ -478,36 +555,4 @@ public class God : MonoBehaviour
 
         return new string(modified);
     }
-
-    private IEnumerator ManageProjectiles ()
-    {
-        float stepTime = 0.033f;
-
-        float lastTime = Time.timeSinceLevelLoad;
-        float actualStepTime = stepTime;
-
-        while(true)
-        {
-            yield return new WaitForSeconds(stepTime);
-
-            actualStepTime = Time.timeSinceLevelLoad - lastTime;
-
-            for(int x = 0; x < managedProjectiles.Count; x++)
-            {
-                //Update projectile
-                Projectile original = managedProjectiles[x];
-                original.UpdateLaunchedProjectile(actualStepTime);
-
-                //If projectile was removed from list during update, adjust accordingly
-                if (x == managedProjectiles.Count || original != managedProjectiles[x])
-                    x--;
-            }
-
-            lastTime = Time.timeSinceLevelLoad;
-        }
-    }
-
-    public void ManageProjectile (Projectile projectile) { managedProjectiles.Add(projectile); }
-
-    public void UnmanageProjectile (Projectile projectile) { managedProjectiles.Remove(projectile); }
 }

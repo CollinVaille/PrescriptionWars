@@ -108,12 +108,14 @@ public class Explosion : MonoBehaviour
         Decommission();
     }
 
-    //Apply damage to damageables, force to rigidbodies, and destruction to destructable objects like walls and windows
+    //Apply damage to damageables, force to rigidbodies, and destruction to structures like walls and windows
     private void ExplosionEffects(float currentRange)
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, currentRange);
 
-        foreach(Collider hit in hits)
+        City cityWithAlteredNavMesh = null;
+
+        foreach (Collider hit in hits)
         {
             //Explosion cannot go through barriers/walls
             if (!DirectLineToTarget(hit))
@@ -134,10 +136,17 @@ public class Explosion : MonoBehaviour
 
                 if (rBody)
                     rBody.AddExplosionForce(actualDamage * 10, transform.position, currentRange);
-                else if (CanBeatUpObject(hit.transform))
-                    Debug.Log("Can beat up " + hit.transform.name);
+                else
+                {
+                    City damagedCity = DamageStructure(hit, actualDamage);
+                    if (damagedCity)
+                        cityWithAlteredNavMesh = damagedCity;
+                }
             }
         }
+
+        if (cityWithAlteredNavMesh)
+            God.god.PaintCityDirty(cityWithAlteredNavMesh);
     }
 
     private bool DirectLineToTarget(Collider target)
@@ -149,9 +158,43 @@ public class Explosion : MonoBehaviour
             return false; //In this case, didn't hit anything... so I guess that's a no?
     }
 
-    private bool CanBeatUpObject (Transform t)
+    private bool CanDamageStructure(Transform t)
     {
-        return God.GetDamageable(t) == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>();
+        return God.GetDamageable(t) == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>()
+            && !t.name.Equals("Floor");
+    }
+
+    //Returns city that needs nav mesh updated as result of structure change, or null if N/A
+    private City DamageStructure(Collider victim, float actualDamage)
+    {
+        if (!CanDamageStructure(victim.transform))
+            return null;
+
+        //float victimSize = victim.bounds.size.magnitude;
+        //Debug.Log("Beating up " + victim.name + ": " + actualDamage + " damage, " + victimSize + " size");
+
+        float blastEffect = actualDamage * 0.25f / Mathf.Pow(victim.bounds.size.magnitude, 2);
+
+        Transform t = victim.transform;
+
+        //Blast pushes object away based on blastStrength
+        t.Translate((t.position - transform.position).normalized * blastEffect);
+
+        //Blast randomly rotates object based on blastStrength
+        Vector3 rotation = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
+        rotation *= blastEffect * 10;
+        t.Rotate(rotation);
+
+        //Vain attempt to get rotation based on angle of impact, taking blast strength and different forward axes...
+        //into account
+        /*
+        Vector3 originalPos = t.position;
+        Vector3 originalRot = t.eulerAngles;
+        t.Translate((t.position - transform.position).normalized * blastEffect);
+        t.LookAt(originalPos);
+        t.Rotate(-originalRot); */
+
+        return City.GetCity(t);
     }
 
     //Called to deactive the explosion and either... destroy it OR put it back in reserve pool

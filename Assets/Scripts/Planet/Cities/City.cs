@@ -36,14 +36,14 @@ public class City : MonoBehaviour
     private List<int> horizontalRoads, verticalRoads;
 
     //Called after city has been generated or regenerated
-    public void OnCityStart ()
+    public void OnCityStart()
     {
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
         mapMarker.InitializeMarker(transform);
     }
 
-    public void ReserveTerrainLocation ()
+    public void ReserveTerrainLocation()
     {
         //Reserve location for city
         Vector3 cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(Random.Range(0, 10),
@@ -56,7 +56,7 @@ public class City : MonoBehaviour
         transform.position = cityLocation;
     }
 
-    public void GenerateCity ()
+    public void GenerateCity()
     {
         //Reserve terrain location
         //radius = Random.Range(40, 100);
@@ -82,7 +82,7 @@ public class City : MonoBehaviour
         for (int x = 0; x < 400; x++)
             GenerateBuilding();
 
-        if(wallSectionPrefab)
+        if (wallSectionPrefab)
             GenerateWalls();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
@@ -96,11 +96,11 @@ public class City : MonoBehaviour
         OnCityStart();
     }
 
-    private void LoadBuildingPrototypes ()
+    private void LoadBuildingPrototypes()
     {
         buildingPrototypes = new Building[buildingPrefabs.Length];
 
-        for(int x = 0; x < buildingPrefabs.Length; x++)
+        for (int x = 0; x < buildingPrefabs.Length; x++)
         {
             buildingPrototypes[x] = Instantiate(buildingPrefabs[x]).GetComponent<Building>();
             buildingPrototypes[x].gameObject.SetActive(false);
@@ -109,7 +109,7 @@ public class City : MonoBehaviour
         }
     }
 
-    private Transform InstantiateNewBuilding (int buildingIndex)
+    private Transform InstantiateNewBuilding(int buildingIndex)
     {
         if (!buildingPrototypes[buildingIndex].gameObject.activeSelf) //Is model home available?
         {
@@ -120,7 +120,7 @@ public class City : MonoBehaviour
             return Instantiate(buildingPrefabs[buildingIndex]).transform;
     }
 
-    private void GenerateRoads ()
+    private void GenerateRoads()
     {
         //Horizontal roads
         horizontalRoads = new List<int>();
@@ -133,11 +133,11 @@ public class City : MonoBehaviour
             GenerateRoad(false, x);
     }
 
-    private void GenerateRoad (bool horizontal, int startCoord)
+    private void GenerateRoad(bool horizontal, int startCoord)
     {
         int areasWide = Mathf.Max(1, Random.Range(5, 20) / areaSize);
 
-        if(horizontal) //Horizontal road
+        if (horizontal) //Horizontal road
         {
             horizontalRoads.Add(startCoord);
             horizontalRoads.Add(startCoord + areasWide);
@@ -146,7 +146,7 @@ public class City : MonoBehaviour
             {
                 for (int z = startCoord; z < startCoord + areasWide; z++)
                 {
-                    if(z < areaTaken.GetLength(1))
+                    if (z < areaTaken.GetLength(1))
                         areaTaken[x, z] = true;
                 }
             }
@@ -167,7 +167,7 @@ public class City : MonoBehaviour
         }
     }
 
-    private void GenerateBuilding ()
+    private void GenerateBuilding()
     {
         //Select which model to make
         int buildingIndex = SelectBuildingPrototype();
@@ -178,8 +178,8 @@ public class City : MonoBehaviour
         int areaLength = Mathf.CeilToInt(buildingPrototypes[buildingIndex].length * 1.0f / areaSize);
 
         bool foundPlace = false;
-        
-        for(int attempt = 1; attempt <= 50; attempt++)
+
+        for (int attempt = 1; attempt <= 50; attempt++)
         {
             newX = Random.Range(0, areaTaken.GetLength(0));
             newZ = Random.Range(0, areaTaken.GetLength(1));
@@ -225,7 +225,7 @@ public class City : MonoBehaviour
         //Otherwise, we fucking give up
     }
 
-    private int SelectBuildingPrototype ()
+    private int SelectBuildingPrototype()
     {
         for (int attempt = 1; attempt <= 50; attempt++)
         {
@@ -239,9 +239,9 @@ public class City : MonoBehaviour
         return buildingPrototypes.Length - 1;
     }
 
-    private bool SafeToGenerate (int startX, int startZ, int areasLong)
+    private bool SafeToGenerate(int startX, int startZ, int areasLong)
     {
-        for(int x = startX; x < startX + areasLong; x++)
+        for (int x = startX; x < startX + areasLong; x++)
         {
             for (int z = startZ; z < startZ + areasLong; z++)
             {
@@ -265,7 +265,7 @@ public class City : MonoBehaviour
         return true;
     }
 
-    private void ReserveAreas (int startX, int startZ, int areasLong)
+    private void ReserveAreas(int startX, int startZ, int areasLong)
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
@@ -274,7 +274,7 @@ public class City : MonoBehaviour
         }
     }
 
-    private void SetBuildingRotation (Transform building, int xCoord, int zCoord)
+    private void SetBuildingRotation(Transform building, int xCoord, int zCoord)
     {
         Vector3 newRotation = Vector3.zero;
 
@@ -283,7 +283,7 @@ public class City : MonoBehaviour
         //Find closest horizontal road
         int closestZMargin = 9999;
         bool faceDown = false;
-        for(int z = 0; z < horizontalRoads.Count; z++)
+        for (int z = 0; z < horizontalRoads.Count; z++)
         {
             newMargin = Mathf.Abs(zCoord - horizontalRoads[z]);
             if (newMargin < closestZMargin)
@@ -311,7 +311,7 @@ public class City : MonoBehaviour
         {
             if (faceLeft)
             {
-                if(faceDown)
+                if (faceDown)
                     newRotation.y = -135;
                 else
                     newRotation.y = -45;
@@ -324,7 +324,7 @@ public class City : MonoBehaviour
                     newRotation.y = 45;
             }
         }
-        else if(closestXMargin < closestZMargin) //Rotate according to closest vertical road
+        else if (closestXMargin < closestZMargin) //Rotate according to closest vertical road
         {
             if (faceLeft)
                 newRotation.y = -90;
@@ -343,7 +343,7 @@ public class City : MonoBehaviour
         building.localEulerAngles = newRotation;
     }
 
-    private Vector3 ReserveSector ()
+    private Vector3 ReserveSector()
     {
         //Default case where there are not multiple roads to form sectors with (return center of city, no reservations)
         if (horizontalRoads.Count < 4 || verticalRoads.Count < 4)
@@ -396,7 +396,7 @@ public class City : MonoBehaviour
         return AreaCoordToLocalCoord(sectorCenter);
     }
 
-    private Vector3 AreaCoordToLocalCoord (Vector3 areaCoord)
+    private Vector3 AreaCoordToLocalCoord(Vector3 areaCoord)
     {
         //Used to be / 2 (int math)
         areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) / 2.0f) * areaSize;
@@ -405,14 +405,14 @@ public class City : MonoBehaviour
         return areaCoord;
     }
 
-    public Vector3 GetNewSpawnPoint ()
+    public Vector3 GetNewSpawnPoint()
     {
         nextAvailableBed++;
 
         Building building = null;
         bool foundBed = false;
 
-        for(int attempt = 1; !foundBed && attempt <= 50; attempt++)
+        for (int attempt = 1; !foundBed && attempt <= 50; attempt++)
         {
             if (nextAvailableBuilding >= buildings.Count)
                 nextAvailableBuilding = 0;
@@ -440,13 +440,19 @@ public class City : MonoBehaviour
             return transform.position; //Couldn't find bed so shove into center of city as fallback
     }
 
-    public void GenerateNavMesh ()
+    public void GenerateNavMesh()
     {
         transform.Find("City Limits").GetComponent<NavigationZone>()
-            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f));
+            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), true);
     }
 
-    public void PrepareWalls (int wallMaterialIndex)
+    public AsyncOperation UpdateNavMesh()
+    {
+        return transform.Find("City Limits").GetComponent<NavigationZone>()
+            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), false);
+    }
+
+    public void PrepareWalls(int wallMaterialIndex)
     {
         this.wallMaterialIndex = wallMaterialIndex;
 
@@ -468,7 +474,7 @@ public class City : MonoBehaviour
         cityWallMaterial.mainTextureScale = wallTextureScale;
     }
 
-    private void GenerateWalls ()
+    private void GenerateWalls()
     {
         PrepareWalls(Random.Range(0, wallMaterials.Length));
 
@@ -507,7 +513,7 @@ public class City : MonoBehaviour
         //Find the wall section closest to the gap and remove it
         int closestWallSectionIndex = 0;
         float closestWallSectionDist = Mathf.Infinity;
-        for(int x = 0; x < skipWallSection.Length; x++)
+        for (int x = 0; x < skipWallSection.Length; x++)
         {
             float wallSectionCenteredAt = startX + x * wallLength;
             float dist = Mathf.Abs(wallSectionCenteredAt - largestGapCenteredAt);
@@ -601,13 +607,13 @@ public class City : MonoBehaviour
                 placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);
     }
 
-    public void PlaceWallSection (bool gate, bool nextIsGate, float x, float y, float z, int rotation)
+    public void PlaceWallSection(bool gate, bool nextIsGate, float x, float y, float z, int rotation)
     {
         bool horizontalSection = Mathf.Abs(rotation) < 1;
 
         //Place wall section
         Transform newWallSection;
-        if(gate)
+        if (gate)
             newWallSection = Instantiate(horizontalSection ? horGatePrefab : verGatePrefab, walls).transform;
         else
             newWallSection = Instantiate(wallSectionPrefab, walls).transform;
@@ -618,7 +624,7 @@ public class City : MonoBehaviour
         newWallSection.localPosition = wallPosition;
 
         //Place fence post correlating to wall section
-        if(fencePostPrefab && !gate && !nextIsGate)
+        if (fencePostPrefab && !gate && !nextIsGate)
         {
             Vector3 fencePostPosition = newWallSection.localPosition;
             if (horizontalSection)
@@ -636,12 +642,14 @@ public class City : MonoBehaviour
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
     }
+
+    public static City GetCity(Transform t) { return t.root.GetComponent<City>(); }
 }
 
 [System.Serializable]
 public class CityJSON
 {
-    public CityJSON (City city)
+    public CityJSON(City city)
     {
         name = city.name;
 
@@ -666,7 +674,7 @@ public class CityJSON
         //City walls
         Transform cityWalls = city.walls;
         walls = cityWalls;
-        if(walls)
+        if (walls)
         {
             wallMaterialIndex = city.wallMaterialIndex;
 
@@ -682,7 +690,7 @@ public class CityJSON
             wallSectionRotations = new List<int>();
             wallSectionTypes = new List<string>();
 
-            foreach(Transform wallSection in cityWalls)
+            foreach (Transform wallSection in cityWalls)
             {
                 wallSectionLocations.Add(wallSection.localPosition);
                 wallSectionRotations.Add((int)wallSection.localEulerAngles.y);
@@ -704,7 +712,7 @@ public class CityJSON
         }
     }
 
-    public void RestoreCity (City city)
+    public void RestoreCity(City city)
     {
         city.gameObject.name = name;
 
@@ -733,7 +741,7 @@ public class CityJSON
             city.buildings.Add(newBuilding);
         }
 
-        if(walls)
+        if (walls)
         {
             city.wallSectionPrefab = Resources.Load<GameObject>("City/Wall Sections/" + wallSection);
             city.horGatePrefab = Resources.Load<GameObject>("City/Gates/" + horGate);
@@ -743,7 +751,7 @@ public class CityJSON
 
             city.PrepareWalls(wallMaterialIndex);
 
-            for(int x = 0; x < wallSectionLocations.Count; x++)
+            for (int x = 0; x < wallSectionLocations.Count; x++)
             {
                 Vector3 location = wallSectionLocations[x];
 
