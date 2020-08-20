@@ -21,7 +21,7 @@ public class Pill : MonoBehaviour, Damageable
     public float moveSpeed = 10;
     protected float health = 100, maxHealth;
     protected bool dead = false, touchingWater = false, controlOverride = false;
-    [HideInInspector] public bool performingAction = false;
+    [HideInInspector] public bool performingAction = false, onFire = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
     protected virtual void Start ()
@@ -273,6 +273,13 @@ public class Pill : MonoBehaviour, Damageable
         health = maxHealth;
 
         dead = false;
+
+        //Extinguish any fires from a previous life, the future cannot be weighed down by burdens of the past
+        if(onFire)
+        {
+            Destroy(transform.GetComponentInChildren<Fire>().gameObject);
+            onFire = false;
+        }
 
         gameObject.SetActive(true);
     }

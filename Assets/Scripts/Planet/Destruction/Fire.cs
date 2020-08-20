@@ -4,13 +4,73 @@ using UnityEngine;
 
 public class Fire : MonoBehaviour
 {
+    //STATIC MANAGEMENT----------------------------------------------------------------------------------
+
+    //If already on fire, updates and returns pre-existing fire, else returns newly created fire
+    public static Fire SetOnFire(Transform target, Vector3 localPositionOfFire, float fireIntensity)
+    {
+        //First boundary check (had an infinitely large fire once, whoops)...
+        fireIntensity = Mathf.Min(fireIntensity, 100.0f);
+
+        //Determine if subject is already on fire
+        Fire subjectFire = GetSubjectFire(target.transform);
+
+        if (subjectFire) //Subject already on fire... should we amplify it???
+        {
+            //Of course!
+            if (subjectFire.intensity < fireIntensity)
+                subjectFire.intensity = fireIntensity;
+
+            //Also update position
+            subjectFire.transform.localPosition = localPositionOfFire;
+
+            return subjectFire;
+        }
+        else //Spread fire to new subject
+        {
+            Fire newFire = Instantiate(Planet.planet.firePrefab).GetComponent<Fire>();
+
+            newFire.Ignite(target, localPositionOfFire);
+            newFire.intensity = fireIntensity * 0.8f;
+
+            return newFire;
+        }
+    }
+
+    private static Fire GetSubjectFire(Transform subject)
+    {
+        Fire subjectFire = null;
+
+        foreach (Transform subjectPart in subject)
+        {
+            subjectFire = subjectPart.GetComponent<Fire>();
+
+            if (subjectFire)
+                break;
+        }
+
+        return subjectFire;
+    }
+
+    public static bool IsFlammable (Transform target)
+    {
+        return target.CompareTag("Wood") || target.GetComponent<Damageable>() != null;
+    }
+
+    //INSTANCE STUFF-------------------------------------------------------------------------------------
+
     public float intensity = 1.0f;
     public AudioClip extinguish;
 
-    public void Ignite(Transform toIgnite, Vector3 localFirePosition)
+    private void Ignite(Transform toIgnite, Vector3 localFirePosition, float intensity = -1.0f)
     {
         if (transform.parent)
             return;
+
+        //If subject/target is pill, remember on fire for purposes of extinguishing on respawn
+        Pill pill = toIgnite.GetComponent<Pill>();
+        if (pill)
+            pill.onFire = true;
 
         //Place fire on object to ignite
         transform.parent = toIgnite;
@@ -18,11 +78,11 @@ public class Fire : MonoBehaviour
         transform.localEulerAngles = Vector3.zero;
         transform.localScale = Vector3.one;
 
-        //Start fire
-        StartCoroutine(FlameLifetime());
+        //Start fire with specified intensity, or default intensity of prefab if unspecified
+        StartCoroutine(FlameLifetime(intensity > 0 ? intensity : this.intensity));
     }
 
-    private IEnumerator FlameLifetime()
+    private IEnumerator FlameLifetime(float newIntensity)
     {
         //Audio effects
         AudioSource sfx = GetComponent<AudioSource>();
@@ -62,6 +122,9 @@ public class Fire : MonoBehaviour
 
         //Make fire able to spread
         GetComponent<Collider>().enabled = true;
+
+        //Apply optional intensity parameter after scaling of visuals based on original intensity
+        intensity = newIntensity;
 
         //Fire loop
         bool extinguishImmediately = false;
@@ -135,6 +198,11 @@ public class Fire : MonoBehaviour
             //Wait for extinguish sound to be over
             yield return new WaitForSeconds(extinguish.length);
 
+            //If pill, no longer on fire
+            Pill pill = transform.parent.GetComponent<Pill>();
+            if (pill)
+                pill.onFire = false;
+
             //Destroy fire
             God.god.UnmanageAudioSource(sfx);
             Destroy(gameObject);
@@ -174,41 +242,7 @@ public class Fire : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Damageable newSubject = other.GetComponent<Damageable>();
-
-        //Something flammable came into contact with fire
-        if (newSubject != null)
-        {
-            //Determine if subject is already on fire
-            Fire subjectFire = GetSubjectFire(other.transform);
-
-            if (subjectFire) //Subject already on fire... should we amplify it???
-            {
-                //Of course!
-                if (subjectFire.intensity < intensity)
-                    subjectFire.intensity = intensity;
-            }
-            else //Spread fire to new subject
-            {
-                Fire newFire = Instantiate(Planet.planet.firePrefab).GetComponent<Fire>();
-                newFire.Ignite(other.transform, Vector3.zero);
-                newFire.intensity = intensity * 0.8f;
-            }
-        }
-    }
-
-    private Fire GetSubjectFire(Transform subject)
-    {
-        Fire subjectFire = null;
-
-        foreach(Transform subjectPart in subject)
-        {
-            subjectFire = subjectPart.GetComponent<Fire>();
-
-            if (subjectFire)
-                break;
-        }
-
-        return subjectFire;
+        if(IsFlammable(other.transform))
+            SetOnFire(other.transform, Vector3.zero, intensity);
     }
 }

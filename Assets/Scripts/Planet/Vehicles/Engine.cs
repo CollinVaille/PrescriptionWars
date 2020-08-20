@@ -91,13 +91,10 @@ public class Engine : VehiclePart
     {
         //Start fire if applicable
         if(health < initialHealth / 2.0f && !engineFire)
-        {
-            engineFire = Instantiate(Planet.planet.firePrefab).GetComponent<Fire>();
-            engineFire.Ignite(transform, center);
-        }
+            engineFire = Fire.SetOnFire(transform, center, Mathf.Min(initialHealth / health, 2.5f));
 
-        //Update intensity of fire
-        if (engineFire && belongsTo.PoweredOn())
+        //Update intensity of fire if pre-existing
+        else if (engineFire && belongsTo.PoweredOn())
             engineFire.intensity = Mathf.Min(initialHealth / health, 2.5f);
     }
 }
