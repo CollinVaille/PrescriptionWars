@@ -145,4 +145,12 @@ public class Item : MonoBehaviour
     }
 
     public bool BeingHeld () { return holder; }
+
+    public virtual Vector3 GetPlaceInPlayerHand () { return new Vector3(0.5f, -0.25f, 0.0f); }
+
+    public virtual Vector3 GetPlaceOnBack () { return new Vector3(0.0f, 0.5f, -0.5f); }
+    public virtual Vector3 GetRotationOnBack () { return new Vector3(90, 90, 0); }
+
+    public virtual Vector3 GetPlaceInItemRack () { return Vector3.zero; }
+    public virtual Vector3 GetRotationInItemRack () { return new Vector3(-90, 0, 0); }
 }

@@ -84,4 +84,10 @@ public class Shield : Item
             yield return null;
         }
     }
+
+    public override Vector3 GetPlaceOnBack () { return new Vector3(0.0f, 0.1f, -1.0f); }
+    public override Vector3 GetRotationOnBack () { return Vector3.zero; }
+
+    public override Vector3 GetPlaceInItemRack () { return new Vector3(0.0f, 0.0f, 0.5f); }
+    public override Vector3 GetRotationInItemRack () { return new Vector3(180, 0, 0); }
 }

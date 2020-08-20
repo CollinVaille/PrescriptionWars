@@ -132,14 +132,14 @@ public class Pill : MonoBehaviour, Damageable
                     //Apply damage
                     hitObject.Damage(holding.meleeDamage / 2, 0, Vector3.zero, DamageType.Scrape, team);
 
-                    if(hitPill && hitPill.team != team)
+                    //Play scrape sound effect
+                    if (gameObject.activeInHierarchy)
+                        mainAudioSource.PlayOneShot(holding.scrape);
+
+                    if (hitPill && hitPill.team != team)
                     {
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
-
-                        //Play scrape sound effect
-                        if (gameObject.activeInHierarchy)
-                            mainAudioSource.PlayOneShot(holding.scrape);
                     }
                 }
             }

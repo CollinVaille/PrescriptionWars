@@ -157,6 +157,15 @@ public class God : MonoBehaviour
                 //Pause audio sources and keep track of which ones we paused so we can resume them later
                 for (int x = 0; x < managedAudioSources.Count; x++)
                 {
+                    //If audio source to manage has been deleted then remove it from management system
+                    if(!managedAudioSources[x])
+                    {
+                        managedAudioSources.RemoveAt(x);
+                        wasPlaying.RemoveAt(x);
+                        x--;
+                        continue;
+                    }
+
                     if (managedAudioSources[x].isPlaying)
                     {
                         managedAudioSources[x].Pause();
@@ -189,6 +198,15 @@ public class God : MonoBehaviour
                 //Resume audio sources that were playing before being paused
                 for (int x = 0; x < managedAudioSources.Count; x++)
                 {
+                    //If audio source to manage has been deleted then remove it from management system
+                    if (!managedAudioSources[x])
+                    {
+                        managedAudioSources.RemoveAt(x);
+                        wasPlaying.RemoveAt(x);
+                        x--;
+                        continue;
+                    }
+
                     if (wasPlaying[x])
                         managedAudioSources[x].Play();
                 }

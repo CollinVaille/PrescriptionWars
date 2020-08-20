@@ -50,8 +50,8 @@ public class ItemRackSlot : Interactable
             toStow.transform.parent = transform;
 
             //Set orientation
-            toStow.transform.localEulerAngles = new Vector3(-90, 0, 0);
-            toStow.transform.localPosition = Vector3.zero;
+            toStow.transform.localEulerAngles = toStow.GetRotationInItemRack();
+            toStow.transform.localPosition = toStow.GetPlaceInItemRack();
         }
         else
         {

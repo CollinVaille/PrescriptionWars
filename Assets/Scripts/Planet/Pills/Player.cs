@@ -393,7 +393,7 @@ public class Player : Pill
         {
             //Positioning
             holding.transform.parent = head;
-            holding.transform.localPosition = new Vector3(0.5f, -0.25f, 0.0f);
+            holding.transform.localPosition = holding.GetPlaceInPlayerHand();
             holding.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             FlashItemInfo();
@@ -466,16 +466,9 @@ public class Player : Pill
         {
             newSidearm.transform.parent = transform;
 
-            if (newSidearm.GetComponent<Shield>())
-            {
-                newSidearm.transform.localPosition = new Vector3(0.0f, 0.1f, -1f);
-                newSidearm.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            }
-            else
-            {
-                newSidearm.transform.localPosition = new Vector3(0.0f, 0.5f, -0.5f);
-                newSidearm.transform.localRotation = Quaternion.Euler(90, 90, 0);
-            }
+            //New position and rotation
+            newSidearm.transform.localPosition = newSidearm.GetPlaceOnBack();
+            newSidearm.transform.localEulerAngles = newSidearm.GetRotationOnBack();
 
             newSidearm.RetireFromHand();
         }
@@ -484,7 +477,7 @@ public class Player : Pill
         if (holding)
         {
             holding.transform.parent = head;
-            holding.transform.localPosition = new Vector3(0.5f, -0.25f, 0.0f);
+            holding.transform.localPosition = holding.GetPlaceInPlayerHand();
             holding.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             holding.PutInHand(GetPill());

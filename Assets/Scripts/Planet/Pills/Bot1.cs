@@ -647,7 +647,7 @@ public class Bot1 : Pill
         {
             //Positioning
             holding.transform.parent = transform;
-            holding.transform.localPosition = new Vector3(0.5f, 0.25f, 0.0f);
+            holding.transform.localPosition = holding.GetPlaceInPlayerHand() + Vector3.up * 0.5f;
             holding.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             //Get rid of shadows for optimization
