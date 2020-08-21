@@ -189,9 +189,9 @@ public class PlanetManagementMenu : MonoBehaviour
                 buildingsLimitText.text = "Buildings Limit: " + planetSelectedScript.cities[citySelected].buildingLimit;
                 if(buildingSelected != buildingDisplayed)
                 {
-                    buildingTitleText.text = GeneralHelperMethods.GetEnumText("" + GalaxyBuilding.buildingEnums[buildingSelected]);
+                    buildingTitleText.text = GeneralHelperMethods.GetEnumText("" + (GalaxyBuilding.BuildingType)buildingSelected);
                     buildingDescriptionText.text = buildingDescriptions[buildingSelected];
-                    buildingCostText.text = "" + GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]);
+                    buildingCostText.text = "" + GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected);
                     buildingImage.sprite = buildingSprites[buildingSelected];
                     buildingDisplayed = buildingSelected;
                 }
@@ -336,7 +336,7 @@ public class PlanetManagementMenu : MonoBehaviour
     {
         if (direction.Equals("right"))
         {
-            if(buildingSelected < GalaxyBuilding.buildingEnums.Count - 1)
+            if (buildingSelected < GalaxyBuilding.buildingEnums.Count - 1)
             {
                 buildingSelected++;
             }
@@ -364,10 +364,10 @@ public class PlanetManagementMenu : MonoBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.playerID].credits >= GalaxyBuilding.GetCreditsCost(GalaxyBuilding.buildingEnums[buildingSelected]))
+        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.playerID].credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
         {
             //Adds a building of the specified type to the building queue.
-            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue(GalaxyBuilding.buildingEnums[buildingSelected], GalaxyManager.playerID);
+            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.playerID);
 
             //Plays the add to queue sound effect.
             sfxSource.PlayOneShot(clickThreeAudioClip);

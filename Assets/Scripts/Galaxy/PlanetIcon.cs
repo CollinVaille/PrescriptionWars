@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -85,12 +86,12 @@ public class PlanetIcon : MonoBehaviour
         AddNameLabel(planetName);
 
         //Amount the planet will rotate.
-        rotation = new Vector3(0, 0, Random.Range(5, 21));
+        rotation = new Vector3(0, 0, UnityEngine.Random.Range(5, 21));
     }
 
     public void GenerateCities(bool isCapital)
     {
-        int totalBuildings = isCapital ? Random.Range(15, 20) : Random.Range(7, 14);
+        int totalBuildings = isCapital ? UnityEngine.Random.Range(15, 20) : UnityEngine.Random.Range(7, 14);
 
         int minimumBuildingsPerCity = 3;
 
@@ -98,7 +99,7 @@ public class PlanetIcon : MonoBehaviour
         {
             GalaxyCity galaxyCity = new GalaxyCity();
 
-            galaxyCity.buildingLimit = Random.Range(minimumBuildingsPerCity, 7);
+            galaxyCity.buildingLimit = UnityEngine.Random.Range(minimumBuildingsPerCity, 7);
             totalBuildings -= galaxyCity.buildingLimit;
 
             //If next city is too small, then just make this the last city and give it the remaining size
@@ -272,7 +273,6 @@ public class GalaxyBuilding
         Prescriptor,
         TradePost
     }
-
     public static List<BuildingType> buildingEnums = new List<BuildingType>() {BuildingType.ResearchFacility, BuildingType.Depot, BuildingType.Prescriptor, BuildingType.TradePost };
 
     public static float GetCreditsCost(BuildingType buildingType)
