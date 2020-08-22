@@ -91,14 +91,14 @@ public class Shatterable : MonoBehaviour, Damageable
 
     private void PlaySound(AudioClip sound, float volume, bool finalSound)
     {
-        if(!sfxSource)
+        if(finalSound)
         {
-            if (finalSound)
-            {
-                AudioSource.PlayClipAtPoint(sound, transform.position, volume);
-                return;
-            }
+            AudioSource.PlayClipAtPoint(sound, transform.position, volume);
+            return;
+        }
 
+        if (!sfxSource)
+        {
             sfxSource = gameObject.AddComponent<AudioSource>();
             sfxSource.spatialBlend = 1.0f;
             sfxSource.maxDistance = 150.0f;

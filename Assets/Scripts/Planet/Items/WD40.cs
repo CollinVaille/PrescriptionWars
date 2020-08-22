@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class WD40 : RepairTool
 {
-    public AudioClip flickNozzleUp, flickNozzleDown;
+    //Customization
+    public AudioClip flickNozzleUp, flickNozzleDown, flameStopSound, flameThrower, fireExtinguisher;
+
+    //Action code is responsible for coordinating which coroutine is active
+    //If a running coroutine has a key that is out-of-date, it means another coroutine has replaced it
+    private int actionCode = 0;
 
     private bool shootingFlames = false;
-    private int flamesCode = 0;
+
+    //References
+    private AudioSource shootingSFXSource;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        shootingSFXSource = GetComponents<AudioSource>()[1];
+    }
 
     public override void PutInHand(Pill newHolder)
     {
@@ -34,29 +48,43 @@ public class WD40 : RepairTool
 
     public override Vector3 GetRotationInItemRack() { return new Vector3(0, Random.Range(-180, 180), 0); }
 
-    public override void SecondaryAction()
-    {
-        if (!shootingFlames)
-            StartCoroutine(ShootFlames());
-    }
+    public override void SecondaryAction() { StartCoroutine(ShootSubstance(false)); }
 
-    private IEnumerator ShootFlames()
+    public override void TertiaryAction() { StartCoroutine(ShootSubstance(true)); }
+
+    private IEnumerator ShootSubstance(bool substanceIsFlames)
     {
-        //Increment flamesCode to stop at any time
-        int flamesKey = ++flamesCode;
+        shootingFlames = substanceIsFlames;
+
+        int actionKey = ++actionCode;
         float startTime = Time.timeSinceLevelLoad;
+        float shootRange;
 
-        //Start flame effects
-        transform.Find("Flame Stream").GetComponent<ParticleSystem>().Play(true);
+        //Start shooting effects
+        if(substanceIsFlames)
+        {
+            shootRange = 15.0f;
+            transform.Find("Flame Stream").GetComponent<ParticleSystem>().Play(true);
+            shootingSFXSource.clip = flameThrower;
+        }
+        else
+        {
+            shootRange = 10.0f;
+            transform.Find("Retardant Stream").GetComponent<ParticleSystem>().Play(true);
+            shootingSFXSource.clip = fireExtinguisher;
+        }
+        shootingSFXSource.Play();
 
-        //Lifetime of single flame spurt
+        //Lifetime of single spurt
         Damageable us = God.GetDamageable(transform);
-        while (flamesKey == flamesCode)
+        while (actionKey == actionCode)
         {
             //Player/bot specific loop guards/conditions
             if (holderIsPlayer) //Player stops when release button
             {
-                if (!Input.GetButton("Secondary Action"))
+                if (substanceIsFlames && !Input.GetButton("Tertiary Action"))
+                    break;
+                else if (!substanceIsFlames && !Input.GetButton("Secondary Action"))
                     break;
             }
             else if (Time.timeSinceLevelLoad - startTime > Random.Range(1.5f, 5.0f)) //Bot stops after timer
@@ -64,20 +92,23 @@ public class WD40 : RepairTool
 
             //Get list of hit targets
             RaycastHit[] hits = Physics.SphereCastAll(transform.TransformPoint(0.0f, 0.12f, 3.6f),
-                3.0f, Vector3.forward, 12.0f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+                3.0f, Vector3.forward, shootRange, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
 
-            //Set targets on fire if flammable
+            //Apply effects to targets that should be affected
             if (hits != null)
             {
                 foreach(RaycastHit hit in hits)
                 {
-                    //Don't light ourselves on fire
-                    if (God.GetDamageable(hit.transform) == us)
+                    Transform hitTransform = hit.collider.transform;
+
+                    //Can't touch ourselves and can't go through walls
+                    if (God.GetDamageable(hitTransform) == us || !DirectLineToTarget(hit.collider))
                         continue;
 
-                    //Light other, flammable things on fire
-                    if (Fire.IsFlammable(hit.transform))
-                        Fire.SetOnFire(hit.transform, Vector3.zero, Mathf.Min(10.0f / hit.distance, 5.0f));
+                    if (substanceIsFlames)
+                        SetOnFire(hit, hitTransform);
+                    else
+                        PutOutFire(hit, hitTransform);
                 }
             }
 
@@ -85,7 +116,46 @@ public class WD40 : RepairTool
             yield return new WaitForSeconds(0.25f);
         }
 
-        //Stop flame effects
-        transform.Find("Flame Stream").GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        //Stop effects
+        if (actionKey == actionCode || shootingFlames != substanceIsFlames)
+        {
+            transform.Find(substanceIsFlames ? "Flame Stream" : "Retardant Stream")
+                .GetComponent<ParticleSystem>().Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
+
+        if (actionKey == actionCode)
+            shootingSFXSource.Stop();
+
+        if (substanceIsFlames)
+            shootingSFXSource.PlayOneShot(flameStopSound);
+    }
+
+    private void SetOnFire(RaycastHit hit, Transform hitTransform)
+    {
+        if (Fire.IsFlammable(hitTransform))
+            Fire.SetOnFire(hitTransform, Vector3.zero, Mathf.Min(10.0f / hit.distance, 5.0f));
+    }
+
+    private void PutOutFire(RaycastHit hit, Transform hitTransform)
+    {
+        Fire subjectFire = Fire.GetSubjectFire(hitTransform);
+
+        if (subjectFire)
+        {
+            if(subjectFire.intensity > 1.0f)
+                subjectFire.intensity *= 0.9f;
+            else
+                subjectFire.intensity *= 0.75f;
+            shootingSFXSource.PlayOneShot(flameStopSound);
+        }
+    }
+
+    private bool DirectLineToTarget (Collider target)
+    {
+        if (Physics.Raycast(transform.position, (target.transform.position - transform.position).normalized,
+            out RaycastHit directHit, 9000, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            return directHit.collider == target;
+        else
+            return false; //In this case, didn't hit anything... so I guess that's a no?
     }
 }

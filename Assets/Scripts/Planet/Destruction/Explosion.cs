@@ -152,7 +152,7 @@ public class Explosion : MonoBehaviour
     private bool DirectLineToTarget(Collider target)
     {
         if (Physics.Raycast(transform.position, (target.transform.position - transform.position).normalized,
-            out RaycastHit directHit))
+            out RaycastHit directHit, 9000, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             return directHit.collider == target;
         else
             return false; //In this case, didn't hit anything... so I guess that's a no?

@@ -19,7 +19,7 @@ public class RepairTool : Item
     //SFX
     private AudioSource sfxSource;
 
-    private void Start()
+    protected virtual void Start()
     {
         //SFX initialization
         sfxSource = GetComponent<AudioSource>();
@@ -71,6 +71,8 @@ public class RepairTool : Item
             //Move spark to hit location
             repairSpark.position = hit.point;
         }
+        else
+            repairSpark.localPosition = new Vector3(0, 0, 5);
     }
 
     private IEnumerator RepairMonitoring()

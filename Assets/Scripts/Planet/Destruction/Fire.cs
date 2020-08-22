@@ -37,7 +37,7 @@ public class Fire : MonoBehaviour
         }
     }
 
-    private static Fire GetSubjectFire(Transform subject)
+    public static Fire GetSubjectFire(Transform subject)
     {
         Fire subjectFire = null;
 
