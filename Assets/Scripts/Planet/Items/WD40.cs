@@ -21,6 +21,9 @@ public class WD40 : RepairTool
         base.Start();
 
         shootingSFXSource = GetComponents<AudioSource>()[1];
+
+        //Pause audio on pause menu
+        God.god.ManageAudioSource(shootingSFXSource);
     }
 
     public override void PutInHand(Pill newHolder)
@@ -60,7 +63,7 @@ public class WD40 : RepairTool
         float startTime = Time.timeSinceLevelLoad;
         float shootRange;
 
-        //Start shooting effects
+        //Start effects
         if(substanceIsFlames)
         {
             shootRange = 15.0f;
@@ -142,10 +145,13 @@ public class WD40 : RepairTool
 
         if (subjectFire)
         {
-            if(subjectFire.intensity > 1.0f)
+            if (subjectFire.intensity > 1.0f)
                 subjectFire.intensity *= 0.9f;
-            else
+            else if (subjectFire.intensity > 0.5f)
                 subjectFire.intensity *= 0.75f;
+            else
+                subjectFire.intensity *= 0.1f;
+
             shootingSFXSource.PlayOneShot(flameStopSound);
         }
     }
