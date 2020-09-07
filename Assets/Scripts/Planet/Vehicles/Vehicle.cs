@@ -16,8 +16,8 @@ public class Vehicle : MonoBehaviour
         if (setUp)
             return;
 
-        speedometer = God.god.HUD.Find("Speedometer").GetComponent<Text>();
-        gearIndicator = God.god.HUD.Find("Gear Indicator").GetComponent<Text>();
+        speedometer = PlanetPauseMenu.pauseMenu.HUD.Find("Speedometer").GetComponent<Text>();
+        gearIndicator = PlanetPauseMenu.pauseMenu.HUD.Find("Gear Indicator").GetComponent<Text>();
         speedometerReading = 0;
 
         lightHits = new List<AudioClip>();

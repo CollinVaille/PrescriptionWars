@@ -28,7 +28,7 @@ public class MapMarker : MonoBehaviour, IPointerUpHandler
         this.markedObject = markedObject;
 
         //Make it a child of canvas
-        transform.SetParent(God.god.pauseMenus[(int)God.MenuScreen.MapMenu], false);
+        transform.SetParent(PlanetPauseMenu.pauseMenu.pauseMenus[(int)PlanetPauseMenu.MenuScreen.MapMenu], false);
 
         //Set name and text
         name = markedObject.name + " Marker";
@@ -41,7 +41,7 @@ public class MapMarker : MonoBehaviour, IPointerUpHandler
         }
 
         //Get other references
-        mapCamera = God.god.mapCamera;
+        mapCamera = PlanetPauseMenu.pauseMenu.mapCamera;
         scaleVector = transform.localScale * 1000;
     }
 

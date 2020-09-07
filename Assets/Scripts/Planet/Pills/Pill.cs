@@ -392,4 +392,20 @@ public class Pill : MonoBehaviour, Damageable
         else
             mainAudioSource.Play();
     }
+
+    public string InfoDump()
+    {
+        //Man points
+        string infoDump = (int)(health * 100.0f / maxHealth) + "% Manly\n";
+
+        //Distance away from player
+        infoDump += (int)Vector3.Distance(transform.position, Player.player.transform.position) + "m Away";
+
+        //Add footnote to identify player
+        if (this == Player.player)
+            infoDump += "\n\n* That's you!";
+
+        //We're done here
+        return infoDump;
+    }
 }

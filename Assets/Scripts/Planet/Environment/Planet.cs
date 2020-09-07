@@ -51,17 +51,19 @@ public class Planet : MonoBehaviour
 
     private void Awake () { planet = this; }
 
-    private void Start ()
+    private void Start () { StartCoroutine(StartUpPlanet()); }
+
+    private IEnumerator StartUpPlanet ()
     {
         //Get references
-        ambientAudioSource = GetComponents<AudioSource>()[1];
+        ambientAudioSource = GetComponent<AudioSource>();
 
         //Make ambience paused when game is paused
         God.god.ManageAudioSource(ambientAudioSource);
 
         //Make/restore selections
         if (newPlanet)
-            generator.GeneratePlanet(this);
+            yield return StartCoroutine(generator.GeneratePlanet(this));
         else
             RestorePlanet();
 
@@ -69,6 +71,7 @@ public class Planet : MonoBehaviour
 
         //Apply selections
         PaintSkyboxes();
+        PlanetPauseMenu.pauseMenu.UpdatePlanetName(planetName);
 
         //Start coroutines
         StartCoroutine(DayNightCycle());
@@ -134,7 +137,7 @@ public class Planet : MonoBehaviour
 
     public void SetUnderwaterColor (Color underwaterColor)
     {
-        God.god.HUD.Find("Underwater").GetComponent<Image>().color = underwaterColor;
+        PlanetPauseMenu.pauseMenu.HUD.Find("Underwater").GetComponent<Image>().color = underwaterColor;
     }
 
     private void LoadWaterCubemap (string mapName)
@@ -543,7 +546,7 @@ public class PlanetJSON
         //Ocean
         oceanHeight = planet.oceanTransform.position.y;
         oceanType = planet.oceanType;
-        underwaterColor = God.god.HUD.Find("Underwater").GetComponent<Image>().color;
+        underwaterColor = PlanetPauseMenu.pauseMenu.HUD.Find("Underwater").GetComponent<Image>().color;
         iceTexture = planet.oceanTransform.GetComponent<Renderer>().sharedMaterial.mainTexture.name;
 
         //Audio

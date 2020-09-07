@@ -1,0 +1,318 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1070758265128441448
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5360778420626545991}
+  - component: {fileID: 5184658327631588807}
+  - component: {fileID: 3187627947043177647}
+  - component: {fileID: 3672536202116024420}
+  m_Layer: 0
+  m_Name: City Limits
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5360778420626545991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 10, y: 0.1, z: 10}
+  m_Children:
+  - {fileID: 2873412096629001202}
+  m_Father: {fileID: 6303210571421432175}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5184658327631588807
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &3187627947043177647
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3672536202116024420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070758265128441448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c50a50bc0fca2d4c86db790236725e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &3190319114632695568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2873412096629001202}
+  - component: {fileID: 7992529588800066322}
+  - component: {fileID: 6679609512569480146}
+  m_Layer: 0
+  m_Name: NavMesh City Ground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2873412096629001202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3190319114632695568}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.0001, z: 0.1}
+  m_Children: []
+  m_Father: {fileID: 5360778420626545991}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7992529588800066322
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3190319114632695568}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &6679609512569480146
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3190319114632695568}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 836f30881eef42a4cb67814efc54e858, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!1 &3469767919227977101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6303210571421432175}
+  - component: {fileID: 7307572958468241306}
+  - component: {fileID: 6564999988731377981}
+  - component: {fileID: 8040615115890268915}
+  - component: {fileID: -2898946987551350288}
+  m_Layer: 0
+  m_Name: City
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6303210571421432175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5360778420626545991}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7307572958468241306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac8cd10216058c44b6620abf1c6471f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 100
+  mapMarkerPrefab: {fileID: 1688723436328904097, guid: fd115be7e4db4294daf535a7719cb532,
+    type: 3}
+  buildingPrefabs: []
+  buildings: []
+  defaultWallMaterial: {fileID: 2100000, guid: 12861769f6151ea4485ed8e626647475, type: 2}
+  defaultFloorMaterial: {fileID: 2100000, guid: 8811037fe0ece84429ece78b207663e0,
+    type: 2}
+  wallMaterials: []
+  floorMaterials: []
+  wallSectionPrefab: {fileID: 0}
+  horGatePrefab: {fileID: 0}
+  verGatePrefab: {fileID: 0}
+  fencePostPrefab: {fileID: 0}
+  walls: {fileID: 0}
+  wallMaterialIndex: 0
+  cityWallMaterial: {fileID: 2100000, guid: 0cfca54f750c17845bb45f8af6fceeff, type: 2}
+--- !u!114 &6564999988731377981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f224a032a713b4899444afe71e0023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3675544862485484884, guid: 22256e9fa4b32244e98cc6e0f63d15e8,
+    type: 3}
+  pillPrefab: {fileID: 3931174853506778531, guid: bc64cf3afe000114cbb27f37aa75d1d0,
+    type: 3}
+  squadPrefab: {fileID: 9053947970362020428, guid: 9af983e09f7396a489ffcfe6fc9d15e5,
+    type: 3}
+  squadType: 2
+  pillClasses:
+  - className: Guard
+    primary: {fileID: 1531228171902997540, guid: a9890956da5d1424490029c56c34e078,
+      type: 3}
+    secondary: {fileID: 2438049105765821200, guid: 1e0d293dbafb74a4cb0bb5042869ec56,
+      type: 3}
+    skin: {fileID: 2100000, guid: bbb8a259b5d048d4f85ca99f304eacbe, type: 2}
+    bodyGear: {fileID: 0}
+    headGear: {fileID: 3220553974313793524, guid: a86dbc820e9c6024ebb3eed4fb08895a,
+      type: 3}
+    probability: 0.9
+  - className: Riot Personnel
+    primary: {fileID: 5561473365579642321, guid: 17cc735c0c0214645a35e677a3a9f913,
+      type: 3}
+    secondary: {fileID: 1531228171902997540, guid: a9890956da5d1424490029c56c34e078,
+      type: 3}
+    skin: {fileID: 2100000, guid: d13d187f3a7ab4c44964ef877a2e4a4f, type: 2}
+    bodyGear: {fileID: 4934690952432774333, guid: 8a00b5c7764aa9e4a99b08f5d8daef97,
+      type: 3}
+    headGear: {fileID: 5347536055362246905, guid: 27d03f13c49a4b045a7f1ec115f575b4,
+      type: 3}
+    probability: 0.1
+  atOnce: 10
+  prescriptions: 100
+  team: 0
+--- !u!114 &8040615115890268915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f224a032a713b4899444afe71e0023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3675544862485484884, guid: 22256e9fa4b32244e98cc6e0f63d15e8,
+    type: 3}
+  pillPrefab: {fileID: 3931174853506778531, guid: bc64cf3afe000114cbb27f37aa75d1d0,
+    type: 3}
+  squadPrefab: {fileID: 9053947970362020428, guid: 9af983e09f7396a489ffcfe6fc9d15e5,
+    type: 3}
+  squadType: 3
+  pillClasses:
+  - className: Night Owl
+    primary: {fileID: 5968027895846996904, guid: efa2947546b2b834abd2ed4214eb1dcf,
+      type: 3}
+    secondary: {fileID: 0}
+    skin: {fileID: 2100000, guid: 3a6a8c8911e999744aa0622bd678db22, type: 2}
+    bodyGear: {fileID: 1435025089649330390, guid: 48845aafa58af034bb30ec3b501ddbf3,
+      type: 3}
+    headGear: {fileID: 5347536055362246905, guid: 27d03f13c49a4b045a7f1ec115f575b4,
+      type: 3}
+    probability: 1
+  atOnce: 10
+  prescriptions: 100
+  team: 0
+--- !u!114 &-2898946987551350288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469767919227977101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 55
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.2
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 0}

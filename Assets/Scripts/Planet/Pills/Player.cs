@@ -57,10 +57,10 @@ public class Player : Pill
         //Set references
         head = transform.Find("Head");
         cameraTransform = head.Find("Camera");
-        healthBar = God.god.HUD.Find("Health Bar").GetComponent<Image>();
-        reticle = God.god.HUD.Find("Reticle").GetComponent<Image>();
-        underwaterVisual = God.god.HUD.Find("Underwater").GetComponent<Image>();
-        itemInfo = God.god.HUD.Find("Item Info").GetComponent<Text>();
+        healthBar = PlanetPauseMenu.pauseMenu.HUD.Find("Health Bar").GetComponent<Image>();
+        reticle = PlanetPauseMenu.pauseMenu.HUD.Find("Reticle").GetComponent<Image>();
+        underwaterVisual = PlanetPauseMenu.pauseMenu.HUD.Find("Underwater").GetComponent<Image>();
+        itemInfo = PlanetPauseMenu.pauseMenu.HUD.Find("Item Info").GetComponent<Text>();
         feet = GetComponents<AudioSource>()[1];
         underwaterAmbience = GetComponents<AudioSource>()[2];
         underwaterReverb = GetComponent<AudioReverbZone>();
@@ -306,13 +306,7 @@ public class Player : Pill
         if (squad == null)
             return;
 
-        if (Input.GetButtonDown("Squad Menu")) //Squad menu
-        {
-            squad.PopulateSquadMenu(God.god.pauseMenus[(int)God.MenuScreen.SquadMenu]);
-            God.god.Pause(true);
-            God.god.SetMenuScreen(God.MenuScreen.SquadMenu);
-        }
-        else if(squad.leader == GetPill()) //Leader commands
+        if(squad.leader == GetPill()) //Leader commands
         {
             if (Input.GetButtonDown("Order 1"))
                 squad.SetOrders(order1);
@@ -423,7 +417,7 @@ public class Player : Pill
 
     private IEnumerator ManageInteractOption ()
     {
-        Text interactText = God.god.HUD.Find("Interactable Text").GetComponent<Text>();
+        Text interactText = PlanetPauseMenu.pauseMenu.HUD.Find("Interactable Text").GetComponent<Text>();
         int interactMask = (1 << 10) | (1 << 14); //Collide with interactable (10) or good bot (14) layers
 
         //Continually update the interact option
@@ -451,7 +445,7 @@ public class Player : Pill
     private void EraseInteractOption ()
     {
         interactOption = null;
-        God.god.HUD.Find("Interactable Text").GetComponent<Text>().text = "";
+        PlanetPauseMenu.pauseMenu.HUD.Find("Interactable Text").GetComponent<Text>().text = "";
     }
 
     private void SwapToSidearm ()
@@ -580,7 +574,7 @@ public class Player : Pill
 
     private IEnumerator ManageHealth ()
     {
-        Image healthBarBackground = God.god.HUD.Find("Health Bar Background").GetComponent<Image>();
+        Image healthBarBackground = PlanetPauseMenu.pauseMenu.HUD.Find("Health Bar Background").GetComponent<Image>();
 
         //Every frame, manage visibility of health bar until death
         while (true)
@@ -1112,6 +1106,13 @@ public class Player : Pill
 
         //There's a rare glitch where there is a left over interact option from spawning otherwise
         EraseInteractOption();
+    }
+
+    public override void OnCreationFromSpawner(Spawner spawner)
+    {
+        base.OnCreationFromSpawner(spawner);
+
+        PlanetPauseMenu.pauseMenu.UpdateFactionColor();
     }
 
     public void SetContinuousPrimaryAction (bool continuous) { continuousPrimaryAction = continuous; }

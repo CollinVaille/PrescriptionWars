@@ -6,9 +6,7 @@ public class PlanetGenerator : MonoBehaviour
 {
     //PLANET GENERATION----------------------------------------------------------------------------------------
 
-    public void GeneratePlanet(Planet planet) { StartCoroutine(GeneratePlanetImplement(planet)); }
-
-    private IEnumerator GeneratePlanetImplement(Planet planet)
+    public IEnumerator GeneratePlanet(Planet planet)
     {
         //Day length
         //dayLength = Random.Range(60, 500);
@@ -31,7 +29,8 @@ public class PlanetGenerator : MonoBehaviour
 
         //FINALLY, GIVE IT A FUCKING NAME AND SAVE THE BITCH---------------------------------------------------------
 
-        planet.planetName = "Sample Planet Name";
+        //Temp name
+        planet.planetName = GeneralHelperMethods.GetLineFromFile("Location Names/Planet Names");
 
         //SavePlanet();
     }

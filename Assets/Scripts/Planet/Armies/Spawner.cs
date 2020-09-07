@@ -101,7 +101,7 @@ public class Spawner : MonoBehaviour
 
             //Loading is over, player is here everybody!
             Player.player = pill.GetComponent<Player>();
-            God.god.LoadingScreen(false, false);
+            PlanetPauseMenu.pauseMenu.LoadingScreen(false, false);
         }
         else
             pill = Instantiate(pillPrefab).GetComponent<Pill>();
@@ -118,10 +118,12 @@ public class Spawner : MonoBehaviour
         pill.GetComponent<Renderer>().sharedMaterial = pillClass.skin;
 
         //Name pill
+        /*
         if(pill.GetComponent<Player>())
             pill.name = "Player Pill";
         else
             pill.name = "Pill " + Random.Range(0, 1000);
+        */
 
         //Give pill items and gear...
 

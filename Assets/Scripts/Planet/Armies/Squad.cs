@@ -386,4 +386,11 @@ public class Squad : MonoBehaviour
             case Orders.Roam: leader.Say(leader.voice.roam, true); break;
         }
     }
+
+    public Pill GetMemberByName(string memberName)
+    {
+        return members.Find(x => x.name.Equals(memberName));
+    }
+
+    public Army GetArmy() { return army; }
 }

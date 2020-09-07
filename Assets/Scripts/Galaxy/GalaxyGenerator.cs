@@ -647,7 +647,7 @@ public class GalaxyGenerator : MonoBehaviour
     }
 
 
-    //Returns a random planet name;
+    //Returns a random planet name
     private string GeneratePlanetName()
     {
         string planetName = "";
