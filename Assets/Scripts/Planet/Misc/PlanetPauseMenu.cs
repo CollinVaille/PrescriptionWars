@@ -34,6 +34,8 @@ public class PlanetPauseMenu : MonoBehaviour
 
     //Squad
     private string squadLeader = "";
+    public GameObject memberCameraPrefab;
+    private Transform squadMemberCamera;
 
     //Map
     private bool mapOpen = false;
@@ -224,6 +226,8 @@ public class PlanetPauseMenu : MonoBehaviour
     {
         if (oldScreen == MenuScreen.MapMenu)
             SwitchToFromMap(false);
+        else if (oldScreen == MenuScreen.SquadMenu)
+            UpdateSquadMemberCamera(null);
     }
 
     private void OnMenuScreenLoad(MenuScreen newScreen)
@@ -287,8 +291,8 @@ public class PlanetPauseMenu : MonoBehaviour
         else
         {
             //Done with loading which means player has been loaded so disable map camera
-            Destroy(GetComponent<AudioListener>());
-            mapCamera.enabled = false;
+            God.god.SetActiveCamera(Player.player.transform.Find("Head").Find("Camera").GetComponent<Camera>(), true);
+            Destroy(God.god.GetComponent<AudioListener>());
 
             pauseMenus[(int)MenuScreen.LoadingScreen].gameObject.SetActive(false);
         }
@@ -380,9 +384,7 @@ public class PlanetPauseMenu : MonoBehaviour
         Transform mapScreen = pauseMenus[(int)MenuScreen.MapMenu];
 
         //Toggle views
-        mapCamera.enabled = toMap;
-        if (Player.player)
-            Player.player.SetCameraState(!toMap);
+        God.god.SetActiveCamera(toMap ? mapCamera : Player.player.GetCamera(), false);
 
         if (toMap)
         {
@@ -586,8 +588,15 @@ public class PlanetPauseMenu : MonoBehaviour
         //At this point, we have a member that belongs to a real squad so display his details...
         Transform squadMenu = pauseMenus[(int)MenuScreen.SquadMenu];
 
+        //Set background and camera
+        squadMenu.Find("Transparent Background").gameObject.SetActive(true);
+        squadMenu.Find("Opaque Background").gameObject.SetActive(false);
+        UpdateSquadMemberCamera(member.transform);
+
+        //Set name
         squadMenu.Find("Member Name").GetComponent<Text>().text = member.name;
 
+        //Set role
         if(member == squad.leader)
         {
             squadMenu.Find("Member Role").GetComponent<Text>().text = "Squad Leader";
@@ -599,16 +608,133 @@ public class PlanetPauseMenu : MonoBehaviour
             squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
         }
         
+        //Set details
         squadMenu.Find("Member Details").GetComponent<Text>().text = member.InfoDump();
+        
+        //Play banter
+        if(member.voice && Random.Range(0, 2) == 0)
+        {
+            int picker = Random.Range(0, 3);
+            switch(picker)
+            {
+                case 0: oneShotAudioSource.PlayOneShot(member.voice.GetEagerBanter(), 0.5f); break;
+                case 1: oneShotAudioSource.PlayOneShot(member.voice.GetIdleBanter(), 0.5f); break;
+                default: oneShotAudioSource.PlayOneShot(member.voice.GetCopy(), 0.5f); break;
+            }
+        }
     }
 
     private void BlankSquadMemberDisplay()
     {
         Transform squadMenu = pauseMenus[(int)MenuScreen.SquadMenu];
 
+        squadMenu.Find("Transparent Background").gameObject.SetActive(false);
+        squadMenu.Find("Opaque Background").gameObject.SetActive(true);
+        UpdateSquadMemberCamera(null);
+
         squadMenu.Find("Member Name").GetComponent<Text>().text = "";
         squadMenu.Find("Member Role").GetComponent<Text>().text = "";
         squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
         squadMenu.Find("Member Details").GetComponent<Text>().text = "";
+    }
+
+    private void UpdateSquadMemberCamera(Transform member)
+    {
+        //If we don't have a camera for this (first time use), create one
+        if (!squadMemberCamera)
+            squadMemberCamera = Instantiate(memberCameraPrefab).transform;
+
+        //Switch to squad member camera if valid squad member, else switch back
+        God.god.SetActiveCamera(member ? squadMemberCamera.GetComponent<Camera>() : Player.player.GetCamera(), true);
+
+        //We're done here if not a valid squad member
+        if (!member)
+            return;
+
+        //Position and rotate camera...
+
+        //Try preferred angles
+        bool foundAngle = false;
+        for(int attempt = 1; attempt <= 100; attempt++)
+        {
+            squadMemberCamera.position = member.TransformPoint(GetRandomLocalCameraAngle());
+            squadMemberCamera.LookAt(member);
+
+            if (SquadMemberCameraAngleGood(member))
+            {
+                foundAngle = true;
+                break;
+            }
+        }
+        if (foundAngle)
+            return;
+
+        //Resort to more desperate angles
+        for (int attempt = 1; attempt <= 100; attempt++)
+        {
+            squadMemberCamera.position = member.TransformPoint(GetRandomLocalCameraAngleBackUp());
+            squadMemberCamera.LookAt(member);
+
+            if (SquadMemberCameraAngleGood(member))
+            {
+                foundAngle = true;
+                break;
+            }
+        }
+        if (foundAngle)
+            return;
+
+        //Sadness
+        Debug.Log("Couldn't find valid camera angle! >:(");
+    }
+
+    //Used for squad member camera, returned position is local to squad member
+    private Vector3 GetRandomLocalCameraAngle()
+    {
+        int picker = Random.Range(0, 5);
+
+        switch (picker)
+        {
+            case 0: return new Vector3(0.0f, 0.5f, Random.Range(2.5f, 4.0f)); //Front
+            case 1: return new Vector3(Random.Range(1.5f, 3.0f), 0.5f, Random.Range(1.5f, 3.0f)); //Right front
+            case 2: return new Vector3(Random.Range(-1.5f, -3.0f), 0.5f, Random.Range(1.5f, 3.0f)); //Left front
+            case 3: return new Vector3(Random.Range(-2.5f, -4.0f), 0.5f, 0.0f); //Left
+            default: return new Vector3(Random.Range(2.5f, 4.0f), 0.5f, 0.0f); //Right
+        }
+    }
+
+    //These angles are less ideal, but are used when preffered ones are obstructed
+    private Vector3 GetRandomLocalCameraAngleBackUp()
+    {
+        int picker = Random.Range(0, 3);
+
+        switch (picker)
+        {
+            case 0: return new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(2.0f, 4.0f),
+                Random.Range(-0.25f, 0.25f)); //Top
+            case 1: return new Vector3(Random.Range(-0.25f, 0.25f), 0.5f, Random.Range(-2.0f, -4.0f)); //Back
+            default: return new Vector3(0.0f, Random.Range(0.0f, 0.5f), Random.Range(0.25f, 0.75f)); //Close front
+        }
+    }
+
+    //Requires that position and rotation of squad member camera be set beforehand
+    private bool SquadMemberCameraAngleGood(Transform member)
+    {
+        //Get list of everything in between camera and pill
+        Vector3 startPosition = squadMemberCamera.TransformPoint(Vector3.back);
+        float distance = Vector3.Distance(startPosition, member.position);
+
+        RaycastHit[] hits = Physics.SphereCastAll(startPosition, 0.5f, squadMemberCamera.forward, distance,
+            Physics.AllLayers, QueryTriggerInteraction.Ignore);
+
+        //If any object in between is not part of pill, then it is obstructing view so return that angle is bad
+        foreach(RaycastHit hit in hits)
+        {
+            if (!hit.transform.IsChildOf(member))
+                return false;
+        }
+
+        //Otherwise nothing is obstructing the view from the camera to the pill, so return that angle is good
+        return true;
     }
 }

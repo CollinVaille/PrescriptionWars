@@ -1292,10 +1292,7 @@ public class Player : Pill
         }
     }
 
-    public void SetCameraState (bool on)
-    {
-        cameraTransform.GetComponent<Camera>().enabled = on;
-    }
+    public Camera GetCamera () { return cameraTransform.GetComponent<Camera>(); }
 
     public void ApplyDisplaySettings ()
     {

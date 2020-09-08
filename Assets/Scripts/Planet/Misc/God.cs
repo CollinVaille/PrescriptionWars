@@ -28,10 +28,17 @@ public class God : MonoBehaviour
     //City management
     private List<City> citiesToUpdate;
 
+    //Camera management
+    private Camera currentCamera;
+    private AudioListener currentListener;
+
     //Initialization
     private void Awake()
     {
         god = this;
+
+        //Loading camera
+        SetActiveCamera(GetComponent<Camera>(), true);
 
         //Variable initialization
         managedAudioSources = new List<AudioSource>();
@@ -245,5 +252,24 @@ public class God : MonoBehaviour
         }
 
         return new string(modified);
+    }
+
+    public void SetActiveCamera(Camera newCamera, bool withListener)
+    {
+        if(currentCamera)
+            currentCamera.enabled = false;
+        newCamera.enabled = true;
+        currentCamera = newCamera;
+
+        if (withListener)
+            SetActiveListener(currentCamera.GetComponent<AudioListener>());
+    }
+
+    private void SetActiveListener(AudioListener newListener)
+    {
+        if(currentListener)
+            currentListener.enabled = false;
+        newListener.enabled = true;
+        currentListener = newListener;
     }
 }
