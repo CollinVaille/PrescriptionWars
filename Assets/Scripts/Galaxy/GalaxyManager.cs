@@ -9,6 +9,7 @@ public class GalaxyManager : MonoBehaviour
     public GameObject commandConsole;
     public GameObject researchView;
     public GameObject endTurnButton;
+    public GalaxyConfirmationPopup galaxyConfirmationPopup;
 
     //Audio stuff.
     public AudioSource musicSource;
@@ -44,6 +45,7 @@ public class GalaxyManager : MonoBehaviour
     void Start()
     {
         galaxyManager = this;
+        GalaxyConfirmationPopup.galaxyConfirmationPopup = galaxyConfirmationPopup;
     }
 
     // Update is called once per frame
@@ -59,7 +61,7 @@ public class GalaxyManager : MonoBehaviour
                 Empire.empires[x].playerEmpire = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.BackQuote))
+        if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
         {
             commandConsole.GetComponent<CheatConsole>().ToggleConsole();
         }

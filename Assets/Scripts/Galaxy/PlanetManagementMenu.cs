@@ -97,7 +97,7 @@ public class PlanetManagementMenu : MonoBehaviour
     void Update()
     {
         //Closes the whole planet management menu if the user presses escape.
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame)
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
         {
             CloseMenu();
         }
@@ -295,11 +295,17 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
-    public void DemolishBuilding(int num)
+    public void ConfirmDelmolishBuilding(int num)
     {
         //Figures out which index to remove at.
         int indexToDemolish = buildingsListTextStartIndex + num;
 
+        //Creates a confirmation pop-up to query the user on whether or not they actually want to demolish that building.
+        GalaxyConfirmationPopup.NewDemolishBuildingConfirmation(planetSelected.GetComponent<PlanetIcon>().planetID, citySelected, indexToDemolish);
+    }
+
+    public void DemolishBuilding(int indexToDemolish)
+    {
         //Removes the building at the requested index.
         planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
 
@@ -311,10 +317,19 @@ public class PlanetManagementMenu : MonoBehaviour
         UpdateUI();
     }
 
-    public void CancelBuildingQueued(int num)
+    public void ConfirmCancelBuildingQueued(int num)
     {
         //Figures out which index to remove at.
         int indexToCancel = buildingQueueListTextStartIndex + num;
+
+        //Creates a confirmation pop-up to query the user on whether or not they actually want to cencel that queued building.
+        GalaxyConfirmationPopup.NewCancelBuildingQueuedConfirmation(planetSelected.GetComponent<PlanetIcon>().planetID, citySelected, indexToCancel);
+    }
+
+    public void CancelBuildingQueued(int indexToCancel)
+    {
+        //Refunds the player of the credits that they spent putting that building into the building queue.
+        Empire.empires[GalaxyManager.playerID].credits += GalaxyBuilding.GetCreditsCost(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
 
         //Removes the building in the queue at the requested index.
         planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);

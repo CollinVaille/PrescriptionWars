@@ -24,7 +24,7 @@ public class GalaxyCamera : MonoBehaviour
     private void Update ()
     {
         //WASD and scrollwheel movement
-        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy)
+        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");
@@ -34,7 +34,7 @@ public class GalaxyCamera : MonoBehaviour
             movementVector.x = 0.0f;
             movementVector.y = 0.0f;
         }
-        if(galaxyView.activeInHierarchy)
+        if(galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
             movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
@@ -45,7 +45,7 @@ public class GalaxyCamera : MonoBehaviour
         if (!cheatConsole.activeInHierarchy)
             mouseOverCheatConsole = false;
 
-        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && !mouseOverArmyManagementMenu && galaxyView.activeInHierarchy)
+        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && !mouseOverArmyManagementMenu && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
