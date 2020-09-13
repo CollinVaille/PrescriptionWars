@@ -97,11 +97,12 @@ public class PlanetManagementMenu : MonoBehaviour
     void Update()
     {
         //Closes the whole planet management menu if the user presses escape.
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.childCount - 2)
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame)
         {
             CloseMenu();
         }
 
+        //Deals with the planet management menu being dragged by the player.
         if (beingMoved)
         {
             transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
@@ -147,6 +148,10 @@ public class PlanetManagementMenu : MonoBehaviour
                     mouseToMenuDistance.y = -323;
             }
         }
+
+        //Brings the planet management menu above all of the other pop-ups if it is being pressed on.
+        if (GalaxyCamera.mouseOverPlanetManagementMenu && Input.GetMouseButtonDown(0))
+            transform.SetAsLastSibling();
 
         //Updates the ui if the appropriate amount of time has passes (to increase performance).
         timer += Time.deltaTime;
@@ -229,12 +234,6 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void BringToTopInHierarchy()
-    {
-        transform.SetAsLastSibling();
-        GalaxyManager.galaxyManager.endTurnButton.transform.SetAsLastSibling();
     }
 
     public void PointerDownPlanetManagementMenu()
@@ -374,7 +373,7 @@ public class PlanetManagementMenu : MonoBehaviour
         }
     }
 
-    public void OnButtonEnter(Image buttonImage)
+    /*public void OnButtonEnter(Image buttonImage)
     {
         buttonImage.sprite = selectedButtonSprite;
     }
@@ -382,7 +381,7 @@ public class PlanetManagementMenu : MonoBehaviour
     public void OnButtonExit(Image buttonImage)
     {
         buttonImage.sprite = unselectedButtonSprite;
-    }
+    }*/
 
     public void ClickOnCity(int cityNum)
     {
@@ -589,12 +588,27 @@ public class PlanetManagementMenu : MonoBehaviour
         sfxSource.PlayOneShot(clickOnTabAudioClip);
     }
 
+    public void OpenMenu()
+    {
+        //Activates the planet management menu gameobject.
+        transform.gameObject.SetActive(true);
+        //Brings the planet mangement menu on top of all of the other pop-ups.
+        transform.SetAsLastSibling();
+        //Resets the choose city menu.
+        ResetChooseCityMenu();
+        //Updates the ui elements of the whole menu.
+        UpdateUI();
+        //Plays the sound effect for opening the planet management menu.
+        PlayOpenMenuSFX();
+    }
+
     public void CloseMenu()
     {
+        //Logs with the galaxy manager that a popup has been closed on this frame (so that other popups will not close on the same frame because of the escape key being pressed).
+        GalaxyManager.popupClosedOnFrame = true;
+
         //Resets whether the planet management menu is being dragged by the player.
         PointerUpPlanetManagementMenu();
-        //Resets the planet managment menu's location.
-        //transform.localPosition = Vector2.zero;
 
         //Resets all of the shadows on text.
         foreach (Shadow shadow in shadows)
@@ -621,6 +635,9 @@ public class PlanetManagementMenu : MonoBehaviour
             else
                 tabs[x].SetActive(false);
         }
+
+        //Places the planet management menu at the top of the pop-ups object's hierarchy (last priority).
+        transform.SetSiblingIndex(0);
 
         //Deactivates the whole planet management menu.
         transform.gameObject.SetActive(false);

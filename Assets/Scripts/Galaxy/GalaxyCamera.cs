@@ -14,20 +14,15 @@ public class GalaxyCamera : MonoBehaviour
 
     public GameObject planetManagementMenu;
     public GameObject armyManagementMenu;
+    public GameObject cheatConsole;
     public GameObject galaxyView;
 
     public static bool mouseOverPlanetManagementMenu;
     public static bool mouseOverArmyManagementMenu;
+    public static bool mouseOverCheatConsole;
 
     private void Update ()
     {
-
-        //Speed up/slow down
-        /*if (Input.GetButton("Sprint"))
-            moveSpeed += 25 * Time.deltaTime;
-        else if (Input.GetButton("Equip"))
-            moveSpeed -= 25 * Time.deltaTime;*/
-
         //WASD and scrollwheel movement
         if (!consoleInputField.isFocused && galaxyView.activeInHierarchy)
         {
@@ -47,6 +42,8 @@ public class GalaxyCamera : MonoBehaviour
             mouseOverPlanetManagementMenu = false;
         if (!armyManagementMenu.activeInHierarchy)
             mouseOverArmyManagementMenu = false;
+        if (!cheatConsole.activeInHierarchy)
+            mouseOverCheatConsole = false;
 
         if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && !mouseOverArmyManagementMenu && galaxyView.activeInHierarchy)
         {
@@ -83,5 +80,10 @@ public class GalaxyCamera : MonoBehaviour
     public void ToggleMouseOverArmyManagementMenu()
     {
         mouseOverArmyManagementMenu = !mouseOverArmyManagementMenu;
+    }
+
+    public void ToggleMouseOverCheatConsole()
+    {
+        mouseOverCheatConsole = !mouseOverCheatConsole;
     }
 }

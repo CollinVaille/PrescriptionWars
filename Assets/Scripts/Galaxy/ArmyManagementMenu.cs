@@ -23,11 +23,12 @@ public class ArmyManagementMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.childCount - 2)
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame)
         {
             CloseMenu();
         }
 
+        //Deals with the army management menu being dragged.
         if (beingMoved)
         {
             transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
@@ -73,17 +74,31 @@ public class ArmyManagementMenu : MonoBehaviour
                     mouseToMenuDistance.y = -323;
             }
         }
+
+        //Brings the army management menu above all of the other pop-ups if it is being pressed on.
+        if (GalaxyCamera.mouseOverArmyManagementMenu && Input.GetMouseButtonDown(0))
+            transform.SetAsLastSibling();
     }
 
     public void OpenMenu()
     {
+        //Activates the army mangagement menu gameobject.
         transform.gameObject.SetActive(true);
+        //Brings the army management menu on top of all of the other pop-ups.
+        transform.SetAsLastSibling();
 
         backgroundColorImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
     }
 
     public void CloseMenu()
     {
+        //Logs with the galaxy manager that a pop-up has been closed on this frame (so that other pop-ups are not allowed to close with the escape key on the same frame).
+        GalaxyManager.popupClosedOnFrame = true;
+
+        //Puts the army management menu at the top of the pop-ups gameobject (least priority).
+        transform.SetSiblingIndex(0);
+
+        //Deactivates the whole army management menu gameobject.
         transform.gameObject.SetActive(false);
     }
 
@@ -104,11 +119,5 @@ public class ArmyManagementMenu : MonoBehaviour
 
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
-    }
-
-    public void BringToTopInHierarchy()
-    {
-        transform.SetAsLastSibling();
-        GalaxyManager.galaxyManager.endTurnButton.transform.SetAsLastSibling();
     }
 }

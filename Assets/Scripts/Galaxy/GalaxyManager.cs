@@ -26,6 +26,7 @@ public class GalaxyManager : MonoBehaviour
     public static List<Sprite> flagSymbols;
 
     public static bool observationModeEnabled = false;
+    public static bool popupClosedOnFrame = false;
 
     public static GameObject planetManagementMenu;
     public static GalaxyManager galaxyManager;
@@ -48,6 +49,8 @@ public class GalaxyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        popupClosedOnFrame = false;
+
         for(int x = 0; x < Empire.empires.Count; x++)
         {
             if (x == playerID)
@@ -189,6 +192,18 @@ public class Empire
         }
 
         return sciencePerTurn;
+    }
+
+    public float GetProductionPerTurn()
+    {
+        float productionPerTurn = 0.0f;
+
+        for(int x = 0; x < planetsOwned.Count; x++)
+        {
+            productionPerTurn += GalaxyManager.planets[planetsOwned[x]].GetComponent<PlanetIcon>().productionPerTurn();
+        }
+
+        return productionPerTurn;
     }
 
     public void PlayAI()

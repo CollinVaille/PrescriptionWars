@@ -18,6 +18,8 @@ public class ResourceBar : MonoBehaviour
     public Text prescriptionsHoverText;
     public Text scienceText;
     public Text scienceHoverText;
+    public Text productionText;
+    public Text productionHoverText;
     public Text turnText;
 
     public float updatesPerSecond;
@@ -60,6 +62,8 @@ public class ResourceBar : MonoBehaviour
             }
             scienceText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetSciencePerTurn();
             scienceHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
+            productionText.text = "+" + (int)Empire.empires[GalaxyManager.playerID].GetProductionPerTurn();
+            productionHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             turnText.text = "Turn: " + GalaxyManager.turnNumber;
 
             timer = 0.0f;
@@ -116,5 +120,10 @@ public class ResourceBar : MonoBehaviour
     public void ToggleScienceHoverText()
     {
         scienceHoverText.gameObject.SetActive(!scienceHoverText.gameObject.activeInHierarchy);
+    }
+
+    public void ToggleProductionHoverText()
+    {
+        productionHoverText.gameObject.SetActive(!productionHoverText.gameObject.activeInHierarchy);
     }
 }

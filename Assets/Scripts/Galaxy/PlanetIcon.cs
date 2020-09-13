@@ -76,6 +76,18 @@ public class PlanetIcon : MonoBehaviour
         return science;
     }
 
+    public float productionPerTurn()
+    {
+        float production = 0.0f;
+
+        foreach(GalaxyCity galaxyCity in cities)
+        {
+            production += galaxyCity.GetProductionPerTurn(ownerID);
+        }
+
+        return production;
+    }
+
     Vector3 rotation;
 
     //Cities
@@ -230,7 +242,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.mouseOverPlanetManagementMenu && !GalaxyCamera.mouseOverArmyManagementMenu)
+        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.mouseOverPlanetManagementMenu && !GalaxyCamera.mouseOverArmyManagementMenu && !GalaxyCamera.mouseOverCheatConsole)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetSelected = transform.gameObject;
@@ -241,11 +253,8 @@ public class PlanetIcon : MonoBehaviour
                 GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
             }
 
-            //Activates the planet management menu.
-            PlanetManagementMenu.planetManagementMenu.gameObject.SetActive(true);
-            PlanetManagementMenu.planetManagementMenu.ResetChooseCityMenu();
-            PlanetManagementMenu.planetManagementMenu.UpdateUI();
-            PlanetManagementMenu.planetManagementMenu.PlayOpenMenuSFX();
+            //Opens the planet management menu.
+            PlanetManagementMenu.planetManagementMenu.OpenMenu();
         }
     }
 
