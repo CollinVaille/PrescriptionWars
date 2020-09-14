@@ -1300,6 +1300,13 @@ public class Player : Pill
         cameraTransform.GetComponent<Camera>().farClipPlane = VideoSettings.viewDistance;
         QualitySettings.SetQualityLevel(VideoSettings.quality);
     }
+
+    public void AssignOrderButtons (Squad.Orders order1, Squad.Orders order2, Squad.Orders order3)
+    {
+        this.order1 = order1;
+        this.order2 = order2;
+        this.order3 = order3;
+    }
 }
 
 [System.Serializable]

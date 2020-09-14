@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PlanetPauseMenu : MonoBehaviour
 {
-    public enum MenuScreen { SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3, MapMenu = 4 }
+    public enum MenuScreen { SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3, MapMenu = 4, CommandsMenu = 5 }
     public enum NavigationPane { Situation = 0, Squad = 1, Map = 2 }
 
     public static PlanetPauseMenu pauseMenu;
@@ -85,7 +85,12 @@ public class PlanetPauseMenu : MonoBehaviour
             if (paused)
             {
                 if (currentPane == NavigationPane.Squad)
-                    Pause(false);
+                {
+                    if (currentScreen == MenuScreen.SquadMenu)
+                        Pause(false);
+                    else
+                        BackOneScreen();
+                }
                 else
                     SetNavigationPane(NavigationPane.Squad);
             }
@@ -164,9 +169,6 @@ public class PlanetPauseMenu : MonoBehaviour
                 //Hide HUD
                 HUD.gameObject.SetActive(false);
 
-                //Show navigation bar
-                navigationBar.gameObject.SetActive(true);
-
                 //Show pause menu
                 SetNavigationPane(withPane);
 
@@ -232,7 +234,11 @@ public class PlanetPauseMenu : MonoBehaviour
 
     private void OnMenuScreenLoad(MenuScreen newScreen)
     {
-        //Perform all needed menu screen initialization here
+        //Perform all needed menu screen initialization here...
+
+        //Determine whether to show navigation bar based on new screen
+        navigationBar.gameObject.SetActive(
+            newScreen == MenuScreen.SituationMenu || newScreen == MenuScreen.SquadMenu || newScreen == MenuScreen.MapMenu);
 
         //Load new screen
         if (newScreen == MenuScreen.SettingsMenu)
@@ -362,6 +368,20 @@ public class PlanetPauseMenu : MonoBehaviour
             if (buttonTransform.parent.name.Equals("Content"))
                 UpdateSquadMemberDisplay(Player.player.squad.GetMemberByName(
                     buttonName.Substring(0, buttonName.Length - 7)));
+
+            //Go to menu screen for selecting which keys pair to which squad commands
+            else if (buttonName.Equals("Commands Button"))
+                SetMenuScreen(MenuScreen.CommandsMenu);
+        }
+        else if(currentScreen == MenuScreen.CommandsMenu)
+        {
+            if (buttonName.Equals("Save Button"))
+            {
+                //Player.player.AssignOrderButtons();
+                BackOneScreen();
+            }
+            else if (buttonName.Equals("Cancel Button"))
+                BackOneScreen();
         }
     }
 
@@ -375,6 +395,8 @@ public class PlanetPauseMenu : MonoBehaviour
     {
         if (currentScreen == MenuScreen.SettingsMenu)
             SetMenuScreen(MenuScreen.SituationMenu);
+        else if (currentScreen == MenuScreen.CommandsMenu)
+            SetMenuScreen(MenuScreen.SquadMenu);
         else
             Pause(false);
     }
@@ -483,20 +505,29 @@ public class PlanetPauseMenu : MonoBehaviour
     public void UpdateSquadMenu()
     {
         //Determine squad
-        Squad playerSquad = Player.player.squad;
+        Squad squad = Player.player.squad;
 
         //Update squad name
-        pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = playerSquad.name + " Squad";
+        pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = squad.name + " Squad";
 
         //Update squad member list
-        UpdateSquadMemberList(playerSquad);
+        UpdateSquadMemberList(squad);
 
-        //Blank squad member display since no member has been clicked on yet
-        UpdateSquadMemberDisplay(null);
+        //Refresh squad member display (keep current member selected, but refresh info)
+        Pill member = squad.GetMemberByName(
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Name").GetComponent<Text>().text);
+        UpdateSquadMemberDisplay(member);
     }
 
-    private void UpdateSquadMemberList(Squad playerSquad)
+    private void UpdateSquadMemberList(Squad squad)
     {
+        //First, update label indicating number of members in list
+        pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Count").GetComponent<Text>().text =
+            squad.members.Count + " Members";
+
+        //Then, update scroll view...
+
+        //Create some needed variables
         //float buttonHeight = squadMemberButton.GetComponent<RectTransform>().sizeDelta.y;
         float buttonHeight = 40;
         Transform contentPane = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View")
@@ -507,11 +538,11 @@ public class PlanetPauseMenu : MonoBehaviour
         foreach (Transform t in contentPane)
             priorMemberButtonNames.Add(t.name);
 
-        //Foreach current squad member, create new button if none pre-existing
+        //For each current squad member, create new button if none pre-existing
         float yPos = -25;
-        for (int x = 0; x < playerSquad.members.Count; x++)
+        for (int x = 0; x < squad.members.Count; x++)
         {
-            Pill member = playerSquad.members[x];
+            Pill member = squad.members[x];
 
             //Does button to represent member already exist?
             int preExistingIndex = priorMemberButtonNames.IndexOf(member.name + " Button");
@@ -550,11 +581,11 @@ public class PlanetPauseMenu : MonoBehaviour
 
         //Adjust height of content window in scroll view to include added buttons (so scrollbar works properly)
         Vector2 sizeDelta = contentPane.GetComponent<RectTransform>().sizeDelta;
-        sizeDelta.y = buttonHeight * playerSquad.members.Count + buttonHeight / 4.0f;
+        sizeDelta.y = buttonHeight * squad.members.Count + buttonHeight / 4.0f;
         contentPane.GetComponent<RectTransform>().sizeDelta = sizeDelta;
 
         //Special indicator for leader needs update
-        if (!squadLeader.Equals(playerSquad.leader.name))
+        if (!squadLeader.Equals(squad.leader.name))
         {
             //Unmark old leader's button, if it still exists
             Transform oldButton = contentPane.Find(squadLeader + " Button");
@@ -562,9 +593,9 @@ public class PlanetPauseMenu : MonoBehaviour
                 oldButton.Find("Text").GetComponent<Text>().color = Color.white;
 
             //Mark new leader's button
-            squadLeader = playerSquad.leader.name;
+            squadLeader = squad.leader.name;
             contentPane.Find(squadLeader + " Button").Find("Text").GetComponent<Text>().color =
-                playerSquad.GetArmy().color;
+                squad.GetArmy().color;
         }
     }
 
@@ -609,7 +640,7 @@ public class PlanetPauseMenu : MonoBehaviour
         }
         
         //Set details
-        squadMenu.Find("Member Details").GetComponent<Text>().text = member.InfoDump();
+        squadMenu.Find("Member Details").GetComponent<Text>().text = member.GetInfoDump();
         
         //Play banter
         if(member.voice && Random.Range(0, 2) == 0)
@@ -622,6 +653,13 @@ public class PlanetPauseMenu : MonoBehaviour
                 default: oneShotAudioSource.PlayOneShot(member.voice.GetCopy(), 0.5f); break;
             }
         }
+
+        //Select button of displayed member
+        Transform contentPane = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View")
+            .Find("Viewport").Find("Content");
+        Button memberButton = contentPane.Find(member.name + " Button").GetComponent<Button>();
+        memberButton.Select(); //Select the button
+        memberButton.OnSelect(null); //Highlight the button
     }
 
     private void BlankSquadMemberDisplay()

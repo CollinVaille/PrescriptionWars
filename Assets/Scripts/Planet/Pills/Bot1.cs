@@ -57,6 +57,8 @@ public class Bot1 : Pill
 
     private IEnumerator MindlessWander ()
     {
+        statusReport = "Roaming";
+
         //Wander loop
         while (NoInterruptions() && SameOrders(Squad.Orders.Roam))
         {
@@ -105,7 +107,11 @@ public class Bot1 : Pill
         {
             if(newDestination)
             {
+                statusReport = "Moving In Position";
+
                 yield return StartCoroutine(GoToPosition(currentDestination, 3, ordersID, null));
+
+                statusReport = "In Position";
 
                 if (!NoInterruptions() || !SameOrdersID(ordersID))
                     break;
@@ -134,6 +140,8 @@ public class Bot1 : Pill
     private IEnumerator FollowLeader (Transform leaderTransform, float followRadius)
     {
         int ordersID = squad.GetOrdersID();
+
+        statusReport = "Following Leader";
 
         //Follow loop
         while (NoInterruptions() && SameOrdersID(ordersID))
@@ -173,7 +181,7 @@ public class Bot1 : Pill
     private IEnumerator FallInFormation ()
     {
         int ordersID = squad.GetOrdersID();
-        
+
         //Vector3 place = squad.GetPlaceInFormation(GetPill());
 
         //float lastChecked = Time.timeSinceLevelLoad;
@@ -232,7 +240,11 @@ public class Bot1 : Pill
             yield return new WaitForSeconds(Random.Range(0.2f, 0.25f));
         }   */
 
+        statusReport = "Falling In Formation";
+
         yield return StartCoroutine(GoToPosition(squad.GetPlaceInFormation(GetPill()), 1, ordersID, null));
+
+        statusReport = "In Formation";
 
         //Get in formation rotation
         squad.SetRotationInFormation(transform);
@@ -257,6 +269,8 @@ public class Bot1 : Pill
 
     private IEnumerator Standby ()
     {
+        statusReport = "On Standby";
+
         //Standby loop
         while(NoInterruptions() && SameOrders(Squad.Orders.Standby))
         {
@@ -277,6 +291,8 @@ public class Bot1 : Pill
 
     private IEnumerator Investigate ()
     {
+        statusReport = "Investigating";
+
         //Time variables
         float startTime = Time.timeSinceLevelLoad;
         float patience = Random.Range(4.0f, 11.0f);
@@ -354,6 +370,8 @@ public class Bot1 : Pill
 
     private IEnumerator RangedAttack (Pill targetPill)
     {
+        statusReport = "In Combat";
+
         Transform targetTransform = targetPill.transform;
         Gun gun = holding.GetComponent<Gun>();
 
@@ -445,8 +463,10 @@ public class Bot1 : Pill
 
     private IEnumerator MeleeAttack (Pill targetPill)
     {
+        statusReport = "In Combat";
+
         //Attack loop
-        while(MeAndBroAlive(targetPill))
+        while (MeAndBroAlive(targetPill))
         {
             //Go towards pill
             while (MeAndBroAlive(targetPill) && GroundDistance(transform.position, targetPill.transform.position) > 1.5f)
@@ -772,7 +792,10 @@ public class Bot1 : Pill
             else if (orders == Squad.Orders.Follow)
                 StartCoroutine(FollowLeader(squad.leader.transform, Random.Range(8.0f, 11.0f)));
             else if (orders == Squad.Orders.GoToBed)
+            {
+                statusReport = "Going To Bed";
                 StartCoroutine(GoToPosition(spawnPoint, 2.0f, squad.GetOrdersID(), null));
+            }
             else
                 StartCoroutine(FallInFormation());
         }

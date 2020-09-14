@@ -21,6 +21,7 @@ public class Pill : MonoBehaviour, Damageable
     public float moveSpeed = 10;
     protected float health = 100, maxHealth;
     protected bool dead = false, touchingWater = false, controlOverride = false;
+    protected string statusReport = "Unresponsive";
     [HideInInspector] public bool performingAction = false, onFire = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
@@ -393,17 +394,19 @@ public class Pill : MonoBehaviour, Damageable
             mainAudioSource.Play();
     }
 
-    public string InfoDump()
+    public string GetInfoDump()
     {
         //Man points
         string infoDump = (int)(health * 100.0f / maxHealth) + "% Manly\n";
 
         //Distance away from player
-        infoDump += (int)Vector3.Distance(transform.position, Player.player.transform.position) + "m Away";
+        infoDump += (int)Vector3.Distance(transform.position, Player.player.transform.position) + "m Away\n";
 
-        //Add footnote to identify player
+        //Foot note to identify player or to debug bot behaviour
         if (this == Player.player)
-            infoDump += "\n\n* That's you!";
+            infoDump += "\n* That's you!";
+        else
+            infoDump += "\n" + statusReport;
 
         //We're done here
         return infoDump;
