@@ -53,7 +53,7 @@ public class FireExtinguisher : Item
 
         //Lifetime of single spurt
         Damageable us = God.GetDamageable(transform);
-        while (actionKey == actionCode)
+        while (actionKey == actionCode && holder)
         {
             //Player/bot specific loop guards/conditions
             if (holderIsPlayer) //Player stops when release button
@@ -108,7 +108,7 @@ public class FireExtinguisher : Item
             SetTriggerVisual(false);
 
             //Return to normal way we hold fire extinguisher
-            if (!shootingOutwards)
+            if (!shootingOutwards && holder)
                 PositionAndRotate(true);
         }
     }

@@ -24,7 +24,7 @@ public class PlanetPauseMenu : MonoBehaviour
 
     //Audio
     private AudioSource oneShotAudioSource;
-    public AudioClip mouseOver, buttonClick, pauseSound;
+    public AudioClip mouseOver, buttonClick, pauseSound, dropdownOpen, confirmSound, cancelSound;
 
     //Loading screen
     public int loadingScreens = 2;
@@ -33,9 +33,10 @@ public class PlanetPauseMenu : MonoBehaviour
     private static string[] triviaLines;
 
     //Squad
-    private string squadLeader = "";
     public GameObject memberCameraPrefab;
     private Transform squadMemberCamera;
+    private List<Transform> squadMemberButtons;
+    private bool commandsMenuInitialized = false, saveCommands = true;
 
     //Map
     private bool mapOpen = false;
@@ -230,6 +231,28 @@ public class PlanetPauseMenu : MonoBehaviour
             SwitchToFromMap(false);
         else if (oldScreen == MenuScreen.SquadMenu)
             UpdateSquadMemberCamera(null);
+        else if(oldScreen == MenuScreen.CommandsMenu)
+        {
+            if(saveCommands)
+            {
+                Player.player.AssignOrderButtons(
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
+                oneShotAudioSource.PlayOneShot(confirmSound);
+            }
+            else
+            {
+                Player.player.RestoreOrderButtons(
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
+                    pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
+                oneShotAudioSource.PlayOneShot(cancelSound);
+            }
+
+            //Reset save flag for next time
+            saveCommands = true;
+        }
     }
 
     private void OnMenuScreenLoad(MenuScreen newScreen)
@@ -259,6 +282,8 @@ public class PlanetPauseMenu : MonoBehaviour
             SwitchToFromMap(true);
         else if (newScreen == MenuScreen.SquadMenu)
             UpdateSquadMenu();
+        else if (newScreen == MenuScreen.CommandsMenu)
+            OnCommandsMenuOpen();
     }
 
     public void LoadingScreen(bool show, bool generateNew)
@@ -376,12 +401,12 @@ public class PlanetPauseMenu : MonoBehaviour
         else if(currentScreen == MenuScreen.CommandsMenu)
         {
             if (buttonName.Equals("Save Button"))
-            {
-                //Player.player.AssignOrderButtons();
                 BackOneScreen();
-            }
             else if (buttonName.Equals("Cancel Button"))
-                BackOneScreen();
+            {
+                saveCommands = false;
+                SetMenuScreen(MenuScreen.SquadMenu);
+            }
         }
     }
 
@@ -389,6 +414,21 @@ public class PlanetPauseMenu : MonoBehaviour
     {
         if(buttonTransform.GetComponent<Button>().interactable)
             oneShotAudioSource.PlayOneShot(mouseOver);
+    }
+
+    public void OnToggleClicked(Transform toggleTransform)
+    {
+        oneShotAudioSource.PlayOneShot(buttonClick);
+    }
+
+    public void OnToggleMouseOver(Transform toggleTransform)
+    {
+        oneShotAudioSource.PlayOneShot(pauseSound);
+    }
+
+    public void OnDropdownOpen(Transform dropdownTransform)
+    {
+        oneShotAudioSource.PlayOneShot(dropdownOpen);
     }
 
     private void BackOneScreen()
@@ -507,76 +547,91 @@ public class PlanetPauseMenu : MonoBehaviour
         //Determine squad
         Squad squad = Player.player.squad;
 
-        //Update squad name
-        pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = squad.name + " Squad";
+        if(!squad) //Screen for when player belongs to no squad
+        {
+            BlankSquadMemberDisplay();
 
-        //Update squad member list
-        UpdateSquadMemberList(squad);
+            //No name
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = "Davy Jones' Locker";
 
-        //Refresh squad member display (keep current member selected, but refresh info)
-        Pill member = squad.GetMemberByName(
-            pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Name").GetComponent<Text>().text);
-        UpdateSquadMemberDisplay(member);
+            //Hide member count and squad member scroll view
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Count").gameObject.SetActive(false);
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View").gameObject.SetActive(false);
+
+        }
+        else //Have squad, so display info about it
+        {
+            //Update squad name
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = squad.name;
+
+            //Update squad member list
+            UpdateSquadMemberList(squad);
+
+            //Refresh squad member display (keep current member selected, but refresh info)
+            Pill member = squad.GetMemberByName(
+                pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Name").GetComponent<Text>().text);
+            UpdateSquadMemberDisplay(member);
+        }
     }
 
     private void UpdateSquadMemberList(Squad squad)
     {
-        //First, update label indicating number of members in list
+        //First, show and update label indicating number of members in list
+        pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Count").gameObject.SetActive(true);
         pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Count").GetComponent<Text>().text =
             squad.members.Count + " Members";
 
         //Then, update scroll view...
 
+        //Display scroll view
+        pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View").gameObject.SetActive(true);
+
         //Create some needed variables
-        //float buttonHeight = squadMemberButton.GetComponent<RectTransform>().sizeDelta.y;
+        if (squadMemberButtons == null)
+            squadMemberButtons = new List<Transform>();
         float buttonHeight = 40;
         Transform contentPane = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View")
             .Find("Viewport").Find("Content");
 
-        //Get list of names of pre-existing member buttons
-        List<string> priorMemberButtonNames = new List<string>();
-        foreach (Transform t in contentPane)
-            priorMemberButtonNames.Add(t.name);
-
-        //For each current squad member, create new button if none pre-existing
+        //For each current member: Repurpose old button for member OR create new button if ran out of old ones
         float yPos = -25;
         for (int x = 0; x < squad.members.Count; x++)
         {
             Pill member = squad.members[x];
 
-            //Does button to represent member already exist?
-            int preExistingIndex = priorMemberButtonNames.IndexOf(member.name + " Button");
-            if (preExistingIndex >= 0)
+            //Get button to represent member
+            Transform memberButton;
+            if (x < squadMemberButtons.Count) //Repurpose old button to represent member
             {
-                //If so, just leave it and move onto next member
-                //(But remember that we are still using that button)
-                priorMemberButtonNames.RemoveAt(preExistingIndex);
-                continue;
+                //Retrieve next old button in list
+                memberButton = squadMemberButtons[x];
+                memberButton.gameObject.SetActive(true);
             }
+            else //Create new button to represent member
+            {
+                //Create and parent button
+                memberButton = Instantiate(squadMemberButton).transform;
+                memberButton.SetParent(contentPane, true);
 
-            //Otherwise... create new button to represent member
+                //Scale and position button
+                memberButton.localScale = Vector3.one;
+                memberButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, yPos);
 
-            //Create and parent button
-            Transform memberButton = Instantiate(squadMemberButton).transform;
-            memberButton.SetParent(contentPane, true);
-
-            //Scale and position button
-            memberButton.localScale = Vector3.one;
-            memberButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, yPos);
-            yPos -= buttonHeight;
+                //Add button to list of buttons
+                squadMemberButtons.Add(memberButton);
+            }
 
             //Member name
             memberButton.name = member.name + " Button";
             memberButton.Find("Text").GetComponent<Text>().text = (member == Player.player) ?
                 member.name + " *" : member.name;
-        }
 
-        //Once all buttons have been created, remove buttons for pills no longer in squad
-        while (priorMemberButtonNames.Count > 0)
-        {
-            //Keep popping head of list until empty
-            Destroy(contentPane.Find(priorMemberButtonNames[0]).gameObject);
-            priorMemberButtonNames.RemoveAt(0);
+            //Member name color
+            memberButton.Find("Text").GetComponent<Text>().color = (member == squad.leader) ?
+                squad.GetArmy().color : Color.white;
+
+            //Keep track of where next button will go vertically
+            yPos -= buttonHeight;
         }
 
         //Adjust height of content window in scroll view to include added buttons (so scrollbar works properly)
@@ -584,18 +639,17 @@ public class PlanetPauseMenu : MonoBehaviour
         sizeDelta.y = buttonHeight * squad.members.Count + buttonHeight / 4.0f;
         contentPane.GetComponent<RectTransform>().sizeDelta = sizeDelta;
 
-        //Special indicator for leader needs update
-        if (!squadLeader.Equals(squad.leader.name))
+        //Hide all extra buttons
+        for(int x = squad.members.Count; x < squadMemberButtons.Count; x++)
         {
-            //Unmark old leader's button, if it still exists
-            Transform oldButton = contentPane.Find(squadLeader + " Button");
-            if(oldButton)
-                oldButton.Find("Text").GetComponent<Text>().color = Color.white;
+            Transform reserveButton = squadMemberButtons[x];
 
-            //Mark new leader's button
-            squadLeader = squad.leader.name;
-            contentPane.Find(squadLeader + " Button").Find("Text").GetComponent<Text>().color =
-                squad.GetArmy().color;
+            //Indicate unused status
+            reserveButton.name = "UNUSED BUTTON";
+            reserveButton.Find("Text").GetComponent<Text>().text = "NOT USED";
+
+            //Hide button
+            reserveButton.gameObject.SetActive(false);
         }
     }
 
@@ -774,5 +828,31 @@ public class PlanetPauseMenu : MonoBehaviour
 
         //Otherwise nothing is obstructing the view from the camera to the pill, so return that angle is good
         return true;
+    }
+
+    //Initializes commands menu if it has not already been initialized
+    private void OnCommandsMenuOpen()
+    {
+        //If not already initialized, inititalize commands menu
+        if (commandsMenuInitialized)
+            return;
+        commandsMenuInitialized = true;
+
+        int commands = 3;
+
+        //Locate all command dropdowns
+        Dropdown[] dropdowns = new Dropdown[commands];
+        for (int x = 1; x <= commands; x++)
+            dropdowns[x - 1] = pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command " + x + " Dropdown").GetComponent<Dropdown>();
+
+        //Copy options from first dropdown into all other dropdowns
+        for(int x = 1; x < commands; x++)
+        {
+            dropdowns[x].ClearOptions();
+            dropdowns[x].AddOptions(dropdowns[0].options);
+        }
+
+        //Set currently selected option in each dropdown to reflect chosen command
+        Player.player.RestoreOrderButtons(dropdowns[0], dropdowns[1], dropdowns[2]);
     }
 }

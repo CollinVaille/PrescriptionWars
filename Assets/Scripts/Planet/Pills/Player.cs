@@ -1301,11 +1301,18 @@ public class Player : Pill
         QualitySettings.SetQualityLevel(VideoSettings.quality);
     }
 
-    public void AssignOrderButtons (Squad.Orders order1, Squad.Orders order2, Squad.Orders order3)
+    public void AssignOrderButtons (Dropdown dropdown1, Dropdown dropdown2, Dropdown dropdown3)
     {
-        this.order1 = order1;
-        this.order2 = order2;
-        this.order3 = order3;
+        order1 = (Squad.Orders)dropdown1.value;
+        order2 = (Squad.Orders)dropdown2.value;
+        order3 = (Squad.Orders)dropdown3.value;
+    }
+
+    public void RestoreOrderButtons (Dropdown dropdown1, Dropdown dropdown2, Dropdown dropdown3)
+    {
+        dropdown1.value = (int)order1;
+        dropdown2.value = (int)order2;
+        dropdown3.value = (int)order3;
     }
 }
 

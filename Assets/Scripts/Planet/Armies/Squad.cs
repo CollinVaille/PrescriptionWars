@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Squad : MonoBehaviour
 {
-    public enum Orders { Standby, Roam, HoldPosition, Follow, FormLine, FormSquare, GoToBed }
+    public enum Orders { Roam, HoldPosition, Follow, FormLine, FormSquare, Standby, GoToBed }
     public enum SquadType { Mobilized, Citizen, DayGuard, NightGuard }
 
     //Basic info
@@ -54,6 +54,9 @@ public class Squad : MonoBehaviour
 
         if (!leader)
             SetLeader(pill);
+
+        if (pill == Player.player)
+            PlanetPauseMenu.pauseMenu.navigationBar.Find("Squad Button").Find("Text").GetComponent<Text>().text = name;
     }
 
     //Removes a squad member
@@ -64,6 +67,9 @@ public class Squad : MonoBehaviour
 
         if(pill == leader)
             SetLeader();
+
+        if (pill == Player.player)
+            PlanetPauseMenu.pauseMenu.navigationBar.Find("Squad Button").Find("Text").GetComponent<Text>().text = "KIA";
     }
 
     //Called by leader to change the orders
