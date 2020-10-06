@@ -8,6 +8,9 @@ public class GalaxyConfirmationPopup : MonoBehaviour
     public Text topText;
     public Text bodyText;
 
+    public AudioClip mouseOverSFX;
+    public AudioClip mouseClickSFX;
+
     public enum GalaxyConfirmationPopupTask
     {
         DemolishBuilding,
@@ -114,5 +117,15 @@ public class GalaxyConfirmationPopup : MonoBehaviour
     {
         //Deactivates the galaxy confirmation pop-up gameobject.
         transform.gameObject.SetActive(false);
+    }
+
+    public void PlayMouseOverSFX()
+    {
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverSFX);
+    }
+
+    public void PlayMouseClickSFX()
+    {
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseClickSFX);
     }
 }
