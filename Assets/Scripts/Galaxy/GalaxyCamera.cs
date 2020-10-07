@@ -20,6 +20,14 @@ public class GalaxyCamera : MonoBehaviour
     public static bool mouseOverPlanetManagementMenu;
     public static bool mouseOverArmyManagementMenu;
     public static bool mouseOverCheatConsole;
+    public static bool mouseOverRightSideNotification;
+
+    public static bool GetMouseOverUIElement()
+    {
+        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+            return true;
+        return false;
+    }
 
     private void Update ()
     {
@@ -45,7 +53,7 @@ public class GalaxyCamera : MonoBehaviour
         if (!cheatConsole.activeInHierarchy)
             mouseOverCheatConsole = false;
 
-        if (Input.GetMouseButton(0) && !mouseOverPlanetManagementMenu && !mouseOverArmyManagementMenu && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
