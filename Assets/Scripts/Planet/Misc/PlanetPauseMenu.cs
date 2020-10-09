@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class PlanetPauseMenu : MonoBehaviour
 {
-    public enum MenuScreen { SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, SettingsMenu = 3, MapMenu = 4, CommandsMenu = 5 }
+    public enum MenuScreen { SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, DisplaySettingsMenu = 3, MapMenu = 4,
+        CommandsMenu = 5, SettingsMenu = 6 }
     public enum NavigationPane { Situation = 0, Squad = 1, Map = 2 }
 
     public static PlanetPauseMenu pauseMenu;
@@ -21,10 +22,11 @@ public class PlanetPauseMenu : MonoBehaviour
     public Transform HUD, navigationBar;
     public Image[] factionColored;
     public GameObject squadMemberButton;
+    private bool saveOnLeave = true, resumeAfterScreen = false;
 
     //Audio
     private AudioSource oneShotAudioSource;
-    public AudioClip mouseOver, buttonClick, pauseSound, dropdownOpen, confirmSound, cancelSound;
+    public AudioClip mouseOver, buttonClick, pauseSound, dropdownOpen, confirmSound, backSound;
 
     //Loading screen
     public int loadingScreens = 2;
@@ -36,7 +38,7 @@ public class PlanetPauseMenu : MonoBehaviour
     public GameObject memberCameraPrefab;
     private Transform squadMemberCamera;
     private List<Transform> squadMemberButtons;
-    private bool commandsMenuInitialized = false, saveCommands = true;
+    private bool commandsMenuInitialized = false;
 
     //Map
     private bool mapOpen = false;
@@ -81,17 +83,12 @@ public class PlanetPauseMenu : MonoBehaviour
             else
                 Pause(true);
         }
-        else if(Input.GetButtonDown("Squad Menu"))
+        else if (Input.GetButtonDown("Squad Menu"))
         {
             if (paused)
             {
                 if (currentPane == NavigationPane.Squad)
-                {
-                    if (currentScreen == MenuScreen.SquadMenu)
-                        Pause(false);
-                    else
-                        BackOneScreen();
-                }
+                    Pause(false);
                 else
                     SetNavigationPane(NavigationPane.Squad);
             }
@@ -109,6 +106,22 @@ public class PlanetPauseMenu : MonoBehaviour
             }
             else
                 Pause(true, NavigationPane.Map);
+        }
+        else if (Input.GetButtonDown("Squad Command Menu"))
+        {
+            if (!paused) //Pause and pull up quick command menu
+            {
+                Pause(true, NavigationPane.Situation);
+                SetMenuScreen(MenuScreen.CommandsMenu);
+                resumeAfterScreen = true;
+            }
+            else if (currentScreen == MenuScreen.CommandsMenu) //Already on commands menu so just unpause game
+                Pause(false);
+            else //Already on another menu screen, so just navigate to commands menu
+            {
+                SetNavigationPane(NavigationPane.Situation);
+                SetMenuScreen(MenuScreen.CommandsMenu);
+            }
         }
 
         //Update map
@@ -215,14 +228,23 @@ public class PlanetPauseMenu : MonoBehaviour
         //Perform any needed clean up with that previous screen
         OnMenuScreenUnload(currentScreen);
 
-        //Initialize new menu screen contents
-        OnMenuScreenLoad(newScreen);
+        //Now, load new screen on resume game?
+        if(resumeAfterScreen) //Flag to resume game is set
+        {
+            resumeAfterScreen = false;
+            Pause(false);
+        }
+        else //Otherwise, load new screen
+        {
+            //Initialize new menu screen contents
+            OnMenuScreenLoad(newScreen);
 
-        //Set new menu screen
-        currentScreen = newScreen;
+            //Set new menu screen
+            currentScreen = newScreen;
 
-        //Show new menu screen
-        pauseMenus[(int)currentScreen].gameObject.SetActive(true);
+            //Show new menu screen
+            pauseMenus[(int)currentScreen].gameObject.SetActive(true);
+        }
     }
 
     private void OnMenuScreenUnload(MenuScreen oldScreen)
@@ -233,7 +255,7 @@ public class PlanetPauseMenu : MonoBehaviour
             UpdateSquadMemberCamera(null);
         else if(oldScreen == MenuScreen.CommandsMenu)
         {
-            if(saveCommands)
+            if(saveOnLeave)
             {
                 Player.player.AssignOrderButtons(
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
@@ -247,12 +269,19 @@ public class PlanetPauseMenu : MonoBehaviour
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
-                oneShotAudioSource.PlayOneShot(cancelSound);
             }
-
-            //Reset save flag for next time
-            saveCommands = true;
         }
+        else if(oldScreen == MenuScreen.DisplaySettingsMenu)
+        {
+            if(saveOnLeave)
+            {
+                ReadInSettingsFromDisplay();
+                oneShotAudioSource.PlayOneShot(confirmSound);
+            }
+        }
+
+        //Reset save flag for next time
+        saveOnLeave = true;
     }
 
     private void OnMenuScreenLoad(MenuScreen newScreen)
@@ -264,7 +293,7 @@ public class PlanetPauseMenu : MonoBehaviour
             newScreen == MenuScreen.SituationMenu || newScreen == MenuScreen.SquadMenu || newScreen == MenuScreen.MapMenu);
 
         //Load new screen
-        if (newScreen == MenuScreen.SettingsMenu)
+        if (newScreen == MenuScreen.DisplaySettingsMenu)
         {
             Transform menu = pauseMenus[(int)newScreen];
 
@@ -380,23 +409,12 @@ public class PlanetPauseMenu : MonoBehaviour
             else if (buttonName.Equals("Settings Button"))
                 SetMenuScreen(MenuScreen.SettingsMenu);
         }
-        else if (currentScreen == MenuScreen.SettingsMenu)
-        {
-            if (buttonName.Equals("Save Button"))
-                ReadInSettingsFromDisplay();
-
-            SetMenuScreen(MenuScreen.SituationMenu);
-        }
         else if (currentScreen == MenuScreen.SquadMenu)
         {
             //Clicked on squad member button, so display details about squad member
             if (buttonTransform.parent.name.Equals("Content"))
                 UpdateSquadMemberDisplay(Player.player.squad.GetMemberByName(
                     buttonName.Substring(0, buttonName.Length - 7)));
-
-            //Go to menu screen for selecting which keys pair to which squad commands
-            else if (buttonName.Equals("Commands Button"))
-                SetMenuScreen(MenuScreen.CommandsMenu);
         }
         else if(currentScreen == MenuScreen.CommandsMenu)
         {
@@ -404,9 +422,23 @@ public class PlanetPauseMenu : MonoBehaviour
                 BackOneScreen();
             else if (buttonName.Equals("Cancel Button"))
             {
-                saveCommands = false;
-                SetMenuScreen(MenuScreen.SquadMenu);
+                saveOnLeave = false;
+                BackOneScreen();
             }
+        }
+        else if(currentScreen == MenuScreen.SettingsMenu)
+        {
+            if (buttonName.Equals("Commands Button"))
+                SetMenuScreen(MenuScreen.CommandsMenu);
+            else if (buttonName.Equals("Display Settings Button"))
+                SetMenuScreen(MenuScreen.DisplaySettingsMenu);
+        }
+        else if (currentScreen == MenuScreen.DisplaySettingsMenu)
+        {
+            if (buttonName.Equals("Cancel Button"))
+                saveOnLeave = false;
+
+                BackOneScreen();
         }
     }
 
@@ -433,12 +465,29 @@ public class PlanetPauseMenu : MonoBehaviour
 
     private void BackOneScreen()
     {
+        //Play back sound when backing out without any save action
+        if (!saveOnLeave || !IsSettingsScreen(currentScreen))
+            oneShotAudioSource.PlayOneShot(backSound);
+
+        //Determine where to go next
         if (currentScreen == MenuScreen.SettingsMenu)
             SetMenuScreen(MenuScreen.SituationMenu);
+        else if (currentScreen == MenuScreen.DisplaySettingsMenu)
+            SetMenuScreen(MenuScreen.SettingsMenu);
         else if (currentScreen == MenuScreen.CommandsMenu)
-            SetMenuScreen(MenuScreen.SquadMenu);
+            SetMenuScreen(MenuScreen.SettingsMenu);
         else
             Pause(false);
+    }
+
+    private bool IsSettingsScreen(MenuScreen menuScreen)
+    {
+        if (menuScreen == MenuScreen.CommandsMenu)
+            return true;
+        else if (menuScreen == MenuScreen.DisplaySettingsMenu)
+            return true;
+        else
+            return false;
     }
 
     private void SwitchToFromMap(bool toMap)
