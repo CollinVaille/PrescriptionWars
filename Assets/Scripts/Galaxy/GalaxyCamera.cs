@@ -24,7 +24,7 @@ public class GalaxyCamera : MonoBehaviour
 
     public static bool GetMouseOverUIElement()
     {
-        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || GalaxyPopupManager.IsMouseOverPopup() || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
             return true;
         return false;
     }

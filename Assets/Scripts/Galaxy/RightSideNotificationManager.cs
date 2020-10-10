@@ -14,8 +14,20 @@ public class RightSideNotificationManager : MonoBehaviour
     void Start()
     {
         rightSideNotificationManager = this;
-        CreateNewRightSideNotification(null, "Test Notification 1", true);
-        CreateNewRightSideNotification(null, "Test Notification 2", true);
+        GalaxyPopupData newPopUpData = new GalaxyPopupData();
+        newPopUpData.headLine = "Test Notification";
+        newPopUpData.spriteName = "Test Sprite";
+        newPopUpData.bodyText = "This is a test notification.";
+        newPopUpData.answerRequired = false;
+        GalaxyPopupOptionData galaxyPopupOptionData = new GalaxyPopupOptionData();
+        galaxyPopupOptionData.mainText = "This is merely a test?";
+        galaxyPopupOptionData.effectDescriptionText = "Nothing happens.";
+        GalaxyPopupOptionEffect galaxyPopupOptionEffect = new GalaxyPopupOptionEffect();
+        galaxyPopupOptionEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
+        galaxyPopupOptionData.effects.Add(galaxyPopupOptionEffect);
+        newPopUpData.options.Add(galaxyPopupOptionData);
+        CreateNewRightSideNotification(null, "Test Notification 1", newPopUpData);
+        CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);
     }
 
     // Update is called once per frame
@@ -24,7 +36,7 @@ public class RightSideNotificationManager : MonoBehaviour
         //For testing purposes.
         if (Input.GetKeyDown(KeyCode.C))
         {
-            CreateNewRightSideNotification(null, "New Test Notification", true);
+            CreateNewRightSideNotification(null, "New Test Notification", null);
         }
 
         GalaxyCamera.mouseOverRightSideNotification = false;
@@ -38,7 +50,7 @@ public class RightSideNotificationManager : MonoBehaviour
         }
     }
 
-    public static void CreateNewRightSideNotification(Sprite imageSprite, string notificationTopic, bool dismissable)
+    public static void CreateNewRightSideNotification(Sprite imageSprite, string notificationTopic, GalaxyPopupData popupData)
     {
         GameObject rightSideNotification = Instantiate(rightSideNotificationManager.rideSideNotificationPrefab);
         rightSideNotification.transform.parent = rightSideNotificationManager.transform;
@@ -54,7 +66,7 @@ public class RightSideNotificationManager : MonoBehaviour
         }
 
         //Creates the contents of the notification.
-        rightSideNotification.GetComponent<RightSideNotification>().CreateNewRightSideNotification(imageSprite, notificationTopic, dismissable, rightSideNotifications.Count, position);
+        rightSideNotification.GetComponent<RightSideNotification>().CreateNewRightSideNotification(imageSprite, notificationTopic, rightSideNotifications.Count, position, popupData);
 
         //Adds the notification to the notifications list.
         rightSideNotifications.Add(rightSideNotification.GetComponent<RightSideNotification>());
