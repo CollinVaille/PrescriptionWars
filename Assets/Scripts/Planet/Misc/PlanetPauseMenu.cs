@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class PlanetPauseMenu : MonoBehaviour
 {
-    public enum MenuScreen { SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, DisplaySettingsMenu = 3, MapMenu = 4,
-        CommandsMenu = 5, SettingsMenu = 6 }
+    public enum MenuScreen { NoScreen = -1, SituationMenu = 0, LoadingScreen = 1, SquadMenu = 2, DisplaySettingsMenu = 3,
+        MapMenu = 4, CommandsMenu = 5, SettingsMenu = 6 }
     public enum NavigationPane { Situation = 0, Squad = 1, Map = 2 }
 
     public static PlanetPauseMenu pauseMenu;
@@ -22,7 +22,7 @@ public class PlanetPauseMenu : MonoBehaviour
     public Transform HUD, navigationBar;
     public Image[] factionColored;
     public GameObject squadMemberButton;
-    private bool saveOnLeave = true, resumeAfterScreen = false;
+    private bool saveOnLeave = true;
 
     //Audio
     private AudioSource oneShotAudioSource;
@@ -38,7 +38,7 @@ public class PlanetPauseMenu : MonoBehaviour
     public GameObject memberCameraPrefab;
     private Transform squadMemberCamera;
     private List<Transform> squadMemberButtons;
-    private bool commandsMenuInitialized = false;
+    private bool commandsMenuInitialized = false, resumeAfterCommandsMenu = false;
 
     //Map
     private bool mapOpen = false;
@@ -113,7 +113,7 @@ public class PlanetPauseMenu : MonoBehaviour
             {
                 Pause(true, NavigationPane.Situation);
                 SetMenuScreen(MenuScreen.CommandsMenu);
-                resumeAfterScreen = true;
+                resumeAfterCommandsMenu = true;
             }
             else if (currentScreen == MenuScreen.CommandsMenu) //Already on commands menu so just unpause game
                 Pause(false);
@@ -214,6 +214,7 @@ public class PlanetPauseMenu : MonoBehaviour
                 //Hide pause menu
                 OnMenuScreenUnload(currentScreen);
                 pauseMenus[(int)currentScreen].gameObject.SetActive(false);
+                currentScreen = MenuScreen.NoScreen;
 
                 God.god.OnResume();
             }
@@ -223,28 +224,21 @@ public class PlanetPauseMenu : MonoBehaviour
     public void SetMenuScreen(MenuScreen newScreen)
     {
         //Hide previous menu screen
-        pauseMenus[(int)currentScreen].gameObject.SetActive(false);
+        if(currentScreen != MenuScreen.NoScreen)
+            pauseMenus[(int)currentScreen].gameObject.SetActive(false);
 
         //Perform any needed clean up with that previous screen
-        OnMenuScreenUnload(currentScreen);
+        if(currentScreen != MenuScreen.NoScreen)
+            OnMenuScreenUnload(currentScreen);
 
-        //Now, load new screen on resume game?
-        if(resumeAfterScreen) //Flag to resume game is set
-        {
-            resumeAfterScreen = false;
-            Pause(false);
-        }
-        else //Otherwise, load new screen
-        {
-            //Initialize new menu screen contents
-            OnMenuScreenLoad(newScreen);
+        //Initialize new menu screen contents
+        OnMenuScreenLoad(newScreen);
 
-            //Set new menu screen
-            currentScreen = newScreen;
+        //Set new menu screen
+        currentScreen = newScreen;
 
-            //Show new menu screen
-            pauseMenus[(int)currentScreen].gameObject.SetActive(true);
-        }
+        //Show new menu screen
+        pauseMenus[(int)currentScreen].gameObject.SetActive(true);
     }
 
     private void OnMenuScreenUnload(MenuScreen oldScreen)
@@ -270,6 +264,8 @@ public class PlanetPauseMenu : MonoBehaviour
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
             }
+
+            resumeAfterCommandsMenu = false;
         }
         else if(oldScreen == MenuScreen.DisplaySettingsMenu)
         {
@@ -415,6 +411,10 @@ public class PlanetPauseMenu : MonoBehaviour
             if (buttonTransform.parent.name.Equals("Content"))
                 UpdateSquadMemberDisplay(Player.player.squad.GetMemberByName(
                     buttonName.Substring(0, buttonName.Length - 7)));
+
+            //Clicked on squad overview button, so display overview info like objective and orders
+            else if (buttonName.Equals("Overview Button"))
+                BlankSquadMemberDisplay(Player.player.squad);
         }
         else if(currentScreen == MenuScreen.CommandsMenu)
         {
@@ -475,7 +475,12 @@ public class PlanetPauseMenu : MonoBehaviour
         else if (currentScreen == MenuScreen.DisplaySettingsMenu)
             SetMenuScreen(MenuScreen.SettingsMenu);
         else if (currentScreen == MenuScreen.CommandsMenu)
-            SetMenuScreen(MenuScreen.SettingsMenu);
+        {
+            if (resumeAfterCommandsMenu)
+                Pause(false);
+            else
+                SetMenuScreen(MenuScreen.SettingsMenu);
+        }
         else
             Pause(false);
     }
@@ -597,17 +602,7 @@ public class PlanetPauseMenu : MonoBehaviour
         Squad squad = Player.player.squad;
 
         if(!squad) //Screen for when player belongs to no squad
-        {
-            BlankSquadMemberDisplay();
-
-            //No name
-            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = "Davy Jones' Locker";
-
-            //Hide member count and squad member scroll view
-            pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Count").gameObject.SetActive(false);
-            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View").gameObject.SetActive(false);
-
-        }
+            BlankSquadMemberDisplay(null);
         else //Have squad, so display info about it
         {
             //Update squad name
@@ -707,7 +702,7 @@ public class PlanetPauseMenu : MonoBehaviour
         //Check for member
         if(!member)
         {
-            BlankSquadMemberDisplay();
+            BlankSquadMemberDisplay(Player.player.squad);
             return;
         }
 
@@ -715,12 +710,15 @@ public class PlanetPauseMenu : MonoBehaviour
         Squad squad = member.squad;
         if(!squad)
         {
-            BlankSquadMemberDisplay();
+            BlankSquadMemberDisplay(null);
             return;
         }
 
         //At this point, we have a member that belongs to a real squad so display his details...
         Transform squadMenu = pauseMenus[(int)MenuScreen.SquadMenu];
+
+        //But first, hide this so it doesn't get in the way
+        squadMenu.Find("Squad Details").GetComponent<Text>().text = "";
 
         //Set background and camera
         squadMenu.Find("Transparent Background").gameObject.SetActive(true);
@@ -758,25 +756,54 @@ public class PlanetPauseMenu : MonoBehaviour
         }
 
         //Select button of displayed member
-        Transform contentPane = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View")
-            .Find("Viewport").Find("Content");
+        Transform contentPane = squadMenu.Find("Squad Member Scroll View").Find("Viewport").Find("Content");
         Button memberButton = contentPane.Find(member.name + " Button").GetComponent<Button>();
         memberButton.Select(); //Select the button
         memberButton.OnSelect(null); //Highlight the button
     }
 
-    private void BlankSquadMemberDisplay()
+    //Pass in squad to show squad overview in place of member display, pass in null to get Davy Jones' locker display
+    private void BlankSquadMemberDisplay(Squad squad)
     {
         Transform squadMenu = pauseMenus[(int)MenuScreen.SquadMenu];
 
-        squadMenu.Find("Transparent Background").gameObject.SetActive(false);
+        //Swith backgrounds
         squadMenu.Find("Opaque Background").gameObject.SetActive(true);
+        squadMenu.Find("Transparent Background").gameObject.SetActive(false);
+
+        //Switch cameras
         UpdateSquadMemberCamera(null);
 
+        //Hide squad member text
         squadMenu.Find("Member Name").GetComponent<Text>().text = "";
         squadMenu.Find("Member Role").GetComponent<Text>().text = "";
         squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
         squadMenu.Find("Member Details").GetComponent<Text>().text = "";
+
+        //Display squad overview if we have a squad, otherwise indicate lack of a squad
+        if(squad) //Show squad overview details
+        {
+            //Show squad overview
+            squadMenu.Find("Squad Details").GetComponent<Text>().text =
+            "Objective: " + "Defend Athens' Prescriptor"
+            + "\n\nOrders: " + GeneralHelperMethods.GetEnumText(squad.GetOrders().ToString());
+
+            //Show member count and squad member scroll view
+            squadMenu.Find("Member Count").gameObject.SetActive(true);
+            squadMenu.Find("Squad Member Scroll View").gameObject.SetActive(true);
+        }
+        else //Davy Jones' locker (no squad)
+        {
+            //No name
+            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = "Davy Jones' Locker";
+
+            //Under the sea status
+            squadMenu.Find("Squad Details").GetComponent<Text>().text = "You have been owned.";
+
+            //Hide member count and squad member scroll view
+            squadMenu.Find("Member Count").gameObject.SetActive(false);
+            squadMenu.Find("Squad Member Scroll View").gameObject.SetActive(false);
+        }
     }
 
     private void UpdateSquadMemberCamera(Transform member)
@@ -844,7 +871,7 @@ public class PlanetPauseMenu : MonoBehaviour
         }
     }
 
-    //These angles are less ideal, but are used when preffered ones are obstructed
+    //These angles are less ideal, but are used when preferred ones are obstructed
     private Vector3 GetRandomLocalCameraAngleBackUp()
     {
         int picker = Random.Range(0, 3);
