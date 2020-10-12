@@ -9,6 +9,11 @@ public class GalaxyPopup : MonoBehaviour
     public Image bodyImage;
     public Text bodyText;
 
+    public List<Button> optionButtons;
+    public List<Text> optionButtonTexts;
+
+    List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
+
     public float popupScaleIncreaseRate;
 
     public int popupIndex;
@@ -49,44 +54,44 @@ public class GalaxyPopup : MonoBehaviour
             transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
 
             //Left barrier.
-            if (transform.localPosition.x < -290)
+            if (transform.localPosition.x < -291)
             {
-                transform.localPosition = new Vector2(-290, transform.localPosition.y);
+                transform.localPosition = new Vector2(-291, transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < -214)
-                    mouseToMenuDistance.x = -214;
+                if (mouseToMenuDistance.x < -212)
+                    mouseToMenuDistance.x = -212;
             }
             //Right barrier.
-            if (transform.localPosition.x > 290)
+            if (transform.localPosition.x > 291)
             {
-                transform.localPosition = new Vector2(290, transform.localPosition.y);
+                transform.localPosition = new Vector2(291, transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > 214)
-                    mouseToMenuDistance.x = 214;
+                if (mouseToMenuDistance.x > 211)
+                    mouseToMenuDistance.x = 211;
             }
             //Top barrier.
-            if (transform.localPosition.y > 62)
+            if (transform.localPosition.y > 67.5f)
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, 62);
+                transform.localPosition = new Vector2(transform.localPosition.x, 67.5f);
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > 257)
-                    mouseToMenuDistance.y = 257;
+                if (mouseToMenuDistance.y > 244)
+                    mouseToMenuDistance.y = 244;
             }
             //Bottom barrier.
-            if (transform.localPosition.y < -95)
+            if (transform.localPosition.y < -99)
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, -95);
+                transform.localPosition = new Vector2(transform.localPosition.x, -99);
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < -253)
-                    mouseToMenuDistance.y = -253;
+                if (mouseToMenuDistance.y < -244)
+                    mouseToMenuDistance.y = -244;
             }
         }
 
@@ -100,8 +105,47 @@ public class GalaxyPopup : MonoBehaviour
         bodyImage.sprite = GalaxyPopupManager.GetPopupSpriteFromName(popupData.spriteName);
         bodyText.text = popupData.bodyText;
         answerRequired = popupData.answerRequired;
+        List<int> optionButtonsUsed = new List<int>();
+        int optionsProcessed = 0;
+        for(int x = optionButtons.Count - popupData.options.Count; x < optionButtons.Count; x++)
+        {
+            optionButtonsUsed.Add(x);
+            optionsData.Add(popupData.options[optionsProcessed]);
+            optionButtonTexts[x].text = popupData.options[optionsProcessed].mainText;
+            optionsProcessed++;
+        }
+        for(int x = 0; x < optionButtons.Count; x++)
+        {
+            if (!optionButtonsUsed.Contains(x))
+            {
+                optionButtons[x].gameObject.SetActive(false);
+            }
+        }
 
         popupIndex = indexOfPopup;
+    }
+
+    public void ChooseOption(int optionNumber)
+    {
+        int optionsProcessed = 0;
+        for (int x = optionButtons.Count - optionsData.Count; x < optionButtons.Count; x++)
+        {
+            for(int y = 0; y < optionsData[optionsProcessed].effects.Count; y++)
+            {
+                GalaxyPopupOptionEffect effect = optionsData[optionsProcessed].effects[y];
+                switch (effect.effectType)
+                {
+                    case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None:
+                        break;
+
+                    default:
+                        Debug.Log("Popup Option Effect Type Does Nothing (Not Implemented In Switch Statement In GalaxyPopup Class ChooseOption Method).");
+                        break;
+                }
+            }
+            optionsProcessed++;
+        }
+        ClosePopup();
     }
 
     public bool IsAnswerRequired()
