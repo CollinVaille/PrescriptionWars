@@ -53,7 +53,7 @@ public class GalaxyPopupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        GalaxyCamera.mouseOverPopup = IsMouseOverPopup();
     }
 
     public static void CreateNewPopup(GalaxyPopupData popupData)
@@ -89,5 +89,7 @@ public class GalaxyPopupManager : MonoBehaviour
         }
         popups.RemoveAt(popupIndex);
         Destroy(popup.gameObject);
+
+        GalaxyManager.popupClosedOnFrame = true;
     }
 }

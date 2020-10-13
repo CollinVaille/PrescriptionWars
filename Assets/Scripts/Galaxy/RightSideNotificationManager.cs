@@ -26,6 +26,13 @@ public class RightSideNotificationManager : MonoBehaviour
         galaxyPopupOptionEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
         galaxyPopupOptionData.effects.Add(galaxyPopupOptionEffect);
         newPopUpData.options.Add(galaxyPopupOptionData);
+        GalaxyPopupOptionData gp = new GalaxyPopupOptionData();
+        gp.mainText = "Hello";
+        gp.effectDescriptionText = "Nothing happens.";
+        GalaxyPopupOptionEffect gpfx = new GalaxyPopupOptionEffect();
+        gpfx.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
+        gp.effects.Add(gpfx);
+        newPopUpData.options.Add(gp);
         CreateNewRightSideNotification(null, "Test Notification 1", newPopUpData);
         CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);
     }
@@ -33,12 +40,6 @@ public class RightSideNotificationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //For testing purposes.
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            CreateNewRightSideNotification(null, "New Test Notification", null);
-        }
-
         GalaxyCamera.mouseOverRightSideNotification = false;
         foreach(RightSideNotification notification in rightSideNotifications)
         {

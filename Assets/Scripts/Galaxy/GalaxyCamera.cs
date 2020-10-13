@@ -21,10 +21,11 @@ public class GalaxyCamera : MonoBehaviour
     public static bool mouseOverArmyManagementMenu;
     public static bool mouseOverCheatConsole;
     public static bool mouseOverRightSideNotification;
+    public static bool mouseOverPopup;
 
     public static bool GetMouseOverUIElement()
     {
-        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || GalaxyPopupManager.IsMouseOverPopup() || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
             return true;
         return false;
     }
@@ -42,7 +43,7 @@ public class GalaxyCamera : MonoBehaviour
             movementVector.x = 0.0f;
             movementVector.y = 0.0f;
         }
-        if(galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if(galaxyView.activeInHierarchy && !GetMouseOverUIElement())
             movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
@@ -53,7 +54,7 @@ public class GalaxyCamera : MonoBehaviour
         if (!cheatConsole.activeInHierarchy)
             mouseOverCheatConsole = false;
 
-        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;

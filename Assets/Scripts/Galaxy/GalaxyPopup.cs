@@ -9,6 +9,9 @@ public class GalaxyPopup : MonoBehaviour
     public Image bodyImage;
     public Text bodyText;
 
+    public AudioClip defaultOpenPopupSFX;
+    public AudioClip mouseOverOptionButton;
+
     public List<Button> optionButtons;
     public List<Text> optionButtonTexts;
 
@@ -123,6 +126,7 @@ public class GalaxyPopup : MonoBehaviour
         }
 
         popupIndex = indexOfPopup;
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(defaultOpenPopupSFX);
     }
 
     public void ChooseOption(int optionNumber)
@@ -185,5 +189,16 @@ public class GalaxyPopup : MonoBehaviour
     public void ClosePopup()
     {
         GalaxyPopupManager.ClosePopup(popupIndex);
+    }
+
+    public void PointerEnterOptionButton()
+    {
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
+        mouseOverPopup = true;
+    }
+
+    public void PointerExitOptionButton()
+    {
+        mouseOverPopup = false;
     }
 }
