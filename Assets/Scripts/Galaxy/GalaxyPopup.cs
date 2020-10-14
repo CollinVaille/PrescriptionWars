@@ -15,6 +15,10 @@ public class GalaxyPopup : MonoBehaviour
     public List<Button> optionButtons;
     public List<Text> optionButtonTexts;
 
+    public List<GameObject> optionEffectsDescriptions;
+    public List<Image> optionEffectsDescriptionBackgroundImages;
+    public List<Text> optionEffectsDescriptionTexts;
+
     List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
 
     public float popupScaleIncreaseRate;
@@ -98,8 +102,14 @@ public class GalaxyPopup : MonoBehaviour
             }
         }
 
+        //If the popup is clicked, it is brought to the top of the popup hierarchy.
         if (mouseOverPopup && Input.GetMouseButtonDown(0))
             transform.SetAsLastSibling();
+
+        foreach(GameObject optionEffectDescription in optionEffectsDescriptions)
+        {
+            optionEffectDescription.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        }
     }
 
     public void CreatePopup(GalaxyPopupData popupData, int indexOfPopup)
@@ -115,6 +125,8 @@ public class GalaxyPopup : MonoBehaviour
             optionButtonsUsed.Add(x);
             optionsData.Add(popupData.options[optionsProcessed]);
             optionButtonTexts[x].text = popupData.options[optionsProcessed].mainText;
+            optionEffectsDescriptionTexts[x].text = popupData.options[optionsProcessed].effectDescriptionText;
+            optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta = new Vector2(optionEffectsDescriptionTexts[x].preferredWidth + 5, optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta.y);
             optionsProcessed++;
         }
         for(int x = 0; x < optionButtons.Count; x++)
@@ -191,14 +203,52 @@ public class GalaxyPopup : MonoBehaviour
         GalaxyPopupManager.ClosePopup(popupIndex);
     }
 
-    public void PointerEnterOptionButton()
+    public void PointerEnterOptionButton(int buttonNum)
     {
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
         mouseOverPopup = true;
+
+        optionEffectsDescriptions[buttonNum].SetActive(true);
     }
 
-    public void PointerExitOptionButton()
+    public void PointerExitOptionButton(int buttonNum)
     {
         mouseOverPopup = false;
+
+        optionEffectsDescriptions[buttonNum].SetActive(false);
     }
+}
+
+public class GalaxyPopupData
+{
+    public string headLine;
+    public string spriteName;
+    public string bodyText;
+
+    public bool answerRequired;
+
+    public List<GalaxyPopupOptionData> options = new List<GalaxyPopupOptionData>();
+}
+
+public class GalaxyPopupOptionData
+{
+    public enum GalaxyPopupOptionEffectType
+    {
+        None
+    }
+    public List<GalaxyPopupOptionEffect> effects = new List<GalaxyPopupOptionEffect>();
+
+    public string mainText;
+    public string effectDescriptionText;
+}
+
+public struct GalaxyPopupOptionEffect
+{
+    public enum GalaxyPopupOptionEffectType
+    {
+        None
+    }
+    public GalaxyPopupOptionEffectType effectType;
+
+    public int effectAmount;
 }

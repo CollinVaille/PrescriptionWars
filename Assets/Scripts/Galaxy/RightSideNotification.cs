@@ -134,37 +134,3 @@ public class RightSideNotification : MonoBehaviour
         return mouseOverNotification;
     }
 }
-
-public class GalaxyPopupData
-{
-    public string headLine;
-    public string spriteName;
-    public string bodyText;
-
-    public bool answerRequired;
-
-    public List<GalaxyPopupOptionData> options = new List<GalaxyPopupOptionData>();
-}
-
-public class GalaxyPopupOptionData
-{
-    public enum GalaxyPopupOptionEffectType
-    {
-        None
-    }
-    public List<GalaxyPopupOptionEffect> effects = new List<GalaxyPopupOptionEffect>();
-
-    public string mainText;
-    public string effectDescriptionText;
-}
-
-public class GalaxyPopupOptionEffect
-{
-    public enum GalaxyPopupOptionEffectType
-    {
-        None
-    }
-    public GalaxyPopupOptionEffectType effectType;
-
-    public int effectAmount;
-}

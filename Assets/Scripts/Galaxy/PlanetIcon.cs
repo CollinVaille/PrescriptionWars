@@ -27,6 +27,11 @@ public class PlanetIcon : MonoBehaviour
 
     public GameObject ship;
 
+    Vector3 rotation;
+
+    //Cities
+    public List<GalaxyCity> cities = new List<GalaxyCity>();
+
     public void GenerateShip(GameObject shipDaddy, GameObject shipPrefab)
     {
         GameObject newShip = Instantiate(shipPrefab);
@@ -87,11 +92,6 @@ public class PlanetIcon : MonoBehaviour
 
         return production;
     }
-
-    Vector3 rotation;
-
-    //Cities
-    public List<GalaxyCity> cities = new List<GalaxyCity>();
 
     public void InitializePlanet (string planetName)
     {
@@ -273,7 +273,7 @@ public class PlanetIcon : MonoBehaviour
     }
 }
 
-public class GalaxyBuilding
+public struct GalaxyBuilding
 {
     public enum BuildingType
     {

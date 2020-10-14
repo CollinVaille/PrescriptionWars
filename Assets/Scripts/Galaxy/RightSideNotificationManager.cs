@@ -28,7 +28,7 @@ public class RightSideNotificationManager : MonoBehaviour
         newPopUpData.options.Add(galaxyPopupOptionData);
         GalaxyPopupOptionData gp = new GalaxyPopupOptionData();
         gp.mainText = "Hello";
-        gp.effectDescriptionText = "Nothing happens.";
+        gp.effectDescriptionText = "Nothing happens here either.";
         GalaxyPopupOptionEffect gpfx = new GalaxyPopupOptionEffect();
         gpfx.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
         gp.effects.Add(gpfx);
