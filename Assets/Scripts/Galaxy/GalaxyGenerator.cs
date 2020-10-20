@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GalaxyGenerator : MonoBehaviour
 {
+    public Camera galaxyCamera;
+
     public List<Tech> techs;
     public List<string> techTotems;
 
@@ -58,7 +60,7 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateHyperspaceLanes();
         GenerateEmpires();
         GeneratePlanetStats();
-        GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu);
+        GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu, galaxyCamera);
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
         ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GenerateTech();

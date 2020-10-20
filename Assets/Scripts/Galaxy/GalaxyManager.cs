@@ -34,11 +34,14 @@ public class GalaxyManager : MonoBehaviour
 
     public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null};
 
-    public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement)
+    public static Camera galaxyCamera;
+
+    public static void Initialize(List<GameObject> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
         planetManagementMenu = menuOfPlanetManagement;
+        galaxyCamera = galaxyCam;
     }
 
     // Start is called before the first frame update

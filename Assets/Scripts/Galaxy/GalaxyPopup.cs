@@ -67,8 +67,8 @@ public class GalaxyPopup : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < -212)
-                    mouseToMenuDistance.x = -212;
+                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * (-.13545f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (-.13545f);
             }
             //Right barrier.
             if (transform.localPosition.x > 291)
@@ -77,8 +77,8 @@ public class GalaxyPopup : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > 211)
-                    mouseToMenuDistance.x = 211;
+                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.13545f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.13545f);
             }
             //Top barrier.
             if (transform.localPosition.y > 67.5f)
@@ -87,8 +87,8 @@ public class GalaxyPopup : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > 244)
-                    mouseToMenuDistance.y = 244;
+                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.2771f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.2771f);
             }
             //Bottom barrier.
             if (transform.localPosition.y < -99)
@@ -97,8 +97,8 @@ public class GalaxyPopup : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < -244)
-                    mouseToMenuDistance.y = -244;
+                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * (-.2771f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (-.2771f);
             }
         }
 
