@@ -10,7 +10,9 @@ public class GalaxyPopup : MonoBehaviour
     public Text bodyText;
 
     public AudioClip defaultOpenPopupSFX;
+    public AudioClip specialOpenPopupSFX;
     public AudioClip mouseOverOptionButton;
+    public AudioClip clickOptionButtonSFX;
 
     public List<Button> optionButtons;
     public List<Text> optionButtonTexts;
@@ -28,6 +30,7 @@ public class GalaxyPopup : MonoBehaviour
     bool answerRequired;
     bool mouseOverPopup;
     bool beingMoved;
+    bool specialOpenPopupSFXPlayed;
 
     Vector2 mouseToMenuDistance;
 
@@ -53,6 +56,12 @@ public class GalaxyPopup : MonoBehaviour
                 transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
             if (transform.localScale.y > 1)
                 transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.z);
+        }
+        else if (!specialOpenPopupSFXPlayed)
+        {
+            if (specialOpenPopupSFX != null)
+                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(specialOpenPopupSFX);
+            specialOpenPopupSFXPlayed = true;
         }
 
         //Deals with the popup being dragged.
@@ -117,6 +126,7 @@ public class GalaxyPopup : MonoBehaviour
         headLineText.text = popupData.headLine;
         bodyImage.sprite = GalaxyPopupManager.GetPopupSpriteFromName(popupData.spriteName);
         bodyText.text = popupData.bodyText;
+        specialOpenPopupSFX = GalaxyPopupManager.GetPopupSFXFromName(popupData.specialOpenSFXName);
         answerRequired = popupData.answerRequired;
         List<int> optionButtonsUsed = new List<int>();
         int optionsProcessed = 0;
@@ -143,25 +153,34 @@ public class GalaxyPopup : MonoBehaviour
 
     public void ChooseOption(int optionNumber)
     {
-        int optionsProcessed = 0;
-        for (int x = optionButtons.Count - optionsData.Count; x < optionButtons.Count; x++)
+        if(IsOpeningAnimationDone())
         {
-            for(int y = 0; y < optionsData[optionsProcessed].effects.Count; y++)
+            int optionsProcessed = 0;
+            for (int x = optionButtons.Count - optionsData.Count; x < optionButtons.Count; x++)
             {
-                GalaxyPopupOptionEffect effect = optionsData[optionsProcessed].effects[y];
-                switch (effect.effectType)
+                for (int y = 0; y < optionsData[optionsProcessed].effects.Count; y++)
                 {
-                    case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None:
-                        break;
+                    GalaxyPopupOptionEffect effect = optionsData[optionsProcessed].effects[y];
+                    switch (effect.effectType)
+                    {
+                        case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None:
+                            break;
 
-                    default:
-                        Debug.Log("Popup Option Effect Type Does Nothing (Not Implemented In Switch Statement In GalaxyPopup Class ChooseOption Method).");
-                        break;
+                        default:
+                            Debug.Log("Popup Option Effect Type Does Nothing (Not Implemented In Switch Statement In GalaxyPopup Class ChooseOption Method).");
+                            break;
+                    }
                 }
+                optionsProcessed++;
             }
-            optionsProcessed++;
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOptionButtonSFX);
+            ClosePopup();
         }
-        ClosePopup();
+    }
+
+    public bool IsOpeningAnimationDone()
+    {
+        return transform.localScale.x >= 1 || transform.localScale.y >= 1;
     }
 
     public bool IsAnswerRequired()
@@ -224,6 +243,7 @@ public class GalaxyPopupData
     public string headLine;
     public string spriteName;
     public string bodyText;
+    public string specialOpenSFXName = null;
 
     public bool answerRequired;
 
@@ -232,10 +252,6 @@ public class GalaxyPopupData
 
 public class GalaxyPopupOptionData
 {
-    public enum GalaxyPopupOptionEffectType
-    {
-        None
-    }
     public List<GalaxyPopupOptionEffect> effects = new List<GalaxyPopupOptionEffect>();
 
     public string mainText;

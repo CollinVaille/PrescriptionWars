@@ -72,9 +72,9 @@ public class RightSideNotification : MonoBehaviour
         }
     }
 
-    public void CreateNewRightSideNotification(Sprite imageSprite, string notificationTopic, int positionInQueue, float position, GalaxyPopupData popupData)
+    public void CreateNewRightSideNotification(string spriteName, string notificationTopic, int positionInQueue, float position, GalaxyPopupData popupData)
     {
-        foregroundImage.sprite = imageSprite;
+        foregroundImage.sprite = RightSideNotificationManager.GetRightSideNotificationSpriteFromName(spriteName);
         notificationTopicText.text = notificationTopic;
         positionInNotificationQueue = positionInQueue;
         transform.localPosition = new Vector3(370, position, 0);
@@ -132,5 +132,10 @@ public class RightSideNotification : MonoBehaviour
     public bool GetMouseOverNotification()
     {
         return mouseOverNotification;
+    }
+
+    public bool IsAnswerRequired()
+    {
+        return popupData.answerRequired;
     }
 }

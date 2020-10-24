@@ -89,28 +89,31 @@ public class GalaxyManager : MonoBehaviour
 
     public void EndTurn()
     {
-        //Plays the end turn sound effect.
-        sfxSource.PlayOneShot(endTurnSFX);
-
-        //Closes the planet management menu if it is currently open.
-        if (planetManagementMenu.activeInHierarchy)
-            planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
-
-        //Everyone makes their moves for the turn.
-        for(int x = 0; x < Empire.empires.Count; x++)
+        if(!RightSideNotificationManager.ContainsNonDismissableNotification() && !GalaxyPopupManager.ContainsNonDismissablePopup())
         {
-            if (x != playerID || observationModeEnabled)
-                Empire.empires[x].PlayAI();
-        }
+            //Plays the end turn sound effect.
+            sfxSource.PlayOneShot(endTurnSFX);
 
-        //Stuff is calculated and added after everyone's turn.
-        foreach(Empire empire in Empire.empires)
-        {
-            empire.EndTurn();
-        }
+            //Closes the planet management menu if it is currently open.
+            if (planetManagementMenu.activeInHierarchy)
+                planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
 
-        //Logs that a turn has been completed.
-        turnNumber++;
+            //Everyone makes their moves for the turn.
+            for (int x = 0; x < Empire.empires.Count; x++)
+            {
+                if (x != playerID || observationModeEnabled)
+                    Empire.empires[x].PlayAI();
+            }
+
+            //Stuff is calculated and added after everyone's turn.
+            foreach (Empire empire in Empire.empires)
+            {
+                empire.EndTurn();
+            }
+
+            //Logs that a turn has been completed.
+            turnNumber++;
+        }
     }
 }
 

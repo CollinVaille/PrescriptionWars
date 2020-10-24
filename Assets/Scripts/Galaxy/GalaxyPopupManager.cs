@@ -9,9 +9,12 @@ public class GalaxyPopupManager : MonoBehaviour
 
     public List<Sprite> popupSprites;
     public List<string> popupSpriteNames;
+    public List<AudioClip> popupSFXList;
+    public List<string> popupSFXNames;
     public static List<GalaxyPopup> popups = new List<GalaxyPopup>();
 
     public static Dictionary<string, Sprite> popupSpritesDictionary = new Dictionary<string, Sprite>();
+    public static Dictionary<string, AudioClip> popupSFXDictionary = new Dictionary<string, AudioClip>();
 
     public static GalaxyPopupManager galaxyPopupManager;
 
@@ -20,6 +23,7 @@ public class GalaxyPopupManager : MonoBehaviour
     {
         galaxyPopupManager = this;
         GeneratePopupSpriteDictionary();
+        GeneratePopupSFXDictionary();
     }
 
     void GeneratePopupSpriteDictionary()
@@ -37,6 +41,21 @@ public class GalaxyPopupManager : MonoBehaviour
         }
     }
 
+    void GeneratePopupSFXDictionary()
+    {
+        if (popupSFXList.Count == popupSFXNames.Count)
+        {
+            for (int x = 0; x < popupSFXNames.Count; x++)
+            {
+                popupSFXDictionary[popupSFXNames[x]] = popupSFXList[x];
+            }
+        }
+        else
+        {
+            Debug.Log("Popup SFXs list and popup SFX names list count do not match! Please fix this issue.");
+        }
+    }
+
     public static Sprite GetPopupSpriteFromName(string popupSpriteName)
     {
         if (popupSpritesDictionary.ContainsKey(popupSpriteName))
@@ -45,7 +64,25 @@ public class GalaxyPopupManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Invalid Popup Sprite Names (key does not exist in dictionary)");
+            Debug.Log("Invalid Popup Sprite Name (key does not exist in dictionary)");
+            return null;
+        }
+    }
+
+    public static AudioClip GetPopupSFXFromName(string popupSFXName)
+    {
+        if(popupSFXName == null)
+        {
+            return null;
+        }
+
+        if (popupSFXDictionary.ContainsKey(popupSFXName))
+        {
+            return popupSFXDictionary[popupSFXName];
+        }
+        else
+        {
+            Debug.Log("Invalid Popup SFX Name (key does not exist in dictionary)");
             return null;
         }
     }
@@ -91,5 +128,16 @@ public class GalaxyPopupManager : MonoBehaviour
         Destroy(popup.gameObject);
 
         GalaxyManager.popupClosedOnFrame = true;
+    }
+
+    public static bool ContainsNonDismissablePopup()
+    {
+        foreach (GalaxyPopup popup in popups)
+        {
+            if (popup.IsAnswerRequired())
+                return true;
+        }
+
+        return false;
     }
 }
