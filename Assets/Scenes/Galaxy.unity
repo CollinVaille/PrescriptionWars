@@ -9389,32 +9389,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 949235014}
-          m_MethodName: ToggleScienceHoverText
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 644450516}
-          m_MethodName: SwitchToResearchView
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
   - eventID: 0
     callback:
       m_PersistentCalls:
@@ -9436,6 +9410,32 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 949235014}
           m_MethodName: ToggleScienceHoverText
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 949235014}
+          m_MethodName: ToggleScienceHoverText
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 644450516}
+          m_MethodName: SwitchToResearchView
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -12258,7 +12258,7 @@ MonoBehaviour:
   rightSideNotificationSprites:
   - {fileID: 21300000, guid: 1330404ffe54b3d4388bb30c7c932147, type: 3}
   rightSideNotificationSpriteNames:
-  - Research Completed
+  - Science Icon
 --- !u!1 &1499423322
 GameObject:
   m_ObjectHideFlags: 0
@@ -15684,13 +15684,13 @@ MonoBehaviour:
   popupPrefab: {fileID: 6597292083406066155, guid: f12041c2401b82d4db53b296cb0af60c,
     type: 3}
   popupSprites:
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 2720a9444c2327549ab43957b3a5eb7b, type: 3}
   popupSpriteNames:
-  - Test Sprite
+  - Research Facility
   popupSFXList:
   - {fileID: 8300000, guid: d843c4f745027e54092ac0688c38ca38, type: 3}
   popupSFXNames:
-  - Research Completed
+  - Chemistry Bubbles
 --- !u!1 &1915632535
 GameObject:
   m_ObjectHideFlags: 0

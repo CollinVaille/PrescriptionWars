@@ -21,9 +21,11 @@ public class RightSideNotificationManager : MonoBehaviour
         GenerateRightSideNotificationSpritesDictionary();
 
         rightSideNotificationManager = this;
-        GalaxyPopupData newPopUpData = new GalaxyPopupData();
+
+
+        /*GalaxyPopupData newPopUpData = new GalaxyPopupData();
         newPopUpData.headLine = "Test Notification";
-        newPopUpData.spriteName = "Test Sprite";
+        newPopUpData.spriteName = "Research Completed";
         newPopUpData.bodyText = "This is a test notification.";
         newPopUpData.specialOpenSFXName = "Research Completed";
         newPopUpData.answerRequired = true;
@@ -42,7 +44,7 @@ public class RightSideNotificationManager : MonoBehaviour
         gp.effects.Add(gpfx);
         newPopUpData.options.Add(gp);
         CreateNewRightSideNotification("Research Completed", "Test Notification 1", newPopUpData);
-        CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);
+        CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);*/
     }
 
     void GenerateRightSideNotificationSpritesDictionary()
@@ -135,5 +137,13 @@ public class RightSideNotificationManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public static void DismissAllNotifications()
+    {
+        foreach(RightSideNotification notification in rightSideNotifications)
+        {
+            notification.StartNotificationDismissal();
+        }
     }
 }

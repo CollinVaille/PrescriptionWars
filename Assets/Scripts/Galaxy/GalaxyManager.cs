@@ -91,6 +91,11 @@ public class GalaxyManager : MonoBehaviour
     {
         if(!RightSideNotificationManager.ContainsNonDismissableNotification() && !GalaxyPopupManager.ContainsNonDismissablePopup())
         {
+            //Dismisses all right side notifications that still exist and do not require an answer.
+            RightSideNotificationManager.DismissAllNotifications();
+            //Closes all popups that still exist and do not require an answer.
+            GalaxyPopupManager.CloseAllPopups();
+
             //Plays the end turn sound effect.
             sfxSource.PlayOneShot(endTurnSFX);
 
@@ -303,6 +308,10 @@ public class TechManager
                     //Removes the tech's cost from the total science.
                     Empire.empires[ownerEmpireID].science -= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost;
 
+                    //Creates the right side notification that tells the user that they have finished the tech that they were researching.
+                    if (ownerEmpireID == GalaxyManager.playerID)
+                        CreateResearchCompletedNotification(Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]]);
+
                     //Removes the completed tech from the available techs list and adds it to the techs completed list.
                     techTotems[techTotemSelected].techsCompleted.Add(techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]);
                     techTotems[techTotemSelected].techsAvailable.RemoveAt(techTotems[techTotemSelected].techDisplayed);
@@ -330,6 +339,22 @@ public class TechManager
             //If the player has nothing researching for an entire turn, the science is set back to zero as a sort of punishment. :)
             Empire.empires[ownerEmpireID].science = 0;
         }
+    }
+
+    void CreateResearchCompletedNotification(Tech completedTech)
+    {
+        GalaxyPopupData researchCompletedPopup = new GalaxyPopupData();
+        researchCompletedPopup.headLine = "Research Completed";
+        researchCompletedPopup.spriteName = "Research Facility";
+        researchCompletedPopup.bodyText = "Our glorious empire has finished researching the " + completedTech.name + " tech. " + completedTech.name + ": " + completedTech.description;
+        GalaxyPopupOptionData option = new GalaxyPopupOptionData();
+        option.mainText = "We grow stronger by the day.";
+        option.effectDescriptionText = "The " + completedTech.name + " tech has been researched.";
+        researchCompletedPopup.options.Add(option);
+        researchCompletedPopup.answerRequired = false;
+        researchCompletedPopup.specialOpenSFXName = "Chemistry Bubbles";
+
+        RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "Research Completed", researchCompletedPopup);
     }
 
     public void UpdateTechnologyEffects()

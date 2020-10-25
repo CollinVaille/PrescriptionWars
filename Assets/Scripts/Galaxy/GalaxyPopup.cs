@@ -43,7 +43,7 @@ public class GalaxyPopup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy && !answerRequired)
         {
             ClosePopup();
         }
@@ -130,6 +130,7 @@ public class GalaxyPopup : MonoBehaviour
         answerRequired = popupData.answerRequired;
         List<int> optionButtonsUsed = new List<int>();
         int optionsProcessed = 0;
+        //Sets the data of all of the option buttons that will be used.
         for(int x = optionButtons.Count - popupData.options.Count; x < optionButtons.Count; x++)
         {
             optionButtonsUsed.Add(x);
@@ -139,6 +140,7 @@ public class GalaxyPopup : MonoBehaviour
             optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta = new Vector2(optionEffectsDescriptionTexts[x].preferredWidth + 5, optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta.y);
             optionsProcessed++;
         }
+        //Deactivates all option buttons that will not be used.
         for(int x = 0; x < optionButtons.Count; x++)
         {
             if (!optionButtonsUsed.Contains(x))
@@ -147,7 +149,9 @@ public class GalaxyPopup : MonoBehaviour
             }
         }
 
+        //Assigns the popup its appropriate index in the list of popups.
         popupIndex = indexOfPopup;
+        //Plays the open popup sound effect.
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(defaultOpenPopupSFX);
     }
 

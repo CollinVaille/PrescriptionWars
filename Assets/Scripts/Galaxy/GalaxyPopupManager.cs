@@ -140,4 +140,12 @@ public class GalaxyPopupManager : MonoBehaviour
 
         return false;
     }
+
+    public static void CloseAllPopups()
+    {
+        for(int x = popups.Count - 1; x > -1; x--)
+        {
+            popups[x].ClosePopup();
+        }
+    }
 }

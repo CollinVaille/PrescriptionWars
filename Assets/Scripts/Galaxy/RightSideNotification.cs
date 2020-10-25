@@ -103,18 +103,23 @@ public class RightSideNotification : MonoBehaviour
             {
                 if (popupData != null)
                 {
-                    if(!popupData.answerRequired)
-                        beingDismissed = true;
+                    if (!popupData.answerRequired)
+                        StartNotificationDismissal();
                 }
                 else
                 {
-                    beingDismissed = true;
+                    StartNotificationDismissal();
                 }
             }
         }
     }
 
-    public void DismissNotification()
+    public void StartNotificationDismissal()
+    {
+        beingDismissed = true;
+    }
+
+    void DismissNotification()
     {
         RightSideNotificationManager.DissmissNotification(positionInNotificationQueue);
     }
