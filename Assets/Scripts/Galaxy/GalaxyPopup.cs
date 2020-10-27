@@ -165,15 +165,7 @@ public class GalaxyPopup : MonoBehaviour
                 for (int y = 0; y < optionsData[optionsProcessed].effects.Count; y++)
                 {
                     GalaxyPopupOptionEffect effect = optionsData[optionsProcessed].effects[y];
-                    switch (effect.effectType)
-                    {
-                        case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None:
-                            break;
-
-                        default:
-                            Debug.Log("Popup Option Effect Type Does Nothing (Not Implemented In Switch Statement In GalaxyPopup Class ChooseOption Method).");
-                            break;
-                    }
+                    GalaxyPopupManager.ApplyPopupOptionEffect(effect);
                 }
                 optionsProcessed++;
             }
@@ -262,13 +254,20 @@ public class GalaxyPopupOptionData
     public string effectDescriptionText;
 }
 
-public struct GalaxyPopupOptionEffect
+public class GalaxyPopupOptionEffect
 {
     public enum GalaxyPopupOptionEffectType
     {
-        None
+        AddCreditsToEmpire,
+        AddCreditsPerTurnToEmpire,
+        AddPresciptionsToEmpire,
+        AddPrescriptionsPerTurnToEmpire,
+        AddScienceToEmpire,
+        AddSciencePerTurnToEmpire,
+        ConquerPlanet
     }
     public GalaxyPopupOptionEffectType effectType;
 
+    public List<int> effectDependencies = new List<int>();
     public int effectAmount;
 }

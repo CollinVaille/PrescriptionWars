@@ -60,7 +60,12 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateHyperspaceLanes();
         GenerateEmpires();
         GeneratePlanetStats();
-        GalaxyManager.Initialize(planets, flagSymbols, planetManagementMenu, galaxyCamera);
+        List<PlanetIcon> planetScripts = new List<PlanetIcon>();
+        foreach(GameObject planet in planets)
+        {
+            planetScripts.Add(planet.GetComponent<PlanetIcon>());
+        }
+        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera);
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
         ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GenerateTech();

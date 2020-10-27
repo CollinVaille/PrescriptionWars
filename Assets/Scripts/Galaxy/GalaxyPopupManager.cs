@@ -148,4 +148,35 @@ public class GalaxyPopupManager : MonoBehaviour
             popups[x].ClosePopup();
         }
     }
+
+    public static void ApplyPopupOptionEffect(GalaxyPopupOptionEffect effect)
+    {
+        switch (effect.effectType)
+        {
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddCreditsToEmpire:
+                GalaxyHelperMethods.AddCreditsToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddCreditsPerTurnToEmpire:
+                GalaxyHelperMethods.AddCreditsPerTurnToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddPresciptionsToEmpire:
+                GalaxyHelperMethods.AddPrescriptionsToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddPrescriptionsPerTurnToEmpire:
+                GalaxyHelperMethods.AddPresciptionsPerTurnToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddScienceToEmpire:
+                GalaxyHelperMethods.AddScienceToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.AddSciencePerTurnToEmpire:
+                GalaxyHelperMethods.AddSciencePerTurnToEmpire(effect.effectAmount, effect.effectDependencies[0]);
+                break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.ConquerPlanet:
+                GalaxyHelperMethods.ConquerPlanet(effect.effectDependencies[0], effect.effectDependencies[1]);
+                break;
+
+            default:
+                break;
+        }
+    }
 }

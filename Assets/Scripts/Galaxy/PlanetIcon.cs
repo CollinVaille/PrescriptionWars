@@ -236,6 +236,9 @@ public class PlanetIcon : MonoBehaviour
         //Updates the color of the planet label.
         nameLabel.color = Empire.empires[conquerorID].GetLabelColor();
 
+        //Updates the planet's ship's material to match the color of the conquering empire's ships.
+        ship.GetComponent<MeshRenderer>().sharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
+
         //Sets the planet's owner id as the conqueror's id.
         ownerID = conquerorID;
     }
