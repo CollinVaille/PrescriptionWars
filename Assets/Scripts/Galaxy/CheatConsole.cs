@@ -58,12 +58,15 @@ public class CheatConsole : MonoBehaviour
 
         if (command.Contains(" "))
         {
-            startsWithText = command.Substring(0, command.IndexOf(' '));
+            startsWithText = command.Substring(0, command.IndexOf(' ')).ToLower();
         }
 
         switch (startsWithText)
         {
             case "play_empire_culture":
+                ChangeEmpireBasedOnCulture(command);
+                break;
+            case "pec":
                 ChangeEmpireBasedOnCulture(command);
                 break;
             case "clear":
@@ -73,6 +76,9 @@ public class CheatConsole : MonoBehaviour
                 AddCredits(command);
                 break;
             case "play_empire_id":
+                ChangeEmpireBasedOnID(command);
+                break;
+            case "peid":
                 ChangeEmpireBasedOnID(command);
                 break;
             /*case "set_planet_culture":
@@ -87,10 +93,16 @@ public class CheatConsole : MonoBehaviour
             case "randomize_displayed_tech":
                 RandomizeDisplayedTech(command);
                 break;
+            case "rdt":
+                RandomizeDisplayedTech(command);
+                break;
             case "end_turn":
                 EndTurn();
                 break;
             case "change_empire_name":
+                ChangeEmpireName(command);
+                break;
+            case "cen":
                 ChangeEmpireName(command);
                 break;
             case "observe":
@@ -99,10 +111,19 @@ public class CheatConsole : MonoBehaviour
             case "demolish_all_buildings":
                 DemolishAllBuildings();
                 break;
+            case "dab":
+                DemolishAllBuildings();
+                break;
             case "toggle_research_effects":
                 ToggleResearchEffects();
                 break;
+            case "tre":
+                ToggleResearchEffects();
+                break;
             case "conquer_planet":
+                ConquerPlanet(command);
+                break;
+            case "cpl":
                 ConquerPlanet(command);
                 break;
 
