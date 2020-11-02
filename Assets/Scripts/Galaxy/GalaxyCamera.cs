@@ -22,10 +22,11 @@ public class GalaxyCamera : MonoBehaviour
     public static bool mouseOverCheatConsole;
     public static bool mouseOverRightSideNotification;
     public static bool mouseOverPopup;
+    public static bool mouseOverResourceBar;
 
     public static bool GetMouseOverUIElement()
     {
-        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || mouseOverResourceBar || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
             return true;
         return false;
     }
@@ -54,7 +55,7 @@ public class GalaxyCamera : MonoBehaviour
         if (!cheatConsole.activeInHierarchy)
             mouseOverCheatConsole = false;
 
-        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy)
+        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy && IsMouseInViewport())
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
@@ -94,5 +95,17 @@ public class GalaxyCamera : MonoBehaviour
     public void ToggleMouseOverCheatConsole()
     {
         mouseOverCheatConsole = !mouseOverCheatConsole;
+    }
+
+    public void SetMouseOverResourceBar(bool isMouseOverResourceBar)
+    {
+        mouseOverResourceBar = isMouseOverResourceBar;
+    }
+
+    public static bool IsMouseInViewport()
+    {
+        if (Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.galaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.galaxyCamera.pixelHeight)
+            return true;
+        return false;
     }
 }

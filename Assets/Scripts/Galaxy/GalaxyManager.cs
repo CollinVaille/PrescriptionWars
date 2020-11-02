@@ -360,14 +360,6 @@ public class TechManager
         GalaxyPopupOptionData option = new GalaxyPopupOptionData();
         option.mainText = "We grow stronger by the day.";
         option.effectDescriptionText = "The " + completedTech.name + " tech has been researched.";
-
-        GalaxyPopupOptionEffect testEffect = new GalaxyPopupOptionEffect();
-        testEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.ConquerPlanet;
-        //testEffect.effectAmount = 100;
-        testEffect.effectDependencies.Add(Random.Range(0, GalaxyManager.planets.Count));
-        testEffect.effectDependencies.Add(GalaxyManager.playerID);
-        option.effects.Add(testEffect);
-
         researchCompletedPopup.options.Add(option);
         researchCompletedPopup.answerRequired = false;
         researchCompletedPopup.specialOpenSFXName = "Chemistry Bubbles";

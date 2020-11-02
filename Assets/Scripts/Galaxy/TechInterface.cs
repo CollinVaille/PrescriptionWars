@@ -50,7 +50,14 @@ public class TechInterface : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SwitchToGalaxy();
+            if (techListMenu.activeInHierarchy)
+            {
+                techListMenu.SetActive(false);
+            }
+            else
+            {
+                SwitchToGalaxy();
+            }
         }
 
         UpdateTechTotems();
@@ -172,8 +179,8 @@ public class TechInterface : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
 
-                if (mouseToMenuDistance.x < -245)
-                    mouseToMenuDistance.x = -245;
+                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * .15625f * -1)
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * .15625f * -1;
             }
             //Right barrier.
             if(techListMenu.transform.localPosition.x > 275)
@@ -182,18 +189,18 @@ public class TechInterface : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
 
-                if (mouseToMenuDistance.x > 245)
-                    mouseToMenuDistance.x = 245;
+                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * .15625f)
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * .15625f;
             }
             //Top barrier.
-            if(techListMenu.transform.localPosition.y > 150)
+            if (techListMenu.transform.localPosition.y > 150)
             {
                 techListMenu.transform.localPosition = new Vector2(techListMenu.transform.localPosition.x, 150);
 
                 mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
 
-                if (mouseToMenuDistance.y > 150)
-                    mouseToMenuDistance.y = 150;
+                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * .16784f)
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * .16784f;
             }
             //Bottom barrier.
             if (techListMenu.transform.localPosition.y < -150)
@@ -202,8 +209,8 @@ public class TechInterface : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
 
-                if (mouseToMenuDistance.y < -150)
-                    mouseToMenuDistance.y = -150;
+                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * .16784f * -1)
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * .16784f * -1;
             }
         }
 
