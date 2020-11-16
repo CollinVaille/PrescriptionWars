@@ -6,7 +6,7 @@ public class GalaxyArmy
 {
     public string name;
 
-    public List<GalaxySquad> squads;
+    public List<GalaxySquad> squads = new List<GalaxySquad>();
 
     public float GetExperienceLevel()
     {
@@ -17,7 +17,7 @@ public class GalaxyArmy
         {
             foreach (GalaxyPill pill in squad.pills)
             {
-                totalExperience += pill.experience;
+                totalExperience += pill.GetExperienceLevel();
                 totalPills++;
             }
         }
@@ -30,7 +30,7 @@ public class GalaxySquad
 {
     public string name;
 
-    public List<GalaxyPill> pills;
+    public List<GalaxyPill> pills = new List<GalaxyPill>();
 
     public float GetExperienceLevel()
     {
@@ -38,7 +38,7 @@ public class GalaxySquad
 
         foreach (GalaxyPill pill in pills)
         {
-            totalExperience += pill.experience;
+            totalExperience += pill.GetExperienceLevel();
         }
 
         return totalExperience / pills.Count;
@@ -64,9 +64,31 @@ public class GalaxyPill
 {
     public enum PillClass
     {
-        Assault
+        Assault,
+        Riot,
+        Officer,
+        Medic,
+        Flamethrower,
+        Rocket
     }
     public PillClass pillClass;
 
-    public float experience;
+    float experience;
+
+    public string name;
+
+    public int GetExperienceLevel()
+    {
+        return (int)experience;
+    }
+
+    public void SetExperience(float newExperience)
+    {
+        experience = newExperience;
+    }
+
+    public void AddExperience(float experienceToAdd)
+    {
+        experience += experienceToAdd;
+    }
 }

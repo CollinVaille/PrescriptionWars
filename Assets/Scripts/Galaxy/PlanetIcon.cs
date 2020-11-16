@@ -32,6 +32,9 @@ public class PlanetIcon : MonoBehaviour
     //Cities
     public List<GalaxyCity> cities = new List<GalaxyCity>();
 
+    //Armies
+    public List<GalaxyArmy> armies = new List<GalaxyArmy>();
+
     public void GenerateShip(GameObject shipDaddy, GameObject shipPrefab)
     {
         GameObject newShip = Instantiate(shipPrefab);

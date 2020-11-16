@@ -114,8 +114,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < -440)
-                    mouseToMenuDistance.x = -440;
+                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f);
             }
             //Right barrier.
             if (transform.localPosition.x > 175)
@@ -124,8 +124,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > 440)
-                    mouseToMenuDistance.x = 440;
+                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f);
             }
             //Top barrier.
             if (transform.localPosition.y > 30)
@@ -134,8 +134,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > 323)
-                    mouseToMenuDistance.y = 323;
+                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f);
             }
             //Bottom barrier.
             if (transform.localPosition.y < -62)
@@ -144,8 +144,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < -323)
-                    mouseToMenuDistance.y = -323;
+                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f);
             }
         }
 

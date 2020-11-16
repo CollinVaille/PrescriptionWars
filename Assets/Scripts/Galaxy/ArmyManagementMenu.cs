@@ -14,6 +14,8 @@ public class ArmyManagementMenu : MonoBehaviour
     bool beingMoved = false;
     Vector2 mouseToMenuDistance;
 
+    public List<ArmyManagerScrollList> armyManagerScrollLists;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,8 +42,8 @@ public class ArmyManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < -440)
-                    mouseToMenuDistance.x = -440;
+                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f);
             }
             //Right barrier.
             if (transform.localPosition.x > 175)
@@ -50,8 +52,8 @@ public class ArmyManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > 440)
-                    mouseToMenuDistance.x = 440;
+                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f))
+                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f);
             }
             //Top barrier.
             if (transform.localPosition.y > 30)
@@ -60,8 +62,8 @@ public class ArmyManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > 323)
-                    mouseToMenuDistance.y = 323;
+                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f);
             }
             //Bottom barrier.
             if (transform.localPosition.y < -62)
@@ -70,8 +72,8 @@ public class ArmyManagementMenu : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < -323)
-                    mouseToMenuDistance.y = -323;
+                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f))
+                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f);
             }
         }
 
@@ -82,12 +84,29 @@ public class ArmyManagementMenu : MonoBehaviour
 
     public void OpenMenu()
     {
+        //Test code.
+        GalaxyPill bob = new GalaxyPill();
+        bob.name = "Bob";
+        bob.pillClass = GalaxyPill.PillClass.Assault;
+        GalaxySquad deltaSquad = new GalaxySquad();
+        deltaSquad.name = "Delta Squad";
+        deltaSquad.pills.Add(bob);
+        GalaxyArmy armyOfTheSouth = new GalaxyArmy();
+        armyOfTheSouth.name = "Army of the South";
+        armyOfTheSouth.squads.Add(deltaSquad);
+        GalaxyManager.planets[planetSelected].armies.Add(armyOfTheSouth);
+
         //Activates the army mangagement menu gameobject.
         transform.gameObject.SetActive(true);
         //Brings the army management menu on top of all of the other pop-ups.
         transform.SetAsLastSibling();
 
         backgroundColorImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
+
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            scrollList.PopulateScrollList();
+        }
     }
 
     public void CloseMenu()
@@ -100,6 +119,11 @@ public class ArmyManagementMenu : MonoBehaviour
 
         //Deactivates the whole army management menu gameobject.
         transform.gameObject.SetActive(false);
+
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            scrollList.ClearScrollList();
+        }
     }
 
     public void PointerDownArmyManagementMenu()

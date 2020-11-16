@@ -152,6 +152,9 @@ public class Empire
     //Tech
     public TechManager techManager;
 
+    //Popups
+    public List<GalaxyPopupData> popups = new List<GalaxyPopupData>();
+
     //Resources
     public float credits;
     public float prescriptions;
@@ -278,8 +281,24 @@ public class Empire
         {
             PlanetIcon planetScript = GalaxyManager.planets[planetID];
 
+            //Runs the logic for when a turn ends for each planet in the empire.
             planetScript.EndTurn();
-            techManager.EndTurn();
+        }
+
+        //Runs the logic of the empire's tech manager for when a turn ends.
+        techManager.EndTurn();
+
+        //Cycles through each popup that the ai has to answer and picks a random option for them and applies the effects of said option before removing the popup from the list of popups that the ai still has to deal with before their end turn logic is done.
+        for(int x = popups.Count - 1; x >= 0; x--)
+        {
+            int optionChosenIndex = Random.Range(0, popups[x].options.Count);
+
+            foreach(GalaxyPopupOptionEffect effect in popups[x].options[optionChosenIndex].effects)
+            {
+                GalaxyPopupManager.ApplyPopupOptionEffect(effect);
+            }
+
+            popups.RemoveAt(x);
         }
     }
 }
