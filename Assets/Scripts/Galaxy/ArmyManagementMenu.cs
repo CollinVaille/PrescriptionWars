@@ -7,6 +7,8 @@ public class ArmyManagementMenu : MonoBehaviour
 {
     public Image backgroundColorImage;
 
+    public Text planetNameText;
+
     public int planetSelected;
 
     public static ArmyManagementMenu armyManagementMenu;
@@ -15,6 +17,8 @@ public class ArmyManagementMenu : MonoBehaviour
     Vector2 mouseToMenuDistance;
 
     public List<ArmyManagerScrollList> armyManagerScrollLists;
+
+    public List<Image> scrollBarHandleImages;
 
     // Start is called before the first frame update
     void Start()
@@ -95,14 +99,29 @@ public class ArmyManagementMenu : MonoBehaviour
         armyOfTheSouth.name = "Army of the South";
         armyOfTheSouth.squads.Add(deltaSquad);
         GalaxyManager.planets[planetSelected].armies.Add(armyOfTheSouth);
+        for(int x = 0; x < GalaxyManager.planets[planetSelected].armies.Count; x++)
+        {
+            GalaxyManager.planets[planetSelected].armies[x].name = "Army " + (x + 1);
+        }
 
         //Activates the army mangagement menu gameobject.
         transform.gameObject.SetActive(true);
         //Brings the army management menu on top of all of the other pop-ups.
         transform.SetAsLastSibling();
 
+        //Sets the color of the menu's foreground background image to the player empire's color.
         backgroundColorImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
 
+        //Sets the color of every scroll bar handle to the player empire's color.
+        foreach(Image scrollBarHandleImage in scrollBarHandleImages)
+        {
+            scrollBarHandleImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        }
+
+        //Sets the planet name text at the top of the menu to the name of the planet that the player has selected to manage the armies on.
+        planetNameText.text = GalaxyManager.planets[planetSelected].nameLabel.text;
+
+        //Populates each scroll list with what information they need to display.
         foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
         {
             scrollList.PopulateScrollList();
@@ -143,5 +162,13 @@ public class ArmyManagementMenu : MonoBehaviour
 
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
+    }
+
+    public void ClearAllScrollLists()
+    {
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            scrollList.ClearScrollList();
+        }
     }
 }
