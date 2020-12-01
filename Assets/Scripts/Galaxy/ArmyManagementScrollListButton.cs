@@ -125,4 +125,59 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         //transform.position = new Vector3(initialDragXPosition, transform.position.y, transform.position.z);
         scrollList.ButtonEndDrag(this);
     }
+
+    public int GetParentButtonDataIndex()
+    {
+        if (isDropdownButton)
+        {
+            Debug.Log("Something went wrong. You are attempting to get the parent button data index for a dropdown button that does not have a button parent.");
+            return -1;
+        }
+
+        int parentButtonDataIndex = -1;
+        for(int x = 0; x < transform.parent.childCount; x++)
+        {
+            ArmyManagementScrollListButton scrollListButton = transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+
+            if (scrollListButton == this)
+                return parentButtonDataIndex;
+
+            if(scrollListButton.type == GetParentType(type))
+                parentButtonDataIndex++;
+        }
+
+        return parentButtonDataIndex;
+    }
+
+    public int GetDataIndex()
+    {
+        if (isDropdownButton)
+        {
+            int dataIndex = 0;
+
+            for(int x = 0; x < transform.parent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+
+                if (scrollListButton == this)
+                    return dataIndex;
+
+                if (scrollListButton.type == type)
+                    dataIndex++;
+            }
+        }
+
+        int parentSiblingIndex = 0;
+
+        for (int x = transform.GetSiblingIndex() - 1; x >= 0; x--)
+        {
+            if (transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>().type == GetParentType(type))
+            {
+                parentSiblingIndex = x;
+                break;
+            }
+        }
+
+        return transform.GetSiblingIndex() - parentSiblingIndex - 1;
+    }
 }

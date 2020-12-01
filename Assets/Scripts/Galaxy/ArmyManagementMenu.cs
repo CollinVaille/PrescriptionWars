@@ -96,13 +96,9 @@ public class ArmyManagementMenu : MonoBehaviour
         deltaSquad.name = "Delta Squad";
         deltaSquad.pills.Add(bob);
         GalaxyArmy armyOfTheSouth = new GalaxyArmy();
-        armyOfTheSouth.name = "Army of the South";
+        armyOfTheSouth.name = "Army " + (GalaxyManager.planets[planetSelected].armies.Count + 1);
         armyOfTheSouth.squads.Add(deltaSquad);
         GalaxyManager.planets[planetSelected].armies.Add(armyOfTheSouth);
-        for(int x = 0; x < GalaxyManager.planets[planetSelected].armies.Count; x++)
-        {
-            GalaxyManager.planets[planetSelected].armies[x].name = "Army " + (x + 1);
-        }
 
         //Activates the army mangagement menu gameobject.
         transform.gameObject.SetActive(true);
