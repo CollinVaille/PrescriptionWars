@@ -76,9 +76,6 @@ public class PlanetManagementMenu : MonoBehaviour
     public Text infoIncomeText;
     public Text infoPrescriptionText;
 
-    public float updatesPerSecond;
-    float timer;
-
     public int citySelected;
 
     //Menu dragging stuff here.
@@ -90,14 +87,14 @@ public class PlanetManagementMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer = 0.0f;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //Closes the whole planet management menu if the user presses escape.
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
             CloseMenu();
         }
@@ -152,15 +149,6 @@ public class PlanetManagementMenu : MonoBehaviour
         //Brings the planet management menu above all of the other pop-ups if it is being pressed on.
         if (GalaxyCamera.mouseOverPlanetManagementMenu && Input.GetMouseButtonDown(0))
             transform.SetAsLastSibling();
-
-        //Updates the ui if the appropriate amount of time has passes (to increase performance).
-        timer += Time.deltaTime;
-        if(timer >= (1 / updatesPerSecond))
-        {
-            UpdateUI();
-
-            timer = 0.0f;
-        }
     }
 
     public void UpdateUI()
@@ -185,7 +173,7 @@ public class PlanetManagementMenu : MonoBehaviour
 
             planetNameText.text = planetSelectedScript.nameLabel.text;
 
-            if (tabs[0].activeInHierarchy || timer < (1 / updatesPerSecond))
+            if (tabs[0].activeInHierarchy)
             {
                 SetBuildingsListText();
                 CheckDemolishBuildingSymbols();
@@ -213,14 +201,14 @@ public class PlanetManagementMenu : MonoBehaviour
                     tabUnderlineImage.gameObject.transform.localPosition = new Vector3(-105, tabUnderlineImage.gameObject.transform.localPosition.y, tabUnderlineImage.gameObject.transform.localPosition.z);
                 }
             }
-            if(tabs[1].activeInHierarchy || timer < (1 / updatesPerSecond))
+            if(tabs[1].activeInHierarchy)
             {
                 if (tabs[1].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != 0)
                 {
                     tabUnderlineImage.gameObject.transform.localPosition = new Vector3(0, tabUnderlineImage.gameObject.transform.localPosition.y, tabUnderlineImage.gameObject.transform.localPosition.z);
                 }
             }
-            if (tabs[2].activeInHierarchy || timer < (1 / updatesPerSecond))
+            if (tabs[2].activeInHierarchy)
             {
                 infoCultureText.text = "Culture: " + planetSelectedScript.culture;
                 infoCitiesText.text = "Cities: " + planetSelectedScript.cities.Count;
@@ -297,11 +285,30 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public void ConfirmDelmolishBuilding(int num)
     {
+        StartCoroutine(ConfirmDemolishBuildingCoroutine(num));
+    }
+
+    IEnumerator ConfirmDemolishBuildingCoroutine(int num)
+    {
         //Figures out which index to remove at.
         int indexToDemolish = buildingsListTextStartIndex + num;
 
-        //Creates a confirmation pop-up to query the user on whether or not they actually want to demolish that building.
-        GalaxyConfirmationPopup.NewDemolishBuildingConfirmation(planetSelected.GetComponent<PlanetIcon>().planetID, citySelected, indexToDemolish);
+        //Creates the confirmation popup.
+        GameObject confirmationPopup = Instantiate(GalaxyManager.galaxyConfirmationPopupPrefab);
+        GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
+        string topText = "Demolish Building";
+        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirmed their action, it carries out the logic behind it.
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+            DemolishBuilding(indexToDemolish);
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
     }
 
     public void DemolishBuilding(int indexToDemolish)
@@ -319,11 +326,30 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public void ConfirmCancelBuildingQueued(int num)
     {
+        StartCoroutine(ConfirmCancelBuildingQueuedCoroutine(num));
+    }
+
+    IEnumerator ConfirmCancelBuildingQueuedCoroutine(int num)
+    {
         //Figures out which index to remove at.
         int indexToCancel = buildingQueueListTextStartIndex + num;
 
-        //Creates a confirmation pop-up to query the user on whether or not they actually want to cencel that queued building.
-        GalaxyConfirmationPopup.NewCancelBuildingQueuedConfirmation(planetSelected.GetComponent<PlanetIcon>().planetID, citySelected, indexToCancel);
+        //Creates the confirmation popup.
+        GameObject confirmationPopup = Instantiate(GalaxyManager.galaxyConfirmationPopupPrefab);
+        GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
+        string topText = "Cancel Building Queued";
+        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirmed their action, it carries out the logic behind it.
+        if(confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+            CancelBuildingQueued(indexToCancel);
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
     }
 
     public void CancelBuildingQueued(int indexToCancel)
@@ -373,6 +399,8 @@ public class PlanetManagementMenu : MonoBehaviour
 
         //Plays the sound effect.
         sfxSource.PlayOneShot(clickThreeAudioClip);
+        //Updates the ui.
+        UpdateUI();
     }
 
     //Adds a new galaxy building to a city's building queue.
@@ -385,18 +413,10 @@ public class PlanetManagementMenu : MonoBehaviour
 
             //Plays the add to queue sound effect.
             sfxSource.PlayOneShot(clickThreeAudioClip);
+            //Updates the ui.
+            UpdateUI();
         }
     }
-
-    /*public void OnButtonEnter(Image buttonImage)
-    {
-        buttonImage.sprite = selectedButtonSprite;
-    }
-
-    public void OnButtonExit(Image buttonImage)
-    {
-        buttonImage.sprite = unselectedButtonSprite;
-    }*/
 
     public void ClickOnCity(int cityNum)
     {

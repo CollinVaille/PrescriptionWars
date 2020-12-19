@@ -9,7 +9,6 @@ public class GalaxyManager : MonoBehaviour
     public GameObject commandConsole;
     public GameObject researchView;
     public GameObject endTurnButton;
-    public GalaxyConfirmationPopup galaxyConfirmationPopup;
 
     //Audio stuff.
     public AudioSource musicSource;
@@ -36,19 +35,23 @@ public class GalaxyManager : MonoBehaviour
 
     public static Camera galaxyCamera;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam)
+    public static GameObject galaxyConfirmationPopupPrefab;
+    public static Transform galaxyConfirmationPopupParent;
+
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, GameObject prefabOfGalaxyConfirmationPopup, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
         planetManagementMenu = menuOfPlanetManagement;
         galaxyCamera = galaxyCam;
+        galaxyConfirmationPopupPrefab = prefabOfGalaxyConfirmationPopup;
+        galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         galaxyManager = this;
-        GalaxyConfirmationPopup.galaxyConfirmationPopup = galaxyConfirmationPopup;
     }
 
     // Update is called once per frame
@@ -64,7 +67,7 @@ public class GalaxyManager : MonoBehaviour
                 Empire.empires[x].playerEmpire = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
             commandConsole.GetComponent<CheatConsole>().ToggleConsole();
         }

@@ -33,6 +33,8 @@ public class Line : MonoBehaviour
         line.endColor = Color.yellow;
 
         UpdatePosition();
+
+        //StartCoroutine(MyCoroutine());
     }
 
     // Update is called once per frame
@@ -40,6 +42,12 @@ public class Line : MonoBehaviour
     {
 
     }
+
+    /*private bool someFunc()
+    {
+        return true;
+    }*/
+
 
     public void UpdatePosition()
     {
@@ -51,4 +59,21 @@ public class Line : MonoBehaviour
             line.SetPosition(1, gameObject2.transform.position);
         }
     }
+
+    /*private IEnumerator MyCoroutine()
+    {
+        Debug.Log("fwefwef");
+
+        //Waits one frame
+        //yield return null;
+
+        //Wait for this amount of seconds
+        yield return new WaitForSeconds(2.22f);
+
+        //Wait on condition/boolean
+        yield return new WaitUntil(someFunc);
+
+        Debug.Log("fwefwef");
+
+    }*/
 }

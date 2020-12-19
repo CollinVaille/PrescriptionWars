@@ -26,7 +26,7 @@ public class GalaxyCamera : MonoBehaviour
 
     public static bool GetMouseOverUIElement()
     {
-        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || mouseOverResourceBar || GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || mouseOverResourceBar || GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
             return true;
         return false;
     }
@@ -34,7 +34,7 @@ public class GalaxyCamera : MonoBehaviour
     private void Update ()
     {
         //WASD and scrollwheel movement
-        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.galaxyConfirmationPopup.gameObject.activeInHierarchy)
+        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");

@@ -15,7 +15,7 @@ public class ArmyManagerScrollList : MonoBehaviour
     public GameObject squadChildButtonPrefab;
     public Transform dropdownButtonParent;
 
-    List<GameObject> dropdownButtons = new List<GameObject>();
+    //List<GameObject> dropdownButtons = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +39,7 @@ public class ArmyManagerScrollList : MonoBehaviour
                 dropdownButton.transform.SetParent(dropdownButtonParent);
                 dropdownButton.name = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].name;
                 ArmyManagementScrollListButton armyDropDownButtonScript = dropdownButton.GetComponent<ArmyManagementScrollListButton>();
-                armyDropDownButtonScript.index = x;
+                //armyDropDownButtonScript.index = x;
                 armyDropDownButtonScript.nameText.text = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].name;
                 armyDropDownButtonScript.scrollList = this;
                 armyDropDownButtonScript.type = ArmyManagementScrollListButton.ArmyDropDownButtonType.ArmyDropDownButton;
@@ -47,7 +47,7 @@ public class ArmyManagerScrollList : MonoBehaviour
 
                 dropdownButton.transform.localScale = new Vector3(1, 1, 1);
 
-                dropdownButtons.Add(dropdownButton);
+                //dropdownButtons.Add(dropdownButton);
             }
         }
         else if (mode == ArmyManagerScrollListMode.Squad)
@@ -59,71 +59,80 @@ public class ArmyManagerScrollList : MonoBehaviour
     //This method needs to be completely reworked.
     public void ClickDropDownButton(int buttonSiblingIndex)
     {
-        int armyID = 0;
-        int dropdownButtonsIndex = 0;
-        bool alreadyExpanded = false;
-        ArmyManagementScrollListButton.ArmyDropDownButtonType dropDownButtonType = ArmyManagementScrollListButton.ArmyDropDownButtonType.ArmyDropDownButton;
-        for(int x = 0; x < dropdownButtons.Count; x++)
+        ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(buttonSiblingIndex).GetComponent<ArmyManagementScrollListButton>();
+
+        if (!scrollListButton.isDropdownButton)
         {
-            if(dropdownButtons[x].transform.GetSiblingIndex() == buttonSiblingIndex)
-            {
-                armyID = dropdownButtons[x].GetComponent<ArmyManagementScrollListButton>().index;
-                dropdownButtonsIndex = x;
-                alreadyExpanded = dropdownButtons[x].GetComponent<ArmyManagementScrollListButton>().expanded;
-                dropDownButtonType = dropdownButtons[x].GetComponent<ArmyManagementScrollListButton>().type;
-                break;
-            }
+            Debug.Log("Something went wrong. You are attempting to run dropdown button logic on a button that is not a dropdown.");
+            return;
         }
 
-        if (!alreadyExpanded)
+        if (!scrollListButton.expanded)
         {
-            for(int siblingIndex = buttonSiblingIndex + 1; siblingIndex <= buttonSiblingIndex + GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].squads.Count; siblingIndex++)
+            int requiredID = scrollListButton.GetDataIndex();
+            for(int siblingIndex = buttonSiblingIndex + 1; siblingIndex <= buttonSiblingIndex + GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[requiredID].squads.Count; siblingIndex++)
             {
-                GameObject squadChildButton = Instantiate(squadChildButtonPrefab);
-                squadChildButton.transform.SetParent(dropdownButtonParent);
-                squadChildButton.transform.SetSiblingIndex(siblingIndex);
-                GalaxySquad squad = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].squads[siblingIndex - buttonSiblingIndex - 1];
-                squadChildButton.name = squad.name;
-                ArmyManagementScrollListButton squadChildButtonScript = squadChildButton.GetComponent<ArmyManagementScrollListButton>();
-                squadChildButtonScript.index = siblingIndex - buttonSiblingIndex - 1;
-                squadChildButtonScript.nameText.text = squad.name;
-                squadChildButtonScript.scrollList = this;
-                squadChildButtonScript.type = ArmyManagementScrollListButton.ArmyDropDownButtonType.SquadChildButton;
-                squadChildButtonScript.buttonImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
+                GameObject childButton;
 
-                squadChildButton.transform.localScale = new Vector3(1, 1, 1);
-
-                dropdownButtons.Add(squadChildButton);
-            }
-
-            dropdownButtons[dropdownButtonsIndex].GetComponent<ArmyManagementScrollListButton>().expanded = true;
-        }
-        else
-        {
-            for(int siblingIndex = buttonSiblingIndex + GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].squads.Count; siblingIndex > buttonSiblingIndex; siblingIndex--)
-            {
-                for(int x = 0; x < dropdownButtons.Count; x++)
+                switch (ArmyManagementScrollListButton.GetChildType(scrollListButton.type))
                 {
-                    if(dropdownButtons[x].transform.GetSiblingIndex() == siblingIndex)
-                    {
-                        GameObject dropdownButton = dropdownButtons[x];
-                        dropdownButtons.RemoveAt(x);
-                        Destroy(dropdownButton);
-                        continue;
-                    }
-                }
-            }
+                    case ArmyManagementScrollListButton.ArmyDropDownButtonType.SquadChildButton:
+                        childButton = Instantiate(squadChildButtonPrefab);
+                        break;
 
-            dropdownButtons[dropdownButtonsIndex].GetComponent<ArmyManagementScrollListButton>().expanded = false;
+                    default:
+                        childButton = Instantiate(squadChildButtonPrefab);
+                        break;
+                }
+                
+                childButton.transform.SetParent(dropdownButtonParent);
+                childButton.transform.SetSiblingIndex(siblingIndex);
+                ArmyManagementScrollListButton childButtonScript = childButton.GetComponent<ArmyManagementScrollListButton>();
+
+                switch (ArmyManagementScrollListButton.GetChildType(scrollListButton.type))
+                {
+                    case ArmyManagementScrollListButton.ArmyDropDownButtonType.SquadChildButton:
+                        GalaxySquad squad = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[requiredID].squads[siblingIndex - buttonSiblingIndex - 1];
+                        childButton.name = squad.name;
+                        childButtonScript.nameText.text = squad.name;
+                        break;
+                }
+
+                childButtonScript.scrollList = this;
+                childButtonScript.type = ArmyManagementScrollListButton.GetChildType(scrollListButton.type);
+                childButtonScript.buttonImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
+
+                childButton.transform.localScale = new Vector3(1, 1, 1);
+            }
+            scrollListButton.expanded = true;
+            return;
         }
+
+        //This code will execute if the dropdown button has already been expanded.
+        List<GameObject> childButtons = new List<GameObject>();
+        for(int siblingIndex = buttonSiblingIndex + 1; siblingIndex < dropdownButtonParent.childCount; siblingIndex++)
+        {
+            GameObject buttonAtSiblingIndex = dropdownButtonParent.GetChild(siblingIndex).gameObject;
+
+            if (buttonAtSiblingIndex.GetComponent<ArmyManagementScrollListButton>().type != ArmyManagementScrollListButton.GetChildType(scrollListButton.type))
+                break;
+
+            childButtons.Add(buttonAtSiblingIndex);
+        }
+
+        foreach(GameObject childButton in childButtons)
+        {
+            Destroy(childButton);
+        }
+
+        scrollListButton.expanded = false;
     }
 
     public void ClearScrollList()
     {
-        for(int x = dropdownButtons.Count - 1; x >= 0; x--)
+        for(int x = dropdownButtonParent.childCount - 1; x >= 0; x--)
         {
-            GameObject dropdownButton = dropdownButtons[x];
-            dropdownButtons.RemoveAt(x);
+            GameObject dropdownButton = dropdownButtonParent.GetChild(x).gameObject;
             Destroy(dropdownButton);
         }
     }

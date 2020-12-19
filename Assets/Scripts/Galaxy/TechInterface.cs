@@ -16,6 +16,7 @@ public class TechInterface : MonoBehaviour
 
     public List<RawImage> researchProgressRawImages;
     public List<Image> techTotemImages;
+    public List<Image> techTotemSelectedOutlineImages;
     public List<int> techTotemImageIndexes;
 
     public List<Text> techTotemTopTexts;
@@ -33,7 +34,7 @@ public class TechInterface : MonoBehaviour
     public AudioClip bubblingAudioClip;
     public AudioClip openTechListMenuAudioClip;
 
-    int techTotemTechListSelected = -1;
+    int techTotemTechListSelected;
 
     bool techListMenuPreviouslyActive = false;
     bool techListMenuMoving = false;
@@ -289,7 +290,7 @@ public class TechInterface : MonoBehaviour
 
     public void ClickOnTotem(int num)
     {
-        Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = num;
+        SetTechTotemSelected(num);
     }
 
     public void ClickOnTotemTechListButton(int num)
@@ -335,5 +336,19 @@ public class TechInterface : MonoBehaviour
 
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
+    }
+
+    public void SetTechTotemSelected(int newTechTotemSelected)
+    {
+        int previousTechTotemSelected = Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected;
+        Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = newTechTotemSelected;
+
+        if(newTechTotemSelected != previousTechTotemSelected)
+        {
+            if(previousTechTotemSelected != -1)
+                techTotemSelectedOutlineImages[previousTechTotemSelected].gameObject.SetActive(false);
+            if(newTechTotemSelected != -1)
+                techTotemSelectedOutlineImages[newTechTotemSelected].gameObject.SetActive(true);
+        }
     }
 }

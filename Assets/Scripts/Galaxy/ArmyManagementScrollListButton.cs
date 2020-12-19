@@ -12,7 +12,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour
     }
     public ArmyDropDownButtonType type;
 
-    public int index;
+    //public int index;
 
     public Text nameText;
 
