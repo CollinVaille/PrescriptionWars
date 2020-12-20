@@ -256,11 +256,11 @@ public class PlanetIcon : MonoBehaviour
             //Closes the planet management menu if it is already open, this is purely just to reset it before we immediately reopen it.
             if (GalaxyManager.planetManagementMenu.activeInHierarchy)
             {
-                GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+                GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
             }
 
             //Opens the planet management menu.
-            PlanetManagementMenu.planetManagementMenu.OpenMenu();
+            PlanetManagementMenu.planetManagementMenu.Open();
         }
     }
 

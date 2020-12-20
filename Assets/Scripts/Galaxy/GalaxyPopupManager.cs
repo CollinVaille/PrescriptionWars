@@ -99,9 +99,6 @@ public class GalaxyPopupManager : MonoBehaviour
         popup.transform.parent = galaxyPopupManager.transform;
 
         popup.GetComponent<GalaxyPopup>().CreatePopup(popupData, popups.Count);
-        popup.transform.localScale = new Vector3(0, 0, 1);
-        popup.transform.localPosition = new Vector3(0, 0, 0);
-        popup.transform.SetAsLastSibling();
 
         popups.Add(popup.GetComponent<GalaxyPopup>());
     }
@@ -145,7 +142,7 @@ public class GalaxyPopupManager : MonoBehaviour
     {
         for(int x = popups.Count - 1; x > -1; x--)
         {
-            popups[x].ClosePopup();
+            popups[x].Close();
         }
     }
 

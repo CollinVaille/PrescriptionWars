@@ -1106,7 +1106,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 214506630}
-          m_MethodName: PointerUpArmyManagementMenu
+          m_MethodName: PointerUpPopup
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1121,7 +1121,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 214506630}
-          m_MethodName: PointerDownArmyManagementMenu
+          m_MethodName: PointerDownPopup
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1919,6 +1919,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4d9b2e1e77406489ea507745ce2e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openingAnimationType: 0
+  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
+  popupOpensAtStart: 0
+  popupWidthAndHeight: {x: 454.5, y: 330}
+  popupScaleIncreaseRate: 3
   backgroundColorImage: {fileID: 744552997}
   planetNameText: {fileID: 392559493}
   planetSelected: 0
@@ -2711,7 +2717,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 325615308}
-          m_MethodName: PointerDownPlanetManagementMenu
+          m_MethodName: PointerDownPopup
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2726,7 +2732,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 325615308}
-          m_MethodName: PointerUpPlanetManagementMenu
+          m_MethodName: PointerUpPopup
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2794,8 +2800,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35f21580cf4dcad4bbcaf5c88f77f16a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sfxSource: {fileID: 1492085428}
-  openMenuAudioClip: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  openingAnimationType: 0
+  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
+  popupOpensAtStart: 0
+  popupWidthAndHeight: {x: 451.5, y: 326.5}
+  popupScaleIncreaseRate: 3
   clickOnCityAudioClip: {fileID: 8300000, guid: d854309ef3c24fb469a70776756b4e29,
     type: 3}
   clickOnTabAudioClip: {fileID: 8300000, guid: f0081c0fe56f5d945a663f81c255c819, type: 3}
@@ -2890,7 +2900,6 @@ MonoBehaviour:
   infoCapitalText: {fileID: 2026190684}
   infoIncomeText: {fileID: 1426893240}
   infoPrescriptionText: {fileID: 1937618454}
-  updatesPerSecond: 23
   citySelected: 0
 --- !u!114 &325615309
 MonoBehaviour:
@@ -4370,12 +4379,12 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - eventID: 3
+  - eventID: 4
     callback:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 325615308}
-          m_MethodName: CloseMenu
+          m_MethodName: Close
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

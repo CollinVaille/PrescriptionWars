@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GalaxyPopup : MonoBehaviour
+[System.Serializable]
+
+public class GalaxyPopup : GalaxyPopupSuper
 {
     public Text headLineText;
     public Image bodyImage;
     public Text bodyText;
 
-    public AudioClip defaultOpenPopupSFX;
     public AudioClip specialOpenPopupSFX;
     public AudioClip mouseOverOptionButton;
     public AudioClip clickOptionButtonSFX;
@@ -23,102 +24,42 @@ public class GalaxyPopup : MonoBehaviour
 
     List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
 
-    public float popupScaleIncreaseRate;
-
+    //Indicates the popup's index in the list of popups in the popup manager.
     public int popupIndex;
 
+    //Indicates whether the player is required to provide an answer for the popup to close.
     bool answerRequired;
-    bool mouseOverPopup;
-    bool beingMoved;
+    //Indicates whether the special sound effect for whenever the popup opens has played or not.
     bool specialOpenPopupSFXPlayed;
 
-    Vector2 mouseToMenuDistance;
-
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen() && !answerRequired)
-        {
-            ClosePopup();
-        }
+        base.Update();
 
-        if (transform.localScale.x < 1 || transform.localScale.y < 1)
-        {
-            transform.localScale = new Vector3(transform.localScale.x + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.y + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.z);
-
-            if (transform.localScale.x > 1)
-                transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-            if (transform.localScale.y > 1)
-                transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.z);
-        }
-        else if (!specialOpenPopupSFXPlayed)
+        if (!specialOpenPopupSFXPlayed)
         {
             if (specialOpenPopupSFX != null)
                 GalaxyManager.galaxyManager.sfxSource.PlayOneShot(specialOpenPopupSFX);
             specialOpenPopupSFXPlayed = true;
         }
 
-        //Deals with the popup being dragged.
-        if (beingMoved)
-        {
-            transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
-
-            //Left barrier.
-            if (transform.localPosition.x < -291)
-            {
-                transform.localPosition = new Vector2(-291, transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * (-.13545f))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (-.13545f);
-            }
-            //Right barrier.
-            if (transform.localPosition.x > 291)
-            {
-                transform.localPosition = new Vector2(291, transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.13545f))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.13545f);
-            }
-            //Top barrier.
-            if (transform.localPosition.y > 67.5f)
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, 67.5f);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.2771f))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.2771f);
-            }
-            //Bottom barrier.
-            if (transform.localPosition.y < -99)
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, -99);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * (-.2771f))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (-.2771f);
-            }
-        }
-
-        //If the popup is clicked, it is brought to the top of the popup hierarchy.
-        if (mouseOverPopup && Input.GetMouseButtonDown(0))
-            transform.SetAsLastSibling();
-
         foreach(GameObject optionEffectDescription in optionEffectsDescriptions)
         {
             optionEffectDescription.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         }
+    }
+
+    //Indicates whether the popup should close due to the player pressing escape with special parameters compared to the super class.
+    public override bool ShouldClose()
+    {
+        return base.ShouldClose() && !answerRequired;
     }
 
     public void CreatePopup(GalaxyPopupData popupData, int indexOfPopup)
@@ -151,8 +92,6 @@ public class GalaxyPopup : MonoBehaviour
 
         //Assigns the popup its appropriate index in the list of popups.
         popupIndex = indexOfPopup;
-        //Plays the open popup sound effect.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(defaultOpenPopupSFX);
     }
 
     public void ChooseOption(int optionNumber)
@@ -170,69 +109,42 @@ public class GalaxyPopup : MonoBehaviour
                 optionsProcessed++;
             }
             GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOptionButtonSFX);
-            ClosePopup();
+            Close();
         }
     }
 
-    public bool IsOpeningAnimationDone()
-    {
-        return transform.localScale.x >= 1 || transform.localScale.y >= 1;
-    }
-
+    //Gets the value of the boolean that indicates whether an answer is required for the popup to close.
     public bool IsAnswerRequired()
     {
         return answerRequired;
     }
 
-    public void PointerDownPopup()
+    public override void Close()
     {
-        //Tells the update function that the player is dragging the menu.
-        beingMoved = true;
+        //Executes the super classes's logic for whenever a popup needs to be closed.
+        base.Close();
 
-        //Tells the update function the set difference between the mouse position and the menu's position.
-        mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-        mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-    }
-
-    public void PointerUpPopup()
-    {
-        //Tells the update function that the player is no longer dragging the menu.
-        beingMoved = false;
-
-        //Resets the vector that says the difference between the mouse position and the menu's position.
-        mouseToMenuDistance = Vector2.zero;
-    }
-
-    public void ToggleMouseOverPopup()
-    {
-        mouseOverPopup = !mouseOverPopup;
-    }
-
-    public bool IsMouseOverPopup()
-    {
-        return mouseOverPopup;
-    }
-
-    public void ClosePopup()
-    {
+        //Executes the logic for whenever a popup of this type needs to be closed.
         GalaxyPopupManager.ClosePopup(popupIndex);
     }
 
     public void PointerEnterOptionButton(int buttonNum)
     {
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
-        mouseOverPopup = true;
+        SetMouseOverPopup(true);
 
         optionEffectsDescriptions[buttonNum].SetActive(true);
     }
 
     public void PointerExitOptionButton(int buttonNum)
     {
-        mouseOverPopup = false;
+        SetMouseOverPopup(false);
 
         optionEffectsDescriptions[buttonNum].SetActive(false);
     }
 }
+
+[System.Serializable]
 
 public class GalaxyPopupData
 {
@@ -246,6 +158,8 @@ public class GalaxyPopupData
     public List<GalaxyPopupOptionData> options = new List<GalaxyPopupOptionData>();
 }
 
+[System.Serializable]
+
 public class GalaxyPopupOptionData
 {
     public List<GalaxyPopupOptionEffect> effects = new List<GalaxyPopupOptionEffect>();
@@ -253,6 +167,8 @@ public class GalaxyPopupOptionData
     public string mainText;
     public string effectDescriptionText;
 }
+
+[System.Serializable]
 
 public class GalaxyPopupOptionEffect
 {

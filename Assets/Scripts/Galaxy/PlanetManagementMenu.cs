@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlanetManagementMenu : MonoBehaviour
+public class PlanetManagementMenu : GalaxyPopupSuper
 {
-    //Audio stuff.
-    public AudioSource sfxSource;
-
-    public AudioClip openMenuAudioClip;
     public AudioClip clickOnCityAudioClip;
     public AudioClip clickOnTabAudioClip;
     public AudioClip clickThreeAudioClip;
@@ -78,77 +74,18 @@ public class PlanetManagementMenu : MonoBehaviour
 
     public int citySelected;
 
-    //Menu dragging stuff here.
-    bool beingMoved = false;
-    Vector2 mouseToMenuDistance;
-
     public static PlanetManagementMenu planetManagementMenu;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        //Closes the whole planet management menu if the user presses escape.
-        if (Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
-        {
-            CloseMenu();
-        }
-
-        //Deals with the planet management menu being dragged by the player.
-        if (beingMoved)
-        {
-            transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
-
-            //Left barrier.
-            if (transform.localPosition.x < -175)
-            {
-                transform.localPosition = new Vector2(-175, transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (-.2806122449f);
-            }
-            //Right barrier.
-            if (transform.localPosition.x > 175)
-            {
-                transform.localPosition = new Vector2(175, transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.2806122449f);
-            }
-            //Top barrier.
-            if (transform.localPosition.y > 30)
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, 30);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.3625229798f);
-            }
-            //Bottom barrier.
-            if (transform.localPosition.y < -62)
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, -62);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (-.3625229798f);
-            }
-        }
-
-        //Brings the planet management menu above all of the other pop-ups if it is being pressed on.
-        if (GalaxyCamera.mouseOverPlanetManagementMenu && Input.GetMouseButtonDown(0))
-            transform.SetAsLastSibling();
+        base.Update();
     }
 
     public void UpdateUI()
@@ -222,25 +159,6 @@ public class PlanetManagementMenu : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void PointerDownPlanetManagementMenu()
-    {
-        //Tells the update function that the player is dragging the menu.
-        beingMoved = true;
-
-        //Tells the update function the set difference between the mouse position and the menu's position.
-        mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-        mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-    }
-
-    public void PointerUpPlanetManagementMenu()
-    {
-        //Tells the update function that the player is no longer dragging the menu.
-        beingMoved = false;
-
-        //Resets the vector that says the difference between the mouse position and the menu's position.
-        mouseToMenuDistance = Vector2.zero;
     }
 
     //Updates the demolish building symbol images.
@@ -317,8 +235,8 @@ public class PlanetManagementMenu : MonoBehaviour
         planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
 
         //Plays the demolish and cancel sound effects.
-        sfxSource.PlayOneShot(cancelAudioClip);
-        sfxSource.PlayOneShot(demolishAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(demolishAudioClip);
 
         //Updates the ui.
         UpdateUI();
@@ -361,15 +279,10 @@ public class PlanetManagementMenu : MonoBehaviour
         planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
 
         //Plays the removal/cancel sound effect.
-        sfxSource.PlayOneShot(cancelAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
 
         //Updates the ui.
         UpdateUI();
-    }
-
-    public void PlayOpenMenuSFX()
-    {
-        sfxSource.PlayOneShot(openMenuAudioClip);
     }
 
     public void ChangeBuildingSelected(string direction)
@@ -398,7 +311,7 @@ public class PlanetManagementMenu : MonoBehaviour
         }
 
         //Plays the sound effect.
-        sfxSource.PlayOneShot(clickThreeAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
         //Updates the ui.
         UpdateUI();
     }
@@ -412,7 +325,7 @@ public class PlanetManagementMenu : MonoBehaviour
             planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.playerID);
 
             //Plays the add to queue sound effect.
-            sfxSource.PlayOneShot(clickThreeAudioClip);
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
             //Updates the ui.
             UpdateUI();
         }
@@ -429,7 +342,7 @@ public class PlanetManagementMenu : MonoBehaviour
         UpdateUI();
 
         //Plays sound effect.
-        sfxSource.PlayOneShot(clickOnCityAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOnCityAudioClip);
     }
 
     public void ResetChooseCityMenu()
@@ -620,30 +533,24 @@ public class PlanetManagementMenu : MonoBehaviour
         UpdateUI();
 
         //Plays the click on tab sound effect.
-        sfxSource.PlayOneShot(clickOnTabAudioClip);
+        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOnTabAudioClip);
     }
 
-    public void OpenMenu()
+    public override void Open()
     {
-        //Activates the planet management menu gameobject.
-        transform.gameObject.SetActive(true);
-        //Brings the planet mangement menu on top of all of the other pop-ups.
-        transform.SetAsLastSibling();
+        //Executes the super classes's logic for opening the popup.
+        base.Open();
+
         //Resets the choose city menu.
         ResetChooseCityMenu();
         //Updates the ui elements of the whole menu.
         UpdateUI();
-        //Plays the sound effect for opening the planet management menu.
-        PlayOpenMenuSFX();
     }
 
-    public void CloseMenu()
+    public override void Close()
     {
-        //Logs with the galaxy manager that a popup has been closed on this frame (so that other popups will not close on the same frame because of the escape key being pressed).
-        GalaxyManager.popupClosedOnFrame = true;
-
-        //Resets whether the planet management menu is being dragged by the player.
-        PointerUpPlanetManagementMenu();
+        //Executes the super classes's logic for closing the popup.
+        base.Close();
 
         //Resets all of the shadows on text.
         foreach (Shadow shadow in shadows)
@@ -670,15 +577,6 @@ public class PlanetManagementMenu : MonoBehaviour
             else
                 tabs[x].SetActive(false);
         }
-
-        //Places the planet management menu at the top of the pop-ups object's hierarchy (last priority).
-        transform.SetSiblingIndex(0);
-
-        //Deactivates the whole planet management menu.
-        transform.gameObject.SetActive(false);
-
-        //Plays the sound effect.
-        PlayOpenMenuSFX();
     }
 
     public void ToggleShadow(Shadow shadow)

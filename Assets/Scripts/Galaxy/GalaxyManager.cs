@@ -77,7 +77,7 @@ public class GalaxyManager : MonoBehaviour
     {
         //Closes the planet management menu if it is open.
         if (planetManagementMenu.activeInHierarchy)
-            planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+            planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
 
         //Turns on the research view.
         researchView.SetActive(true);
@@ -104,7 +104,7 @@ public class GalaxyManager : MonoBehaviour
 
             //Closes the planet management menu if it is currently open.
             if (planetManagementMenu.activeInHierarchy)
-                planetManagementMenu.GetComponent<PlanetManagementMenu>().CloseMenu();
+                planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
 
             //Everyone makes their moves for the turn.
             for (int x = 0; x < Empire.empires.Count; x++)

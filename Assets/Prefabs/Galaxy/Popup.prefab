@@ -1355,10 +1355,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3762352884f205f418f3f2886dc9594a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openingAnimationType: 1
+  openPopupSFX: {fileID: 8300000, guid: 7bcab111841d74146952b3c93ebe019c, type: 3}
+  closePopupSFX: {fileID: 0}
+  popupOpensAtStart: 1
+  popupWidthAndHeight: {x: 221.16664, y: 255.3096}
   headLineText: {fileID: 6597292084680625303}
   bodyImage: {fileID: 6597292083321178122}
   bodyText: {fileID: 6597292083917640684}
-  defaultOpenPopupSFX: {fileID: 8300000, guid: 7bcab111841d74146952b3c93ebe019c, type: 3}
   specialOpenPopupSFX: {fileID: 0}
   mouseOverOptionButton: {fileID: 8300000, guid: cfd5226b743e1584a96a0a0a04b6ae96,
     type: 3}
@@ -1384,7 +1388,6 @@ MonoBehaviour:
   - {fileID: 3265410846832909397}
   - {fileID: 5240905042749784851}
   - {fileID: 4126492120029994454}
-  popupScaleIncreaseRate: 3
   popupIndex: 0
 --- !u!1 &6597292083917640686
 GameObject:

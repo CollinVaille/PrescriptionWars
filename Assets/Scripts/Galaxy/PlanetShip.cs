@@ -14,7 +14,7 @@ public class PlanetShip : MonoBehaviour
                 ArmyManagementMenu.armyManagementMenu.ClearAllScrollLists();
 
             ArmyManagementMenu.armyManagementMenu.planetSelected = attachedPlanetID;
-            ArmyManagementMenu.armyManagementMenu.OpenMenu();
+            ArmyManagementMenu.armyManagementMenu.Open();
         }
     }
 }
