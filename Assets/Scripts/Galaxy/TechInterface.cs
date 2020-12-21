@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class TechInterface : MonoBehaviour
 {
     public GameObject galaxyView;
-    public GameObject techListMenu;
+    public GameObject techListMenuPrefab;
+    public static GameObject techListMenuPrefabGlobal;
+    public Transform popupsParent;
+    public static Transform popupsParentGlobal;
 
     public Material skyboxMaterial;
-
-    public Scrollbar techListMenuScrollbar;
 
     public List<Sprite> techSprites;
 
@@ -25,40 +26,27 @@ public class TechInterface : MonoBehaviour
     public List<Text> techLevelTexts;
     public List<Text> techCostTexts;
 
-    public Text techListMenuTopText;
-    public Text techNamesListText;
-    public Text techLevelsListText;
-    public Text techCostsListText;
-
     public AudioSource sfxSource;
     public AudioClip bubblingAudioClip;
-    public AudioClip openTechListMenuAudioClip;
-
-    int techTotemTechListSelected;
-
-    bool techListMenuPreviouslyActive = false;
-    bool techListMenuMoving = false;
-    Vector2 mouseToMenuDistance;
 
     // Start is called before the first frame update
     void Start()
     {
+        techListMenuPrefabGlobal = techListMenuPrefab;
+        popupsParentGlobal = popupsParent;
+
         UpdateTechTotems();
     }
 
     // Update is called once per frame
     void Update()
     {
+        GalaxyManager.ResetPopupClosedOnFrame();
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (techListMenu.activeInHierarchy)
-            {
-                techListMenu.SetActive(false);
-            }
-            else
-            {
+            if (!TechListMenu.IsATechListMenuOpen())
                 SwitchToGalaxy();
-            }
         }
 
         UpdateTechTotems();
@@ -167,124 +155,20 @@ public class TechInterface : MonoBehaviour
                 techCostTexts[x].text = "Cost: None";
             }
         }
-
-        //Updates the tech list menu's position if the player is currently dragging it.
-        if (techListMenuMoving)
-        {
-            techListMenu.transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
-
-            //Left barrier.
-            if(techListMenu.transform.localPosition.x < -275)
-            {
-                techListMenu.transform.localPosition = new Vector2(-275, techListMenu.transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
-
-                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * .15625f * -1)
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * .15625f * -1;
-            }
-            //Right barrier.
-            if(techListMenu.transform.localPosition.x > 275)
-            {
-                techListMenu.transform.localPosition = new Vector2(275, techListMenu.transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
-
-                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * .15625f)
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * .15625f;
-            }
-            //Top barrier.
-            if (techListMenu.transform.localPosition.y > 150)
-            {
-                techListMenu.transform.localPosition = new Vector2(techListMenu.transform.localPosition.x, 150);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
-
-                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * .16784f)
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * .16784f;
-            }
-            //Bottom barrier.
-            if (techListMenu.transform.localPosition.y < -150)
-            {
-                techListMenu.transform.localPosition = new Vector2(techListMenu.transform.localPosition.x, -150);
-
-                mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
-
-                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * .16784f * -1)
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * .16784f * -1;
-            }
-        }
-
-        //Updates the tech list menu's ui if it is up.
-        if (techListMenu.activeInHierarchy && !techListMenuPreviouslyActive && techTotemTechListSelected >= 0 && techTotemTechListSelected < Empire.empires[GalaxyManager.playerID].techManager.techTotems.Count)
-        {
-            UpdateTechListMenu();
-        }
-
-        techListMenuPreviouslyActive = techListMenu.activeInHierarchy;
     }
 
-    public void UpdateTechListMenu()
-    {
-        techNamesListText.text = "";
-        techLevelsListText.text = "";
-        techCostsListText.text = "";
-
-        techListMenuTopText.text = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].name;
-        if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count <= 10)
-        {
-            List<int> techListInOrder = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].GetTechsInOrderList();
-
-            for (int x = 0; x < techListInOrder.Count; x++)
-            {
-                if (x > 0)
-                {
-                    techNamesListText.text += "\n";
-                    techLevelsListText.text += "\n";
-                    techCostsListText.text += "\n";
-                }
-                techNamesListText.text += Tech.entireTechList[techListInOrder[x]].name;
-                techLevelsListText.text += Tech.entireTechList[techListInOrder[x]].level;
-                techCostsListText.text += Tech.entireTechList[techListInOrder[x]].cost;
-            }
-        }
-        else
-        {
-            List<float> possibleValues = GalaxyHelperMethods.GetScrollbarValueNumbers(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].techsAvailable.Count - 9);
-            int closestIndex = 0;
-            for (int x = 1; x < possibleValues.Count; x++)
-            {
-                if (Mathf.Abs(possibleValues[x] - techListMenuScrollbar.value) <= Mathf.Abs(possibleValues[closestIndex] - techListMenuScrollbar.value))
-                    closestIndex = x;
-            }
-
-            List<int> techListInOrder = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemTechListSelected].GetTechsInOrderList();
-
-            bool firstLoop = true;
-            for (int x = closestIndex; x < closestIndex + 10; x++)
-            {
-                if (!firstLoop)
-                {
-                    techNamesListText.text += "\n";
-                    techLevelsListText.text += "\n";
-                    techCostsListText.text += "\n";
-                }
-                techNamesListText.text += Tech.entireTechList[techListInOrder[x]].name;
-                techLevelsListText.text += Tech.entireTechList[techListInOrder[x]].level;
-                techCostsListText.text += Tech.entireTechList[techListInOrder[x]].cost;
-
-                firstLoop = false;
-            }
-        }
-    }
-
+    //Switches the game from the research view to the galaxy view (exiting this view back to the main view).
     public void SwitchToGalaxy()
     {
-        if (techListMenu.activeInHierarchy)
-            CloseTechListMenu();
+        //Detects if a tech list menu is open, if so then it closes all tech list menus.
+        if (TechListMenu.IsATechListMenuOpen())
+            TechListMenu.CloseAllTechListMenus();
 
+        //Activates the galaxy view's game object.
         galaxyView.SetActive(true);
+        //Changes the skybox of the game back to the galaxy view's skybox.
         RenderSettings.skybox = galaxyView.GetComponent<GalaxyGenerator>().skyboxMaterial;
+        //Deactivates the research view's game object.
         transform.gameObject.SetActive(false);
     }
 
@@ -295,47 +179,7 @@ public class TechInterface : MonoBehaviour
 
     public void ClickOnTotemTechListButton(int num)
     {
-        //Sets which tech totem the menu is displaying info for.
-        techTotemTechListSelected = num;
-        //Activates the tech list menu object.
-        techListMenu.SetActive(true);
-
-        //Plays the open/close sound effect.
-        sfxSource.PlayOneShot(openTechListMenuAudioClip);
-    }
-
-    public void CloseTechListMenu()
-    {
-        //Resets the scrollbar's value.
-        techListMenuScrollbar.value = 0;
-        //Resets whether the tech list menu is being dragged by the player.
-        PointerUpTechListMenu();
-        //Resets the tech list menu's location.
-        techListMenu.transform.localPosition = Vector2.zero;
-        //Deactivates the tech list menu object.
-        techListMenu.SetActive(false);
-
-        //Plays the open/close sound effect.
-        sfxSource.PlayOneShot(openTechListMenuAudioClip);
-    }
-
-    public void PointerDownTechListMenu()
-    {
-        //Tells the update function that the player is dragging the menu.
-        techListMenuMoving = true;
-
-        //Tells the update function the set difference between the mouse position and the menu's position.
-        mouseToMenuDistance.x = Input.mousePosition.x - techListMenu.transform.position.x;
-        mouseToMenuDistance.y = Input.mousePosition.y - techListMenu.transform.position.y;
-    }
-
-    public void PointerUpTechListMenu()
-    {
-        //Tells the update function that the player is no longer dragging the menu.
-        techListMenuMoving = false;
-
-        //Resets the vector that says the difference between the mouse position and the menu's position.
-        mouseToMenuDistance = Vector2.zero;
+        TechListMenu.CreateNewTechListMenu(num);
     }
 
     public void SetTechTotemSelected(int newTechTotemSelected)

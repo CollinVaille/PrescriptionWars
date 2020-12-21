@@ -21,6 +21,8 @@ public class GalaxyPopupSuper : MonoBehaviour
 
     //Indicates whether the logic for the popup opening is called in the start method.
     public bool popupOpensAtStart;
+    //Indicates whether the top barrier for the popup is limited by the resource bar.
+    public bool isResourceBarTopBarrier;
     //Indicates whether the mouse is over the popup.
     bool mouseOverPopup;
     //Indicates whether the popup is being moved/dragged.
@@ -91,9 +93,10 @@ public class GalaxyPopupSuper : MonoBehaviour
                     mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f));
             }
             //Top barrier.
-            if (transform.localPosition.y > 67.5f + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)))
+            float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : 99.0f;
+            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)))
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, 67.5f + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)));
+                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)));
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
@@ -131,6 +134,9 @@ public class GalaxyPopupSuper : MonoBehaviour
         //Tells the update function the set difference between the mouse position and the menu's position.
         mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
         mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+
+        //Brings the popup to the top of the priority hierarchy.
+        transform.SetAsLastSibling();
     }
 
     public void PointerUpPopup()

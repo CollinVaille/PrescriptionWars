@@ -57,7 +57,7 @@ public class GalaxyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        popupClosedOnFrame = false;
+        ResetPopupClosedOnFrame();
 
         for(int x = 0; x < Empire.empires.Count; x++)
         {
@@ -122,6 +122,11 @@ public class GalaxyManager : MonoBehaviour
             //Logs that a turn has been completed.
             turnNumber++;
         }
+    }
+
+    public static void ResetPopupClosedOnFrame()
+    {
+        popupClosedOnFrame = false;
     }
 }
 
