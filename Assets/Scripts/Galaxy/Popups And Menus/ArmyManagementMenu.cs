@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArmyManagementMenu : GalaxyPopupSuper
+public class ArmyManagementMenu : GalaxyPopupBehaviour
 {
     public Image backgroundColorImage;
 

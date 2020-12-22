@@ -4,12 +4,14 @@ using UnityEngine;
 
 [System.Serializable]
 
-public class GalaxyPopupSuper : MonoBehaviour
+public class GalaxyPopupBehaviour : MonoBehaviour
 {
     public enum PopupOpeningAnimationType
     {
         Instant,        //Popup is instantly fully open as soon as it is launched.
-        Expand      //Popup scale starts at 0 and increases by a constant rate until it is at 1.
+        Expand,      //Popup scale starts at 0 and increases by a constant rate until it is at 1.
+        VerticalExpand,     //Popup y scale starts at 0 and increases by a constant rate until it is at 1.
+        HorizontalExpand        //Popup x scale starts at 0 and increases by a constant rate until it is at 1.
     }
     //Indicates what type of opening animation the popup will have.
     public PopupOpeningAnimationType openingAnimationType;
@@ -64,6 +66,20 @@ public class GalaxyPopupSuper : MonoBehaviour
                     transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
                 if (transform.localScale.y > 1)
                     transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.z);
+            }
+            else if (openingAnimationType == PopupOpeningAnimationType.VerticalExpand)
+            {
+                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.z);
+
+                if (transform.localScale.y > 1)
+                    transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.z);
+            }
+            else if (openingAnimationType == PopupOpeningAnimationType.HorizontalExpand)
+            {
+                transform.localScale = new Vector3(transform.localScale.x + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.y, transform.localScale.z);
+
+                if (transform.localScale.x > 1)
+                    transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
             }
         }
 
@@ -211,10 +227,14 @@ public class GalaxyPopupSuper : MonoBehaviour
         transform.localPosition = new Vector3(0, 0, 0);
 
         //Starts the opening animation of the popup.
-        if (openingAnimationType == PopupOpeningAnimationType.Expand)
-            transform.localScale = new Vector3(0, 0, 1);
-        else
+        if (openingAnimationType == PopupOpeningAnimationType.Instant)
             transform.localScale = new Vector3(1, 1, 1);
+        else if (openingAnimationType == PopupOpeningAnimationType.Expand)
+            transform.localScale = new Vector3(0, 0, 1);
+        else if (openingAnimationType == PopupOpeningAnimationType.VerticalExpand)
+            transform.localScale = new Vector3(1, 0, 1);
+        else if (openingAnimationType == PopupOpeningAnimationType.HorizontalExpand)
+            transform.localScale = new Vector3(0, 1, 1);
 
         //Plays the sound effect for whenever the popup opens.
         PlayOpenPopupSFX();
@@ -223,8 +243,17 @@ public class GalaxyPopupSuper : MonoBehaviour
     //Indicates whether the opening animation for the popup is done.
     public bool IsOpeningAnimationDone()
     {
-        if(openingAnimationType == PopupOpeningAnimationType.Expand)
-            return transform.localScale.x >= 1 && transform.localScale.y >= 1;
-        return true;
+        switch (openingAnimationType)
+        {
+            case PopupOpeningAnimationType.Expand:
+                return transform.localScale.x >= 1 && transform.localScale.y >= 1;
+            case PopupOpeningAnimationType.VerticalExpand:
+                return transform.localScale.y >= 1;
+            case PopupOpeningAnimationType.HorizontalExpand:
+                return transform.localScale.x >= 1;
+
+            default:
+                return true;
+        }
     }
 }

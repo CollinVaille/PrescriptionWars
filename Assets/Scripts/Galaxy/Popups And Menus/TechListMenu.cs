@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TechListMenu : GalaxyPopupSuper
+public class TechListMenu : GalaxyPopupBehaviour
 {
     //Text that appears at the top of the tech list menu, contains the name of the tech totem that is selected.
     public Text topText;
@@ -45,7 +45,9 @@ public class TechListMenu : GalaxyPopupSuper
         //Executes the super class's closing logic.
         base.Close();
 
+        //Removes this tech list menu from the list of tech list menus that are open.
         techListMenus.Remove(this);
+        //Destroys this tech list menu's game object.
         Destroy(gameObject);
     }
 

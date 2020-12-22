@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlanetManagementMenu : GalaxyPopupSuper
+public class PlanetManagementMenu : GalaxyPopupBehaviour
 {
     public AudioClip clickOnCityAudioClip;
     public AudioClip clickOnTabAudioClip;

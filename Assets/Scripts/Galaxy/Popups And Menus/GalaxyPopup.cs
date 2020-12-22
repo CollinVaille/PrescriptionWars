@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 [System.Serializable]
 
-public class GalaxyPopup : GalaxyPopupSuper
+public class GalaxyPopup : GalaxyPopupBehaviour
 {
     public Text headLineText;
     public Image bodyImage;
