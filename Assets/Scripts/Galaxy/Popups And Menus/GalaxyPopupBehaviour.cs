@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 
@@ -37,6 +38,9 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
     //Indicates the constant rate at which the scale of the popup will increase if it has an expand opening animation type.
     public float popupScaleIncreaseRate = 3.0f;
+
+    //List of all of the images on the popup that will have their color changed to the player empire's color when the popup opens.
+    public List<Image> imagesWithEmpireColor;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -235,6 +239,12 @@ public class GalaxyPopupBehaviour : MonoBehaviour
             transform.localScale = new Vector3(1, 0, 1);
         else if (openingAnimationType == PopupOpeningAnimationType.HorizontalExpand)
             transform.localScale = new Vector3(0, 1, 1);
+
+        //Sets the color of every image that is supposed to be the player empire's color to the player empire's color.
+        foreach (Image imageWithEmpireColor in imagesWithEmpireColor)
+        {
+            imageWithEmpireColor.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        }
 
         //Plays the sound effect for whenever the popup opens.
         PlayOpenPopupSFX();

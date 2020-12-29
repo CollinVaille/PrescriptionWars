@@ -36,6 +36,7 @@ public class GalaxyManager : MonoBehaviour
     public static Camera galaxyCamera;
 
     public static GameObject galaxyConfirmationPopupPrefab;
+
     public static Transform galaxyConfirmationPopupParent;
 
     public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, GameObject prefabOfGalaxyConfirmationPopup, Transform parentOfGalaxyConfirmationPopup)

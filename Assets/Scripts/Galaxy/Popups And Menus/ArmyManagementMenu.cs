@@ -15,8 +15,6 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     public List<ArmyManagerScrollList> armyManagerScrollLists;
 
-    public List<Image> scrollBarHandleImages;
-
     // Start is called before the first frame update
     public override void Start()
     {
@@ -43,17 +41,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         armyOfTheSouth.squads.Add(deltaSquad);
         GalaxyManager.planets[planetSelected].armies.Add(armyOfTheSouth);
 
-        //Executes the logic of the super class for a popup opening.
+        //Executes the logic of the base class for a popup opening.
         base.Open();
 
         //Sets the color of the menu's foreground background image to the player empire's color.
         backgroundColorImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
-
-        //Sets the color of every scroll bar handle to the player empire's color.
-        foreach(Image scrollBarHandleImage in scrollBarHandleImages)
-        {
-            scrollBarHandleImage.color = Empire.empires[GalaxyManager.playerID].empireColor;
-        }
 
         //Sets the planet name text at the top of the menu to the name of the planet that the player has selected to manage the armies on.
         planetNameText.text = GalaxyManager.planets[planetSelected].nameLabel.text;

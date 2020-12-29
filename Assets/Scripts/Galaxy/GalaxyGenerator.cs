@@ -50,6 +50,8 @@ public class GalaxyGenerator : MonoBehaviour
     public GameObject armyManagementMenu;
 
     public GameObject galaxyConfirmationPopupPrefab;
+    public GameObject tooltipPrefab;
+
     public Transform galaxyConfirmationPopupParent;
 
     // Start is called before the first frame update
@@ -69,6 +71,7 @@ public class GalaxyGenerator : MonoBehaviour
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
         GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupPrefab, galaxyConfirmationPopupParent);
+        GalaxyTooltip.tooltipPrefab = tooltipPrefab;
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
         ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GenerateTech();
