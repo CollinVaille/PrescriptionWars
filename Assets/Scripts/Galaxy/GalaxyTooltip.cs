@@ -18,7 +18,7 @@ public class GalaxyTooltip : MonoBehaviour
     //The actual game object of the tooltip.
     GameObject tooltip;
 
-    //The parent transform of the tooltip.
+    //The parent transform of the tooltip (must be set through the SetTooltipParent() method if being set through code, it is only public in order to allow it to be set through the inspector).
     public Transform tooltipParent;
 
     //The text that the tooltip displays to the user (must be set through the SetTooltipText() method if being set through code, it is only public in order to allow it to be set through the inspector).
@@ -64,7 +64,8 @@ public class GalaxyTooltip : MonoBehaviour
         //Instantiates the tooltip game object from the tooltip prefab.
         tooltip = Instantiate(tooltipPrefab);
         //Sets the parent of the tooltip.
-        tooltip.transform.parent = tooltipParent;
+        if(tooltipParent != null)
+            tooltip.transform.SetParent(tooltipParent);
         //Resets the scale and position of the tooltip.
         tooltip.transform.localScale = Vector3.one;
         tooltip.transform.position = Vector3.zero;
@@ -113,6 +114,14 @@ public class GalaxyTooltip : MonoBehaviour
         tooltipText = newTooltipText;
         if(tooltipOpen)
             UpdateTooltipText();
+    }
+
+    //Should be called in order to set the tooltip's parent through code.
+    public void SetTooltipParent(Transform newTooltipParent)
+    {
+        tooltipParent = newTooltipParent;
+        if(tooltipOpen)
+            tooltip.transform.SetParent(tooltipParent);
     }
 
     //Closes the tooltip if the trigger zone is deactivated/disabled.

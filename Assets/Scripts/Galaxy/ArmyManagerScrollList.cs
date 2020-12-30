@@ -305,4 +305,76 @@ public class ArmyManagerScrollList : MonoBehaviour
 
         return childButtons;
     }
+
+    public void DisbandArmy(GalaxyArmy disbandingArmy)
+    {
+        if (mode == ArmyManagerScrollListMode.Army)
+        {
+            int indexOfArmyButton = 0;
+
+            for(int x = 0; x < dropdownButtonParent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                if (scrollListButton.type == ArmyManagementScrollListButton.ArmyDropDownButtonType.ArmyDropDownButton)
+                {
+                    if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()] == disbandingArmy)
+                    {
+                        indexOfArmyButton = x;
+                        break;
+                    }
+                }
+            }
+
+            List<ArmyManagementScrollListButton> childButtons = new List<ArmyManagementScrollListButton>();
+
+            for(int x = indexOfArmyButton + 1; x < dropdownButtonParent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                if (scrollListButton.type != ArmyManagementScrollListButton.GetChildType(scrollListButton.type))
+                    break;
+                childButtons.Add(scrollListButton);
+            }
+
+            foreach(ArmyManagementScrollListButton childButton in childButtons)
+            {
+                Destroy(childButton.gameObject);
+            }
+            Destroy(dropdownButtonParent.GetChild(indexOfArmyButton).gameObject);
+        }
+        else if (mode == ArmyManagerScrollListMode.Squad)
+        {
+
+        }
+    }
+
+    public void DisbandSquad(GalaxySquad disbandingSquad)
+    {
+        if(mode == ArmyManagerScrollListMode.Army)
+        {
+            for(int x = 0; x < dropdownButtonParent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                if(scrollListButton.type == ArmyManagementScrollListButton.ArmyDropDownButtonType.SquadChildButton)
+                {
+                    if(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentButtonDataIndex()].squads[scrollListButton.GetDataIndex()] == disbandingSquad)
+                    {
+                        Destroy(scrollListButton.gameObject);
+                        return;
+                    }
+                }
+            }
+        }
+        else if (mode == ArmyManagerScrollListMode.Squad)
+        {
+
+        }
+    }
+
+    public void DisbandPill(GalaxyPill disbandingPill)
+    {
+        if(mode == ArmyManagerScrollListMode.Squad)
+        {
+
+        }
+    }
 }

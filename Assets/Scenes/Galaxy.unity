@@ -1478,8 +1478,8 @@ RectTransform:
   m_Children:
   - {fileID: 1802702235}
   - {fileID: 763503082}
-  - {fileID: 949235011}
   - {fileID: 1879303694}
+  - {fileID: 949235011}
   - {fileID: 2071409039}
   - {fileID: 856727600}
   - {fileID: 1497995217}
@@ -1576,7 +1576,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 151557704}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 214506630}
+        m_MethodName: ClickDisbandButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &151557704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1596,7 +1607,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f0d67167902949a43b4f92ecf3c98302, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1964,6 +1975,9 @@ MonoBehaviour:
   planetSelected: 0
   armyManagerScrollLists:
   - {fileID: 423993512}
+  middleSection: {fileID: 2121993584}
+  disbandUnitSFX: {fileID: 8300000, guid: 8cc748a0e1e1c8844b2e2f43918445e5, type: 3}
+  groundUnitNameText: {fileID: 2078370366}
 --- !u!114 &214506631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5445,6 +5459,7 @@ MonoBehaviour:
   tooltipPrefab: {fileID: 9151189739358545427, guid: 8c236b0cf373064408bb80ee707fc456,
     type: 3}
   galaxyConfirmationPopupParent: {fileID: 1687072709}
+  galaxyTooltipParent: {fileID: 597037675}
 --- !u!1 &671157015
 GameObject:
   m_ObjectHideFlags: 0
@@ -7343,7 +7358,7 @@ RectTransform:
   - {fileID: 1980791894}
   - {fileID: 950185130}
   m_Father: {fileID: 122588002}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -11148,7 +11163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f74ad925a2ecd04439529a50c4a2efdc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f0d67167902949a43b4f92ecf3c98302, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15326,7 +15341,7 @@ Transform:
   - {fileID: 325615307}
   - {fileID: 214506629}
   m_Father: {fileID: 122588002}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1879303695
 MonoBehaviour:
@@ -16935,7 +16950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

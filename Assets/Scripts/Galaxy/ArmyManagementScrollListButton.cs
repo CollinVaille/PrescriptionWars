@@ -180,4 +180,17 @@ public class ArmyManagementScrollListButton : MonoBehaviour
 
         return transform.GetSiblingIndex() - parentSiblingIndex - 1;
     }
+
+    public void Click()
+    {
+        switch (type)
+        {
+            case ArmyDropDownButtonType.ArmyDropDownButton:
+                ArmyManagementMenu.armyManagementMenu.SetArmySelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetDataIndex()]);
+                break;
+            case ArmyDropDownButtonType.SquadChildButton:
+                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentButtonDataIndex()].squads[GetDataIndex()]);
+                break;
+        }
+    }
 }

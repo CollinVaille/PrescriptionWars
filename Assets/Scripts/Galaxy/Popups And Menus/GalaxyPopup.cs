@@ -18,10 +18,6 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     public List<Button> optionButtons;
     public List<Text> optionButtonTexts;
 
-    public List<GameObject> optionEffectsDescriptions;
-    public List<Image> optionEffectsDescriptionBackgroundImages;
-    public List<Text> optionEffectsDescriptionTexts;
-
     List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
 
     //Indicates the popup's index in the list of popups in the popup manager.
@@ -49,11 +45,6 @@ public class GalaxyPopup : GalaxyPopupBehaviour
                 GalaxyManager.galaxyManager.sfxSource.PlayOneShot(specialOpenPopupSFX);
             specialOpenPopupSFXPlayed = true;
         }
-
-        foreach(GameObject optionEffectDescription in optionEffectsDescriptions)
-        {
-            optionEffectDescription.transform.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-        }
     }
 
     //Indicates whether the popup should close due to the player pressing escape with special parameters compared to the super class.
@@ -77,8 +68,8 @@ public class GalaxyPopup : GalaxyPopupBehaviour
             optionButtonsUsed.Add(x);
             optionsData.Add(popupData.options[optionsProcessed]);
             optionButtonTexts[x].text = popupData.options[optionsProcessed].mainText;
-            optionEffectsDescriptionTexts[x].text = popupData.options[optionsProcessed].effectDescriptionText;
-            optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta = new Vector2(optionEffectsDescriptionTexts[x].preferredWidth + 5, optionEffectsDescriptionBackgroundImages[x].rectTransform.sizeDelta.y);
+            optionButtons[x].gameObject.GetComponent<GalaxyTooltip>().SetTooltipText(popupData.options[optionsProcessed].effectDescriptionText);
+            optionButtons[x].gameObject.GetComponent<GalaxyTooltip>().SetTooltipParent(GalaxyManager.galaxyTooltipParent);
             optionsProcessed++;
         }
         //Deactivates all option buttons that will not be used.
@@ -132,15 +123,11 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     {
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
         SetMouseOverPopup(true);
-
-        optionEffectsDescriptions[buttonNum].SetActive(true);
     }
 
     public void PointerExitOptionButton(int buttonNum)
     {
         SetMouseOverPopup(false);
-
-        optionEffectsDescriptions[buttonNum].SetActive(false);
     }
 }
 

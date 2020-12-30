@@ -38,8 +38,9 @@ public class GalaxyManager : MonoBehaviour
     public static GameObject galaxyConfirmationPopupPrefab;
 
     public static Transform galaxyConfirmationPopupParent;
+    public static Transform galaxyTooltipParent;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, GameObject prefabOfGalaxyConfirmationPopup, Transform parentOfGalaxyConfirmationPopup)
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, GameObject prefabOfGalaxyConfirmationPopup, Transform parentOfGalaxyConfirmationPopup, Transform parentOfGalaxyTooltips)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
@@ -47,6 +48,7 @@ public class GalaxyManager : MonoBehaviour
         galaxyCamera = galaxyCam;
         galaxyConfirmationPopupPrefab = prefabOfGalaxyConfirmationPopup;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
+        galaxyTooltipParent = parentOfGalaxyTooltips;
     }
 
     // Start is called before the first frame update
