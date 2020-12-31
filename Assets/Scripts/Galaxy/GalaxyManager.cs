@@ -35,18 +35,15 @@ public class GalaxyManager : MonoBehaviour
 
     public static Camera galaxyCamera;
 
-    public static GameObject galaxyConfirmationPopupPrefab;
-
     public static Transform galaxyConfirmationPopupParent;
     public static Transform galaxyTooltipParent;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, GameObject prefabOfGalaxyConfirmationPopup, Transform parentOfGalaxyConfirmationPopup, Transform parentOfGalaxyTooltips)
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup, Transform parentOfGalaxyTooltips)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
         planetManagementMenu = menuOfPlanetManagement;
         galaxyCamera = galaxyCam;
-        galaxyConfirmationPopupPrefab = prefabOfGalaxyConfirmationPopup;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
         galaxyTooltipParent = parentOfGalaxyTooltips;
     }

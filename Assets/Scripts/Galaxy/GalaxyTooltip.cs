@@ -66,6 +66,8 @@ public class GalaxyTooltip : MonoBehaviour
         //Sets the parent of the tooltip.
         if(tooltipParent != null)
             tooltip.transform.SetParent(tooltipParent);
+        //Sets the name of the new tooltip game object.
+        tooltip.gameObject.name = gameObject.name + " Tooltip";
         //Resets the scale and position of the tooltip.
         tooltip.transform.localScale = Vector3.one;
         tooltip.transform.position = Vector3.zero;

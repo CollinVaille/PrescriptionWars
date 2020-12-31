@@ -212,7 +212,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         int indexToDemolish = buildingsListTextStartIndex + num;
 
         //Creates the confirmation popup.
-        GameObject confirmationPopup = Instantiate(GalaxyManager.galaxyConfirmationPopupPrefab);
+        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Demolish Building";
         string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";
@@ -253,7 +253,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         int indexToCancel = buildingQueueListTextStartIndex + num;
 
         //Creates the confirmation popup.
-        GameObject confirmationPopup = Instantiate(GalaxyManager.galaxyConfirmationPopupPrefab);
+        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Cancel Building Queued";
         string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";

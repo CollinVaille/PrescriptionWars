@@ -377,4 +377,52 @@ public class ArmyManagerScrollList : MonoBehaviour
 
         }
     }
+
+    public void RenameArmy(GalaxyArmy renamingArmy)
+    {
+        if(mode == ArmyManagerScrollListMode.Army)
+        {
+            for(int x = 0; x < dropdownButtonParent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                if (scrollListButton.type == ArmyManagementScrollListButton.ArmyDropDownButtonType.ArmyDropDownButton)
+                {
+                    if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()] == renamingArmy)
+                    {
+                        scrollListButton.nameText.text = renamingArmy.name;
+                    }
+                }
+            }
+        }
+    }
+
+    public void RenameSquad(GalaxySquad renamingSquad)
+    {
+        if(mode == ArmyManagerScrollListMode.Army)
+        {
+            for (int x = 0; x < dropdownButtonParent.childCount; x++)
+            {
+                ArmyManagementScrollListButton scrollListButton = dropdownButtonParent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                if (scrollListButton.type == ArmyManagementScrollListButton.ArmyDropDownButtonType.SquadChildButton)
+                {
+                    if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentButtonDataIndex()].squads[scrollListButton.GetDataIndex()] == renamingSquad)
+                    {
+                        scrollListButton.nameText.text = renamingSquad.name;
+                    }
+                }
+            }
+        }
+        else if (mode == ArmyManagerScrollListMode.Squad)
+        {
+
+        }
+    }
+
+    public void RenamePill(GalaxyPill renamingPill)
+    {
+        if(mode == ArmyManagerScrollListMode.Squad)
+        {
+
+        }
+    }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GalaxyConfirmationPopup : MonoBehaviour
+public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 {
     public enum GalaxyConfirmationPopupAnswer
     {
@@ -13,23 +13,22 @@ public class GalaxyConfirmationPopup : MonoBehaviour
     public GalaxyConfirmationPopupAnswer answer;
 
     public Text topText;
-    public Text bodyText;
 
     public AudioClip mouseOverSFX;
     public AudioClip mouseClickSFX;
 
-    public static List<GalaxyConfirmationPopup> galaxyConfirmationPopups = new List<GalaxyConfirmationPopup>();
+    public static List<GalaxyConfirmationPopupBehaviour> galaxyConfirmationPopups = new List<GalaxyConfirmationPopupBehaviour>();
 
     bool answered = false;
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
-        
+
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         //If the user presses escape while the pop-up is active, then it will cancel whatever action it was querying the user about.
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -43,10 +42,9 @@ public class GalaxyConfirmationPopup : MonoBehaviour
         }
     }
 
-    public void CreateConfirmationPopup(string popupTopText, string popupBodyText)
+    public void CreateConfirmationPopup(string popupTopText)
     {
         topText.text = popupTopText;
-        bodyText.text = popupBodyText;
 
         transform.parent = GalaxyManager.galaxyConfirmationPopupParent;
         transform.localScale = new Vector3(1, 1, 1);

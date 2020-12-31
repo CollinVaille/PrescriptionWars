@@ -50,6 +50,7 @@ public class GalaxyGenerator : MonoBehaviour
     public GameObject armyManagementMenu;
 
     public GameObject galaxyConfirmationPopupPrefab;
+    public GameObject galaxyInputFieldConfirmationPopupPrefab;
     public GameObject tooltipPrefab;
 
     public Transform galaxyConfirmationPopupParent;
@@ -71,8 +72,10 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
-        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupPrefab, galaxyConfirmationPopupParent, galaxyTooltipParent);
+        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupParent, galaxyTooltipParent);
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
+        GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
+        GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
         ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GenerateTech();

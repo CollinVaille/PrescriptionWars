@@ -5456,6 +5456,8 @@ MonoBehaviour:
   armyManagementMenu: {fileID: 214506628}
   galaxyConfirmationPopupPrefab: {fileID: 5736820362403510988, guid: aada879247f136a468cdb03a966e2a80,
     type: 3}
+  galaxyInputFieldConfirmationPopupPrefab: {fileID: 7190512958222770798, guid: 59cbab844a869da45be74786319f63a2,
+    type: 3}
   tooltipPrefab: {fileID: 9151189739358545427, guid: 8c236b0cf373064408bb80ee707fc456,
     type: 3}
   galaxyConfirmationPopupParent: {fileID: 1687072709}
@@ -11143,7 +11145,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1399449484}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 214506630}
+        m_MethodName: ClickRenameButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1399449484
 MonoBehaviour:
   m_ObjectHideFlags: 0

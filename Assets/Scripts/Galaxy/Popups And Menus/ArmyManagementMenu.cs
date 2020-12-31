@@ -159,9 +159,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     IEnumerator ConfirmDisbandingAction()
     {
-        GameObject confirmationPopup = Instantiate(GalaxyManager.galaxyConfirmationPopupPrefab);
+        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
-        string topText = "Disband " + groundUnitTypeSelected.ToString();
+        string topText = "Disband " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString());
         string bodyText = "Are you sure that you want to disband ";
         switch (groundUnitTypeSelected)
         {
@@ -270,5 +270,86 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     {
         if(disbandUnitSFX != null)
             GalaxyManager.galaxyManager.sfxSource.PlayOneShot(disbandUnitSFX);
+    }
+
+    public void ClickRenameButton()
+    {
+        StartCoroutine(ConfirmRenamingAction());
+    }
+
+    IEnumerator ConfirmRenamingAction()
+    {
+        if(groundUnitTypeSelected != GalaxyGroundUnitType.Squad)
+        {
+            GameObject confirmationPopup = Instantiate(GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab);
+            GalaxyInputFieldConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyInputFieldConfirmationPopup>();
+            string topText = "Rename " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString());
+            confirmationPopupScript.CreateConfirmationPopup(topText);
+            confirmationPopupScript.SetCharacterLimit(41);
+            confirmationPopupScript.SetPlaceHolderText("Enter new " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString()) + " name");
+            switch (groundUnitTypeSelected)
+            {
+                case GalaxyGroundUnitType.Army:
+                    confirmationPopupScript.SetInputFieldText(armySelected.name);
+                    break;
+                case GalaxyGroundUnitType.Pill:
+                    confirmationPopupScript.SetInputFieldText(pillSelected.name);
+                    break;
+
+                default:
+                    Debug.Log("Invalid ground unit type selected, see the ConfirmRenamingAction() method in the ArmyManagementMenu class for details.");
+                    break;
+            }
+
+            yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+            if(confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            {
+                RenameSelectedGroundUnit(confirmationPopupScript.GetInputFieldText());
+            }
+
+            confirmationPopupScript.DestroyConfirmationPopup();
+        }
+        else
+        {
+
+        }
+    }
+
+    void RenameSelectedGroundUnit(string newName)
+    {
+        switch (groundUnitTypeSelected)
+        {
+            case GalaxyGroundUnitType.Army:
+                armySelected.name = newName;
+
+                foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+                {
+                    scrollList.RenameArmy(armySelected);
+                }
+                groundUnitNameText.text = armySelected.name;
+
+                break;
+            case GalaxyGroundUnitType.Squad:
+                squadSelected.name = newName;
+
+                foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+                {
+                    scrollList.RenameSquad(squadSelected);
+                }
+                groundUnitNameText.text = squadSelected.name;
+
+                break;
+            case GalaxyGroundUnitType.Pill:
+                pillSelected.name = newName;
+
+                foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+                {
+                    scrollList.RenamePill(pillSelected);
+                }
+                groundUnitNameText.text = pillSelected.name;
+
+                break;
+        }
     }
 }
