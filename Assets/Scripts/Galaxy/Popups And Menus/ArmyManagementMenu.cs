@@ -286,7 +286,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             string topText = "Rename " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString());
             confirmationPopupScript.CreateConfirmationPopup(topText);
             confirmationPopupScript.SetCharacterLimit(41);
-            confirmationPopupScript.SetPlaceHolderText("Enter new " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString()) + " name");
+            confirmationPopupScript.SetPlaceHolderText("Enter new " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString()) + " name...");
             switch (groundUnitTypeSelected)
             {
                 case GalaxyGroundUnitType.Army:
@@ -312,7 +312,24 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
         else
         {
+            GameObject confirmationPopup = Instantiate(GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab);
+            GalaxyDropdownConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyDropdownConfirmationPopup>();
+            string topText = "Rename " + GeneralHelperMethods.GetEnumText(groundUnitTypeSelected.ToString());
+            confirmationPopupScript.CreateConfirmationPopup(topText);
+            foreach(string validSquadName in GetListOfValidSquadNames())
+            {
+                confirmationPopupScript.AddDropdownOption(validSquadName);
+            }
+            confirmationPopupScript.SetDropdownOptionSelected(squadSelected.name);
 
+            yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+            if(confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            {
+                RenameSelectedGroundUnit(confirmationPopupScript.GetReturnValue());
+            }
+
+            confirmationPopupScript.DestroyConfirmationPopup();
         }
     }
 
@@ -351,5 +368,21 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
                 break;
         }
+    }
+
+    List<string> GetListOfValidSquadNames()
+    {
+        List<string> listOfValidSquadNames = new List<string>();
+
+        listOfValidSquadNames.Add("Alpha Squad");
+        listOfValidSquadNames.Add("Bravo Squad");
+        listOfValidSquadNames.Add("Charlie Squad");
+        listOfValidSquadNames.Add("Delta Squad");
+        listOfValidSquadNames.Add("Echo Squad");
+        listOfValidSquadNames.Add("Foxtrot Squad");
+        listOfValidSquadNames.Add("Golf Squad");
+        listOfValidSquadNames.Add("Hotel Squad");
+
+        return listOfValidSquadNames;
     }
 }

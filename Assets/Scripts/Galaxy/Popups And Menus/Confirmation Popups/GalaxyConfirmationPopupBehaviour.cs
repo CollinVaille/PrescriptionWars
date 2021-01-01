@@ -59,7 +59,7 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Confirm()
+    public virtual void Confirm()
     {
         answer = GalaxyConfirmationPopupAnswer.Confirm;
         answered = true;
