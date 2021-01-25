@@ -36,16 +36,14 @@ public class GalaxyManager : MonoBehaviour
     public static Camera galaxyCamera;
 
     public static Transform galaxyConfirmationPopupParent;
-    public static Transform galaxyTooltipParent;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup, Transform parentOfGalaxyTooltips)
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
         planetManagementMenu = menuOfPlanetManagement;
         galaxyCamera = galaxyCam;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
-        galaxyTooltipParent = parentOfGalaxyTooltips;
     }
 
     // Start is called before the first frame update

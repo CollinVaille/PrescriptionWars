@@ -20,6 +20,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     public GameObject middleSection;
 
     public AudioClip disbandUnitSFX;
+    public AudioClip mouseOverMiddleButtonSFX;
+    public AudioClip mouseClickMiddleButtonSFX;
+    public AudioClip renameSFX;
 
     public Text groundUnitNameText;
 
@@ -368,6 +371,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
                 break;
         }
+
+        PlayRenameSFX();
     }
 
     List<string> GetListOfValidSquadNames()
@@ -384,5 +389,90 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         listOfValidSquadNames.Add("Hotel Squad");
 
         return listOfValidSquadNames;
+    }
+
+    public void PlayMouseOverMiddleButtonSFX()
+    {
+        if (mouseOverMiddleButtonSFX != null)
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverMiddleButtonSFX);
+    }
+
+    public void PlayMouseClickMiddleButtonSFX()
+    {
+        if (mouseClickMiddleButtonSFX != null)
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseClickMiddleButtonSFX);
+    }
+
+    void PlayRenameSFX()
+    {
+        if (renameSFX != null)
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(renameSFX);
+    }
+
+    public void AddNewSquadDropdownButton(int armyID, int squadID, ArmyManagementScrollListButton squadChildButton)
+    {
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            scrollList.AddSquadDropdownButton(armyID, squadID, squadChildButton);
+        }
+    }
+
+    public void SiblingIndexUpdate()
+    {
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            scrollList.SiblingIndexUpdateNextFrame();
+        }
+    }
+
+    public List<ArmyManagementScrollListButton> GetSquadDropdownButtonsWithParentDataIndex(int parentDataIndex)
+    {
+        List<ArmyManagementScrollListButton> squadDropdownButtonsWithParentDataIndex = new List<ArmyManagementScrollListButton>();
+
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            if(scrollList.mode == ArmyManagerScrollList.ArmyManagerScrollListMode.Squad)
+            {
+                foreach(ArmyManagementScrollListButton scrollListButton in scrollList.GetScrollListButtonsOfTypeWithParentDataIndex(ArmyManagementScrollListButton.ArmyManagementButtonType.SquadDropDownButton, parentDataIndex))
+                {
+                    squadDropdownButtonsWithParentDataIndex.Add(scrollListButton);
+                }
+            }
+        }
+
+        return squadDropdownButtonsWithParentDataIndex;
+    }
+
+    /*public bool SquadDropdownButtonExists(int dataIndex, int parentDataIndex)
+    {
+        bool squadDropdownButtonExists = false;
+
+        foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            if(scrollList.mode == ArmyManagerScrollList.ArmyManagerScrollListMode.Squad)
+            {
+                if(scrollList.ScrollListButtonExists(ArmyManagementScrollListButton.ArmyManagementButtonType.SquadDropDownButton, dataIndex, parentDataIndex))
+                {
+                    squadDropdownButtonExists = true;
+                    break;
+                }
+            }
+        }
+
+        return squadDropdownButtonExists;
+    }*/
+
+    public ArmyManagementScrollListButton GetScrollListButton(ArmyManagementScrollListButton.ArmyManagementButtonType buttonType, int dataIndex, int parentDataIndex)
+    {
+        foreach (ArmyManagerScrollList scrollList in armyManagerScrollLists)
+        {
+            ArmyManagementScrollListButton scrollListButton = scrollList.GetScrollListButton(buttonType, dataIndex, parentDataIndex);
+            if (scrollListButton != null)
+            {
+                return scrollListButton;
+            }
+        }
+
+        return null;
     }
 }

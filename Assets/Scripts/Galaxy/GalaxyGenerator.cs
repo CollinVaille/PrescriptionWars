@@ -55,7 +55,6 @@ public class GalaxyGenerator : MonoBehaviour
     public GameObject tooltipPrefab;
 
     public Transform galaxyConfirmationPopupParent;
-    public Transform galaxyTooltipParent;
 
     // Start is called before the first frame update
     void Start()
@@ -69,21 +68,25 @@ public class GalaxyGenerator : MonoBehaviour
         GenerateEmpires();
         GeneratePlanetStats();
         List<PlanetIcon> planetScripts = new List<PlanetIcon>();
-        foreach(GameObject planet in planets)
+        foreach (GameObject planet in planets)
         {
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
-        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupParent, galaxyTooltipParent);
-        GalaxyTooltip.tooltipPrefab = tooltipPrefab;
-        GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
-        GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
-        GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
-        PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
-        ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
+        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupParent);
         GenerateTech();
 
         //Clean up section :)
         GeneralHelperMethods.ClearTextFileCache();
+    }
+
+    private void Awake()
+    {
+        GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
+        GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
+        PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
+        ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
+        GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
+        GalaxyTooltip.tooltipPrefab = tooltipPrefab;
     }
 
     // Update is called once per frame

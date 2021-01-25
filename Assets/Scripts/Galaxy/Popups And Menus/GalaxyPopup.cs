@@ -69,7 +69,6 @@ public class GalaxyPopup : GalaxyPopupBehaviour
             optionsData.Add(popupData.options[optionsProcessed]);
             optionButtonTexts[x].text = popupData.options[optionsProcessed].mainText;
             optionButtons[x].gameObject.GetComponent<GalaxyTooltip>().SetTooltipText(popupData.options[optionsProcessed].effectDescriptionText);
-            optionButtons[x].gameObject.GetComponent<GalaxyTooltip>().SetTooltipParent(GalaxyManager.galaxyTooltipParent);
             optionsProcessed++;
         }
         //Deactivates all option buttons that will not be used.

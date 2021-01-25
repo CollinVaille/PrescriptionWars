@@ -103,4 +103,32 @@ public class GeneralHelperMethods
 
         return finalText;
     }
+
+    public static string GetStartsWithText(string text)
+    {
+        string startsWithText = "";
+
+        foreach(char c in text.ToCharArray())
+        {
+            if (c == ' ')
+                break;
+            startsWithText += c;
+        }
+
+        return startsWithText;
+    }
+
+    public static int GetNumberFromText(string text, int startingIndex, int endingIndex)
+    {
+        string numberTextFromText = "";
+
+        char[] textCharArray = text.ToCharArray();
+
+        for(int characterIndex = startingIndex; characterIndex <= endingIndex; characterIndex++)
+        {
+            numberTextFromText += char.IsDigit(textCharArray[characterIndex]) ? textCharArray[characterIndex].ToString() : "";
+        }
+
+        return int.Parse(numberTextFromText);
+    }
 }

@@ -5,29 +5,37 @@ using UnityEngine.UI;
 
 public class ArmyManagementScrollListButton : MonoBehaviour
 {
-    public enum ArmyDropDownButtonType
+    public enum ArmyManagementButtonType
     {
         ArmyDropDownButton,
-        SquadChildButton
+        SquadChildButton,
+        SquadDropDownButton,
+        PillChildButton
     }
-    public ArmyDropDownButtonType type;
+    public ArmyManagementButtonType type;
 
-    //public int index;
+    public AudioClip clickDropdownButtonSFX;
 
     public Text nameText;
 
     public Image buttonImage;
     public Image arrowImage;
+    public Image transferArrowImage;
 
     public ArmyManagerScrollList scrollList;
 
     public float arrowRotateSpeed;
     public int arrowRotationTargetDegrees;
+    int previousDataIndex;
 
     public bool expanded;
     public bool isDropdownButton;
+    bool additionalDataChangedOnFrame;
 
     public Vector3 initalDragPosition;
+
+    List<int> additionalData = new List<int>();
+    List<ArmyManagementScrollListButton> assignedScrolllistButtons = new List<ArmyManagementScrollListButton>();
 
     // Start is called before the first frame update
     void Start()
@@ -40,29 +48,35 @@ public class ArmyManagementScrollListButton : MonoBehaviour
     {
         if(isDropdownButton)
             UpdateArrowRotationToTargetDegrees();
+
+        additionalDataChangedOnFrame = false;
     }
 
-    public static ArmyDropDownButtonType GetChildType(ArmyDropDownButtonType parentType)
+    public static ArmyManagementButtonType GetChildType(ArmyManagementButtonType parentType)
     {
         switch (parentType)
         {
-            case ArmyDropDownButtonType.ArmyDropDownButton:
-                return ArmyDropDownButtonType.SquadChildButton;
+            case ArmyManagementButtonType.ArmyDropDownButton:
+                return ArmyManagementButtonType.SquadChildButton;
+            case ArmyManagementButtonType.SquadDropDownButton:
+                return ArmyManagementButtonType.PillChildButton;
 
             default:
-                return ArmyDropDownButtonType.SquadChildButton;
+                return ArmyManagementButtonType.SquadChildButton;
         }
     }
 
-    public static ArmyDropDownButtonType GetParentType(ArmyDropDownButtonType childType)
+    public static ArmyManagementButtonType GetParentType(ArmyManagementButtonType childType)
     {
         switch (childType)
         {
-            case ArmyDropDownButtonType.SquadChildButton:
-                return ArmyDropDownButtonType.ArmyDropDownButton;
+            case ArmyManagementButtonType.SquadChildButton:
+                return ArmyManagementButtonType.ArmyDropDownButton;
+            case ArmyManagementButtonType.PillChildButton:
+                return ArmyManagementButtonType.SquadDropDownButton;
 
             default:
-                return ArmyDropDownButtonType.ArmyDropDownButton;
+                return ArmyManagementButtonType.ArmyDropDownButton;
         }
     }
 
@@ -91,6 +105,14 @@ public class ArmyManagementScrollListButton : MonoBehaviour
     public void ClickDropDownButton()
     {
         ExecuteDropDownLogic();
+
+        PlayClickDropdownButtonSFX();
+    }
+
+    void PlayClickDropdownButtonSFX()
+    {
+        if(clickDropdownButtonSFX != null)
+            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickDropdownButtonSFX);
     }
 
     public void ExecuteDropDownLogic()
@@ -110,6 +132,27 @@ public class ArmyManagementScrollListButton : MonoBehaviour
             isDropdownButton = true;
     }
 
+    public void ClickTransferButton()
+    {
+        if(type == ArmyManagementButtonType.SquadChildButton)
+        {
+            if(assignedScrolllistButtons.Count <= 0)
+                ArmyManagementMenu.armyManagementMenu.AddNewSquadDropdownButton(GetParentDataIndex(), GetDataIndex(), this);
+            else
+            {
+                List<ArmyManagementScrollListButton> childButtons = assignedScrolllistButtons[0].scrollList.GetChildButtons(assignedScrolllistButtons[0]);
+                foreach(ArmyManagementScrollListButton childButton in childButtons)
+                {
+                    Destroy(childButton.gameObject);
+                }
+                Destroy(assignedScrolllistButtons[0].gameObject);
+                assignedScrolllistButtons.Clear();
+            }
+
+            transferArrowImage.transform.localScale = new Vector3(transferArrowImage.transform.localScale.x * -1, 1, 1);
+        }
+    }
+
     public void ButtonBeginDrag()
     {
         initalDragPosition = transform.position;
@@ -117,7 +160,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour
 
     public void DragButton()
     {
-        transform.position = Input.mousePosition;
+        transform.position = new Vector3(transform.position.x, Input.mousePosition.y, transform.position.z);
     }
 
     public void ButtonEndDrag()
@@ -126,8 +169,17 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         scrollList.ButtonEndDrag(this);
     }
 
-    public int GetParentButtonDataIndex()
+    public int GetParentDataIndex()
     {
+        if(type == ArmyManagementButtonType.SquadDropDownButton)
+        {
+            return additionalData[0];
+        }
+        if(GetParentType(type) == ArmyManagementButtonType.SquadDropDownButton)
+        {
+            return transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetDataIndex();
+        }
+
         if (isDropdownButton)
         {
             Debug.Log("Something went wrong. You are attempting to get the parent button data index for a dropdown button that does not have a button parent.");
@@ -135,14 +187,14 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         }
 
         int parentButtonDataIndex = -1;
-        for(int x = 0; x < transform.parent.childCount; x++)
+        for (int x = 0; x < transform.parent.childCount; x++)
         {
             ArmyManagementScrollListButton scrollListButton = transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
 
             if (scrollListButton == this)
                 return parentButtonDataIndex;
 
-            if(scrollListButton.type == GetParentType(type))
+            if (scrollListButton.type == GetParentType(type))
                 parentButtonDataIndex++;
         }
 
@@ -153,17 +205,24 @@ public class ArmyManagementScrollListButton : MonoBehaviour
     {
         if (isDropdownButton)
         {
-            int dataIndex = 0;
-
-            for(int x = 0; x < transform.parent.childCount; x++)
+            if(type != ArmyManagementButtonType.SquadDropDownButton)
             {
-                ArmyManagementScrollListButton scrollListButton = transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
+                int dataIndex = 0;
 
-                if (scrollListButton == this)
-                    return dataIndex;
+                for (int x = 0; x < transform.parent.childCount; x++)
+                {
+                    ArmyManagementScrollListButton scrollListButton = transform.parent.GetChild(x).GetComponent<ArmyManagementScrollListButton>();
 
-                if (scrollListButton.type == type)
-                    dataIndex++;
+                    if (scrollListButton == this)
+                        return dataIndex;
+
+                    if (scrollListButton.type == type)
+                        dataIndex++;
+                }
+            }
+            else
+            {
+                return additionalData[1];
             }
         }
 
@@ -181,16 +240,108 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         return transform.GetSiblingIndex() - parentSiblingIndex - 1;
     }
 
+    public int GetParentSiblingIndex()
+    {
+        if (isDropdownButton)
+        {
+            Debug.Log("Something has gone wrong, cannot get the parent sibling index of a dropdown button which has no parent button.");
+            return 0;
+        }
+
+        for(int index = transform.GetSiblingIndex() - 1; index >= 0; index--)
+        {
+            if(transform.parent.GetChild(index).GetComponent<ArmyManagementScrollListButton>().type == GetParentType(type))
+            {
+                return index;
+            }
+        }
+
+        Debug.Log("Something has gone wrong, there is no parent button to get the sibling index for.");
+        return 0;
+    }
+
     public void Click()
     {
         switch (type)
         {
-            case ArmyDropDownButtonType.ArmyDropDownButton:
+            case ArmyManagementButtonType.ArmyDropDownButton:
                 ArmyManagementMenu.armyManagementMenu.SetArmySelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetDataIndex()]);
                 break;
-            case ArmyDropDownButtonType.SquadChildButton:
-                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentButtonDataIndex()].squads[GetDataIndex()]);
+            case ArmyManagementButtonType.SquadChildButton:
+                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].squads[GetDataIndex()]);
+                break;
+            case ArmyManagementButtonType.SquadDropDownButton:
+                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].squads[GetDataIndex()]);
+                break;
+            case ArmyManagementButtonType.PillChildButton:
+                ArmyManagementMenu.armyManagementMenu.SetPillSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].squads[GetParentDataIndex()].pills[GetDataIndex()]);
                 break;
         }
+    }
+
+    public void AddAdditionalData(int data)
+    {
+        additionalData.Add(data);
+    }
+
+    public void SetAdditionalData(int index, int data)
+    {
+        if(index < additionalData.Count)
+        {
+            additionalData[index] = data;
+            additionalDataChangedOnFrame = true;
+        }
+    }
+
+    public void AddAssignedScrolllistButton(ArmyManagementScrollListButton scrollListButton)
+    {
+        assignedScrolllistButtons.Add(scrollListButton);
+    }
+
+    public void SiblingIndexUpdate()
+    {
+        switch (type)
+        {
+            case ArmyManagementButtonType.SquadChildButton:
+                if(assignedScrolllistButtons.Count > 0)
+                {
+                    assignedScrolllistButtons[0].SetAdditionalData(0, GetParentDataIndex());
+                    assignedScrolllistButtons[0].SetAdditionalData(1, GetDataIndex());
+                }
+                break;
+            case ArmyManagementButtonType.ArmyDropDownButton:
+                if (assignedScrolllistButtons.Count > 0)
+                {
+                    foreach (ArmyManagementScrollListButton scrollListButton in assignedScrolllistButtons)
+                    {
+                        scrollListButton.SetAdditionalData(0, GetDataIndex());
+                    }
+
+                    assignedScrolllistButtons.Clear();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public void SiblingIndexUpdateOccuringNextFrame()
+    {
+        previousDataIndex = GetDataIndex();
+
+        if(type == ArmyManagementButtonType.ArmyDropDownButton)
+        {
+            if (!expanded)
+            {
+                assignedScrolllistButtons = ArmyManagementMenu.armyManagementMenu.GetSquadDropdownButtonsWithParentDataIndex(GetDataIndex());
+                //Debug.Log(assignedScrolllistButtons.Count);
+            }
+        }
+    }
+
+    public bool HasAdditionalDataChangedOnFrame()
+    {
+        return additionalDataChangedOnFrame;
     }
 }

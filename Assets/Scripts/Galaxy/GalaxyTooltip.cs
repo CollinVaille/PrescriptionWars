@@ -10,7 +10,11 @@ public class GalaxyTooltip : MonoBehaviour
         Deactivate,     //The tooltip game object is not destroyed, but rather still in the background and deactivated (More Processor Friendly).
         Destroy     //The tooltip game object is not in the background and deactivated, but rather completely destroyed (More Memory Friendly).
     }
+
+    [Header("Logic Options")]
+
     //Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).
+    [Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
     public TooltipClosingType closingType;
 
     //The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
@@ -19,31 +23,87 @@ public class GalaxyTooltip : MonoBehaviour
     GameObject tooltip;
 
     //The parent transform of the tooltip (must be set through the SetTooltipParent() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("The parent transform of the tooltip.")]
     public Transform tooltipParent;
 
-    //The text that the tooltip displays to the user (must be set through the SetTooltipText() method if being set through code, it is only public in order to allow it to be set through the inspector).
-    public string tooltipText;
+    //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
+    [Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
+    public Vector2 initialLocalPosition;
 
+    //Indicates whether the tooltip will have its location set to the mouse's location every update.
+    [Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
+    public bool updateToMousePosition;
     //Indicates whether the tooltip is open or not.
     bool tooltipOpen;
+
+    [Header("Text Content")]
+
+    //The text that the tooltip displays to the user (must be set through the SetTooltipText() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("The text that the tooltip displays to the user.")]
+    [TextArea]
+    public string tooltipText;
+
+    //The font that the text of the tooltip will be (must be set through the SetFont() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("The font that the text of the tooltip will be.")]
+    public Font font;
+
+    //Indicates the size of the font of the tooltip text (must be set through the SetFontSize() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates the size of the font of the tooltip text.")]
+    public int fontSize;
+
+    [Header("Text Shadow")]
+
+    //Indicates whether the shadow component of the tooltip's text is enabled (must be set through the SetTextShadowEnabled() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
+    public bool textShadowEnabled;
+
+    //Indicates the effect distance of the shadow component of the tooltip's text (must be set through the SetTextShadowEffectDistance() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates the effect distance of the shadow component of the tooltip's text.")]
+    public Vector2 textShadowEffectDistance = new Vector2(1, -1);
+
+    public enum GalaxyTooltipColorOption
+    {
+        Default,
+        Transparent,
+        PlayerEmpireColor,
+        CustomColor0,
+        CustomColor1,
+        CustomColor2
+    }
+
+    [Header("Coloring Options")]
+
+    //Indicates the color of the text of the tooltip (must be set through the SetTextColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates the color of the text of the tooltip.")]
+    public GalaxyTooltipColorOption textColor;
+
+    //Indicates the color of the shadow component of the tooltip's text (must be set through the SetTextShadowColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
+    public GalaxyTooltipColorOption textShadowColor;
+
+    //Indicates the background color of the tooltip (must be set through the SetBackgroundColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    [Tooltip("Indicates the background color of the tooltip.")]
+    public GalaxyTooltipColorOption backgroundColor;
+
+    //List of custom colors that the tooltip can use.
+    [Tooltip("A list of custom colors that the tooltip can use.")]
+    public List<Color> customColors;
 
     // Start is called before the first frame update
     void Start()
     {
-        //Creates the tooltip game object and puts it in the background if the tooltip game object will not be destroyed every time the tooltip closes.
-        if (closingType == TooltipClosingType.Deactivate)
-        {
-            CreateTooltip();
-            tooltip.SetActive(false);
-        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //Updates the position of the tooltip to the position of the player's mouse if the tooltip is open.
-        if (tooltipOpen)
+        if (tooltipOpen && updateToMousePosition)
+        {
             tooltip.transform.position = Input.mousePosition;
+            tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + initialLocalPosition.y);
+        }
     }
 
     //Opens the tooltip whenever the mouse/pointer enters the trigger zone (must be called through the Unity event trigger system).
@@ -70,7 +130,9 @@ public class GalaxyTooltip : MonoBehaviour
         tooltip.gameObject.name = gameObject.name + " Tooltip";
         //Resets the scale and position of the tooltip.
         tooltip.transform.localScale = Vector3.one;
-        tooltip.transform.position = Vector3.zero;
+        tooltip.transform.localPosition = initialLocalPosition;
+        //Sets the color of the background image of the tooltip.
+        tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColor, "Background");
         //Updates the text of the tooltip.
         UpdateTooltipText();
     }
@@ -80,7 +142,11 @@ public class GalaxyTooltip : MonoBehaviour
     {
         //Activates the tooltip's game object if it is not destroyed every time the tooltip closes.
         if (closingType == TooltipClosingType.Deactivate)
+        {
+            if(tooltip == null)
+                CreateTooltip();
             tooltip.SetActive(true);
+        }
         //Creates a whole new tooltip again if it is destroyed every time the tooltip closes.
         else if (closingType == TooltipClosingType.Destroy)
             CreateTooltip();
@@ -94,7 +160,10 @@ public class GalaxyTooltip : MonoBehaviour
     {
         //Deactivates the tooltip's game object if it is not destroyed every time the tooltip closes.
         if (closingType == TooltipClosingType.Deactivate)
-            tooltip.SetActive(false);
+        {
+            if(tooltipOpen)
+                tooltip.SetActive(false);
+        }
         //Destroys the tooltip game object if it is supposed to be destroyed every time the tooltip closes.
         else if (closingType == TooltipClosingType.Destroy)
             Destroy(tooltip);
@@ -106,15 +175,35 @@ public class GalaxyTooltip : MonoBehaviour
     //Updates the text element of the tooltip and makes sure that the width of the background image adjusts to match the width of the text.
     void UpdateTooltipText()
     {
-        tooltip.transform.GetChild(1).GetComponent<Text>().text = tooltipText;
-        tooltip.transform.GetChild(0).GetComponent<Image>().rectTransform.sizeDelta = new Vector2(tooltip.transform.GetChild(1).GetComponent<Text>().preferredWidth + 5, tooltip.transform.GetChild(0).GetComponent<Image>().rectTransform.sizeDelta.y);
+        Text textElementOfTooltip = tooltip.transform.GetChild(1).GetComponent<Text>();
+        //Sets the font of the text of the tooltip.
+        if(font != null)
+            textElementOfTooltip.font = font;
+        //Sets the font size of the text of the tooltip.
+        if(fontSize > 0)
+            textElementOfTooltip.fontSize = fontSize;
+        //Sets the color of the text of the tooltip.
+        textElementOfTooltip.color = GetColorFromColorOption(textColor, "Text");
+        //Enables the shadow component of the tooltip's text if it is supposed to be enabled and disables it if it is supposed to be disabled.
+        if (textShadowEnabled)
+            tooltip.transform.GetChild(1).GetComponent<Shadow>().enabled = true;
+        else
+            tooltip.transform.GetChild(1).GetComponent<Shadow>().enabled = false;
+        //Sets the effect distance of the shadow component of the tooltip's text.
+        tooltip.transform.GetChild(1).GetComponent<Shadow>().effectDistance = textShadowEffectDistance;
+        //Sets the color of the shadow component of the tooltip's text.
+        tooltip.transform.GetChild(1).GetComponent<Shadow>().effectColor = GetColorFromColorOption(textShadowColor, "Text Shadow");
+        //Sets the text of the tooltip.
+        textElementOfTooltip.text = tooltipText;
+        //Adjusts the background image of the tooltip to the size of the text of the tooltip.
+        tooltip.transform.GetChild(0).GetComponent<Image>().rectTransform.sizeDelta = new Vector2(tooltip.transform.GetChild(1).GetComponent<Text>().preferredWidth + 5, tooltip.transform.GetChild(1).GetComponent<Text>().preferredHeight + 3);
     }
 
     //Should be called in order to set the tooltip text through code.
     public void SetTooltipText(string newTooltipText)
     {
         tooltipText = newTooltipText;
-        if(tooltipOpen)
+        if(tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
             UpdateTooltipText();
     }
 
@@ -122,8 +211,101 @@ public class GalaxyTooltip : MonoBehaviour
     public void SetTooltipParent(Transform newTooltipParent)
     {
         tooltipParent = newTooltipParent;
-        if(tooltipOpen)
+        if(tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
             tooltip.transform.SetParent(tooltipParent);
+    }
+
+    //Should be called in order to set the tooltip's text font through code.
+    public void SetFont(Font newTooltipTextFont)
+    {
+        font = newTooltipTextFont;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    //Should be called in order to set the font size of the tooltip text through code.
+    public void SetTooltipTextFontSize(int newFontSize)
+    {
+        fontSize = newFontSize;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    //Should be called in order to set the background color of the tooltip through code.
+    public void SetBackgroundColor(GalaxyTooltipColorOption colorOption)
+    {
+        backgroundColor = colorOption;
+        if(tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColor, "Background");
+    }
+
+    //Should be called in order to set the color of the text of the tooltip through code.
+    public void SetTextColor(GalaxyTooltipColorOption colorOption)
+    {
+        textColor = colorOption;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    //Should be called in order to set if the shadow component of the tooltip's text is enabled or not through code.
+    public void SetTextShadowEnabled(bool isTextShadowEnabled)
+    {
+        textShadowEnabled = isTextShadowEnabled;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    //Should be called in order to set the effect distance of the shadow component of the tooltip's text through code.
+    public void SetTextShadowEffectDistance(Vector2 newTextShadowEffectDistance)
+    {
+        textShadowEffectDistance = newTextShadowEffectDistance;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    public void SetTextShadowColor(GalaxyTooltipColorOption colorOption)
+    {
+        textShadowColor = colorOption;
+        if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
+            UpdateTooltipText();
+    }
+
+    //Returns the appropriate color depending on the color identifier and what component of the tooltip the color corresponds to.
+    Color GetColorFromColorOption(GalaxyTooltipColorOption colorOption, string componentOfTooltip)
+    {
+        switch (colorOption)
+        {
+            case GalaxyTooltipColorOption.Default:
+                switch (componentOfTooltip.ToLower())
+                {
+                    case "background":
+                        return tooltipPrefab.transform.GetChild(0).GetComponent<Image>().color;
+                    case "text":
+                        return tooltipPrefab.transform.GetChild(1).GetComponent<Text>().color;
+                    case "text shadow":
+                        return tooltipPrefab.transform.GetChild(1).GetComponent<Shadow>().effectColor;
+
+                    default:
+                        Debug.Log("Something has gone wrong. " + componentOfTooltip + " is not a valid tooltip component. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
+                        return Color.white;
+                }
+            case GalaxyTooltipColorOption.Transparent:
+                return Color.clear;
+            case GalaxyTooltipColorOption.PlayerEmpireColor:
+                return Empire.empires[GalaxyManager.playerID].empireColor;
+
+            default:
+                if (colorOption.ToString().ToLower().Contains("customcolor"))
+                {
+                    int customColorIndex = GeneralHelperMethods.GetNumberFromText(colorOption.ToString(), 11, colorOption.ToString().Length - 1);
+                    if (customColorIndex >= 0 && customColorIndex < customColors.Count)
+                        return customColors[customColorIndex];
+                    Debug.Log("Custom Color Index: " + customColorIndex + " is an invalid custom color index. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
+                    return Color.white;
+                }
+                Debug.Log("Something has gone wrong. Color option: " + colorOption + " is not a valid color identifier. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
+                return Color.white;
+        }
     }
 
     //Closes the tooltip if the trigger zone is deactivated/disabled.

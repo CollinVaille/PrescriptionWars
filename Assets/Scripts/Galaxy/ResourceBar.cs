@@ -11,15 +11,12 @@ public class ResourceBar : MonoBehaviour
 
     int flagSymbolNum = -1;
 
-    public Text empireNameText;
+    public GalaxyTooltip empireNameTooltip;
+
     public Text creditsText;
-    public Text creditsHoverText;
     public Text prescriptionsText;
-    public Text prescriptionsHoverText;
     public Text scienceText;
-    public Text scienceHoverText;
     public Text productionText;
-    public Text productionHoverText;
     public Text turnText;
 
     public float updatesPerSecond;
@@ -43,14 +40,11 @@ public class ResourceBar : MonoBehaviour
 
             flagBackground.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.z, 1.0f);
             flagSymbol.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.z, 1.0f);
-            empireNameText.text = Empire.empires[GalaxyManager.playerID].empireName;
-            empireNameText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
+            empireNameTooltip.SetTooltipText(Empire.empires[GalaxyManager.playerID].empireName);
             creditsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
             creditsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
-            creditsHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
             prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
-            prescriptionsHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             scienceText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].science);
             try
             {
@@ -61,9 +55,7 @@ public class ResourceBar : MonoBehaviour
 
             }
             scienceText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetSciencePerTurn();
-            scienceHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             productionText.text = "+" + (int)Empire.empires[GalaxyManager.playerID].GetProductionPerTurn();
-            productionHoverText.gameObject.GetComponent<Shadow>().effectColor = Empire.empires[GalaxyManager.playerID].empireColor;
             turnText.text = "Turn: " + GalaxyManager.turnNumber;
 
             timer = 0.0f;
@@ -100,30 +92,5 @@ public class ResourceBar : MonoBehaviour
         }
 
         return resourceString;
-    }
-
-    public void ToggleEmpireName()
-    {
-        empireNameText.gameObject.SetActive(!empireNameText.gameObject.activeInHierarchy);
-    }
-
-    public void ToggleCreditsHoverText()
-    {
-        creditsHoverText.gameObject.SetActive(!creditsHoverText.gameObject.activeInHierarchy);
-    }
-
-    public void TogglePrescriptionsHoverText()
-    {
-        prescriptionsHoverText.gameObject.SetActive(!prescriptionsHoverText.gameObject.activeInHierarchy);
-    }
-
-    public void ToggleScienceHoverText()
-    {
-        scienceHoverText.gameObject.SetActive(!scienceHoverText.gameObject.activeInHierarchy);
-    }
-
-    public void ToggleProductionHoverText()
-    {
-        productionHoverText.gameObject.SetActive(!productionHoverText.gameObject.activeInHierarchy);
     }
 }
