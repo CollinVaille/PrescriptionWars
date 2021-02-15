@@ -22,13 +22,15 @@ public class GalaxyTooltip : MonoBehaviour
     //The actual game object of the tooltip.
     GameObject tooltip;
 
-    //The parent transform of the tooltip (must be set through the SetTooltipParent() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //The parent transform of the tooltip.
     [Tooltip("The parent transform of the tooltip.")]
-    public Transform tooltipParent;
+    [SerializeField]
+    private Transform tooltipParent;
 
     //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
     [Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
-    public Vector2 initialLocalPosition;
+    [SerializeField]
+    private Vector2 initialLocalPosition = Vector2.zero;
 
     //Indicates whether the tooltip will have its location set to the mouse's location every update.
     [Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
@@ -38,28 +40,33 @@ public class GalaxyTooltip : MonoBehaviour
 
     [Header("Text Content")]
 
-    //The text that the tooltip displays to the user (must be set through the SetTooltipText() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //The text that the tooltip displays to the user.
     [Tooltip("The text that the tooltip displays to the user.")]
     [TextArea]
-    public string tooltipText;
+    [SerializeField]
+    private string tooltipText;
 
-    //The font that the text of the tooltip will be (must be set through the SetFont() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //The font that the text of the tooltip will be.
     [Tooltip("The font that the text of the tooltip will be.")]
-    public Font font;
+    [SerializeField]
+    private Font font;
 
-    //Indicates the size of the font of the tooltip text (must be set through the SetFontSize() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates the size of the font of the tooltip text.
     [Tooltip("Indicates the size of the font of the tooltip text.")]
-    public int fontSize;
+    [SerializeField]
+    private int fontSize;
 
     [Header("Text Shadow")]
 
-    //Indicates whether the shadow component of the tooltip's text is enabled (must be set through the SetTextShadowEnabled() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates whether the shadow component of the tooltip's text is enabled.
     [Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
-    public bool textShadowEnabled;
+    [SerializeField]
+    private bool textShadowEnabled;
 
-    //Indicates the effect distance of the shadow component of the tooltip's text (must be set through the SetTextShadowEffectDistance() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates the effect distance of the shadow component of the tooltip's text.
     [Tooltip("Indicates the effect distance of the shadow component of the tooltip's text.")]
-    public Vector2 textShadowEffectDistance = new Vector2(1, -1);
+    [SerializeField]
+    private Vector2 textShadowEffectDistance = new Vector2(1, -1);
 
     public enum GalaxyTooltipColorOption
     {
@@ -73,21 +80,25 @@ public class GalaxyTooltip : MonoBehaviour
 
     [Header("Coloring Options")]
 
-    //Indicates the color of the text of the tooltip (must be set through the SetTextColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates the color of the text of the tooltip.
     [Tooltip("Indicates the color of the text of the tooltip.")]
-    public GalaxyTooltipColorOption textColor;
+    [SerializeField]
+    private GalaxyTooltipColorOption textColor;
 
-    //Indicates the color of the shadow component of the tooltip's text (must be set through the SetTextShadowColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates the color of the shadow component of the tooltip's text.
     [Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
-    public GalaxyTooltipColorOption textShadowColor;
+    [SerializeField]
+    private GalaxyTooltipColorOption textShadowColor;
 
-    //Indicates the background color of the tooltip (must be set through the SetBackgroundColor() method if being set through code, it is only public in order to allow it to be set through the inspector).
+    //Indicates the background color of the tooltip.
     [Tooltip("Indicates the background color of the tooltip.")]
-    public GalaxyTooltipColorOption backgroundColor;
+    [SerializeField]
+    private GalaxyTooltipColorOption backgroundColor;
 
     //List of custom colors that the tooltip can use.
     [Tooltip("A list of custom colors that the tooltip can use.")]
-    public List<Color> customColors;
+    [SerializeField]
+    private List<Color> customColors = new List<Color>();
 
     // Start is called before the first frame update
     void Start()

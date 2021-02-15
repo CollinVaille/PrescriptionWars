@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class TechInterface : MonoBehaviour
 {
     public GameObject galaxyView;
+    public GameObject techTotemsView;
+    public TechTotemDetailsView techTotemDetailsView;
+
     public GameObject techListMenuPrefab;
     public static GameObject techListMenuPrefabGlobal;
     public Transform popupsParent;
@@ -13,12 +16,9 @@ public class TechInterface : MonoBehaviour
 
     public Material skyboxMaterial;
 
-    public List<Sprite> techSprites;
-
     public List<RawImage> researchProgressRawImages;
     public List<Image> techTotemImages;
     public List<Image> techTotemSelectedOutlineImages;
-    public List<int> techTotemImageIndexes;
 
     public List<Text> techTotemTopTexts;
     public List<Text> techNameTexts;
@@ -28,6 +28,8 @@ public class TechInterface : MonoBehaviour
 
     public AudioSource sfxSource;
     public AudioClip bubblingAudioClip;
+
+    public string defaultTechTotemSpriteName;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +45,7 @@ public class TechInterface : MonoBehaviour
     {
         GalaxyManager.ResetPopupClosedOnFrame();
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && techTotemsView.activeInHierarchy)
         {
             if (!TechListMenu.IsATechListMenuOpen())
                 SwitchToGalaxy();
@@ -59,16 +61,11 @@ public class TechInterface : MonoBehaviour
         {
             if(Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                if(techTotemImageIndexes[x] != Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteNum)
-                {
-                    techTotemImages[x].sprite = techSprites[Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteNum];
-                    techTotemImageIndexes[x] = Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteNum;
-                }
+                techTotemImages[x].sprite = Resources.Load<Sprite>("Galaxy/Tech Totems/" + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteName);
             }
             else
             {
-                techTotemImages[x].sprite = techSprites[0];
-                techTotemImageIndexes[x] = -1;
+                techTotemImages[x].sprite = Resources.Load<Sprite>("Galaxy/Tech Totems/" + defaultTechTotemSpriteName);
             }
         }
 
@@ -179,7 +176,10 @@ public class TechInterface : MonoBehaviour
 
     public void ClickOnTotemTechListButton(int num)
     {
-        TechListMenu.CreateNewTechListMenu(num);
+        //TechListMenu.CreateNewTechListMenu(num);
+        techTotemsView.SetActive(false);
+        techTotemDetailsView.gameObject.SetActive(true);
+        techTotemDetailsView.OnSwitchToTechTotemDetailsView(num);
     }
 
     public void SetTechTotemSelected(int newTechTotemSelected)

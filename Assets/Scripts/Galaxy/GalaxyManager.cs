@@ -535,13 +535,36 @@ public class Tech
     public string name;
     public string description;
     public string totemName;
+    public string spriteName;
 
     public int level;
-    public int spriteNum;
 
     public float cost;
 
     public List<TechEffect> effects;
+
+    public static List<int> GetSortedTechIDListByLevel(List<int> techIDListToSort)
+    {
+        List<int> sortedTechIDList = new List<int>();
+
+        List<int> techIDsLeftToSort = techIDListToSort;
+        for(int techLevel = 1; techLevel > 0; techLevel++)
+        {
+            for(int index = techIDsLeftToSort.Count - 1; index >= 0; index--)
+            {
+                if(entireTechList[techIDsLeftToSort[index]].level == techLevel)
+                {
+                    sortedTechIDList.Add(techIDsLeftToSort[index]);
+                    techIDsLeftToSort.RemoveAt(index);
+                }
+            }
+
+            if (techIDListToSort.Count <= 0)
+                break;
+        }
+
+        return sortedTechIDList;
+    }
 }
 
 [System.Serializable]
