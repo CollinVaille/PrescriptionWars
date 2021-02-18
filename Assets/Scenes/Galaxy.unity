@@ -5798,9 +5798,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062aa6279fbf59c4d9c6289517a018da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commandConsole: {fileID: 2071409038}
+  cheatConsole: {fileID: 2071409040}
   researchView: {fileID: 1098509857}
-  endTurnButton: {fileID: 856727599}
   musicSource: {fileID: 1145276744}
   sfxSource: {fileID: 1492085428}
   switchToResearchViewSFX: {fileID: 8300000, guid: cb1d7b753a457b044b9a48c683e8b321,
@@ -5819,7 +5818,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 417e99619aa49444eb8766555b17366c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  galaxyCamera: {fileID: 1676803077}
+  techTotems:
+  - Gorilla Warfare
+  - Vehicles
+  - Home Improvement
+  - Army Party
+  - Honeypotting
   techs:
   - name: Mining I
     description: Base credits production per turn per city increased by 0.25.
@@ -5963,28 +5967,11 @@ MonoBehaviour:
     effects:
     - effectType: 4
       amount: 1
-  techTotems:
-  - Gorilla Warfare
-  - Vehicles
-  - Home Improvement
-  - Army Party
-  - Honeypotting
-  skyboxMaterial: {fileID: 2100000, guid: 5ee91479e858d7043a1fb410c5a60f51, type: 2}
+  playerEmpireName: 
   numberOfPlanets: 60
   numberOfEmpires: 5
   distanceBetweenPlanets: 30
   hyperspaceLaneCheckingRadius: 60
-  leftBoundary: -50
-  rightBoundary: 500
-  topBoundary: 260
-  bottomBoundary: 0
-  playerEmpireName: 
-  planetPrefab: {fileID: 4495200285863478047, guid: bcdb2a27a1d37e540a013c1a2a2a73c4,
-    type: 3}
-  planetDaddy: {fileID: 1394729654}
-  hyperspaceLanesDaddy: {fileID: 291867261}
-  hyperspaceLanesManager: {fileID: 291867260}
-  planetManagementMenu: {fileID: 325615306}
   flagSymbols:
   - {fileID: 21300000, guid: c6393a2b5e395874192a01fa554d4d34, type: 3}
   - {fileID: 21300000, guid: 679d3e079f458a64182ce5327f92be95, type: 3}
@@ -5996,6 +5983,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 482f14fce01b7a24bbcf4a67822542a7, type: 3}
   - {fileID: 21300000, guid: c72459df99c505346962a28c81dad529, type: 3}
   - {fileID: 21300000, guid: a892549ea7a5a9c428c6da39c5f620da, type: 3}
+  galaxyCamera: {fileID: 1676803077}
+  skyboxMaterial: {fileID: 2100000, guid: 5ee91479e858d7043a1fb410c5a60f51, type: 2}
+  leftBoundary: -50
+  rightBoundary: 500
+  topBoundary: 260
+  bottomBoundary: 0
   frozenMaterials:
   - {fileID: 2100000, guid: 51922023e6da5aa43a073b59de793fe8, type: 2}
   - {fileID: 2100000, guid: 64d484be7c509b4438efe4500ebaca4f, type: 2}
@@ -6048,16 +6041,16 @@ MonoBehaviour:
   - {fileID: 2100000, guid: cfd5aad6e6dd20b469573c2c9eb327a3, type: 2}
   - {fileID: 2100000, guid: 39e0cfdfc168f86489e413d713d87560, type: 2}
   - {fileID: 2100000, guid: fb396c0472f60fb44921de350d692745, type: 2}
-  shipPrefab: {fileID: 8531751786611237472, guid: 88730df31a26e4b4c91f58dc578daad7,
-    type: 3}
-  shipDaddy: {fileID: 1569746072}
   empireMaterials:
   - {fileID: 2100000, guid: f97325201c08b50459a650febe59afad, type: 2}
   - {fileID: 2100000, guid: 3075eda53b45f4748bb423158ef9b245, type: 2}
   - {fileID: 2100000, guid: ceddc292cbdcf0d4090f224a85e48888, type: 2}
   - {fileID: 2100000, guid: ec880dcad11aaf44691b0c67fbab845c, type: 2}
   - {fileID: 2100000, guid: 11246b68c6b503f4783a8eb241403a4f, type: 2}
-  armyManagementMenu: {fileID: 214506628}
+  planetPrefab: {fileID: 4495200285863478047, guid: bcdb2a27a1d37e540a013c1a2a2a73c4,
+    type: 3}
+  shipPrefab: {fileID: 8531751786611237472, guid: 88730df31a26e4b4c91f58dc578daad7,
+    type: 3}
   galaxyConfirmationPopupPrefab: {fileID: 5736820362403510988, guid: aada879247f136a468cdb03a966e2a80,
     type: 3}
   galaxyInputFieldConfirmationPopupPrefab: {fileID: 7190512958222770798, guid: 59cbab844a869da45be74786319f63a2,
@@ -6066,7 +6059,13 @@ MonoBehaviour:
     type: 3}
   tooltipPrefab: {fileID: 9151189739358545427, guid: 8c236b0cf373064408bb80ee707fc456,
     type: 3}
+  hyperspaceLanesDaddy: {fileID: 291867261}
+  planetParent: {fileID: 1394729654}
+  shipParent: {fileID: 1569746073}
   galaxyConfirmationPopupParent: {fileID: 1687072709}
+  hyperspaceLanesManager: {fileID: 291867262}
+  planetManagementMenu: {fileID: 325615308}
+  armyManagementMenu: {fileID: 214506630}
 --- !u!1 &671157015
 GameObject:
   m_ObjectHideFlags: 0
@@ -9372,8 +9371,6 @@ MonoBehaviour:
   galaxyView: {fileID: 644450514}
   techTotemsView: {fileID: 1154283340}
   techTotemDetailsView: {fileID: 776853754}
-  techListMenuPrefab: {fileID: 8699436080377412903, guid: 2d2f1052f5e395046baafe926f7fce62,
-    type: 3}
   popupsParent: {fileID: 1868337152}
   skyboxMaterial: {fileID: 2100000, guid: 85031a0780356064aa3d727e613dc2da, type: 2}
   researchProgressRawImages:

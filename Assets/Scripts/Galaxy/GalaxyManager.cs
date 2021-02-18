@@ -6,13 +6,20 @@ using UnityEngine.UI;
 
 public class GalaxyManager : MonoBehaviour
 {
-    public GameObject commandConsole;
-    public GameObject researchView;
-    public GameObject endTurnButton;
+    [Header("Cheat Console")]
 
-    //Audio stuff.
+    public CheatConsole cheatConsole;
+    
+    [Header("Other Views")]
+
+    public GameObject researchView;
+
+    [Header("Audio Sources")]
+
     public AudioSource musicSource;
     public AudioSource sfxSource;
+
+    [Header("Sound Effects")]
 
     public AudioClip switchToResearchViewSFX;
     public AudioClip techFinishedSFX;
@@ -28,7 +35,6 @@ public class GalaxyManager : MonoBehaviour
     public static bool observationModeEnabled = false;
     public static bool popupClosedOnFrame = false;
 
-    public static GameObject planetManagementMenu;
     public static GalaxyManager galaxyManager;
 
     public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null};
@@ -37,11 +43,10 @@ public class GalaxyManager : MonoBehaviour
 
     public static Transform galaxyConfirmationPopupParent;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, GameObject menuOfPlanetManagement, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup)
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
-        planetManagementMenu = menuOfPlanetManagement;
         galaxyCamera = galaxyCam;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
     }
@@ -55,8 +60,10 @@ public class GalaxyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Resets the boolean that indicates if a popup was closed on the frame.
         ResetPopupClosedOnFrame();
 
+        //Updates the player empire boolean.
         for(int x = 0; x < Empire.empires.Count; x++)
         {
             if (x == playerID)
@@ -65,17 +72,32 @@ public class GalaxyManager : MonoBehaviour
                 Empire.empires[x].playerEmpire = false;
         }
 
+        //Toggles the cheat console if the player presses tilde.
         if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
-            commandConsole.GetComponent<CheatConsole>().ToggleConsole();
+            cheatConsole.ToggleConsole();
+        }
+    }
+
+    public void WarningRightSideNotificationsUpdate()
+    {
+        //No research selected warning.
+        if(Empire.empires[playerID].techManager.techTotemSelected < 0)
+        {
+            if(!RightSideNotificationManager.NotificationExistsOfTopic("No Research Selected") && !RightSideNotificationManager.NotificationExistsOfTopic("Research Completed"))
+                RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "No Research Selected", false, null);
+        }
+        else
+        {
+            RightSideNotificationManager.DismissNotificationsOfTopic("No Research Selected");
         }
     }
 
     public void SwitchToResearchView()
     {
         //Closes the planet management menu if it is open.
-        if (planetManagementMenu.activeInHierarchy)
-            planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
+        if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
+            PlanetManagementMenu.planetManagementMenu.Close();
 
         //Turns on the research view.
         researchView.SetActive(true);
@@ -90,10 +112,10 @@ public class GalaxyManager : MonoBehaviour
 
     public void EndTurn()
     {
-        if(!RightSideNotificationManager.ContainsNonDismissableNotification() && !GalaxyPopupManager.ContainsNonDismissablePopup())
+        if(!RightSideNotificationManager.ContainsNotificationWithAnswerRequired() && !GalaxyPopupManager.ContainsNonDismissablePopup())
         {
             //Dismisses all right side notifications that still exist and do not require an answer.
-            RightSideNotificationManager.DismissAllNotifications();
+            RightSideNotificationManager.DismissAllNotifications(false);
             //Closes all popups that still exist and do not require an answer.
             GalaxyPopupManager.CloseAllPopups();
 
@@ -101,8 +123,8 @@ public class GalaxyManager : MonoBehaviour
             sfxSource.PlayOneShot(endTurnSFX);
 
             //Closes the planet management menu if it is currently open.
-            if (planetManagementMenu.activeInHierarchy)
-                planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
+            if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
+                PlanetManagementMenu.planetManagementMenu.Close();
 
             //Everyone makes their moves for the turn.
             for (int x = 0; x < Empire.empires.Count; x++)
@@ -116,6 +138,8 @@ public class GalaxyManager : MonoBehaviour
             {
                 empire.EndTurn();
             }
+
+            WarningRightSideNotificationsUpdate();
 
             //Logs that a turn has been completed.
             turnNumber++;
@@ -383,13 +407,16 @@ public class TechManager
         researchCompletedPopup.spriteName = "Research Facility";
         researchCompletedPopup.bodyText = "Our glorious empire has finished researching the " + completedTech.name + " tech. " + completedTech.name + ": " + completedTech.description;
         GalaxyPopupOptionData option = new GalaxyPopupOptionData();
-        option.mainText = "We grow stronger by the day.";
-        option.effectDescriptionText = "The " + completedTech.name + " tech has been researched.";
+        option.mainText = "Select new tech to research.";
+        option.effectDescriptionText = "Opens the research view.";
+        GalaxyPopupOptionEffect optionEffect = new GalaxyPopupOptionEffect();
+        optionEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.OpenResearchView;
+        option.effects.Add(optionEffect);
         researchCompletedPopup.options.Add(option);
         researchCompletedPopup.answerRequired = false;
         researchCompletedPopup.specialOpenSFXName = "Chemistry Bubbles";
 
-        RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "Research Completed", researchCompletedPopup);
+        RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "Research Completed", true, researchCompletedPopup);
     }
 
     public void UpdateTechnologyEffects()

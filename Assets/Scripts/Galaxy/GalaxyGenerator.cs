@@ -4,36 +4,34 @@ using UnityEngine;
 
 public class GalaxyGenerator : MonoBehaviour
 {
-    public Camera galaxyCamera;
+    [Header("Tech")]
 
-    public List<Tech> techs;
     public List<string> techTotems;
+    public List<Tech> techs;
 
-    public Material skyboxMaterial;
-    
-    string[] planetNames;
+    [Header("Initial Game Settings")]
+
+    public string playerEmpireName;
 
     public int numberOfPlanets;
     public int numberOfEmpires;
     public int distanceBetweenPlanets;
     public int hyperspaceLaneCheckingRadius;
 
+    public List<Sprite> flagSymbols;
+
+    [Header("Camera Settings")]
+
+    public Camera galaxyCamera;
+
+    public Material skyboxMaterial;
+
     public float leftBoundary;
     public float rightBoundary;
     public float topBoundary;
     public float bottomBoundary;
 
-    public string playerEmpireName;
-
-    public GameObject planetPrefab;
-    public Transform planetDaddy;
-    public Transform hyperspaceLanesDaddy;
-
-    List<GameObject> planets;
-    public GameObject hyperspaceLanesManager;
-    public GameObject planetManagementMenu;
-
-    public List<Sprite> flagSymbols;
+    [Header("Planet Materials")]
 
     public List<Material> frozenMaterials;
     public List<Material> spiritMaterials;
@@ -42,19 +40,33 @@ public class GalaxyGenerator : MonoBehaviour
     public List<Material> swampMaterials;
     public List<Material> hellMaterials;
 
-    public GameObject shipPrefab;
-    public GameObject shipDaddy;
-
     public List<Material> empireMaterials;
 
-    public GameObject armyManagementMenu;
+    [Header("Prefabs")]
 
+    public GameObject planetPrefab;
+    public GameObject shipPrefab;
     public GameObject galaxyConfirmationPopupPrefab;
     public GameObject galaxyInputFieldConfirmationPopupPrefab;
     public GameObject galaxyDropdownConfirmationPopupPrefab;
     public GameObject tooltipPrefab;
 
+    [Header("Parents")]
+
+    public Transform hyperspaceLanesDaddy;
+    public Transform planetParent;
+    public Transform shipParent;
     public Transform galaxyConfirmationPopupParent;
+
+    [Header("Manager Objects")]
+
+    public HyperspaceLanesManager hyperspaceLanesManager;
+    public PlanetManagementMenu planetManagementMenu;
+    public ArmyManagementMenu armyManagementMenu;
+
+    private string[] planetNames;
+
+    private List<GameObject> planets;
 
     // Start is called before the first frame update
     void Start()
@@ -72,7 +84,7 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
-        GalaxyManager.Initialize(planetScripts, flagSymbols, planetManagementMenu, galaxyCamera, galaxyConfirmationPopupParent);
+        GalaxyManager.Initialize(planetScripts, flagSymbols, galaxyCamera, galaxyConfirmationPopupParent);
         GenerateTech();
 
         //Clean up section :)
@@ -81,12 +93,16 @@ public class GalaxyGenerator : MonoBehaviour
 
     private void Awake()
     {
+        //Prefabs.
         GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
         GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
-        PlanetManagementMenu.planetManagementMenu = planetManagementMenu.GetComponent<PlanetManagementMenu>();
-        ArmyManagementMenu.armyManagementMenu = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
+
+        //Manager objects.
+        HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;
+        PlanetManagementMenu.planetManagementMenu = planetManagementMenu;
+        ArmyManagementMenu.armyManagementMenu = armyManagementMenu;
     }
 
     // Update is called once per frame
@@ -306,7 +322,7 @@ public class GalaxyGenerator : MonoBehaviour
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
                     planets[y].GetComponent<PlanetIcon>().isCapital = true;
-                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
+                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipParent, shipPrefab);
                     sourcePlanet = planets[y];
                     break;
                 }
@@ -335,7 +351,7 @@ public class GalaxyGenerator : MonoBehaviour
                 planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
                 planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
                 planets[indexToAdd].GetComponent<PlanetIcon>().isCapital = false;
-                planets[indexToAdd].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
+                planets[indexToAdd].GetComponent<PlanetIcon>().GenerateShip(shipParent, shipPrefab);
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -381,7 +397,7 @@ public class GalaxyGenerator : MonoBehaviour
                     planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(iteration);
                     planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[iteration].empireCulture;
                     planets[y].GetComponent<PlanetIcon>().isCapital = false;
-                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipDaddy, shipPrefab);
+                    planets[y].GetComponent<PlanetIcon>().GenerateShip(shipParent, shipPrefab);
                     break;
                 }
             }
@@ -541,7 +557,7 @@ public class GalaxyGenerator : MonoBehaviour
         for(int x = 0; x < numberOfPlanets; x++)
         {
             GameObject newPlanet = Instantiate(planetPrefab);
-            newPlanet.transform.parent = planetDaddy;
+            newPlanet.transform.parent = planetParent;
 
             //Assigns a name to each planet.
             string newPlanetName = "";

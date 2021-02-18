@@ -8,6 +8,8 @@ public class HyperspaceLanesManager : MonoBehaviour
 
     public GameObject linePrefab;
 
+    public static HyperspaceLanesManager hyperspaceLanesManager;
+
     // Start is called before the first frame update
     void Start()
     {

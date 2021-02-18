@@ -6,11 +6,6 @@ public class RightSideNotificationManager : MonoBehaviour
 {
     public GameObject rideSideNotificationPrefab;
 
-    public List<Sprite> rightSideNotificationSprites;
-    public List<string> rightSideNotificationSpriteNames;
-
-    public static Dictionary<string, Sprite> rightSideNotificationSpritesDictionary = new Dictionary<string, Sprite>();
-
     public static List<RightSideNotification> rightSideNotifications = new List<RightSideNotification>();
 
     public static RightSideNotificationManager rightSideNotificationManager;
@@ -18,11 +13,6 @@ public class RightSideNotificationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GenerateRightSideNotificationSpritesDictionary();
-
-        rightSideNotificationManager = this;
-
-
         /*GalaxyPopupData newPopUpData = new GalaxyPopupData();
         newPopUpData.headLine = "Test Notification";
         newPopUpData.spriteName = "Research Completed";
@@ -47,37 +37,9 @@ public class RightSideNotificationManager : MonoBehaviour
         CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);*/
     }
 
-    void GenerateRightSideNotificationSpritesDictionary()
+    void Awake()
     {
-        if (rightSideNotificationSprites.Count == rightSideNotificationSpriteNames.Count)
-        {
-            for (int x = 0; x < rightSideNotificationSpriteNames.Count; x++)
-            {
-                rightSideNotificationSpritesDictionary[rightSideNotificationSpriteNames[x]] = rightSideNotificationSprites[x];
-            }
-        }
-        else
-        {
-            Debug.Log("Right side notification sprites list and right side notifications sprite names list count do not match! Please fix this issue.");
-        }
-    }
-
-    public static Sprite GetRightSideNotificationSpriteFromName(string rightSideNotificationSpriteName)
-    {
-        if(rightSideNotificationSpriteName == null)
-        {
-            return null;
-        }
-
-        if (rightSideNotificationSpritesDictionary.ContainsKey(rightSideNotificationSpriteName))
-        {
-            return rightSideNotificationSpritesDictionary[rightSideNotificationSpriteName];
-        }
-        else
-        {
-            Debug.Log("Invalid Right Side Notification Sprite Name (key does not exist in dictionary)");
-            return null;
-        }
+        rightSideNotificationManager = this;
     }
 
     // Update is called once per frame
@@ -94,7 +56,7 @@ public class RightSideNotificationManager : MonoBehaviour
         }
     }
 
-    public static void CreateNewRightSideNotification(string spriteName, string notificationTopic, GalaxyPopupData popupData)
+    public static void CreateNewRightSideNotification(string spriteName, string notificationTopic, bool dismissable, GalaxyPopupData popupData)
     {
         GameObject rightSideNotification = Instantiate(rightSideNotificationManager.rideSideNotificationPrefab);
         rightSideNotification.transform.parent = rightSideNotificationManager.transform;
@@ -110,7 +72,7 @@ public class RightSideNotificationManager : MonoBehaviour
         }
 
         //Creates the contents of the notification.
-        rightSideNotification.GetComponent<RightSideNotification>().CreateNewRightSideNotification(spriteName, notificationTopic, rightSideNotifications.Count, position, popupData);
+        rightSideNotification.GetComponent<RightSideNotification>().CreateNewRightSideNotification(spriteName, notificationTopic, dismissable, rightSideNotifications.Count, position, popupData);
 
         //Adds the notification to the notifications list.
         rightSideNotifications.Add(rightSideNotification.GetComponent<RightSideNotification>());
@@ -128,7 +90,7 @@ public class RightSideNotificationManager : MonoBehaviour
         Destroy(notificationDismissed.gameObject);
     }
 
-    public static bool ContainsNonDismissableNotification()
+    public static bool ContainsNotificationWithAnswerRequired()
     {
         foreach(RightSideNotification rightSideNotification in rightSideNotifications)
         {
@@ -139,11 +101,32 @@ public class RightSideNotificationManager : MonoBehaviour
         return false;
     }
 
-    public static void DismissAllNotifications()
+    public static void DismissAllNotifications(bool forceDismissal)
     {
         foreach(RightSideNotification notification in rightSideNotifications)
         {
-            notification.StartNotificationDismissal();
+            if(forceDismissal || notification.IsDismissable())
+                notification.StartNotificationDismissal();
+        }
+    }
+
+    public static bool NotificationExistsOfTopic(string notificationTopic)
+    {
+        foreach(RightSideNotification notification in rightSideNotifications)
+        {
+            if (notification.GetNotificationTopic().ToLower().Equals(notificationTopic.ToLower()))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static void DismissNotificationsOfTopic(string notificationTopic)
+    {
+        foreach (RightSideNotification notification in rightSideNotifications)
+        {
+            if (notification.GetNotificationTopic().ToLower().Equals(notificationTopic.ToLower()))
+                notification.StartNotificationDismissal();
         }
     }
 }

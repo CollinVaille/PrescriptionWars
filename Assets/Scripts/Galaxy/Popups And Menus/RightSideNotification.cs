@@ -17,6 +17,7 @@ public class RightSideNotification : MonoBehaviour
     bool beingDismissed;
     bool beingOpened;
     bool reachedInitialPosition;
+    bool dismissable;
 
     Color notificationTopicTextNewColor;
 
@@ -72,10 +73,11 @@ public class RightSideNotification : MonoBehaviour
         }
     }
 
-    public void CreateNewRightSideNotification(string spriteName, string notificationTopic, int positionInQueue, float position, GalaxyPopupData popupData)
+    public void CreateNewRightSideNotification(string spriteName, string notificationTopic, bool isDismissable, int positionInQueue, float position, GalaxyPopupData popupData)
     {
-        foregroundImage.sprite = RightSideNotificationManager.GetRightSideNotificationSpriteFromName(spriteName);
+        foregroundImage.sprite = Resources.Load<Sprite>("Galaxy/Right Side Notifications/" + spriteName);
         notificationTopicText.text = notificationTopic;
+        dismissable = isDismissable;
         positionInNotificationQueue = positionInQueue;
         transform.localPosition = new Vector3(370, position, 0);
         transform.localScale = new Vector3(1, 1, 1);
@@ -101,14 +103,17 @@ public class RightSideNotification : MonoBehaviour
             }
             else if (Input.GetMouseButtonUp(1))
             {
-                if (popupData != null)
+                if (dismissable)
                 {
-                    if (!popupData.answerRequired)
+                    if (popupData != null)
+                    {
+                        if (!popupData.answerRequired)
+                            StartNotificationDismissal();
+                    }
+                    else
+                    {
                         StartNotificationDismissal();
-                }
-                else
-                {
-                    StartNotificationDismissal();
+                    }
                 }
             }
         }
@@ -139,8 +144,23 @@ public class RightSideNotification : MonoBehaviour
         return mouseOverNotification;
     }
 
+    public bool IsDismissable()
+    {
+        return dismissable;
+    }
+
     public bool IsAnswerRequired()
     {
-        return popupData.answerRequired;
+        if(popupData != null)
+        {
+            return popupData.answerRequired;
+        }
+
+        return false;
+    }
+
+    public string GetNotificationTopic()
+    {
+        return notificationTopicText.text;
     }
 }

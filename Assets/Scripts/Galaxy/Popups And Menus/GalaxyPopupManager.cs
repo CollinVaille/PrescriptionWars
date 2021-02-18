@@ -171,9 +171,23 @@ public class GalaxyPopupManager : MonoBehaviour
             case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.ConquerPlanet:
                 GalaxyHelperMethods.ConquerPlanet(effect.effectDependencies[0], effect.effectDependencies[1]);
                 break;
+            case GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.OpenResearchView:
+                GalaxyManager.galaxyManager.SwitchToResearchView();
+                break;
 
             default:
                 break;
         }
+    }
+
+    public static bool PopupExistsWithHeadLine(string headLine)
+    {
+        foreach(GalaxyPopup popup in popups)
+        {
+            if (popup.GetHeadLine().ToLower().Equals(headLine.ToLower()))
+                return true;
+        }
+
+        return false;
     }
 }

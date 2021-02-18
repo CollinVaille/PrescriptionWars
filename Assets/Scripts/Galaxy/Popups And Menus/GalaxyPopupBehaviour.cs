@@ -50,6 +50,11 @@ public class GalaxyPopupBehaviour : MonoBehaviour
             Open();
     }
 
+    public virtual void Awake()
+    {
+
+    }
+
     // Update is called once per frame
     public virtual void Update()
     {

@@ -9,8 +9,6 @@ public class TechInterface : MonoBehaviour
     public GameObject techTotemsView;
     public TechTotemDetailsView techTotemDetailsView;
 
-    public GameObject techListMenuPrefab;
-    public static GameObject techListMenuPrefabGlobal;
     public Transform popupsParent;
     public static Transform popupsParentGlobal;
 
@@ -34,7 +32,6 @@ public class TechInterface : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        techListMenuPrefabGlobal = techListMenuPrefab;
         popupsParentGlobal = popupsParent;
 
         UpdateTechTotems();
@@ -47,11 +44,15 @@ public class TechInterface : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape) && techTotemsView.activeInHierarchy)
         {
-            if (!TechListMenu.IsATechListMenuOpen())
-                SwitchToGalaxy();
+            SwitchToGalaxy();
         }
+    }
 
+    private void OnEnable()
+    {
         UpdateTechTotems();
+
+        SetTechTotemSelected(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected);
     }
 
     void UpdateTechTotems()
@@ -157,10 +158,6 @@ public class TechInterface : MonoBehaviour
     //Switches the game from the research view to the galaxy view (exiting this view back to the main view).
     public void SwitchToGalaxy()
     {
-        //Detects if a tech list menu is open, if so then it closes all tech list menus.
-        if (TechListMenu.IsATechListMenuOpen())
-            TechListMenu.CloseAllTechListMenus();
-
         //Activates the galaxy view's game object.
         galaxyView.SetActive(true);
         //Changes the skybox of the game back to the galaxy view's skybox.
@@ -172,6 +169,8 @@ public class TechInterface : MonoBehaviour
     public void ClickOnTotem(int num)
     {
         SetTechTotemSelected(num);
+
+        GalaxyManager.galaxyManager.WarningRightSideNotificationsUpdate();
     }
 
     public void ClickOnTotemTechListButton(int num)
@@ -184,15 +183,14 @@ public class TechInterface : MonoBehaviour
 
     public void SetTechTotemSelected(int newTechTotemSelected)
     {
-        int previousTechTotemSelected = Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected;
         Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = newTechTotemSelected;
 
-        if(newTechTotemSelected != previousTechTotemSelected)
+        for(int x = 0; x < techTotemSelectedOutlineImages.Count; x++)
         {
-            if(previousTechTotemSelected != -1)
-                techTotemSelectedOutlineImages[previousTechTotemSelected].gameObject.SetActive(false);
-            if(newTechTotemSelected != -1)
-                techTotemSelectedOutlineImages[newTechTotemSelected].gameObject.SetActive(true);
+            if (x != newTechTotemSelected)
+                techTotemSelectedOutlineImages[x].gameObject.SetActive(false);
+            else
+                techTotemSelectedOutlineImages[x].gameObject.SetActive(true);
         }
     }
 }

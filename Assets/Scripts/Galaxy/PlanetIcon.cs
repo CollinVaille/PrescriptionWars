@@ -35,10 +35,10 @@ public class PlanetIcon : MonoBehaviour
     //Armies
     public List<GalaxyArmy> armies = new List<GalaxyArmy>();
 
-    public void GenerateShip(GameObject shipDaddy, GameObject shipPrefab)
+    public void GenerateShip(Transform shipParent, GameObject shipPrefab)
     {
         GameObject newShip = Instantiate(shipPrefab);
-        newShip.transform.parent = shipDaddy.transform;
+        newShip.transform.parent = shipParent.transform;
 
         newShip.transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z + 10);
         newShip.GetComponent<PlanetShip>().attachedPlanetID = planetID;
@@ -254,9 +254,9 @@ public class PlanetIcon : MonoBehaviour
             PlanetManagementMenu.planetSelected = transform.gameObject;
             
             //Closes the planet management menu if it is already open, this is purely just to reset it before we immediately reopen it.
-            if (GalaxyManager.planetManagementMenu.activeInHierarchy)
+            if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
             {
-                GalaxyManager.planetManagementMenu.GetComponent<PlanetManagementMenu>().Close();
+                PlanetManagementMenu.planetManagementMenu.Close();
             }
 
             //Opens the planet management menu.

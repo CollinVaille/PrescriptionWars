@@ -128,6 +128,11 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     {
         SetMouseOverPopup(false);
     }
+
+    public string GetHeadLine()
+    {
+        return headLineText.text;
+    }
 }
 
 [System.Serializable]
@@ -166,7 +171,8 @@ public class GalaxyPopupOptionEffect
         AddPrescriptionsPerTurnToEmpire,
         AddScienceToEmpire,
         AddSciencePerTurnToEmpire,
-        ConquerPlanet
+        ConquerPlanet,
+        OpenResearchView
     }
     public GalaxyPopupOptionEffectType effectType;
 
