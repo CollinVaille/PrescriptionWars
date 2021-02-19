@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditorInternal.VR;
+//using UnityEditorInternal.VR;
 
 public class NewGameMenu : MonoBehaviour
 {

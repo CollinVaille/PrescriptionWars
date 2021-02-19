@@ -7,28 +7,45 @@ using UnityEngine.EventSystems;
 public class RightSideNotification : MonoBehaviour
 {
     public Image foregroundImage;
+    public Image overlayImage;
 
     public Text notificationTopicText;
 
     public float notificationTopicTextOpacityChangeRate;
     public float notificationMoveSpeed;
 
-    bool mouseOverNotification;
-    bool beingDismissed;
-    bool beingOpened;
-    bool reachedInitialPosition;
-    bool dismissable;
+    public float warningOverlaySpeed;
 
-    Color notificationTopicTextNewColor;
+    private bool mouseOverNotification;
+    private bool beingDismissed;
+    private bool beingOpened;
+    private bool reachedInitialPosition;
+    private bool dismissable;
 
-    int positionInNotificationQueue;
+    private Color notificationTopicTextNewColor;
+    private Color overlayImageNewColor;
 
-    GalaxyPopupData popupData;
+    private int positionInNotificationQueue;
+
+    private GalaxyPopupData popupData;
+
+    public enum RightSideNotificationType
+    {
+        Normal,
+        Warning
+    }
+    private RightSideNotificationType notificationType;
+
+    //Warning notification specifics.
+    private WarningRightSideNotificationClickEffect clickEffect;
+
+    private bool warningOverlayOpacityIncreasing = true;
 
     // Start is called before the first frame update
     void Start()
     {
         notificationTopicTextNewColor = notificationTopicText.color;
+        overlayImageNewColor = overlayImage.color;
     }
 
     // Update is called once per frame
@@ -71,17 +88,92 @@ public class RightSideNotification : MonoBehaviour
                 DismissNotification();
             }
         }
+
+        //Executes the logic that needs to be executed every update for warning notifications.
+        if(notificationType == RightSideNotificationType.Warning)
+            ExecuteWarningNotificationUpdateLogic();
+    }
+
+    private void ExecuteWarningNotificationUpdateLogic()
+    {
+        if (warningOverlayOpacityIncreasing)
+        {
+            overlayImageNewColor.a += warningOverlaySpeed * Time.deltaTime;
+
+            if(overlayImageNewColor.a >= 1)
+            {
+                overlayImageNewColor.a = 1;
+                warningOverlayOpacityIncreasing = false;
+            }
+
+            overlayImage.color = overlayImageNewColor;
+        }
+        else
+        {
+            overlayImageNewColor.a -= warningOverlaySpeed * Time.deltaTime;
+
+            if (overlayImageNewColor.a <= 0)
+            {
+                overlayImageNewColor.a = 0;
+                warningOverlayOpacityIncreasing = true;
+            }
+
+            overlayImage.color = overlayImageNewColor;
+        }
     }
 
     public void CreateNewRightSideNotification(string spriteName, string notificationTopic, bool isDismissable, int positionInQueue, float position, GalaxyPopupData popupData)
     {
+        //Loads in the appropriate sprite from the project's resources and sets it to be the sprite of the foreground image of the notification.
         foregroundImage.sprite = Resources.Load<Sprite>("Galaxy/Right Side Notifications/" + spriteName);
+
+        //Sets the text of the notification topic text component to be the specified notification topic.
         notificationTopicText.text = notificationTopic;
+
+        //Sets the boolean that indicates whether the notification is dismissable or not to the specified value.
         dismissable = isDismissable;
+
+        //Sets the variable that indicates the notification's position in the notification queue.
         positionInNotificationQueue = positionInQueue;
+
+        //Sets the actual position of the notification.
         transform.localPosition = new Vector3(370, position, 0);
+
+        //Resets the scale of the notification.
         transform.localScale = new Vector3(1, 1, 1);
+
+        //Stores the passed in popup data.
         this.popupData = popupData;
+
+        //Indicates that the notification is a normal notification.
+        notificationType = RightSideNotificationType.Normal;
+    }
+
+    public void CreateNewWarningRightSideNotification(string spriteName, string notificationTopic, int positionInQueue, float position, WarningRightSideNotificationClickEffect clickEffect)
+    {
+        //Loads in the appropriate sprite from the project's resources and sets it to be the sprite of the foreground image of the notification.
+        foregroundImage.sprite = Resources.Load<Sprite>("Galaxy/Right Side Notifications/" + spriteName);
+
+        //Sets the text of the notification topic text component to be the specified notification topic.
+        notificationTopicText.text = notificationTopic;
+
+        //Indicates that the notification cannot be dismissed.
+        dismissable = false;
+
+        //Sets the variable that indicates the notification's position in the notification queue.
+        positionInNotificationQueue = positionInQueue;
+
+        //Sets the actual position of the notification.
+        transform.localPosition = new Vector3(370, position, 0);
+
+        //Resets the scale of the notification.
+        transform.localScale = new Vector3(1, 1, 1);
+
+        //Sets the variable that indicates what effect will happen when the warning right side notification is clicked.
+        this.clickEffect = clickEffect;
+
+        //Indicates that the notification is a warning notification.
+        notificationType = RightSideNotificationType.Warning;
     }
 
     public void ToggleMouseOverNotification()
@@ -100,6 +192,10 @@ public class RightSideNotification : MonoBehaviour
                     beingOpened = true;
                     OpenNotification();
                 }
+                else if (notificationType == RightSideNotificationType.Warning)
+                {
+                    ExecuteWarningNotificationClickEffect();
+                }
             }
             else if (Input.GetMouseButtonUp(1))
             {
@@ -116,6 +212,22 @@ public class RightSideNotification : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    void ExecuteWarningNotificationClickEffect()
+    {
+        switch (clickEffect)
+        {
+            case WarningRightSideNotificationClickEffect.None:
+                break;
+            case WarningRightSideNotificationClickEffect.OpenResearchView:
+                GalaxyManager.galaxyManager.SwitchToResearchView();
+                break;
+
+            default:
+                Debug.Log("No warning notification click effect logic exists for the click effect type: " + clickEffect.ToString() + ".");
+                break;
         }
     }
 
@@ -163,4 +275,20 @@ public class RightSideNotification : MonoBehaviour
     {
         return notificationTopicText.text;
     }
+
+    private void OnDisable()
+    {
+        //Indicates that the mouse is not hovering over the notification.
+        mouseOverNotification = false;
+
+        //Sets the topic text of the notification to be completely transparent.
+        notificationTopicTextNewColor.a = 0;
+        notificationTopicText.color = notificationTopicTextNewColor;
+    }
+}
+
+public enum WarningRightSideNotificationClickEffect
+{
+    None,
+    OpenResearchView
 }

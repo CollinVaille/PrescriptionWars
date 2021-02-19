@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
+//using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -84,8 +84,8 @@ public class GalaxyManager : MonoBehaviour
         //No research selected warning.
         if(Empire.empires[playerID].techManager.techTotemSelected < 0)
         {
-            if(!RightSideNotificationManager.NotificationExistsOfTopic("No Research Selected") && !RightSideNotificationManager.NotificationExistsOfTopic("Research Completed"))
-                RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "No Research Selected", false, null);
+            if (!RightSideNotificationManager.NotificationExistsOfTopic("No Research Selected") && !RightSideNotificationManager.NotificationExistsOfTopic("Research Completed"))
+                RightSideNotificationManager.CreateNewWarningRightSideNotification("Science Icon", "No Research Selected", WarningRightSideNotificationClickEffect.OpenResearchView);
         }
         else
         {

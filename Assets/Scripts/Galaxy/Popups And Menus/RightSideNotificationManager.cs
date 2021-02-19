@@ -78,6 +78,28 @@ public class RightSideNotificationManager : MonoBehaviour
         rightSideNotifications.Add(rightSideNotification.GetComponent<RightSideNotification>());
     }
 
+    public static void CreateNewWarningRightSideNotification(string spriteName, string notificationTopic, WarningRightSideNotificationClickEffect clickEffect)
+    {
+        GameObject rightSideNotification = Instantiate(rightSideNotificationManager.rideSideNotificationPrefab);
+        rightSideNotification.transform.parent = rightSideNotificationManager.transform;
+
+        //Determines the starting y position of each notification.
+        float position = 250.0f;
+        if (rightSideNotifications.Count > 0)
+        {
+            if (rightSideNotifications[rightSideNotifications.Count - 1].transform.localPosition.y >= 250.0f)
+            {
+                position = rightSideNotifications[rightSideNotifications.Count - 1].transform.localPosition.y + 55;
+            }
+        }
+
+        //Creates the contents of the notification.
+        rightSideNotification.GetComponent<RightSideNotification>().CreateNewWarningRightSideNotification(spriteName, notificationTopic, rightSideNotifications.Count, position, clickEffect);
+
+        //Adds the notification to the notifications list.
+        rightSideNotifications.Add(rightSideNotification.GetComponent<RightSideNotification>());
+    }
+
     public static void DissmissNotification(int position)
     {
         for(int x = position + 1; x < rightSideNotifications.Count; x++)

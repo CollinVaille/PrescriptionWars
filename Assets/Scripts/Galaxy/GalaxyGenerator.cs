@@ -71,13 +71,20 @@ public class GalaxyGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Loads in the settings from the main menu scene if they exist.
         if (NewGameMenu.initialized)
-        {
             LoadNewGameSettings();
-        }
+
+        //Generates the planets of the galaxy.
         GeneratePlanets();
+
+        //Generates the hyperspace lanes of the galaxy.
         GenerateHyperspaceLanes();
+
+        //Generates the empires of the galaxy.
         GenerateEmpires();
+
+        //Generates the stats of each planet in the galaxy.
         GeneratePlanetStats();
         List<PlanetIcon> planetScripts = new List<PlanetIcon>();
         foreach (GameObject planet in planets)
@@ -85,8 +92,13 @@ public class GalaxyGenerator : MonoBehaviour
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
         GalaxyManager.Initialize(planetScripts, flagSymbols, galaxyCamera, galaxyConfirmationPopupParent);
+
+        //Generates the tech of the game.
         GenerateTech();
 
+        //Creates the necessary warning notifications at the start of the game.
+        GalaxyManager.galaxyManager.WarningRightSideNotificationsUpdate();
+        
         //Clean up section :)
         GeneralHelperMethods.ClearTextFileCache();
     }
