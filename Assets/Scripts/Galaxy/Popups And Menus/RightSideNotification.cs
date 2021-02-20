@@ -261,6 +261,11 @@ public class RightSideNotification : MonoBehaviour
         return dismissable;
     }
 
+    public bool IsBeingDismissed()
+    {
+        return beingDismissed;
+    }
+
     public bool IsAnswerRequired()
     {
         if(popupData != null)

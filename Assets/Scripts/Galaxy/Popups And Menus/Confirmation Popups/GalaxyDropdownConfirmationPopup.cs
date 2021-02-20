@@ -5,19 +5,28 @@ using UnityEngine.UI;
 
 public class GalaxyDropdownConfirmationPopup : GalaxyConfirmationPopupBehaviour
 {
+    [Header("Dropdown Confirmation Popup Audio Options")]
+
     //The sound effect that plays whenever the mouse enters a dropdown option.
-    public AudioClip mouseOverDropdownOptionSFX;
+    [SerializeField]
+    private AudioClip mouseOverDropdownOptionSFX = null;
     //The sound effect that plays whenever a click is performed on a dropdown option.
-    public AudioClip clickDropdownOptionSFX;
+    [SerializeField]
+    private AudioClip clickDropdownOptionSFX = null;
+
+    [Header("Dropdown Confirmation Popup Components")]
 
     //Dropdown that the player will use to give their response (should be assigned through the inspector).
-    public Dropdown dropdown;
+    [SerializeField]
+    private Dropdown dropdown = null;
+
+    //Non-inspector variables.
+
+    //The string that indicates what option the user has selected when pressing the confirm button.
+    private string returnValue;
 
     //The prefab that galaxy dropdown confirmation popups must be instantiated from (value assigned in the start method of the galaxy generator class).
     public static GameObject galaxyDropdownConfirmationPopupPrefab;
-
-    //The string that indicates what option the user has selected when pressing the confirm button.
-    string returnValue;
 
     // Start is called before the first frame update
     public override void Start()

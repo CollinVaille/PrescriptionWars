@@ -5,8 +5,13 @@ using UnityEngine.UI;
 
 public class GalaxyInputFieldConfirmationPopup : GalaxyConfirmationPopupBehaviour
 {
+    [Header("Input Field Confirmation Popup Components")]
+
     //Input field that the player will type their response in (should be assigned through the inspector).
-    public InputField inputField;
+    [SerializeField]
+    private InputField inputField = null;
+
+    //Non-inspector variables.
 
     //The prefab that galaxy input field confirmation popups must be instantiated from (value assigned in the start method of the galaxy generator class).
     public static GameObject galaxyInputFieldConfirmationPopupPrefab;

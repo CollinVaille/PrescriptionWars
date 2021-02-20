@@ -2,9 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ArmyManagementScrollListButton : MonoBehaviour
+public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
+    [Header("Text Components")]
+
+    public Text nameText = null;
+
+    [Header("Image Components")]
+
+    [SerializeField]
+    private Image buttonImage = null;
+    [SerializeField]
+    private Image arrowImage = null;
+    [SerializeField]
+    private Image transferArrowImage = null;
+
+    [Header("Audio Options")]
+
+    [SerializeField]
+    private AudioClip clickDropdownButtonSFX = null;
+
+    [Header("Logic Options")]
+
+    [SerializeField]
+    [Range(500, 2000)]
+    private float arrowRotateSpeed = 1000;
+
     public enum ArmyManagementButtonType
     {
         ArmyDropDownButton,
@@ -12,30 +37,28 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         SquadDropDownButton,
         PillChildButton
     }
-    public ArmyManagementButtonType type;
 
-    public AudioClip clickDropdownButtonSFX;
+    [Header("Additional Information")]
 
-    public Text nameText;
+    [SerializeField]
+    [ReadOnly] private ArmyManagementButtonType type;
 
-    public Image buttonImage;
-    public Image arrowImage;
-    public Image transferArrowImage;
+    //Non-inspector variables.
+    private int arrowRotationTargetDegrees;
+    private int previousDataIndex;
 
-    public ArmyManagerScrollList scrollList;
-
-    public float arrowRotateSpeed;
-    public int arrowRotationTargetDegrees;
-    int previousDataIndex;
-
-    public bool expanded;
+    [HideInInspector]
     public bool isDropdownButton;
-    bool additionalDataChangedOnFrame;
+    private bool expanded;
+    private bool additionalDataChangedOnFrame;
 
+    private ArmyManagerScrollList assignedScrollList;
+
+    [HideInInspector]
     public Vector3 initalDragPosition;
 
-    List<int> additionalData = new List<int>();
-    List<ArmyManagementScrollListButton> assignedScrolllistButtons = new List<ArmyManagementScrollListButton>();
+    private List<int> additionalData = new List<int>();
+    private List<ArmyManagementScrollListButton> assignedScrolllistButtons = new List<ArmyManagementScrollListButton>();
 
     // Start is called before the first frame update
     void Start()
@@ -80,6 +103,41 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         }
     }
 
+    public ArmyManagementButtonType GetButtonType()
+    {
+        return type;
+    }
+
+    public void SetButtonType(ArmyManagementButtonType buttonType)
+    {
+        type = buttonType;
+    }
+
+    public void SetAssignedScrollList(ArmyManagerScrollList assignedScrollList)
+    {
+        this.assignedScrollList = assignedScrollList;
+    }
+
+    public void SetButtonImageColor(Color buttonImageColor)
+    {
+        buttonImage.color = buttonImageColor;
+    }
+
+    public void FlipTransferArrowImageLocalScaleX()
+    {
+        transferArrowImage.transform.localScale = new Vector3(transferArrowImage.transform.localScale.x * -1, 1, 1);
+    }
+
+    public bool IsExpanded()
+    {
+        return expanded;
+    }
+
+    public void SetExpanded(bool isExpanded)
+    {
+        expanded = isExpanded;
+    }
+
     void UpdateArrowRotationToTargetDegrees()
     {
         if(arrowRotationTargetDegrees == 0)
@@ -117,7 +175,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour
 
     public void ExecuteDropDownLogic()
     {
-        scrollList.ClickDropDownButton(transform.GetSiblingIndex());
+        assignedScrollList.ClickDropDownButton(transform.GetSiblingIndex());
 
         if (arrowRotationTargetDegrees == 0)
             arrowRotationTargetDegrees = 270;
@@ -140,7 +198,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour
                 ArmyManagementMenu.armyManagementMenu.AddNewSquadDropdownButton(GetParentDataIndex(), GetDataIndex(), this);
             else
             {
-                List<ArmyManagementScrollListButton> childButtons = assignedScrolllistButtons[0].scrollList.GetChildButtons(assignedScrolllistButtons[0]);
+                List<ArmyManagementScrollListButton> childButtons = assignedScrolllistButtons[0].assignedScrollList.GetChildButtons(assignedScrolllistButtons[0]);
                 foreach(ArmyManagementScrollListButton childButton in childButtons)
                 {
                     Destroy(childButton.gameObject);
@@ -153,20 +211,20 @@ public class ArmyManagementScrollListButton : MonoBehaviour
         }
     }
 
-    public void ButtonBeginDrag()
+    public void OnBeginDrag(PointerEventData eventData)
     {
         initalDragPosition = transform.position;
     }
 
-    public void DragButton()
+    public void OnDrag(PointerEventData eventData)
     {
         transform.position = new Vector3(transform.position.x, Input.mousePosition.y, transform.position.z);
     }
 
-    public void ButtonEndDrag()
+    public void OnEndDrag(PointerEventData eventData)
     {
         //transform.position = new Vector3(initialDragXPosition, transform.position.y, transform.position.z);
-        scrollList.ButtonEndDrag(this);
+        assignedScrollList.ButtonEndDrag(this);
     }
 
     public int GetParentDataIndex()

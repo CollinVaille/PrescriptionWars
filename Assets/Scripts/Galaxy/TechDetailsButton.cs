@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class TechDetailsButton : MonoBehaviour
+public class TechDetailsButton : MonoBehaviour, IPointerEnterHandler
 {
     [Header("Image Components")]
 
@@ -107,7 +108,7 @@ public class TechDetailsButton : MonoBehaviour
     }
 
     //This method is called whenever the player mouses over the button (through an event trigger).
-    public void OnMouseEnterButton()
+    public void OnPointerEnter(PointerEventData eventData)
     {
         //Plays the appropriate sound effect.
         if(mouseOverSFX != null)

@@ -5,21 +5,29 @@ using UnityEngine.UI;
 
 public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 {
+    [Header("Confirmation Popup Base Components")]
+
+    [SerializeField]
+    private Text topText = null;
+
+    [Header("Confirmation Popup Base Audio Options")]
+
+    [SerializeField]
+    private AudioClip mouseOverSFX = null;
+    [SerializeField]
+    private AudioClip mouseClickSFX = null;
+
+    //Non-inspector variables.
     public enum GalaxyConfirmationPopupAnswer
     {
         Confirm,
         Cancel
     }
-    public GalaxyConfirmationPopupAnswer answer;
+    private GalaxyConfirmationPopupAnswer answer = GalaxyConfirmationPopupAnswer.Confirm;
 
-    public Text topText;
-
-    public AudioClip mouseOverSFX;
-    public AudioClip mouseClickSFX;
+    private bool answered = false;
 
     public static List<GalaxyConfirmationPopupBehaviour> galaxyConfirmationPopups = new List<GalaxyConfirmationPopupBehaviour>();
-
-    bool answered = false;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -89,5 +97,10 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
     public bool IsAnswered()
     {
         return answered;
+    }
+
+    public GalaxyConfirmationPopupAnswer GetAnswer()
+    {
+        return answer;
     }
 }

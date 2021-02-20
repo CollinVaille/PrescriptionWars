@@ -191,7 +191,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
-        if(confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+        if(confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
         {
             DisbandSelectedGroundUnit();
         }
@@ -311,7 +311,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
-            if(confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            if(confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             {
                 RenameSelectedGroundUnit(confirmationPopupScript.GetInputFieldText());
             }
@@ -332,7 +332,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
-            if(confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            if(confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             {
                 RenameSelectedGroundUnit(confirmationPopupScript.GetReturnValue());
             }

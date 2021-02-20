@@ -227,7 +227,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirmed their action, it carries out the logic behind it.
-        if (confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
             DemolishBuilding(indexToDemolish);
 
         //Destroys the confirmation popup.
@@ -268,7 +268,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirmed their action, it carries out the logic behind it.
-        if(confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+        if(confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
             CancelBuildingQueued(indexToCancel);
 
         //Destroys the confirmation popup.

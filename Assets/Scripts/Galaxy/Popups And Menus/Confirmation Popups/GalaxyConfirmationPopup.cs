@@ -5,7 +5,12 @@ using UnityEngine.UI;
 
 public class GalaxyConfirmationPopup : GalaxyConfirmationPopupBehaviour
 {
-    public Text bodyText;
+    [Header("Confirmation Popup Components")]
+
+    [SerializeField]
+    private Text bodyText = null;
+
+    //Non-inspector variables.
 
     public static GameObject galaxyConfirmationPopupPrefab;
 

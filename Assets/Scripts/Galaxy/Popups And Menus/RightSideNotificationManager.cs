@@ -136,7 +136,7 @@ public class RightSideNotificationManager : MonoBehaviour
     {
         foreach(RightSideNotification notification in rightSideNotifications)
         {
-            if (notification.GetNotificationTopic().ToLower().Equals(notificationTopic.ToLower()))
+            if (notification.GetNotificationTopic().ToLower().Equals(notificationTopic.ToLower()) && !notification.IsBeingDismissed())
                 return true;
         }
 
