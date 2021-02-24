@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TechTotemDetailsView : MonoBehaviour
+public class TechTotemDetailsView : GalaxyMenuBehaviour
 {
     public enum TechDetailsViewDisplayMode
     {
@@ -13,9 +13,6 @@ public class TechTotemDetailsView : MonoBehaviour
     private TechDetailsViewDisplayMode displayMode;
 
     private int techTotemDisplayed;
-
-    [SerializeField]
-    private GameObject techTotemsView = null;
 
     [Header("View Components")]
 
@@ -52,26 +49,24 @@ public class TechTotemDetailsView : MonoBehaviour
     private AudioClip clickDropdownOptionSFX = null;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseView();
-        }
+        base.Update();
     }
 
-    public void CloseView()
+    public override void SwitchToPreviousMenu()
     {
-        ClearScrollList();
+        //Executes the logic of the base class for switching to the previous menu.
+        base.SwitchToPreviousMenu();
 
-        gameObject.SetActive(false);
-        techTotemsView.SetActive(true);
+        //Clears the scroll list of all of the tech details buttons.
+        ClearScrollList();
     }
 
     //Sets the display mode of the view and the scroll list to either show the techs available or techs completed of the currently selected tech totem.

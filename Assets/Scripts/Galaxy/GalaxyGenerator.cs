@@ -6,63 +6,102 @@ public class GalaxyGenerator : MonoBehaviour
 {
     [Header("Tech")]
 
-    public List<string> techTotems;
-    public List<Tech> techs;
+    [SerializeField]
+    private List<string> techTotems = null;
+    [SerializeField]
+    private List<Tech> techs = null;
 
     [Header("Initial Game Settings")]
 
-    public string playerEmpireName;
+    private string playerEmpireName;
 
-    public int numberOfPlanets;
-    public int numberOfEmpires;
-    public int distanceBetweenPlanets;
-    public int hyperspaceLaneCheckingRadius;
+    [SerializeField]
+    private int numberOfPlanets = 60;
+    [SerializeField]
+    private int numberOfEmpires = 5;
+    [SerializeField]
+    private int distanceBetweenPlanets = 30;
+    [SerializeField]
+    private int hyperspaceLaneCheckingRadius = 60;
 
-    public List<Sprite> flagSymbols;
+    [SerializeField]
+    private List<Sprite> flagSymbols = null;
 
     [Header("Camera Settings")]
 
-    public Camera galaxyCamera;
+    [SerializeField]
+    private Camera galaxyCamera = null;
+
+    [SerializeField]
+    private Canvas galaxyCanvas = null;
 
     public Material skyboxMaterial;
 
-    public float leftBoundary;
-    public float rightBoundary;
-    public float topBoundary;
-    public float bottomBoundary;
+    [SerializeField]
+    private float leftBoundary = -50;
+    [SerializeField]
+    private float rightBoundary = 500;
+    [SerializeField]
+    private float topBoundary = 260;
+    [SerializeField]
+    private float bottomBoundary = 0;
 
     [Header("Planet Materials")]
 
-    public List<Material> frozenMaterials;
-    public List<Material> spiritMaterials;
-    public List<Material> temperateMaterials;
-    public List<Material> desertMaterials;
-    public List<Material> swampMaterials;
-    public List<Material> hellMaterials;
+    [SerializeField]
+    private List<Material> frozenMaterials = null;
+    [SerializeField]
+    private List<Material> spiritMaterials = null;
+    [SerializeField]
+    private List<Material> temperateMaterials = null;
+    [SerializeField]
+    private List<Material> desertMaterials = null;
+    [SerializeField]
+    private List<Material> swampMaterials = null;
+    [SerializeField]
+    private List<Material> hellMaterials = null;
 
-    public List<Material> empireMaterials;
+    [SerializeField]
+    private List<Material> empireMaterials = null;
 
     [Header("Prefabs")]
 
-    public GameObject planetPrefab;
-    public GameObject shipPrefab;
-    public GameObject galaxyConfirmationPopupPrefab;
-    public GameObject galaxyInputFieldConfirmationPopupPrefab;
-    public GameObject galaxyDropdownConfirmationPopupPrefab;
-    public GameObject tooltipPrefab;
+    [SerializeField]
+    private GameObject planetPrefab = null;
+    [SerializeField]
+    private GameObject shipPrefab = null;
+    [SerializeField]
+    private GameObject galaxyConfirmationPopupPrefab = null;
+    [SerializeField]
+    private GameObject galaxyInputFieldConfirmationPopupPrefab = null;
+    [SerializeField]
+    private GameObject galaxyDropdownConfirmationPopupPrefab = null;
+    [SerializeField]
+    private GameObject tooltipPrefab = null;
+    [SerializeField]
+    private GameObject backArrowPrefab = null;
 
     [Header("Parents")]
 
-    public Transform hyperspaceLanesDaddy;
-    public Transform planetParent;
-    public Transform shipParent;
-    public Transform galaxyConfirmationPopupParent;
+    [SerializeField]
+    private Transform hyperspacesLanesParent = null;
+    [SerializeField]
+    private Transform planetParent = null;
+    [SerializeField]
+    private Transform shipParent = null;
+    [SerializeField]
+    private Transform galaxyConfirmationPopupParent = null;
 
     [Header("Manager Objects")]
 
-    public HyperspaceLanesManager hyperspaceLanesManager;
-    public PlanetManagementMenu planetManagementMenu;
-    public ArmyManagementMenu armyManagementMenu;
+    [SerializeField]
+    private HyperspaceLanesManager hyperspaceLanesManager = null;
+    [SerializeField]
+    private PlanetManagementMenu planetManagementMenu = null;
+    [SerializeField]
+    private ArmyManagementMenu armyManagementMenu = null;
+
+    //Non-inspector variables.
 
     private string[] planetNames;
 
@@ -91,7 +130,7 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.GetComponent<PlanetIcon>());
         }
-        GalaxyManager.Initialize(planetScripts, flagSymbols, galaxyCamera, galaxyConfirmationPopupParent);
+        GalaxyManager.Initialize(planetScripts, flagSymbols, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent);
 
         //Generates the tech of the game.
         GenerateTech();
@@ -110,6 +149,7 @@ public class GalaxyGenerator : MonoBehaviour
         GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
         GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
+        GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
 
         //Manager objects.
         HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;
@@ -541,7 +581,7 @@ public class GalaxyGenerator : MonoBehaviour
 
                 //Include hyperspace lane
                 laneManager.AddHyperspaceLane(
-                planets[possibleLane.planet1Index], planets[possibleLane.planet2Index], hyperspaceLanesDaddy);
+                planets[possibleLane.planet1Index], planets[possibleLane.planet2Index], hyperspacesLanesParent);
             }
         }
 
@@ -555,7 +595,7 @@ public class GalaxyGenerator : MonoBehaviour
             {
                 if (x != y && Vector3.Distance(planetPositions[x], planetPositions[y]) <= hyperspaceLaneCheckingRadius)
                 {
-                    laneManager.AddHyperspaceLane(planets[x], planets[y], hyperspaceLanesDaddy);
+                    laneManager.AddHyperspaceLane(planets[x], planets[y], hyperspacesLanesParent);
                 }
             }
         }

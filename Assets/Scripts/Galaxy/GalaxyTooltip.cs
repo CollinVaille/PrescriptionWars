@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class GalaxyTooltip : MonoBehaviour
+public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public enum TooltipClosingType
     {
@@ -17,26 +18,24 @@ public class GalaxyTooltip : MonoBehaviour
     [Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
     public TooltipClosingType closingType;
 
-    //The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
-    public static GameObject tooltipPrefab;
-    //The actual game object of the tooltip.
-    GameObject tooltip;
-
     //The parent transform of the tooltip.
     [Tooltip("The parent transform of the tooltip.")]
     [SerializeField]
-    private Transform tooltipParent;
+    private Transform tooltipParent = null;
 
     //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
     [Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
     [SerializeField]
     private Vector2 initialLocalPosition = Vector2.zero;
 
+    //Indicates the amount of space between the text of the tooltip and the edge of the tooltip.
+    [Tooltip("Indicates the amount of space between the text of the tooltip and the edge of the tooltip.")]
+    [SerializeField]
+    private Vector2 edgeBuffer = new Vector2(5, 3);
+
     //Indicates whether the tooltip will have its location set to the mouse's location every update.
     [Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
     public bool updateToMousePosition;
-    //Indicates whether the tooltip is open or not.
-    bool tooltipOpen;
 
     [Header("Text Content")]
 
@@ -44,12 +43,12 @@ public class GalaxyTooltip : MonoBehaviour
     [Tooltip("The text that the tooltip displays to the user.")]
     [TextArea]
     [SerializeField]
-    private string tooltipText;
+    private string tooltipText = "";
 
     //The font that the text of the tooltip will be.
     [Tooltip("The font that the text of the tooltip will be.")]
     [SerializeField]
-    private Font font;
+    private Font font = null;
 
     //Indicates the size of the font of the tooltip text.
     [Tooltip("Indicates the size of the font of the tooltip text.")]
@@ -61,7 +60,7 @@ public class GalaxyTooltip : MonoBehaviour
     //Indicates whether the shadow component of the tooltip's text is enabled.
     [Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
     [SerializeField]
-    private bool textShadowEnabled;
+    private bool textShadowEnabled = false;
 
     //Indicates the effect distance of the shadow component of the tooltip's text.
     [Tooltip("Indicates the effect distance of the shadow component of the tooltip's text.")]
@@ -83,54 +82,123 @@ public class GalaxyTooltip : MonoBehaviour
     //Indicates the color of the text of the tooltip.
     [Tooltip("Indicates the color of the text of the tooltip.")]
     [SerializeField]
-    private GalaxyTooltipColorOption textColor;
+    private GalaxyTooltipColorOption textColor = GalaxyTooltipColorOption.Default;
 
     //Indicates the color of the shadow component of the tooltip's text.
     [Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
     [SerializeField]
-    private GalaxyTooltipColorOption textShadowColor;
+    private GalaxyTooltipColorOption textShadowColor = GalaxyTooltipColorOption.Default;
 
     //Indicates the background color of the tooltip.
     [Tooltip("Indicates the background color of the tooltip.")]
     [SerializeField]
-    private GalaxyTooltipColorOption backgroundColor;
+    private GalaxyTooltipColorOption backgroundColor = GalaxyTooltipColorOption.Default;
 
     //List of custom colors that the tooltip can use.
     [Tooltip("A list of custom colors that the tooltip can use.")]
     [SerializeField]
     private List<Color> customColors = new List<Color>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    //---------------------------------------------------------------------------------------
+    //Non-inspector variables.
+    //---------------------------------------------------------------------------------------
 
+    //The actual game object of the tooltip.
+    private GameObject tooltip = null;
+
+    //The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
+    public static GameObject tooltipPrefab;
+
+    //The canvas that the tooltip is under (set in the start method of the tooltip).
+    private Canvas parentCanvas = null;
+
+    //Indicates whether the tooltip is open or not.
+    private bool tooltipOpen = false;
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        parentCanvas = GetCurrentParentCanvas();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         //Updates the position of the tooltip to the position of the player's mouse if the tooltip is open.
         if (tooltipOpen && updateToMousePosition)
         {
             tooltip.transform.position = Input.mousePosition;
-            tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + initialLocalPosition.y);
+            tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + (initialLocalPosition.y - (edgeBuffer.y / 2)));
+            PreventTooltipGoingOffscreen();
         }
     }
 
-    //Opens the tooltip whenever the mouse/pointer enters the trigger zone (must be called through the Unity event trigger system).
-    public void PointerEnter()
+    //Prevents the tooltip from going off of the screen.
+    private void PreventTooltipGoingOffscreen()
+    {
+        if (tooltipOpen)
+        {
+            //Left barrier.
+            if (tooltip.transform.GetChild(0).position.x < 0)
+            {
+                tooltip.transform.position = new Vector2(-5, tooltip.transform.position.y);
+            }
+            //Right barrier.
+            else if (tooltip.transform.GetChild(0).position.x + (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor) > GalaxyManager.galaxyCamera.scaledPixelWidth)
+            {
+                tooltip.transform.position = new Vector2(GalaxyManager.galaxyCamera.scaledPixelWidth - (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor), tooltip.transform.position.y);
+            }
+
+            //Top barrier.
+            if(tooltip.transform.GetChild(0).position.y + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor) > GalaxyManager.galaxyCamera.scaledPixelHeight)
+            {
+                tooltip.transform.position = new Vector2(tooltip.transform.position.x, GalaxyManager.galaxyCamera.scaledPixelHeight - ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
+            }
+            //Bottom barrier.
+            else if (tooltip.transform.GetChild(0).position.y < 0 + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor))
+            {
+                tooltip.transform.position = new Vector2(tooltip.transform.position.x, 0 + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
+            }
+        }
+    }
+
+    //Returns the canvas that the tooltip is under in the hierarchy.
+    private Canvas GetCurrentParentCanvas()
+    {
+        Canvas currentParentCanvas = null;
+
+        Transform nextTransformToCheck = transform.parent;
+        while (currentParentCanvas == null)
+        {
+            if (nextTransformToCheck.GetComponent<Canvas>() != null)
+            {
+                currentParentCanvas = nextTransformToCheck.GetComponent<Canvas>();
+                break;
+            }
+
+            if (nextTransformToCheck.parent != null)
+                nextTransformToCheck = nextTransformToCheck.parent;
+            else
+                break;
+        }
+
+        return currentParentCanvas;
+    }
+
+    //Opens the tooltip whenever the mouse/pointer enters the trigger zone.
+    public void OnPointerEnter(PointerEventData eventData)
     {
         OpenTooltip();
     }
 
-    //Closes the tooltip whenever the mouse/pointer exits the trigger zone (must be called through the Unity event trigger system, except for when being called by the OnDisable() method of this class).
-    public void PointerExit()
+    //Closes the tooltip whenever the mouse/pointer exits the trigger zone.
+    public void OnPointerExit(PointerEventData eventData)
     {
         CloseTooltip();
     }
 
     //Instantiates the tooltip game object from the tooltip prefab, sets the parent of the tooltip, resets essential transfrom components, and updates the text of the tooltip.
-    void CreateTooltip()
+    private void CreateTooltip()
     {
         //Instantiates the tooltip game object from the tooltip prefab.
         tooltip = Instantiate(tooltipPrefab);
@@ -149,7 +217,7 @@ public class GalaxyTooltip : MonoBehaviour
     }
 
     //Opens the tooltip.
-    void OpenTooltip()
+    private void OpenTooltip()
     {
         //Activates the tooltip's game object if it is not destroyed every time the tooltip closes.
         if (closingType == TooltipClosingType.Deactivate)
@@ -184,7 +252,7 @@ public class GalaxyTooltip : MonoBehaviour
     }
 
     //Updates the text element of the tooltip and makes sure that the width of the background image adjusts to match the width of the text.
-    void UpdateTooltipText()
+    private void UpdateTooltipText()
     {
         Text textElementOfTooltip = tooltip.transform.GetChild(1).GetComponent<Text>();
         //Sets the font of the text of the tooltip.
@@ -207,7 +275,9 @@ public class GalaxyTooltip : MonoBehaviour
         //Sets the text of the tooltip.
         textElementOfTooltip.text = tooltipText;
         //Adjusts the background image of the tooltip to the size of the text of the tooltip.
-        tooltip.transform.GetChild(0).GetComponent<Image>().rectTransform.sizeDelta = new Vector2(tooltip.transform.GetChild(1).GetComponent<Text>().preferredWidth + 5, tooltip.transform.GetChild(1).GetComponent<Text>().preferredHeight + 3);
+        tooltip.transform.GetChild(0).GetComponent<Image>().rectTransform.sizeDelta = new Vector2(tooltip.transform.GetChild(1).GetComponent<Text>().preferredWidth + edgeBuffer.x, tooltip.transform.GetChild(1).GetComponent<Text>().preferredHeight + edgeBuffer.y);
+        //Adjusts the local x position of the text component of the tooltip in order to keep the text centered within the edge buffer.
+        tooltip.transform.GetChild(1).localPosition = new Vector2(tooltipPrefab.transform.GetChild(1).localPosition.x + (edgeBuffer.x / 2), tooltip.transform.GetChild(1).localPosition.y);
     }
 
     //Should be called in order to set the tooltip text through code.

@@ -420,7 +420,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotemTechListButton
         m_Mode: 3
         m_Arguments:
@@ -795,7 +795,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotem
         m_Mode: 3
         m_Arguments:
@@ -924,7 +924,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotem
         m_Mode: 3
         m_Arguments:
@@ -1751,34 +1751,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 151557706}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
         - m_Target: {fileID: 214506630}
           m_MethodName: PlayMouseOverMiddleButtonSFX
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 151557706}
-          m_MethodName: PointerExit
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2435,7 +2409,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotemTechListButton
         m_Mode: 3
         m_Arguments:
@@ -2526,11 +2500,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 242351184}
-  - component: {fileID: 242351187}
-  - component: {fileID: 242351186}
-  - component: {fileID: 242351185}
-  - component: {fileID: 242351188}
-  - component: {fileID: 242351189}
   m_Layer: 5
   m_Name: Flag
   m_TagString: Untagged
@@ -2559,154 +2528,6 @@ RectTransform:
   m_AnchoredPosition: {x: -250, y: -1}
   m_SizeDelta: {x: 50, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &242351185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242351183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 242351186}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &242351186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242351183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &242351187
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242351183}
-  m_CullTransparentMesh: 0
---- !u!114 &242351188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242351183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 242351189}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 242351189}
-          m_MethodName: PointerExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &242351189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 242351183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -277.5, y: -27.5}
-  updateToMousePosition: 0
-  tooltipText: Empire Name
-  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
-  fontSize: 14
-  textShadowEnabled: 1
-  textShadowEffectDistance: {x: 2, y: -2}
-  textColor: 0
-  textShadowColor: 2
-  backgroundColor: 1
-  customColors: []
 --- !u!1 &254120106
 GameObject:
   m_ObjectHideFlags: 0
@@ -4097,7 +3918,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotemTechListButton
         m_Mode: 3
         m_Arguments:
@@ -5696,7 +5517,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 607476754}
-  - component: {fileID: 607476755}
   m_Layer: 5
   m_Name: Prescriptions
   m_TagString: Untagged
@@ -5725,31 +5545,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &607476755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 607476753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -125, y: -27.5}
-  updateToMousePosition: 0
-  tooltipText: Prescriptions
-  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
-  fontSize: 14
-  textShadowEnabled: 1
-  textShadowEffectDistance: {x: 2, y: -2}
-  textColor: 0
-  textShadowColor: 2
-  backgroundColor: 1
-  customColors: []
 --- !u!1 &644450514
 GameObject:
   m_ObjectHideFlags: 0
@@ -5967,7 +5762,6 @@ MonoBehaviour:
     effects:
     - effectType: 4
       amount: 1
-  playerEmpireName: 
   numberOfPlanets: 60
   numberOfEmpires: 5
   distanceBetweenPlanets: 30
@@ -5984,6 +5778,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c72459df99c505346962a28c81dad529, type: 3}
   - {fileID: 21300000, guid: a892549ea7a5a9c428c6da39c5f620da, type: 3}
   galaxyCamera: {fileID: 1676803077}
+  galaxyCanvas: {fileID: 122588001}
   skyboxMaterial: {fileID: 2100000, guid: 5ee91479e858d7043a1fb410c5a60f51, type: 2}
   leftBoundary: -50
   rightBoundary: 500
@@ -6059,7 +5854,9 @@ MonoBehaviour:
     type: 3}
   tooltipPrefab: {fileID: 9151189739358545427, guid: 8c236b0cf373064408bb80ee707fc456,
     type: 3}
-  hyperspaceLanesDaddy: {fileID: 291867261}
+  backArrowPrefab: {fileID: 2736054851655851295, guid: 760be810cf8de85499574c8ed0dfa9e5,
+    type: 3}
+  hyperspacesLanesParent: {fileID: 291867261}
   planetParent: {fileID: 1394729654}
   shipParent: {fileID: 1569746073}
   galaxyConfirmationPopupParent: {fileID: 1687072709}
@@ -6849,7 +6646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67e4646cac6447044ac9d9e7aaf3dd11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  techTotemsView: {fileID: 1154283340}
+  previousMenu: {fileID: 1154283340}
+  currentMenu: {fileID: 776853752}
   titleText: {fileID: 824921814}
   displayModeDropdown: {fileID: 187485032}
   defaultDisplayMode: 0
@@ -8215,7 +8013,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagBackground: {fileID: 1618523802}
   flagSymbol: {fileID: 1327659658}
-  empireNameTooltip: {fileID: 242351189}
+  empireNameTooltip: {fileID: 1618523804}
   creditsText: {fileID: 485129498}
   prescriptionsText: {fileID: 424492034}
   scienceText: {fileID: 1678753971}
@@ -9368,62 +9166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b0d3f9485df654d861994fae66cb93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  galaxyView: {fileID: 644450514}
-  techTotemsView: {fileID: 1154283340}
-  techTotemDetailsView: {fileID: 776853754}
-  popupsParent: {fileID: 1868337152}
   skyboxMaterial: {fileID: 2100000, guid: 85031a0780356064aa3d727e613dc2da, type: 2}
-  researchProgressRawImages:
-  - {fileID: 69327436}
-  - {fileID: 1043902415}
-  - {fileID: 1083869210}
-  - {fileID: 1209012304}
-  - {fileID: 1657614563}
-  techTotemImages:
-  - {fileID: 1778766638}
-  - {fileID: 1539509922}
-  - {fileID: 45501140}
-  - {fileID: 57996930}
-  - {fileID: 2140203216}
-  techTotemSelectedOutlineImages:
-  - {fileID: 10862949}
-  - {fileID: 1691033126}
-  - {fileID: 1920895170}
-  - {fileID: 340480803}
-  - {fileID: 1471606868}
-  techTotemTopTexts:
-  - {fileID: 23880308}
-  - {fileID: 832223658}
-  - {fileID: 1157649427}
-  - {fileID: 1992691658}
-  - {fileID: 1379491978}
-  techNameTexts:
-  - {fileID: 1543444155}
-  - {fileID: 582577241}
-  - {fileID: 731024694}
-  - {fileID: 1651086929}
-  - {fileID: 582091476}
-  techDescriptionTexts:
-  - {fileID: 1588470406}
-  - {fileID: 1156088876}
-  - {fileID: 2135486747}
-  - {fileID: 543597125}
-  - {fileID: 1060888210}
-  techLevelTexts:
-  - {fileID: 1327637644}
-  - {fileID: 930394600}
-  - {fileID: 1259253611}
-  - {fileID: 756871266}
-  - {fileID: 1915632538}
-  techCostTexts:
-  - {fileID: 1991654732}
-  - {fileID: 183476096}
-  - {fileID: 2046035592}
-  - {fileID: 1875531333}
-  - {fileID: 444449217}
-  sfxSource: {fileID: 1492085428}
-  bubblingAudioClip: {fileID: 8300000, guid: 33be807ea451f544aa8b317a402a3337, type: 3}
-  defaultTechTotemSpriteName: SpaceportHexagonsTechTotem
 --- !u!1 &1119400085
 GameObject:
   m_ObjectHideFlags: 0
@@ -9759,6 +9502,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1154283341}
+  - component: {fileID: 1154283342}
   m_Layer: 5
   m_Name: Tech Totems View
   m_TagString: Untagged
@@ -9788,6 +9532,70 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1154283342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154283340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2836bee3eafc7b845abc8fa5951a64d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previousMenu: {fileID: 644450514}
+  currentMenu: {fileID: 1098509857}
+  researchProgressRawImages:
+  - {fileID: 69327436}
+  - {fileID: 1043902415}
+  - {fileID: 1083869210}
+  - {fileID: 1209012304}
+  - {fileID: 1657614563}
+  techTotemImages:
+  - {fileID: 1778766638}
+  - {fileID: 1539509922}
+  - {fileID: 45501140}
+  - {fileID: 57996930}
+  - {fileID: 2140203216}
+  techTotemSelectedOutlineImages:
+  - {fileID: 10862949}
+  - {fileID: 1691033126}
+  - {fileID: 1920895170}
+  - {fileID: 340480803}
+  - {fileID: 1471606868}
+  techTotemTopTexts:
+  - {fileID: 23880308}
+  - {fileID: 832223658}
+  - {fileID: 1157649427}
+  - {fileID: 1992691658}
+  - {fileID: 1379491978}
+  techNameTexts:
+  - {fileID: 1543444155}
+  - {fileID: 582577241}
+  - {fileID: 731024694}
+  - {fileID: 1651086929}
+  - {fileID: 582091476}
+  techDescriptionTexts:
+  - {fileID: 1588470406}
+  - {fileID: 1156088876}
+  - {fileID: 2135486747}
+  - {fileID: 543597125}
+  - {fileID: 1060888210}
+  techLevelTexts:
+  - {fileID: 1327637644}
+  - {fileID: 930394600}
+  - {fileID: 1259253611}
+  - {fileID: 756871266}
+  - {fileID: 1915632538}
+  techCostTexts:
+  - {fileID: 1991654732}
+  - {fileID: 183476096}
+  - {fileID: 2046035592}
+  - {fileID: 1875531333}
+  - {fileID: 444449217}
+  techTotemDetailsView: {fileID: 776853754}
+  defaultTechTotemSpriteName: SpaceportHexagonsTechTotem
 --- !u!1 &1156088873
 GameObject:
   m_ObjectHideFlags: 0
@@ -10060,40 +9868,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1177236597}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1257416968}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1257416968}
-          m_MethodName: PointerExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  closingType: 1
+  tooltipParent: {fileID: 1587569414}
+  initialLocalPosition: {x: -215, y: -27.5}
+  updateToMousePosition: 0
+  tooltipText: Credits
+  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
+  fontSize: 14
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 2, y: -2}
+  textColor: 0
+  textShadowColor: 2
+  backgroundColor: 1
+  customColors: []
 --- !u!1 &1192561338
 GameObject:
   m_ObjectHideFlags: 0
@@ -10318,6 +10108,7 @@ GameObject:
   - component: {fileID: 1233682658}
   - component: {fileID: 1233682657}
   - component: {fileID: 1233682659}
+  - component: {fileID: 1233682660}
   m_Layer: 5
   m_Name: Science Image
   m_TagString: Untagged
@@ -10394,51 +10185,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1980791895}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1980791895}
-          m_MethodName: PointerExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
   - eventID: 4
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 949235014}
-          m_MethodName: ToggleScienceHoverText
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
         - m_Target: {fileID: 644450516}
           m_MethodName: SwitchToResearchView
           m_Mode: 1
@@ -10461,6 +10211,31 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1233682660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233682655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 1
+  tooltipParent: {fileID: 1587569414}
+  initialLocalPosition: {x: 52.5, y: -27.5}
+  updateToMousePosition: 0
+  tooltipText: Science
+  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
+  fontSize: 14
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 2, y: -2}
+  textColor: 0
+  textShadowColor: 2
+  backgroundColor: 1
+  customColors: []
 --- !u!1 &1233941594
 GameObject:
   m_ObjectHideFlags: 0
@@ -10904,40 +10679,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1248958999}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 607476755}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 607476755}
-          m_MethodName: PointerExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  closingType: 1
+  tooltipParent: {fileID: 1587569414}
+  initialLocalPosition: {x: -125, y: -27.5}
+  updateToMousePosition: 0
+  tooltipText: Prescriptions
+  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
+  fontSize: 14
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 2, y: -2}
+  textColor: 0
+  textShadowColor: 2
+  backgroundColor: 1
+  customColors: []
 --- !u!1 &1257416966
 GameObject:
   m_ObjectHideFlags: 0
@@ -10947,7 +10704,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1257416967}
-  - component: {fileID: 1257416968}
   m_Layer: 0
   m_Name: Credits
   m_TagString: Untagged
@@ -10971,31 +10727,6 @@ Transform:
   m_Father: {fileID: 949235011}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1257416968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257416966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -215, y: -27.5}
-  updateToMousePosition: 0
-  tooltipText: Credits
-  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
-  fontSize: 14
-  textShadowEnabled: 1
-  textShadowEffectDistance: {x: 2, y: -2}
-  textColor: 0
-  textShadowColor: 2
-  backgroundColor: 1
-  customColors: []
 --- !u!1 &1259253608
 GameObject:
   m_ObjectHideFlags: 0
@@ -11903,7 +11634,7 @@ GameObject:
   - component: {fileID: 1327659659}
   - component: {fileID: 1327659658}
   m_Layer: 5
-  m_Name: Symbol
+  m_Name: Flag Symbol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11942,7 +11673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -12046,7 +11777,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotemTechListButton
         m_Mode: 3
         m_Arguments:
@@ -12506,34 +12237,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1399449486}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
         - m_Target: {fileID: 214506630}
           m_MethodName: PlayMouseOverMiddleButtonSFX
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1399449486}
-          m_MethodName: PointerExit
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -12630,7 +12335,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1417411359}
-  - component: {fileID: 1417411360}
   m_Layer: 0
   m_Name: Production
   m_TagString: Untagged
@@ -12654,31 +12358,6 @@ Transform:
   m_Father: {fileID: 949235011}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1417411360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1417411358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -37.5, y: -27.5}
-  updateToMousePosition: 0
-  tooltipText: Production
-  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
-  fontSize: 14
-  textShadowEnabled: 1
-  textShadowEffectDistance: {x: 2, y: -2}
-  textColor: 0
-  textShadowColor: 2
-  backgroundColor: 1
-  customColors: []
 --- !u!1 &1417736693
 GameObject:
   m_ObjectHideFlags: 0
@@ -13586,7 +13265,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotem
         m_Mode: 3
         m_Arguments:
@@ -14399,8 +14078,10 @@ GameObject:
   - component: {fileID: 1618523801}
   - component: {fileID: 1618523803}
   - component: {fileID: 1618523802}
+  - component: {fileID: 1618523804}
+  - component: {fileID: 1618523805}
   m_Layer: 5
-  m_Name: Background
+  m_Name: Flag Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14462,6 +14143,74 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618523800}
   m_CullTransparentMesh: 0
+--- !u!114 &1618523804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618523800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 1
+  tooltipParent: {fileID: 1587569414}
+  initialLocalPosition: {x: -277.5, y: -27.5}
+  updateToMousePosition: 0
+  tooltipText: Empire Name
+  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
+  fontSize: 14
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 2, y: -2}
+  textColor: 0
+  textShadowColor: 2
+  backgroundColor: 1
+  customColors: []
+--- !u!114 &1618523805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1618523800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1618523802}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1621495954
 GameObject:
   m_ObjectHideFlags: 0
@@ -15323,7 +15072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d21600095f90ac4391f95a377a3da59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 500
+  moveSpeed: 750
   consoleInputField: {fileID: 1949017736}
   planetManagementMenu: {fileID: 325615306}
   armyManagementMenu: {fileID: 214506628}
@@ -16133,7 +15882,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotem
         m_Mode: 3
         m_Arguments:
@@ -16663,7 +16412,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotemTechListButton
         m_Mode: 3
         m_Arguments:
@@ -18059,7 +17808,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1980791894}
-  - component: {fileID: 1980791895}
   m_Layer: 5
   m_Name: Science
   m_TagString: Untagged
@@ -18088,31 +17836,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1980791895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1980791893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: 52.5, y: -27.5}
-  updateToMousePosition: 0
-  tooltipText: Science
-  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
-  fontSize: 14
-  textShadowEnabled: 1
-  textShadowEffectDistance: {x: 2, y: -2}
-  textColor: 0
-  textShadowColor: 2
-  backgroundColor: 1
-  customColors: []
 --- !u!1 &1990787178
 GameObject:
   m_ObjectHideFlags: 0
@@ -18832,40 +18555,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2058116142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1417411360}
-          m_MethodName: PointerEnter
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1417411360}
-          m_MethodName: PointerExit
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  closingType: 1
+  tooltipParent: {fileID: 1587569414}
+  initialLocalPosition: {x: -37.5, y: -27.5}
+  updateToMousePosition: 0
+  tooltipText: Production
+  font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
+  fontSize: 14
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 2, y: -2}
+  textColor: 0
+  textShadowColor: 2
+  backgroundColor: 1
+  customColors: []
 --- !u!1 &2071409038
 GameObject:
   m_ObjectHideFlags: 0
@@ -19553,7 +19258,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1098509859}
+      - m_Target: {fileID: 1154283342}
         m_MethodName: ClickOnTotem
         m_Mode: 3
         m_Arguments:

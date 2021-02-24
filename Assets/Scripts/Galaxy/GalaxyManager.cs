@@ -41,13 +41,16 @@ public class GalaxyManager : MonoBehaviour
 
     public static Camera galaxyCamera;
 
+    public static Canvas galaxyCanvas;
+
     public static Transform galaxyConfirmationPopupParent;
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Transform parentOfGalaxyConfirmationPopup)
+    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;
         galaxyCamera = galaxyCam;
+        galaxyCanvas = canvasOfGalaxy;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
     }
 
@@ -102,7 +105,7 @@ public class GalaxyManager : MonoBehaviour
         //Turns on the research view.
         researchView.SetActive(true);
         //Switches the skybox material to the one assigned to the research view.
-        RenderSettings.skybox = researchView.GetComponent<TechInterface>().skyboxMaterial;
+        RenderSettings.skybox = researchView.GetComponent<ResearchViewManager>().skyboxMaterial;
         //Turns off the galaxy view.
         transform.gameObject.SetActive(false);
 

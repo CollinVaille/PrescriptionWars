@@ -1,51 +1,55 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TechInterface : MonoBehaviour
+public class TechTotemsView : GalaxyMenuBehaviour
 {
-    public GameObject galaxyView;
-    public GameObject techTotemsView;
-    public TechTotemDetailsView techTotemDetailsView;
+    [Header("Tech Totems View Raw Image Components")]
 
-    public Transform popupsParent;
-    public static Transform popupsParentGlobal;
+    [SerializeField]
+    private List<RawImage> researchProgressRawImages = null;
 
-    public Material skyboxMaterial;
+    [Header("Tech Totems View Image Components")]
 
-    public List<RawImage> researchProgressRawImages;
-    public List<Image> techTotemImages;
-    public List<Image> techTotemSelectedOutlineImages;
+    [SerializeField]
+    private List<Image> techTotemImages = null;
+    [SerializeField]
+    private List<Image> techTotemSelectedOutlineImages = null;
 
-    public List<Text> techTotemTopTexts;
-    public List<Text> techNameTexts;
-    public List<Text> techDescriptionTexts;
-    public List<Text> techLevelTexts;
-    public List<Text> techCostTexts;
+    [Header("Tech Totems View Text Components")]
 
-    public AudioSource sfxSource;
-    public AudioClip bubblingAudioClip;
+    [SerializeField]
+    private List<Text> techTotemTopTexts = null;
+    [SerializeField]
+    private List<Text> techNameTexts = null;
+    [SerializeField]
+    private List<Text> techDescriptionTexts = null;
+    [SerializeField]
+    private List<Text> techLevelTexts = null;
+    [SerializeField]
+    private List<Text> techCostTexts = null;
 
-    public string defaultTechTotemSpriteName;
+    [Header("Tech Totems View Options")]
+
+    [SerializeField]
+    private TechTotemDetailsView techTotemDetailsView = null;
+
+    [SerializeField]
+    private string defaultTechTotemSpriteName = null;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        popupsParentGlobal = popupsParent;
-
-        UpdateTechTotems();
+        //Executes the logic of the base class for the start method.
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        GalaxyManager.ResetPopupClosedOnFrame();
-
-        if (Input.GetKeyDown(KeyCode.Escape) && techTotemsView.activeInHierarchy)
-        {
-            SwitchToGalaxy();
-        }
+        //Executes the logic of the base class for the update method.
+        base.Update();
     }
 
     private void OnEnable()
@@ -55,12 +59,50 @@ public class TechInterface : MonoBehaviour
         SetTechTotemSelected(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected);
     }
 
-    void UpdateTechTotems()
+    public override void SwitchToPreviousMenu()
+    {
+        //Executes the logic of the base class for switching to the previous menu.
+        base.SwitchToPreviousMenu();
+
+        //Changes the skybox of the game back to the galaxy view's skybox.
+        RenderSettings.skybox = GetPreviousMenu().GetComponent<GalaxyGenerator>().skyboxMaterial;
+    }
+
+    public void ClickOnTotem(int num)
+    {
+        SetTechTotemSelected(num);
+
+        GalaxyManager.galaxyManager.WarningRightSideNotificationsUpdate();
+    }
+
+    public void ClickOnTotemTechListButton(int num)
+    {
+        gameObject.SetActive(false);
+
+        techTotemDetailsView.gameObject.SetActive(true);
+
+        techTotemDetailsView.OnSwitchToTechTotemDetailsView(num);
+    }
+
+    public void SetTechTotemSelected(int newTechTotemSelected)
+    {
+        Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = newTechTotemSelected;
+
+        for (int x = 0; x < techTotemSelectedOutlineImages.Count; x++)
+        {
+            if (x != newTechTotemSelected)
+                techTotemSelectedOutlineImages[x].gameObject.SetActive(false);
+            else
+                techTotemSelectedOutlineImages[x].gameObject.SetActive(true);
+        }
+    }
+
+    private void UpdateTechTotems()
     {
         //Updates each tech totem's images.
-        for(int x = 0; x < techTotemImages.Count; x++)
+        for (int x = 0; x < techTotemImages.Count; x++)
         {
-            if(Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
                 techTotemImages[x].sprite = Resources.Load<Sprite>("Galaxy/Tech Totems/" + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteName);
             }
@@ -71,11 +113,11 @@ public class TechInterface : MonoBehaviour
         }
 
         //Updates each research progress raw image's position.
-        for(int x = 0; x < researchProgressRawImages.Count; x++)
+        for (int x = 0; x < researchProgressRawImages.Count; x++)
         {
             bool goodTotem = true;
 
-            if(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected == x)
+            if (Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected == x)
             {
                 if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable.Count > 0)
                 {
@@ -96,15 +138,15 @@ public class TechInterface : MonoBehaviour
         }
 
         //Updates each tech totem's top/title text.
-        for(int x = 0; x < techTotemTopTexts.Count; x++)
+        for (int x = 0; x < techTotemTopTexts.Count; x++)
         {
             techTotemTopTexts[x].text = Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].name;
         }
 
         //Updates each tech totem's tech name text.
-        for(int x = 0; x < techNameTexts.Count; x++)
+        for (int x = 0; x < techNameTexts.Count; x++)
         {
-            if(Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
                 techNameTexts[x].text = Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].name;
             }
@@ -115,7 +157,7 @@ public class TechInterface : MonoBehaviour
         }
 
         //Updates each tech totem's tech description text.
-        for(int x = 0; x < techDescriptionTexts.Count; x++)
+        for (int x = 0; x < techDescriptionTexts.Count; x++)
         {
             if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
@@ -128,7 +170,7 @@ public class TechInterface : MonoBehaviour
         }
 
         //Updates each tech totem's tech level text.
-        for(int x = 0; x < techLevelTexts.Count; x++)
+        for (int x = 0; x < techLevelTexts.Count; x++)
         {
             if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
@@ -142,7 +184,7 @@ public class TechInterface : MonoBehaviour
 
 
         //Updates each tech totem's tech cost text.
-        for(int x = 0; x < techCostTexts.Count; x++)
+        for (int x = 0; x < techCostTexts.Count; x++)
         {
             if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
@@ -152,45 +194,6 @@ public class TechInterface : MonoBehaviour
             {
                 techCostTexts[x].text = "Cost: None";
             }
-        }
-    }
-
-    //Switches the game from the research view to the galaxy view (exiting this view back to the main view).
-    public void SwitchToGalaxy()
-    {
-        //Activates the galaxy view's game object.
-        galaxyView.SetActive(true);
-        //Changes the skybox of the game back to the galaxy view's skybox.
-        RenderSettings.skybox = galaxyView.GetComponent<GalaxyGenerator>().skyboxMaterial;
-        //Deactivates the research view's game object.
-        transform.gameObject.SetActive(false);
-    }
-
-    public void ClickOnTotem(int num)
-    {
-        SetTechTotemSelected(num);
-
-        GalaxyManager.galaxyManager.WarningRightSideNotificationsUpdate();
-    }
-
-    public void ClickOnTotemTechListButton(int num)
-    {
-        //TechListMenu.CreateNewTechListMenu(num);
-        techTotemsView.SetActive(false);
-        techTotemDetailsView.gameObject.SetActive(true);
-        techTotemDetailsView.OnSwitchToTechTotemDetailsView(num);
-    }
-
-    public void SetTechTotemSelected(int newTechTotemSelected)
-    {
-        Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = newTechTotemSelected;
-
-        for(int x = 0; x < techTotemSelectedOutlineImages.Count; x++)
-        {
-            if (x != newTechTotemSelected)
-                techTotemSelectedOutlineImages[x].gameObject.SetActive(false);
-            else
-                techTotemSelectedOutlineImages[x].gameObject.SetActive(true);
         }
     }
 }

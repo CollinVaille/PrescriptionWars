@@ -55,6 +55,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
 
     public void CreatePopup(GalaxyPopupData popupData, int indexOfPopup)
     {
+        gameObject.name = popupData.headLine + " Popup";
         headLineText.text = popupData.headLine;
         bodyImage.sprite = GalaxyPopupManager.GetPopupSpriteFromName(popupData.spriteName);
         bodyText.text = popupData.bodyText;
