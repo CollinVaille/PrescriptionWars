@@ -7,13 +7,10 @@ public class GalaxyPopupManager : MonoBehaviour
 {
     public GameObject popupPrefab;
 
-    public List<Sprite> popupSprites;
-    public List<string> popupSpriteNames;
     public List<AudioClip> popupSFXList;
     public List<string> popupSFXNames;
     public static List<GalaxyPopup> popups = new List<GalaxyPopup>();
 
-    public static Dictionary<string, Sprite> popupSpritesDictionary = new Dictionary<string, Sprite>();
     public static Dictionary<string, AudioClip> popupSFXDictionary = new Dictionary<string, AudioClip>();
 
     public static GalaxyPopupManager galaxyPopupManager;
@@ -22,23 +19,7 @@ public class GalaxyPopupManager : MonoBehaviour
     void Start()
     {
         galaxyPopupManager = this;
-        GeneratePopupSpriteDictionary();
         GeneratePopupSFXDictionary();
-    }
-
-    void GeneratePopupSpriteDictionary()
-    {
-        if(popupSprites.Count == popupSpriteNames.Count)
-        {
-            for(int x = 0; x < popupSpriteNames.Count; x++)
-            {
-                popupSpritesDictionary[popupSpriteNames[x]] = popupSprites[x];
-            }
-        }
-        else
-        {
-            Debug.Log("Popup sprites list and popup sprite names list count do not match! Please fix this issue.");
-        }
     }
 
     void GeneratePopupSFXDictionary()
@@ -53,19 +34,6 @@ public class GalaxyPopupManager : MonoBehaviour
         else
         {
             Debug.Log("Popup SFXs list and popup SFX names list count do not match! Please fix this issue.");
-        }
-    }
-
-    public static Sprite GetPopupSpriteFromName(string popupSpriteName)
-    {
-        if (popupSpritesDictionary.ContainsKey(popupSpriteName))
-        {
-            return popupSpritesDictionary[popupSpriteName];
-        }
-        else
-        {
-            Debug.Log("Invalid Popup Sprite Name (key does not exist in dictionary)");
-            return null;
         }
     }
 
@@ -97,6 +65,7 @@ public class GalaxyPopupManager : MonoBehaviour
     {
         GameObject popup = Instantiate(galaxyPopupManager.popupPrefab);
         popup.transform.parent = galaxyPopupManager.transform;
+        popup.transform.localPosition = galaxyPopupManager.popupPrefab.transform.localPosition;
 
         popup.GetComponent<GalaxyPopup>().CreatePopup(popupData, popups.Count);
 
@@ -119,7 +88,7 @@ public class GalaxyPopupManager : MonoBehaviour
         GalaxyPopup popup = popups[popupIndex];
         for(int x = popupIndex + 1; x < popups.Count; x++)
         {
-            popups[x].popupIndex--;
+            popups[x].SetPopupIndex(popups[x].GetPopupIndex() - 1);
         }
         popups.RemoveAt(popupIndex);
         Destroy(popup.gameObject);

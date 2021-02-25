@@ -14,39 +14,58 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         VerticalExpand,     //Popup y scale starts at 0 and increases by a constant rate until it is at 1.
         HorizontalExpand        //Popup x scale starts at 0 and increases by a constant rate until it is at 1.
     }
+
+    [Header("Base Popup Logic Options")]
+
     //Indicates what type of opening animation the popup will have.
-    public PopupOpeningAnimationType openingAnimationType;
-
-    //Sound effect that will be played as soon as the popup has been opened.
-    public AudioClip openPopupSFX;
-    //Sound effect that will be played when the popup is closed.
-    public AudioClip closePopupSFX;
-
-    //Indicates whether the logic for the popup opening is called in the start method.
-    public bool popupOpensAtStart;
-    //Indicates whether the top barrier for the popup is limited by the resource bar.
-    public bool isResourceBarTopBarrier;
-    //Indicates whether the mouse is over the popup.
-    bool mouseOverPopup;
-    //Indicates whether the popup is being moved/dragged.
-    bool beingMoved;
-
-    //Indicates the set distance between the mouse and the popup's location (used for dragging popups and probably shouldn't be messed with otherwise).
-    Vector2 mouseToMenuDistance;
-    //Indicates the width and height of the popup (x: width, y: height).
-    public Vector2 popupWidthAndHeight;
+    [SerializeField]
+    private PopupOpeningAnimationType openingAnimationType = PopupOpeningAnimationType.Instant;
 
     //Indicates the constant rate at which the scale of the popup will increase if it has an expand opening animation type.
-    public float popupScaleIncreaseRate = 3.0f;
+    [SerializeField]
+    private float popupScaleIncreaseRate = 3.0f;
+
+    //Indicates whether the logic for the popup opening is called in the start method.
+    [SerializeField]
+    private bool opensAtStart = false;
+    //Indicates whether the top barrier for the popup is limited by the resource bar.
+    [SerializeField]
+    private bool isResourceBarTopBarrier = false;
+
+    //Indicates the width and height of the popup (x: width, y: height).
+    [SerializeField]
+    private Vector2 popupWidthAndHeight = Vector2.zero;
+
+    [Header("Base Popup SFX Options")]
+
+    //Sound effect that will be played as soon as the popup has been opened.
+    [SerializeField]
+    private AudioClip openPopupSFX = null;
+    //Sound effect that will be played when the popup is closed.
+    [SerializeField]
+    private AudioClip closePopupSFX = null;
+
+    [Header("Base Popup Image Components")]
 
     //List of all of the images on the popup that will have their color changed to the player empire's color when the popup opens.
-    public List<Image> imagesWithEmpireColor;
+    [SerializeField]
+    private List<Image> imagesWithEmpireColor = new List<Image>();
+
+    //Non-inspector variables.
+
+    //Indicates whether the mouse is over the popup.
+    private bool mouseOverPopup = false;
+    //Indicates whether the popup is being moved/dragged.
+    private bool beingMoved = false;
+
+    //Indicates the set distance between the mouse and the popup's location (used for dragging popups and probably shouldn't be messed with otherwise).
+    private Vector2 mouseToMenuDistance = Vector2.zero;
 
     // Start is called before the first frame update
     public virtual void Start()
     {
         //Executes the logic for opening the popup if the logic for opening the popup is supposed to be executed in the start method.
-        if (popupOpensAtStart)
+        if (opensAtStart)
             Open();
     }
 

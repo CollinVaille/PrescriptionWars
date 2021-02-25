@@ -1724,6 +1724,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 597037675}
   initialLocalPosition: {x: 5, y: -15}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
   tooltipText: Disband
   font: {fileID: 0}
@@ -2186,12 +2187,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openingAnimationType: 0
-  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
-  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
-  popupOpensAtStart: 0
+  popupScaleIncreaseRate: 3
+  opensAtStart: 0
   isResourceBarTopBarrier: 1
   popupWidthAndHeight: {x: 454.5, y: 330}
-  popupScaleIncreaseRate: 3
+  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
   imagesWithEmpireColor:
   - {fileID: 112188248}
   - {fileID: 1399449484}
@@ -3170,12 +3171,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openingAnimationType: 0
-  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
-  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
-  popupOpensAtStart: 0
+  popupScaleIncreaseRate: 3
+  opensAtStart: 0
   isResourceBarTopBarrier: 1
   popupWidthAndHeight: {x: 451.5, y: 326.5}
-  popupScaleIncreaseRate: 3
+  openPopupSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
+  closePopupSFX: {fileID: 8300000, guid: 1c48f4405c25f054f8d9c00a538cfe5d, type: 3}
   imagesWithEmpireColor: []
   clickOnCityAudioClip: {fileID: 8300000, guid: d854309ef3c24fb469a70776756b4e29,
     type: 3}
@@ -9874,6 +9875,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 1587569414}
   initialLocalPosition: {x: -215, y: -27.5}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
   tooltipText: Credits
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
@@ -10226,6 +10228,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 1587569414}
   initialLocalPosition: {x: 52.5, y: -27.5}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
   tooltipText: Science
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
@@ -10685,6 +10688,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 1587569414}
   initialLocalPosition: {x: -125, y: -27.5}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
   tooltipText: Prescriptions
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
@@ -12210,6 +12214,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 597037675}
   initialLocalPosition: {x: 5, y: -15}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
   tooltipText: Rename
   font: {fileID: 0}
@@ -14158,6 +14163,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 1587569414}
   initialLocalPosition: {x: -277.5, y: -27.5}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
   tooltipText: Empire Name
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
@@ -18561,6 +18567,7 @@ MonoBehaviour:
   closingType: 1
   tooltipParent: {fileID: 1587569414}
   initialLocalPosition: {x: -37.5, y: -27.5}
+  edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
   tooltipText: Production
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}

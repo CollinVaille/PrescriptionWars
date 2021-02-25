@@ -407,7 +407,7 @@ public class TechManager
     {
         GalaxyPopupData researchCompletedPopup = new GalaxyPopupData();
         researchCompletedPopup.headLine = "Research Completed";
-        researchCompletedPopup.spriteName = "Research Facility";
+        researchCompletedPopup.spriteResourcesFilePath = "Tech Totems/" + completedTech.spriteName;
         researchCompletedPopup.bodyText = "Our glorious empire has finished researching the " + completedTech.name + " tech. " + completedTech.name + ": " + completedTech.description;
         GalaxyPopupOptionData option = new GalaxyPopupOptionData();
         option.mainText = "Select new tech to research.";

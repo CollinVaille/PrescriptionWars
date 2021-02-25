@@ -7,26 +7,47 @@ using UnityEngine.UI;
 
 public class GalaxyPopup : GalaxyPopupBehaviour
 {
-    public Text headLineText;
-    public Image bodyImage;
-    public Text bodyText;
+    [Header("Text Components")]
 
-    public AudioClip specialOpenPopupSFX;
-    public AudioClip mouseOverOptionButton;
-    public AudioClip clickOptionButtonSFX;
+    [SerializeField]
+    private Text headLineText = null;
+    [SerializeField]
+    private Text bodyText = null;
+    [SerializeField]
+    private List<Text> optionButtonTexts = new List<Text>();
 
-    public List<Button> optionButtons;
-    public List<Text> optionButtonTexts;
+    [Header("Image Components")]
 
-    List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
+    [SerializeField]
+    private Image bodyImage = null;
+    [SerializeField]
+    private Image bodyImageMask = null;
+
+    [Header("Button Components")]
+
+    [SerializeField]
+    private List<Button> optionButtons = null;
+
+    [Header("SFX Options")]
+
+    [SerializeField]
+    private AudioClip specialOpenPopupSFX = null;
+    [SerializeField]
+    private AudioClip mouseOverOptionButton = null;
+    [SerializeField]
+    private AudioClip clickOptionButtonSFX = null;
+
+    //Non-inspector variables.
+
+    private List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
 
     //Indicates the popup's index in the list of popups in the popup manager.
-    public int popupIndex;
+    private int popupIndex = 0;
 
     //Indicates whether the player is required to provide an answer for the popup to close.
-    bool answerRequired;
+    private bool answerRequired = false;
     //Indicates whether the special sound effect for whenever the popup opens has played or not.
-    bool specialOpenPopupSFXPlayed;
+    private bool specialOpenPopupSFXPlayed = false;
 
     // Start is called before the first frame update
     public override void Start()
@@ -57,7 +78,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     {
         gameObject.name = popupData.headLine + " Popup";
         headLineText.text = popupData.headLine;
-        bodyImage.sprite = GalaxyPopupManager.GetPopupSpriteFromName(popupData.spriteName);
+        SetBodyImageSprite(Resources.Load<Sprite>("Galaxy/" + popupData.spriteResourcesFilePath));
         bodyText.text = popupData.bodyText;
         specialOpenPopupSFX = GalaxyPopupManager.GetPopupSFXFromName(popupData.specialOpenSFXName);
         answerRequired = popupData.answerRequired;
@@ -134,6 +155,34 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     {
         return headLineText.text;
     }
+
+    public int GetPopupIndex()
+    {
+        return popupIndex;
+    }
+
+    public void SetPopupIndex(int index)
+    {
+        popupIndex = index;
+    }
+
+    private void SetBodyImageSprite(Sprite sprite)
+    {
+        //Sets the sprite of the body image to the specified sprite.
+        bodyImage.sprite = sprite;
+        //Sets the size of the body image to the size of the specified sprite.
+        bodyImage.rectTransform.sizeDelta = sprite.rect.size;
+        //Prevents the height of the body image from exceeding the height of the body image mask.
+        if (bodyImage.rectTransform.sizeDelta.y > bodyImageMask.rectTransform.sizeDelta.y)
+        {
+            bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y));
+        }
+        //Prevents the width of the body image from exceeding the width of the body image mask.
+        if (bodyImage.rectTransform.sizeDelta.x > bodyImageMask.rectTransform.sizeDelta.x)
+        {
+            bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x));
+        }
+    }
 }
 
 [System.Serializable]
@@ -141,7 +190,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
 public class GalaxyPopupData
 {
     public string headLine;
-    public string spriteName;
+    public string spriteResourcesFilePath;
     public string bodyText;
     public string specialOpenSFXName = null;
 
