@@ -403,12 +403,16 @@ public class TechManager
         }
     }
 
-    void CreateResearchCompletedNotification(Tech completedTech)
+    private void CreateResearchCompletedNotification(Tech completedTech)
     {
         GalaxyPopupData researchCompletedPopup = new GalaxyPopupData();
         researchCompletedPopup.headLine = "Research Completed";
         researchCompletedPopup.spriteResourcesFilePath = "Tech Totems/" + completedTech.spriteName;
         researchCompletedPopup.bodyText = "Our glorious empire has finished researching the " + completedTech.name + " tech. " + completedTech.name + ": " + completedTech.description;
+        researchCompletedPopup.specialOpenSFXName = "Chemistry Bubbles";
+        researchCompletedPopup.answerRequired = false;
+        researchCompletedPopup.spriteFit = GalaxyPopupSpriteFit.Horizontal;
+        researchCompletedPopup.spritePositionPercentage = 0.25f;
         GalaxyPopupOptionData option = new GalaxyPopupOptionData();
         option.mainText = "Select new tech to research.";
         option.effectDescriptionText = "Opens the research view.";
@@ -416,8 +420,6 @@ public class TechManager
         optionEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.OpenResearchView;
         option.effects.Add(optionEffect);
         researchCompletedPopup.options.Add(option);
-        researchCompletedPopup.answerRequired = false;
-        researchCompletedPopup.specialOpenSFXName = "Chemistry Bubbles";
 
         RightSideNotificationManager.CreateNewRightSideNotification("Science Icon", "Research Completed", true, researchCompletedPopup);
     }

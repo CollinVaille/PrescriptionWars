@@ -37,6 +37,14 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     [SerializeField]
     private AudioClip clickOptionButtonSFX = null;
 
+    [Header("Additional Information")]
+
+    [SerializeField]
+    [ReadOnly] private GalaxyPopupSpriteFit spriteFit = 0;
+
+    [SerializeField]
+    [ReadOnly] private float spritePositionPercentage = 0;
+
     //Non-inspector variables.
 
     private List<GalaxyPopupOptionData> optionsData = new List<GalaxyPopupOptionData>();
@@ -78,10 +86,12 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     {
         gameObject.name = popupData.headLine + " Popup";
         headLineText.text = popupData.headLine;
-        SetBodyImageSprite(Resources.Load<Sprite>("Galaxy/" + popupData.spriteResourcesFilePath));
+        SetBodyImageSprite(Resources.Load<Sprite>("Galaxy/" + popupData.spriteResourcesFilePath), popupData.spriteFit, popupData.spritePositionPercentage);
         bodyText.text = popupData.bodyText;
         specialOpenPopupSFX = GalaxyPopupManager.GetPopupSFXFromName(popupData.specialOpenSFXName);
         answerRequired = popupData.answerRequired;
+        spriteFit = popupData.spriteFit;
+        spritePositionPercentage = popupData.spritePositionPercentage;
         List<int> optionButtonsUsed = new List<int>();
         int optionsProcessed = 0;
         //Sets the data of all of the option buttons that will be used.
@@ -166,21 +176,62 @@ public class GalaxyPopup : GalaxyPopupBehaviour
         popupIndex = index;
     }
 
-    private void SetBodyImageSprite(Sprite sprite)
+    private void SetBodyImageSprite(Sprite sprite, GalaxyPopupSpriteFit spriteFit, float spritePositionPercentage)
     {
         //Sets the sprite of the body image to the specified sprite.
         bodyImage.sprite = sprite;
         //Sets the size of the body image to the size of the specified sprite.
         bodyImage.rectTransform.sizeDelta = sprite.rect.size;
-        //Prevents the height of the body image from exceeding the height of the body image mask.
-        if (bodyImage.rectTransform.sizeDelta.y > bodyImageMask.rectTransform.sizeDelta.y)
+        //Makes sure that the sprite of the body image fits correctly.
+        switch (spriteFit)
         {
-            bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y));
+            case GalaxyPopupSpriteFit.VerticalAndHorizontal:
+                FitBodyImageSpriteVertically();
+                FitBodyImageSpriteHorizontally();
+                break;
+            case GalaxyPopupSpriteFit.Vertical:
+                FitBodyImageSpriteVertically();
+                break;
+            case GalaxyPopupSpriteFit.Horizontal:
+                FitBodyImageSpriteHorizontally();
+                break;
+
+            default:
+                Debug.LogWarning("Galaxy Popup Sprite Fit: " + spriteFit.ToString() + " does not have any logic implemented for it.");
+                break;
         }
-        //Prevents the width of the body image from exceeding the width of the body image mask.
-        if (bodyImage.rectTransform.sizeDelta.x > bodyImageMask.rectTransform.sizeDelta.x)
+        //Updates the position of the sprite of the body image.
+        UpdateBodyImageSpritePosition(spriteFit, spritePositionPercentage);
+    }
+
+    private void FitBodyImageSpriteVertically()
+    {
+        bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.y / bodyImageMask.rectTransform.sizeDelta.y));
+    }
+
+    private void FitBodyImageSpriteHorizontally()
+    {
+        bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x));
+    }
+
+    private void UpdateBodyImageSpritePosition(GalaxyPopupSpriteFit spriteFit, float spritePositionPercentage)
+    {
+        switch (spriteFit)
         {
-            bodyImage.rectTransform.sizeDelta = new Vector2(bodyImage.rectTransform.sizeDelta.x / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x), bodyImage.rectTransform.sizeDelta.y / (bodyImage.rectTransform.sizeDelta.x / bodyImageMask.rectTransform.sizeDelta.x));
+            case GalaxyPopupSpriteFit.VerticalAndHorizontal:
+                break;
+            case GalaxyPopupSpriteFit.Vertical:
+                float maximumChangeInXPosition = (bodyImage.rectTransform.sizeDelta.x / 2) - (bodyImageMask.rectTransform.sizeDelta.x / 2);
+                bodyImage.transform.localPosition = new Vector2(bodyImage.transform.localPosition.x + (maximumChangeInXPosition * spritePositionPercentage), bodyImage.transform.localPosition.y);
+                break;
+            case GalaxyPopupSpriteFit.Horizontal:
+                float maximumChangeInYPosition = (bodyImage.rectTransform.sizeDelta.y / 2) - (bodyImageMask.rectTransform.sizeDelta.y / 2);
+                bodyImage.transform.localPosition = new Vector2(bodyImage.transform.localPosition.x, bodyImage.transform.localPosition.y + (maximumChangeInYPosition * (spritePositionPercentage * -1)));
+                break;
+
+            default:
+                Debug.LogWarning("Update Body Image Sprite Position logic for Galaxy Popup Sprite Fit: " + spriteFit.ToString() + " has not been implemented.");
+                break;
         }
     }
 }
@@ -194,7 +245,12 @@ public class GalaxyPopupData
     public string bodyText;
     public string specialOpenSFXName = null;
 
-    public bool answerRequired;
+    public bool answerRequired = false;
+
+    public GalaxyPopupSpriteFit spriteFit = 0;
+
+    //Ranges from -1 (sprite lowest or leftmost y position) to 1 (sprite highest or rightmost y position).
+    public float spritePositionPercentage = 0;
 
     public List<GalaxyPopupOptionData> options = new List<GalaxyPopupOptionData>();
 }
@@ -228,4 +284,11 @@ public class GalaxyPopupOptionEffect
 
     public List<int> effectDependencies = new List<int>();
     public int effectAmount;
+}
+
+public enum GalaxyPopupSpriteFit
+{
+    VerticalAndHorizontal,
+    Vertical,
+    Horizontal
 }
