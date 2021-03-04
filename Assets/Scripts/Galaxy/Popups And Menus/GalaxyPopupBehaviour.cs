@@ -18,12 +18,12 @@ public class GalaxyPopupBehaviour : MonoBehaviour
     [Header("Base Popup Logic Options")]
 
     //Indicates what type of opening animation the popup will have.
-    [SerializeField]
-    private PopupOpeningAnimationType openingAnimationType = PopupOpeningAnimationType.Instant;
+    public PopupOpeningAnimationType openingAnimationType = PopupOpeningAnimationType.Instant;
 
     //Indicates the constant rate at which the scale of the popup will increase if it has an expand opening animation type.
     [SerializeField]
-    private float popupScaleIncreaseRate = 3.0f;
+    [ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.Disappear)]
+    private float openingAnimationSpeed = 3.0f;
 
     //Indicates whether the logic for the popup opening is called in the start method.
     [SerializeField]
@@ -88,7 +88,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         {
             if(openingAnimationType == PopupOpeningAnimationType.Expand)
             {
-                transform.localScale = new Vector3(transform.localScale.x + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.y + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.z);
+                transform.localScale = new Vector3(transform.localScale.x + (openingAnimationSpeed * Time.deltaTime), transform.localScale.y + (openingAnimationSpeed * Time.deltaTime), transform.localScale.z);
 
                 if (transform.localScale.x > 1)
                     transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
@@ -97,14 +97,14 @@ public class GalaxyPopupBehaviour : MonoBehaviour
             }
             else if (openingAnimationType == PopupOpeningAnimationType.VerticalExpand)
             {
-                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.z);
+                transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + (openingAnimationSpeed * Time.deltaTime), transform.localScale.z);
 
                 if (transform.localScale.y > 1)
                     transform.localScale = new Vector3(transform.localScale.x, 1, transform.localScale.z);
             }
             else if (openingAnimationType == PopupOpeningAnimationType.HorizontalExpand)
             {
-                transform.localScale = new Vector3(transform.localScale.x + (popupScaleIncreaseRate * Time.deltaTime), transform.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(transform.localScale.x + (openingAnimationSpeed * Time.deltaTime), transform.localScale.y, transform.localScale.z);
 
                 if (transform.localScale.x > 1)
                     transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
