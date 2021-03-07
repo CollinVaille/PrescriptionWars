@@ -22,7 +22,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
     //Indicates the constant rate at which the scale of the popup will increase if it has an expand opening animation type.
     [SerializeField]
-    [ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.Disappear)]
+    //[ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.Disappear)]
+    [ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.ReadOnly)]
     private float openingAnimationSpeed = 3.0f;
 
     //Indicates whether the logic for the popup opening is called in the start method.

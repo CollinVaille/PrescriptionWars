@@ -80,6 +80,8 @@ public class GalaxyGenerator : MonoBehaviour
     private GameObject tooltipPrefab = null;
     [SerializeField]
     private GameObject backArrowPrefab = null;
+    [SerializeField]
+    private GameObject pillViewPrefab = null;
 
     [Header("Parents")]
 
@@ -150,6 +152,7 @@ public class GalaxyGenerator : MonoBehaviour
         GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
         GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
+        PillViewsManager.pillViewPrefab = pillViewPrefab;
 
         //Manager objects.
         HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;

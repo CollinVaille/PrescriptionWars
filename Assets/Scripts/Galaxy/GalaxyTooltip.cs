@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -19,14 +20,12 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public TooltipClosingType closingType;
 
     //The parent transform of the tooltip.
-    [Tooltip("The parent transform of the tooltip.")]
-    [SerializeField]
+    [SerializeField, Tooltip("The parent transform of the tooltip.")]
     private Transform tooltipParent = null;
 
     //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
-    [Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
-    [SerializeField]
-    private Vector2 initialLocalPosition = Vector2.zero;
+    [SerializeField, Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
+    private Vector2 initialLocalPosition = new Vector2(5, -15);
 
     //Indicates the amount of space between the text of the tooltip and the edge of the tooltip.
     [Tooltip("Indicates the amount of space between the text of the tooltip and the edge of the tooltip.")]
@@ -40,31 +39,25 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [Header("Text Content")]
 
     //The text that the tooltip displays to the user.
-    [Tooltip("The text that the tooltip displays to the user.")]
-    [TextArea]
-    [SerializeField]
+    [SerializeField, TextArea, Tooltip("The text that the tooltip displays to the user.")]
     private string tooltipText = "";
 
     //The font that the text of the tooltip will be.
-    [Tooltip("The font that the text of the tooltip will be.")]
-    [SerializeField]
+    [SerializeField, Tooltip("The font that the text of the tooltip will be.")]
     private Font font = null;
 
     //Indicates the size of the font of the tooltip text.
-    [Tooltip("Indicates the size of the font of the tooltip text.")]
-    [SerializeField]
+    [SerializeField, Tooltip("Indicates the size of the font of the tooltip text.")]
     private int fontSize;
 
     [Header("Text Shadow")]
 
     //Indicates whether the shadow component of the tooltip's text is enabled.
     [Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
-    [SerializeField]
-    private bool textShadowEnabled = false;
+    public bool textShadowEnabled = false;
 
     //Indicates the effect distance of the shadow component of the tooltip's text.
-    [Tooltip("Indicates the effect distance of the shadow component of the tooltip's text.")]
-    [SerializeField]
+    [SerializeField, Tooltip("Indicates the effect distance of the shadow component of the tooltip's text."), ConditionalField("textShadowEnabled", true, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
     private Vector2 textShadowEffectDistance = new Vector2(1, -1);
 
     public enum GalaxyTooltipColorOption
@@ -72,32 +65,31 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Default,
         Transparent,
         PlayerEmpireColor,
-        CustomColor0,
-        CustomColor1,
-        CustomColor2
+        CustomColor
     }
 
     [Header("Coloring Options")]
 
     //Indicates the color of the text of the tooltip.
-    [Tooltip("Indicates the color of the text of the tooltip.")]
-    [SerializeField]
-    private GalaxyTooltipColorOption textColor = GalaxyTooltipColorOption.Default;
+    [LabelOverride("Text Color"), Tooltip("Indicates the color of the text of the tooltip.")]
+    public GalaxyTooltipColorOption textColorOption = GalaxyTooltipColorOption.Default;
+
+    [SerializeField, ConditionalField("textColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    private Color textCustomColor = Color.white;
 
     //Indicates the color of the shadow component of the tooltip's text.
-    [Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
-    [SerializeField]
-    private GalaxyTooltipColorOption textShadowColor = GalaxyTooltipColorOption.Default;
+    [LabelOverride("Text Shadow Color"), Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
+    public GalaxyTooltipColorOption textShadowColorOption = GalaxyTooltipColorOption.Default;
+
+    [SerializeField, ConditionalField("textShadowColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    private Color textShadowCustomColor = Color.white;
 
     //Indicates the background color of the tooltip.
-    [Tooltip("Indicates the background color of the tooltip.")]
-    [SerializeField]
-    private GalaxyTooltipColorOption backgroundColor = GalaxyTooltipColorOption.Default;
+    [LabelOverride("Background Color"), Tooltip("Indicates the background color of the tooltip.")]
+    public GalaxyTooltipColorOption backgroundColorOption = GalaxyTooltipColorOption.Default;
 
-    //List of custom colors that the tooltip can use.
-    [Tooltip("A list of custom colors that the tooltip can use.")]
-    [SerializeField]
-    private List<Color> customColors = new List<Color>();
+    [SerializeField, ConditionalField("backgroundColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    private Color backgroundCustomColor = Color.white;
 
     //---------------------------------------------------------------------------------------
     //Non-inspector variables.
@@ -211,7 +203,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         tooltip.transform.localScale = Vector3.one;
         tooltip.transform.localPosition = initialLocalPosition;
         //Sets the color of the background image of the tooltip.
-        tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColor, "Background");
+        tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColorOption, "Background");
         //Updates the text of the tooltip.
         UpdateTooltipText();
     }
@@ -262,7 +254,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if(fontSize > 0)
             textElementOfTooltip.fontSize = fontSize;
         //Sets the color of the text of the tooltip.
-        textElementOfTooltip.color = GetColorFromColorOption(textColor, "Text");
+        textElementOfTooltip.color = GetColorFromColorOption(textColorOption, "Text");
         //Enables the shadow component of the tooltip's text if it is supposed to be enabled and disables it if it is supposed to be disabled.
         if (textShadowEnabled)
             tooltip.transform.GetChild(1).GetComponent<Shadow>().enabled = true;
@@ -271,7 +263,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         //Sets the effect distance of the shadow component of the tooltip's text.
         tooltip.transform.GetChild(1).GetComponent<Shadow>().effectDistance = textShadowEffectDistance;
         //Sets the color of the shadow component of the tooltip's text.
-        tooltip.transform.GetChild(1).GetComponent<Shadow>().effectColor = GetColorFromColorOption(textShadowColor, "Text Shadow");
+        tooltip.transform.GetChild(1).GetComponent<Shadow>().effectColor = GetColorFromColorOption(textShadowColorOption, "Text Shadow");
         //Sets the text of the tooltip.
         textElementOfTooltip.text = tooltipText;
         //Adjusts the background image of the tooltip to the size of the text of the tooltip.
@@ -315,15 +307,15 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Should be called in order to set the background color of the tooltip through code.
     public void SetBackgroundColor(GalaxyTooltipColorOption colorOption)
     {
-        backgroundColor = colorOption;
+        backgroundColorOption = colorOption;
         if(tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
-            tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColor, "Background");
+            tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColorOption, "Background");
     }
 
     //Should be called in order to set the color of the text of the tooltip through code.
     public void SetTextColor(GalaxyTooltipColorOption colorOption)
     {
-        textColor = colorOption;
+        textColorOption = colorOption;
         if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
             UpdateTooltipText();
     }
@@ -346,7 +338,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void SetTextShadowColor(GalaxyTooltipColorOption colorOption)
     {
-        textShadowColor = colorOption;
+        textShadowColorOption = colorOption;
         if (tooltipOpen || (closingType == TooltipClosingType.Deactivate && tooltip != null))
             UpdateTooltipText();
     }
@@ -374,19 +366,30 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return Color.clear;
             case GalaxyTooltipColorOption.PlayerEmpireColor:
                 return Empire.empires[GalaxyManager.playerID].empireColor;
+            case GalaxyTooltipColorOption.CustomColor:      //Edits needs to be made here.
+                switch (componentOfTooltip.ToLower())
+                {
+                    case "background":
+                        return backgroundCustomColor;
+                    case "text":
+                        return textCustomColor;
+                    case "text shadow":
+                        return textShadowCustomColor;
+
+                    default:
+                        Debug.Log("Something has gone wrong. " + componentOfTooltip + " is not a valid tooltip component. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
+                        return Color.white;
+                }
 
             default:
-                if (colorOption.ToString().ToLower().Contains("customcolor"))
-                {
-                    int customColorIndex = GeneralHelperMethods.GetNumberFromText(colorOption.ToString(), 11, colorOption.ToString().Length - 1);
-                    if (customColorIndex >= 0 && customColorIndex < customColors.Count)
-                        return customColors[customColorIndex];
-                    Debug.Log("Custom Color Index: " + customColorIndex + " is an invalid custom color index. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
-                    return Color.white;
-                }
                 Debug.Log("Something has gone wrong. Color option: " + colorOption + " is not a valid color identifier. See the GetColorFromIdentifier() method in the GalaxyTooltip class for details.");
                 return Color.white;
         }
+    }
+
+    public GalaxyTooltipColorOption GetTextColorOption()
+    {
+        return textColorOption;
     }
 
     //Closes the tooltip if the trigger zone is deactivated/disabled.

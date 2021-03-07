@@ -1,11 +1,10 @@
 ﻿using Exceptions;
-using System;
 using UnityEditor;
 using UnityEngine;
 using Utilities;
 
 [CustomPropertyDrawer(typeof(ConditionalFieldAttribute))]
-public class ConditionalFieldPropertyDrawer : PropertyDrawer
+public class DrawIfPropertyDrawer : PropertyDrawer
 {
     // Reference to the attribute on the property.
     ConditionalFieldAttribute drawIf;

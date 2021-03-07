@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
+/// <summary>
+/// Draws the field/property ONLY if the copared property compared by the comparison type with the value of comparedValue returns true.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true)]
 public class ConditionalFieldAttribute : PropertyAttribute
 {

@@ -5,30 +5,58 @@ using UnityEngine.UI;
 
 public class ArmyManagementMenu : GalaxyPopupBehaviour
 {
-    public Image backgroundColorImage;
+    [Header("Army Management Menu Image Components")]
 
-    public Text planetNameText;
+    [SerializeField]
+    private Image backgroundColorImage = null;
 
-    public int planetSelected;
+    [Header("Army Management Menu Raw Image Components")]
+
+    [SerializeField]
+    private RawImage pillRawImage = null;
+
+    [Header("Army Management Menu Text Components")]
+
+    [SerializeField]
+    private Text planetNameText = null;
+    [SerializeField]
+    private Text groundUnitNameText = null;
+
+    [Header("Army Management Menu Other Components")]
+
+    [SerializeField]
+    private List<ArmyManagerScrollList> armyManagerScrollLists = new List<ArmyManagerScrollList>();
+
+    [SerializeField]
+    private GameObject middleSection = null;
+
+    [SerializeField]
+    private Slider pillRotationSlider = null;
+
+    [Header("Army Management Menu SFX Options")]
+
+    [SerializeField]
+    private AudioClip disbandUnitSFX = null;
+    [SerializeField]
+    private AudioClip mouseOverMiddleButtonSFX = null;
+    [SerializeField]
+    private AudioClip mouseClickMiddleButtonSFX = null;
+    [SerializeField]
+    private AudioClip renameSFX = null;
+
+    [Header("Additional Information")]
+
+    [ReadOnly] public int planetSelected = 0;
+
+    //Non-inspector variables.
 
     public static ArmyManagementMenu armyManagementMenu;
 
-    public List<ArmyManagerScrollList> armyManagerScrollLists;
+    private GalaxyArmy armySelected = null;
+    private GalaxySquad squadSelected = null;
+    private GalaxyPill pillSelected = null;
 
-    //Middle section declarations.
-    //-----------------------------------------------------------------------------------
-    public GameObject middleSection;
-
-    public AudioClip disbandUnitSFX;
-    public AudioClip mouseOverMiddleButtonSFX;
-    public AudioClip mouseClickMiddleButtonSFX;
-    public AudioClip renameSFX;
-
-    public Text groundUnitNameText;
-
-    GalaxyArmy armySelected;
-    GalaxySquad squadSelected;
-    GalaxyPill pillSelected;
+    private PillView pillView = null;
 
     public enum GalaxyGroundUnitType
     {
@@ -117,12 +145,24 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             case GalaxyGroundUnitType.None:
                 middleSection.SetActive(false);
                 groundUnitNameText.text = "";
+                if(pillView != null)
+                    pillView.Delete();
+                pillRawImage.texture = null;
+                pillRawImage.color = Color.clear;
+                pillRotationSlider.gameObject.SetActive(false);
+                ResetPillRotationSliderValue();
                 break;
             case GalaxyGroundUnitType.Army:
                 if (armySelected != null)
                 {
                     middleSection.SetActive(true);
                     groundUnitNameText.text = armySelected.name;
+                    if (pillView != null)
+                        pillView.Delete();
+                    pillRawImage.texture = null;
+                    pillRawImage.color = Color.clear;
+                    pillRotationSlider.gameObject.SetActive(false);
+                    ResetPillRotationSliderValue();
                 }
                 break;
             case GalaxyGroundUnitType.Squad:
@@ -130,6 +170,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 {
                     middleSection.SetActive(true);
                     groundUnitNameText.text = squadSelected.name;
+                    if (pillView != null)
+                        pillView.Delete();
+                    pillRawImage.texture = null;
+                    pillRawImage.color = Color.clear;
+                    pillRotationSlider.gameObject.SetActive(false);
+                    ResetPillRotationSliderValue();
                 }
                 break;
             case GalaxyGroundUnitType.Pill:
@@ -137,6 +183,13 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 {
                     middleSection.SetActive(true);
                     groundUnitNameText.text = pillSelected.name;
+                    if (pillView != null)
+                        pillView.Delete();
+                    pillView = PillViewsManager.GetNewPillView();
+                    pillRawImage.texture = pillView.GetRenderTexture();
+                    pillRawImage.color = Color.white;
+                    pillRotationSlider.gameObject.SetActive(true);
+                    ResetPillRotationSliderValue();
                 }
                 break;
         }
@@ -479,5 +532,15 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
 
         return null;
+    }
+
+    public void OnPillRotationSliderValueChanged()
+    {
+        pillView.SetPillRotation(pillRotationSlider.value * 360);
+    }
+
+    private void ResetPillRotationSliderValue()
+    {
+        pillRotationSlider.SetValueWithoutNotify(0);
     }
 }
