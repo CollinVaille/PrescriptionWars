@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class ResourceBar : MonoBehaviour
 {
+    [Header("Image Components")]
+
     public Image flagBackground;
     public Image flagSymbol;
 
-    int flagSymbolNum = -1;
-
-    public GalaxyTooltip empireNameTooltip;
+    [Header("Text Components")]
 
     public Text creditsText;
     public Text prescriptionsText;
@@ -19,50 +19,34 @@ public class ResourceBar : MonoBehaviour
     public Text productionText;
     public Text turnText;
 
-    public float updatesPerSecond;
-    float timer;
+    [Header("Tooltip Components")]
+
+    public GalaxyTooltip empireNameTooltip;
+
+    //Non-inspector variables.
+
+    private int flagSymbolNum = -1;
+
+    private static ResourceBar resourceBar;
 
     // Start is called before the first frame update
     void Start()
     {
-        timer = 0.0f;
+
+    }
+
+    private void Awake()
+    {
+        resourceBar = this;
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if(timer >= (1 / updatesPerSecond))
-        {
-            //Updates the flag's symbol.
-            if(flagSymbolNum != Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected)
-                flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.playerID].empireFlag.symbolSelected];
 
-            flagBackground.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.backgroundColor.z, 1.0f);
-            flagSymbol.color = new Color(Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.x, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.y, Empire.empires[GalaxyManager.playerID].empireFlag.symbolColor.z, 1.0f);
-            empireNameTooltip.SetTooltipText(Empire.empires[GalaxyManager.playerID].empireName);
-            creditsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].credits);
-            creditsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetCreditsPerTurn();
-            prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].prescriptions);
-            prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetPrescriptionsPerTurn();
-            scienceText.text = GetResourceString(Empire.empires[GalaxyManager.playerID].science);
-            try
-            {
-                scienceText.text += "/" + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techDisplayed]].cost;
-            }
-            catch (Exception)
-            {
-
-            }
-            scienceText.text += " +" + (int)Empire.empires[GalaxyManager.playerID].GetSciencePerTurn();
-            productionText.text = "+" + (int)Empire.empires[GalaxyManager.playerID].GetProductionPerTurn();
-            turnText.text = "Turn: " + GalaxyManager.turnNumber;
-
-            timer = 0.0f;
-        }
     }
 
-    string GetResourceString(float amount)
+    private static string GetResourceString(float amount)
     {
         string resourceString = "";
 
@@ -92,5 +76,68 @@ public class ResourceBar : MonoBehaviour
         }
 
         return resourceString;
+    }
+
+    public static void UpdateAllEmpireDependantComponents()
+    {
+        UpdateCreditsText();
+        UpdatePrescriptionsText();
+        UpdateScienceText();
+        UpdateFlag();
+        UpdateEmpireNameTooltip();
+    }
+
+    public static void UpdateCreditsText()
+    {
+        resourceBar.creditsText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].Credits);
+        resourceBar.creditsText.text += " +" + (int)Empire.empires[GalaxyManager.PlayerID].GetCreditsPerTurn();
+    }
+
+    public static void UpdatePrescriptionsText()
+    {
+        resourceBar.prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].Prescriptions);
+        resourceBar.prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.PlayerID].GetPrescriptionsPerTurn();
+    }
+
+    public static void UpdateScienceText()
+    {
+        resourceBar.scienceText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].Science);
+        try
+        {
+            resourceBar.scienceText.text += "/" + Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost;
+        }
+        catch (Exception)
+        {
+
+        }
+        resourceBar.scienceText.text += " +" + (int)Empire.empires[GalaxyManager.PlayerID].GetSciencePerTurn();
+    }
+
+    public static void UpdateFlag()
+    {
+        //Updates the flag's symbol.
+        if (resourceBar.flagSymbolNum != Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected)
+        {
+            resourceBar.flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected];
+            resourceBar.flagSymbolNum = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected;
+        }
+
+        resourceBar.flagBackground.color = new Color(Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.x, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.y, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.z, 1.0f);
+        resourceBar.flagSymbol.color = new Color(Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.x, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.y, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.z, 1.0f);
+    }
+
+    public static void UpdateEmpireNameTooltip()
+    {
+        resourceBar.empireNameTooltip.SetTooltipText(Empire.empires[GalaxyManager.PlayerID].EmpireName);
+    }
+
+    public static void UpdateTurnText()
+    {
+        resourceBar.turnText.text = "Turn: " + GalaxyManager.TurnNumber;
+    }
+
+    public static void UpdateProductionText()
+    {
+        resourceBar.productionText.text = "+" + (int)Empire.empires[GalaxyManager.PlayerID].GetProductionPerTurn();
     }
 }

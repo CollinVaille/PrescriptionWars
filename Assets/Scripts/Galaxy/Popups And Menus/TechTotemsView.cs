@@ -56,7 +56,7 @@ public class TechTotemsView : GalaxyMenuBehaviour
     {
         UpdateTechTotems();
 
-        SetTechTotemSelected(Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected);
+        SetTechTotemSelected(Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected);
     }
 
     public override void SwitchToPreviousMenu()
@@ -86,7 +86,7 @@ public class TechTotemsView : GalaxyMenuBehaviour
 
     public void SetTechTotemSelected(int newTechTotemSelected)
     {
-        Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected = newTechTotemSelected;
+        Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected = newTechTotemSelected;
 
         for (int x = 0; x < techTotemSelectedOutlineImages.Count; x++)
         {
@@ -102,9 +102,9 @@ public class TechTotemsView : GalaxyMenuBehaviour
         //Updates each tech totem's images.
         for (int x = 0; x < techTotemImages.Count; x++)
         {
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                techTotemImages[x].sprite = Resources.Load<Sprite>("Galaxy/Tech Totems/" + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].spriteName);
+                techTotemImages[x].sprite = Resources.Load<Sprite>("Galaxy/Tech Totems/" + Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techDisplayed]].spriteName);
             }
             else
             {
@@ -117,11 +117,11 @@ public class TechTotemsView : GalaxyMenuBehaviour
         {
             bool goodTotem = true;
 
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected == x)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected == x)
             {
-                if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable.Count > 0)
+                if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable.Count > 0)
                 {
-                    researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, (Empire.empires[GalaxyManager.playerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[Empire.empires[GalaxyManager.playerID].techManager.techTotemSelected].techDisplayed]].cost) * 350 + -400, researchProgressRawImages[x].transform.localPosition.z);
+                    researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, (Empire.empires[GalaxyManager.PlayerID].Science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost) * 350 + -400, researchProgressRawImages[x].transform.localPosition.z);
                     if (researchProgressRawImages[x].transform.localPosition.y > -50)
                         researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, -50, researchProgressRawImages[x].transform.localPosition.z);
                 }
@@ -140,15 +140,15 @@ public class TechTotemsView : GalaxyMenuBehaviour
         //Updates each tech totem's top/title text.
         for (int x = 0; x < techTotemTopTexts.Count; x++)
         {
-            techTotemTopTexts[x].text = Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].name;
+            techTotemTopTexts[x].text = Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].name;
         }
 
         //Updates each tech totem's tech name text.
         for (int x = 0; x < techNameTexts.Count; x++)
         {
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                techNameTexts[x].text = Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].name;
+                techNameTexts[x].text = Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techDisplayed]].name;
             }
             else
             {
@@ -159,9 +159,9 @@ public class TechTotemsView : GalaxyMenuBehaviour
         //Updates each tech totem's tech description text.
         for (int x = 0; x < techDescriptionTexts.Count; x++)
         {
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                techDescriptionTexts[x].text = Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].description;
+                techDescriptionTexts[x].text = Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techDisplayed]].description;
             }
             else
             {
@@ -172,9 +172,9 @@ public class TechTotemsView : GalaxyMenuBehaviour
         //Updates each tech totem's tech level text.
         for (int x = 0; x < techLevelTexts.Count; x++)
         {
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                techLevelTexts[x].text = "Level: " + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].level;
+                techLevelTexts[x].text = "Level: " + Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techDisplayed]].level;
             }
             else
             {
@@ -186,9 +186,9 @@ public class TechTotemsView : GalaxyMenuBehaviour
         //Updates each tech totem's tech cost text.
         for (int x = 0; x < techCostTexts.Count; x++)
         {
-            if (Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable.Count > 0)
+            if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable.Count > 0)
             {
-                techCostTexts[x].text = "Cost: " + Tech.entireTechList[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.playerID].techManager.techTotems[x].techDisplayed]].cost;
+                techCostTexts[x].text = "Cost: " + Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[x].techDisplayed]].cost;
             }
             else
             {

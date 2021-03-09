@@ -200,7 +200,7 @@ public class PlanetIcon : MonoBehaviour
         transform.localEulerAngles += rotation * Time.deltaTime;
 
         //Updates the ship.
-        if(ownerID == GalaxyManager.playerID)
+        if(ownerID == GalaxyManager.PlayerID)
         {
             if (!ship.activeInHierarchy)
                 ship.SetActive(true);
@@ -248,7 +248,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.playerID && !GalaxyCamera.GetMouseOverUIElement())
+        if(ownerID == GalaxyManager.PlayerID && !GalaxyCamera.GetMouseOverUIElement())
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetSelected = transform.gameObject;
@@ -269,9 +269,9 @@ public class PlanetIcon : MonoBehaviour
         foreach(GalaxyCity city in cities)
         {
             //Adds each city's resources per turn to the empire.
-            Empire.empires[ownerID].credits += city.GetCreditsPerTurn(ownerID);
-            Empire.empires[ownerID].prescriptions += city.GetPrescriptionsPerTurn(ownerID);
-            Empire.empires[ownerID].science += city.GetSciencePerTurn(ownerID);
+            Empire.empires[ownerID].Credits += city.GetCreditsPerTurn(ownerID);
+            Empire.empires[ownerID].Prescriptions += city.GetPrescriptionsPerTurn(ownerID);
+            Empire.empires[ownerID].Science += city.GetSciencePerTurn(ownerID);
 
             //Progresses the building queue.
             city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerID), city);
@@ -428,10 +428,10 @@ public class GalaxyCity
 
     public void AddBuildingToQueue(GalaxyBuilding.BuildingType buildingType, int ownerID)
     {
-        if(Empire.empires[ownerID].credits >= GalaxyBuilding.GetCreditsCost(buildingType) && buildingsCompleted.Count + buildingQueue.buildingsQueued.Count < buildingLimit)
+        if(Empire.empires[ownerID].Credits >= GalaxyBuilding.GetCreditsCost(buildingType) && buildingsCompleted.Count + buildingQueue.buildingsQueued.Count < buildingLimit)
         {
             //Subtracts the appropriate amount of credits from the empire based on the building type.
-            Empire.empires[ownerID].credits -= GalaxyBuilding.GetCreditsCost(buildingType);
+            Empire.empires[ownerID].Credits -= GalaxyBuilding.GetCreditsCost(buildingType);
 
             //Adds a new galaxy building to the building queue with the appropriate building type.
             buildingQueue.AddBuildingToQueue(buildingType);

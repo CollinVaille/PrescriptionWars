@@ -268,7 +268,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         //Sets the color of every image that is supposed to be the player empire's color to the player empire's color.
         foreach (Image imageWithEmpireColor in imagesWithEmpireColor)
         {
-            imageWithEmpireColor.color = Empire.empires[GalaxyManager.playerID].empireColor;
+            imageWithEmpireColor.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
         }
 
         //Plays the sound effect for whenever the popup opens.

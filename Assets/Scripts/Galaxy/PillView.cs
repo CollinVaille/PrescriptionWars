@@ -25,7 +25,7 @@ public class PillView : MonoBehaviour
     public void OnOtherPillViewAdditionOrDeletion(int newPillViewIndex)
     {
         //Resets the name of the pill view.
-        gameObject.name = "Pill View " + newPillViewIndex;
+        gameObject.name = "Pill View " + (newPillViewIndex + 1);
 
         //Resets the position of the pill view.
         transform.localPosition = new Vector3(10 * newPillViewIndex, transform.localPosition.y, transform.localPosition.z);
@@ -33,7 +33,7 @@ public class PillView : MonoBehaviour
         //Resets the render texture of the pill view's camera.
         if(pillViewCamera.targetTexture != null)
         {
-            pillViewCamera.targetTexture.name = "PillView" + newPillViewIndex;
+            pillViewCamera.targetTexture.name = "PillView" + (newPillViewIndex + 1) + "RenderTexture";
         }
         else
         {

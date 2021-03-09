@@ -156,7 +156,7 @@ public class CheatConsole : MonoBehaviour
 
             if (inputedPlanetName.Equals(planetName))
             {
-                planet.ConquerPlanet(GalaxyManager.playerID);
+                planet.ConquerPlanet(GalaxyManager.PlayerID);
                 commandHistoryText.text += "\nSuccess";
                 return;
             }
@@ -167,10 +167,10 @@ public class CheatConsole : MonoBehaviour
 
     void ToggleResearchEffects()
     {
-        Empire.empires[GalaxyManager.playerID].receivesResearchEffects = !Empire.empires[GalaxyManager.playerID].receivesResearchEffects;
-        Empire.empires[GalaxyManager.playerID].techManager.UpdateTechnologyEffects();
+        Empire.empires[GalaxyManager.PlayerID].receivesResearchEffects = !Empire.empires[GalaxyManager.PlayerID].receivesResearchEffects;
+        Empire.empires[GalaxyManager.PlayerID].techManager.UpdateTechnologyEffects();
 
-        if (Empire.empires[GalaxyManager.playerID].receivesResearchEffects)
+        if (Empire.empires[GalaxyManager.PlayerID].receivesResearchEffects)
             commandHistoryText.text += "\nEnabled";
         else
             commandHistoryText.text += "\nDisabled";
@@ -178,7 +178,7 @@ public class CheatConsole : MonoBehaviour
 
     void DemolishAllBuildings()
     {
-        foreach(int planetIndex in Empire.empires[GalaxyManager.playerID].planetsOwned)
+        foreach(int planetIndex in Empire.empires[GalaxyManager.PlayerID].planetsOwned)
         {
             foreach(GalaxyCity city in GalaxyManager.planets[planetIndex].GetComponent<PlanetIcon>().cities)
             {
@@ -203,7 +203,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.playerID].empireName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
+            Empire.empires[GalaxyManager.PlayerID].EmpireName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
             commandHistoryText.text += "\nSuccess";
         }
         catch (Exception)
@@ -227,7 +227,7 @@ public class CheatConsole : MonoBehaviour
             techTotemName.ToLower();
 
 
-            foreach(TechTotem totem in Empire.empires[GalaxyManager.playerID].techManager.techTotems)
+            foreach(TechTotem totem in Empire.empires[GalaxyManager.PlayerID].techManager.techTotems)
             {
                 if (techTotemName.Equals(totem.name.ToLower()))
                 {
@@ -250,7 +250,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.playerID].science += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+            Empire.empires[GalaxyManager.PlayerID].Science += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
         catch (Exception)
         {
@@ -265,7 +265,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.playerID].prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+            Empire.empires[GalaxyManager.PlayerID].Prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
         catch (Exception)
         {
@@ -347,7 +347,7 @@ public class CheatConsole : MonoBehaviour
 
         if(id >= 0 && id < Empire.empires.Count)
         {
-            GalaxyManager.playerID = id;
+            GalaxyManager.PlayerID = id;
             commandHistoryText.text += "\nSuccess";
         }
         else
@@ -360,7 +360,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.playerID].credits += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+            Empire.empires[GalaxyManager.PlayerID].Credits += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
         catch (Exception)
         {
@@ -418,9 +418,9 @@ public class CheatConsole : MonoBehaviour
             {
                 if (Empire.empires[x].empireCulture == selectedCulture)
                 {
-                    if(GalaxyManager.playerID != x && PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
+                    if(GalaxyManager.PlayerID != x && PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
                         PlanetManagementMenu.planetManagementMenu.Close();
-                    GalaxyManager.playerID = x;
+                    GalaxyManager.PlayerID = x;
                     empireFound = true;
                     commandHistoryText.text += "\nSuccess";
                 }

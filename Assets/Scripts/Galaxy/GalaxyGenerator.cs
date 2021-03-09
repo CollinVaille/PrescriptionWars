@@ -61,6 +61,8 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField]
     private List<Material> hellMaterials = null;
 
+    [Space]
+
     [SerializeField]
     private List<Material> empireMaterials = null;
 
@@ -109,6 +111,16 @@ public class GalaxyGenerator : MonoBehaviour
 
     private List<GameObject> planets;
 
+    //Indicates whether the galaxy is finished generating or not.
+    private static bool galaxyFinishedGenerating;
+    public static bool GalaxyFinishedGenerating
+    {
+        get
+        {
+            return galaxyFinishedGenerating;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -142,6 +154,18 @@ public class GalaxyGenerator : MonoBehaviour
         
         //Clean up section :)
         GeneralHelperMethods.ClearTextFileCache();
+
+        //Indicates that the galaxy has finished generating.
+        galaxyFinishedGenerating = true;
+
+        //Updates the resource bar to accurately reflect the player's empire.
+        ResourceBar.UpdateAllEmpireDependantComponents();
+
+        //Informs each empire that the galaxy has finished generating.
+        foreach(Empire empire in Empire.empires)
+        {
+            empire.OnGalaxyGenerationCompletion();
+        }
     }
 
     private void Awake()
@@ -237,31 +261,16 @@ public class GalaxyGenerator : MonoBehaviour
     {
         Empire.empires = new List<Empire>();
 
-        for (int x = 0; x < numberOfEmpires; x++)
+        for (int empireID = 0; empireID < numberOfEmpires; empireID++)
         {
-            Empire.empires.Add(new Empire());
-
-            //----------------------------------------------------------------------------------------------------
-            //Sets the empire's ID and creates the empire's tech manager.
-
-            Empire.empires[x].empireID = x;
-            Empire.empires[x].techManager = new TechManager();
-            Empire.empires[x].techManager.ownerEmpireID = x;
-
-            //----------------------------------------------------------------------------------------------------
-            //Determines if the empire is being controlled by the player.
-
-            if (x == GalaxyManager.playerID)
-                Empire.empires[x].playerEmpire = true;
-            else
-                Empire.empires[x].playerEmpire = false;
+            Empire.empires.Add(new Empire(empireID));
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's culture.
 
-            Empire.empires[x].empireCulture = new Empire.Culture();
+            Empire.empires[empireID].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
-            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
+            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized)
                 empireCulture = NewGameMenu.empireCulture;
             else
             {
@@ -287,10 +296,10 @@ public class GalaxyGenerator : MonoBehaviour
                             break;
                     }
 
-                    if (x == 0)
+                    if (empireID == 0)
                         break;
                     bool goodCulture = true;
-                    for (int y = 0; y < x; y++)
+                    for (int y = 0; y < empireID; y++)
                     {
                         if (Empire.empires[y].empireCulture == empireCulture)
                             goodCulture = false;
@@ -299,28 +308,28 @@ public class GalaxyGenerator : MonoBehaviour
                         break;
                 }
             }
-            Empire.empires[x].empireCulture = empireCulture;
+            Empire.empires[empireID].empireCulture = empireCulture;
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's flag.
 
-            Empire.empires[x].empireFlag = new Flag();
-            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized)
+            Empire.empires[empireID].EmpireFlag = new Flag();
+            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized)
             {
-                Empire.empires[x].empireFlag.symbolSelected = FlagCreationMenu.symbolSelected;
-                Empire.empires[x].empireFlag.backgroundColor = FlagCreationMenu.backgroundColor;
-                Empire.empires[x].empireFlag.symbolColor = FlagCreationMenu.symbolColor;
+                Empire.empires[empireID].EmpireFlag.symbolSelected = FlagCreationMenu.symbolSelected;
+                Empire.empires[empireID].EmpireFlag.backgroundColor = FlagCreationMenu.backgroundColor;
+                Empire.empires[empireID].EmpireFlag.symbolColor = FlagCreationMenu.symbolColor;
             }
             else
             {
                 //Generates the symbol color of each empire's flag based on the empire's culture.
-                Empire.empires[x].empireFlag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[x].empireCulture);
+                Empire.empires[empireID].EmpireFlag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
 
                 //Generates the background color of each empire's flag.
-                if (Empire.empires[x].empireFlag.symbolColor.x + Empire.empires[x].empireFlag.symbolColor.y + Empire.empires[x].empireFlag.symbolColor.z < 0.6f)
-                    Empire.empires[x].empireFlag.backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
+                if (Empire.empires[empireID].EmpireFlag.symbolColor.x + Empire.empires[empireID].EmpireFlag.symbolColor.y + Empire.empires[empireID].EmpireFlag.symbolColor.z < 0.6f)
+                    Empire.empires[empireID].EmpireFlag.backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
                 else
-                    Empire.empires[x].empireFlag.backgroundColor = new Vector3(0, 0, 0);
+                    Empire.empires[empireID].EmpireFlag.backgroundColor = new Vector3(0, 0, 0);
 
                 //Generates the symbol on each empire's flag (ensures there will be no duplicates).
                 int random = 0;
@@ -328,44 +337,44 @@ public class GalaxyGenerator : MonoBehaviour
                 {
                     random = Random.Range(0, flagSymbols.Count);
 
-                    if (x == 0)
+                    if (empireID == 0)
                         break;
 
                     bool goodSymbol = true;
-                    for(int y = 0; y < x; y++)
+                    for(int y = 0; y < empireID; y++)
                     {
-                        if (Empire.empires[y].empireFlag.symbolSelected == random)
+                        if (Empire.empires[y].EmpireFlag.symbolSelected == random)
                             goodSymbol = false;
                     }
                     if (goodSymbol)
                         break;
                 }
-                Empire.empires[x].empireFlag.symbolSelected = random;
+                Empire.empires[empireID].EmpireFlag.symbolSelected = random;
             }
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's color.
 
-            if(x == GalaxyManager.playerID)
+            if(empireID == GalaxyManager.PlayerID)
             {
-                Vector3 randomColor = GetRandomColorBasedOnCulture(Empire.empires[x].empireCulture);
-                Empire.empires[x].empireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
+                Vector3 randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
+                Empire.empires[empireID].empireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
             }
             else
             {
-                Empire.empires[x].empireColor =  new Color(Empire.empires[x].empireFlag.symbolColor.x, Empire.empires[x].empireFlag.symbolColor.y, Empire.empires[x].empireFlag.symbolColor.z, 1.0f);
+                Empire.empires[empireID].empireColor =  new Color(Empire.empires[empireID].EmpireFlag.symbolColor.x, Empire.empires[empireID].EmpireFlag.symbolColor.y, Empire.empires[empireID].EmpireFlag.symbolColor.z, 1.0f);
             }
 
             //----------------------------------------------------------------------------------------------------
             //Sets the empire's material color.
-            int materialIndex = (int)Empire.empires[x].empireCulture;
-            empireMaterials[materialIndex].color = Empire.empires[x].empireColor;
+            int materialIndex = (int)Empire.empires[empireID].empireCulture;
+            empireMaterials[materialIndex].color = Empire.empires[empireID].empireColor;
             GalaxyManager.empireMaterials[materialIndex] = empireMaterials[materialIndex];
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's planets.
 
-            Empire.empires[x].planetsOwned = new List<int>();
+            Empire.empires[empireID].planetsOwned = new List<int>();
 
             GameObject sourcePlanet = planets[0];
             for (int y = 0; y < planets.Count; y++)
@@ -373,9 +382,9 @@ public class GalaxyGenerator : MonoBehaviour
                 sourcePlanet = planets[y];
                 if (sourcePlanet.GetComponent<PlanetIcon>().ownerID == -1)
                 {
-                    Empire.empires[x].planetsOwned.Add(y);
-                    planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(x);
-                    planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+                    Empire.empires[empireID].planetsOwned.Add(y);
+                    planets[y].GetComponent<PlanetIcon>().SetPlanetOwner(empireID);
+                    planets[y].GetComponent<PlanetIcon>().culture = Empire.empires[empireID].empireCulture;
                     planets[y].GetComponent<PlanetIcon>().isCapital = true;
                     planets[y].GetComponent<PlanetIcon>().GenerateShip(shipParent, shipPrefab);
                     sourcePlanet = planets[y];
@@ -383,7 +392,7 @@ public class GalaxyGenerator : MonoBehaviour
                 }
             }
 
-            while(Empire.empires[x].planetsOwned.Count < planets.Count / numberOfEmpires)
+            while(Empire.empires[empireID].planetsOwned.Count < planets.Count / numberOfEmpires)
             {
                 int indexToAdd = -1;
 
@@ -402,9 +411,9 @@ public class GalaxyGenerator : MonoBehaviour
                     }
                 }
 
-                Empire.empires[x].planetsOwned.Add(indexToAdd);
-                planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(x);
-                planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[x].empireCulture;
+                Empire.empires[empireID].planetsOwned.Add(indexToAdd);
+                planets[indexToAdd].GetComponent<PlanetIcon>().SetPlanetOwner(empireID);
+                planets[indexToAdd].GetComponent<PlanetIcon>().culture = Empire.empires[empireID].empireCulture;
                 planets[indexToAdd].GetComponent<PlanetIcon>().isCapital = false;
                 planets[indexToAdd].GetComponent<PlanetIcon>().GenerateShip(shipParent, shipPrefab);
             }
@@ -412,29 +421,29 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generate the empire's name.
 
-            if (x == GalaxyManager.playerID && FlagCreationMenu.initialized && !playerEmpireName.Equals(""))
-                Empire.empires[x].empireName = playerEmpireName;
+            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized && !playerEmpireName.Equals(""))
+                Empire.empires[empireID].EmpireName = playerEmpireName;
             else
             {
                 string empireName = "";
                 while (true)
                 {
-                    empireName = EmpireNameGenerator.GenerateEmpireName(planets[Empire.empires[x].planetsOwned[0]].GetComponent<PlanetIcon>().nameLabel.text);
+                    empireName = EmpireNameGenerator.GenerateEmpireName(planets[Empire.empires[empireID].planetsOwned[0]].GetComponent<PlanetIcon>().nameLabel.text);
 
-                    if (x == 0)
+                    if (empireID == 0)
                         break;
 
                     bool goodName = true;
-                    for (int y = 0; y < x; y++)
+                    for (int y = 0; y < empireID; y++)
                     {
-                        if (Empire.empires[y].empireName.Equals(empireName))
+                        if (Empire.empires[y].EmpireName.Equals(empireName))
                             goodName = false;
                     }
 
                     if (goodName)
                         break;
                 }
-                Empire.empires[x].empireName = empireName;
+                Empire.empires[empireID].EmpireName = empireName;
             }
         }
 

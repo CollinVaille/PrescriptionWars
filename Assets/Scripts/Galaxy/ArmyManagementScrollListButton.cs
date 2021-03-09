@@ -326,13 +326,13 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
                 ArmyManagementMenu.armyManagementMenu.SetArmySelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetDataIndex()]);
                 break;
             case ArmyManagementButtonType.SquadChildButton:
-                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].squads[GetDataIndex()]);
+                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
                 break;
             case ArmyManagementButtonType.SquadDropDownButton:
-                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].squads[GetDataIndex()]);
+                ArmyManagementMenu.armyManagementMenu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
                 break;
             case ArmyManagementButtonType.PillChildButton:
-                ArmyManagementMenu.armyManagementMenu.SetPillSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].squads[GetParentDataIndex()].pills[GetDataIndex()]);
+                ArmyManagementMenu.armyManagementMenu.SetPillSelected(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].GetSquadAt(GetParentDataIndex()).GetPillAt(GetDataIndex()));
                 break;
         }
     }

@@ -31,7 +31,7 @@ public class Spawner : MonoBehaviour
     {
         //Compute total probability
         for (int x = 0; x < pillClasses.Length; x++)
-            totalProbability += pillClasses[x].probability;
+            totalProbability += pillClasses[x].GetProbability();
 
         //Initialize other stuff
         deathQueue = new List<Pill>();
@@ -115,7 +115,7 @@ public class Spawner : MonoBehaviour
         pill.OnCreationFromSpawner(this);
 
         //Skin pill
-        pill.GetComponent<Renderer>().sharedMaterial = pillClass.skin;
+        pill.GetComponent<Renderer>().sharedMaterial = pillClass.GetSkin();
 
         //Name pill
         /*
@@ -129,17 +129,17 @@ public class Spawner : MonoBehaviour
 
         //Instantiate primary
         Item primary = null;
-        if (pillClass.primary)
+        if (pillClass.GetPrimary())
         {
-            primary = Instantiate(pillClass.primary, pill.transform.position, pill.transform.rotation).GetComponent<Item>();
+            primary = Instantiate(pillClass.GetPrimary(), pill.transform.position, pill.transform.rotation).GetComponent<Item>();
             primary.name = primary.name.Substring(0, primary.name.Length - 7);
         }
 
         //Instantiate secondary
         Item secondary = null;
-        if (pillClass.secondary)
+        if (pillClass.GetSecondary())
         {
-            secondary = Instantiate(pillClass.secondary, pill.transform.position, pill.transform.rotation).GetComponent<Item>();
+            secondary = Instantiate(pillClass.GetSecondary(), pill.transform.position, pill.transform.rotation).GetComponent<Item>();
             secondary.name = secondary.name.Substring(0, secondary.name.Length - 7);
         }
 
@@ -150,12 +150,12 @@ public class Spawner : MonoBehaviour
         pill.Equip(primary, secondary);
 
         //Head gear
-        if (pillClass.headGear)
-            pill.EquipGear(Instantiate(pillClass.headGear), true);
+        if (pillClass.GetHeadGear())
+            pill.EquipGear(Instantiate(pillClass.GetHeadGear()), true);
 
         //Body gear
-        if (pillClass.bodyGear)
-            pill.EquipGear(Instantiate(pillClass.bodyGear), false);
+        if (pillClass.GetBodyGear())
+            pill.EquipGear(Instantiate(pillClass.GetBodyGear()), false);
 
         //Assign squad (all pills must have a squad they belong to)
         SetSquad(pill);
@@ -220,7 +220,7 @@ public class Spawner : MonoBehaviour
         for(int x = 0; x < pillClasses.Length - 1; x++)
         {
             //Picked this class
-            if(Random.Range(0, totalProbability) < pillClasses[x].probability)
+            if(Random.Range(0, totalProbability) < pillClasses[x].GetProbability())
             {
                 selectedClass = pillClasses[x];
                 break;
@@ -260,23 +260,5 @@ public class Spawner : MonoBehaviour
         //Make corpse dummy look like us!
         newCorpse.GetComponent<MeshRenderer>().sharedMaterial = fromPill.GetComponent<MeshRenderer>().sharedMaterial;
         newCorpse.GetComponent<Rigidbody>().velocity = fromPill.GetComponent<Rigidbody>().velocity;
-    }
-}
-
-[System.Serializable]
-public class PillClass
-{
-    public string className;
-    public GameObject primary, secondary;
-    public Material skin;
-    public GameObject bodyGear, headGear;
-    public float probability;
-
-    public PillClass (GameObject primary, GameObject secondary, Material skin, float probability)
-    {
-        this.primary = primary;
-        this.secondary = secondary;
-        this.skin = skin;
-        this.probability = probability;
     }
 }

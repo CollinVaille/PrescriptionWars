@@ -10,10 +10,17 @@ public class PillViewsManager : MonoBehaviour
 
     private static List<PillView> pillViews = new List<PillView>();
 
+    private static PillViewsManager pillViewsManager;
+
     // Start is called before the first frame update
     void Start()
     {
         
+    }
+
+    private void Awake()
+    {
+        pillViewsManager = this;
     }
 
     // Update is called once per frame
@@ -28,7 +35,8 @@ public class PillViewsManager : MonoBehaviour
         GameObject pillView = Instantiate(pillViewPrefab);
         PillView pillViewScript = pillView.GetComponent<PillView>();
 
-        //pillView.transform.SetParent();
+        //Sets the parent transform of the pill view.
+        pillView.transform.SetParent(pillViewsManager.transform);
         //Adds the new pill view to the list of pill views.
         pillViews.Add(pillViewScript);
         //Informs all of the pill views that a pill view has been added or deleted.

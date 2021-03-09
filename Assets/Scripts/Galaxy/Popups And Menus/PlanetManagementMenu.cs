@@ -96,17 +96,17 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     public void UpdateUI()
     {
         //Sets the color of the foreground and all of the dividers based on the player empire's label color.
-        foregroundImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+        foregroundImage.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
         foreach (Image divider in dividers)
         {
-            divider.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+            divider.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
         }
 
-        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].empireColor;
-        buildButtonText.color = Empire.empires[GalaxyManager.playerID].empireColor;
-        tabUnderlineImage.color = Empire.empires[GalaxyManager.playerID].GetLabelColor();
-        buildingCostText.color = Empire.empires[GalaxyManager.playerID].empireColor;
+        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
+        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
+        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
+        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
+        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
@@ -278,7 +278,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     public void CancelBuildingQueued(int indexToCancel)
     {
         //Refunds the player of the credits that they spent putting that building into the building queue.
-        Empire.empires[GalaxyManager.playerID].credits += GalaxyBuilding.GetCreditsCost(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
+        Empire.empires[GalaxyManager.PlayerID].Credits += GalaxyBuilding.GetCreditsCost(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
 
         //Removes the building in the queue at the requested index.
         planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
@@ -324,10 +324,10 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.playerID].credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
+        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.PlayerID].Credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
         {
             //Adds a building of the specified type to the building queue.
-            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.playerID);
+            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.PlayerID);
 
             //Plays the add to queue sound effect.
             GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
@@ -586,7 +586,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     public void ToggleShadow(Shadow shadow)
     {
-        shadow.effectColor = Empire.empires[GalaxyManager.playerID].GetLabelColor();
+        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
         shadow.enabled = !shadow.enabled;
     }
 }

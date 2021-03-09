@@ -18,32 +18,32 @@ public class GalaxyHelperMethods : MonoBehaviour
 
     public static void AddCreditsToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].credits += amount;
+        Empire.empires[empireID].Credits += amount;
     }
 
     public static void AddCreditsPerTurnToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].baseCreditsPerTurn += amount;
+        Empire.empires[empireID].BaseCreditsPerTurn += amount;
     }
 
     public static void AddPrescriptionsToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].prescriptions += amount;
+        Empire.empires[empireID].Prescriptions += amount;
     }
 
     public static void AddPresciptionsPerTurnToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].basePresciptionsPerTurn += amount;
+        Empire.empires[empireID].BasePrescriptionsPerTurn += amount;
     }
 
     public static void AddScienceToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].science += amount;
+        Empire.empires[empireID].Science += amount;
     }
 
     public static void AddSciencePerTurnToEmpire(int amount, int empireID)
     {
-        Empire.empires[empireID].baseSciencePerTurn += amount;
+        Empire.empires[empireID].BaseSciencePerTurn += amount;
     }
 
     public static void ConquerPlanet(int planetID, int conquerorID)

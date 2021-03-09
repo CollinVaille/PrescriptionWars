@@ -365,7 +365,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case GalaxyTooltipColorOption.Transparent:
                 return Color.clear;
             case GalaxyTooltipColorOption.PlayerEmpireColor:
-                return Empire.empires[GalaxyManager.playerID].empireColor;
+                return Empire.empires[GalaxyManager.PlayerID].empireColor;
             case GalaxyTooltipColorOption.CustomColor:      //Edits needs to be made here.
                 switch (componentOfTooltip.ToLower())
                 {
