@@ -1601,6 +1601,7 @@ RectTransform:
   - {fileID: 856727600}
   - {fileID: 1497995217}
   - {fileID: 1687072709}
+  - {fileID: 1097173312}
   m_Father: {fileID: 644450515}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1765,11 +1766,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 597037675}
   initialLocalPosition: {x: 5, y: -15}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
-  tooltipText: Disband
+  text: Disband
   font: {fileID: 0}
   fontSize: 0
   textShadowEnabled: 0
@@ -2210,7 +2210,6 @@ RectTransform:
   - {fileID: 423993511}
   - {fileID: 2121993585}
   - {fileID: 1269140738}
-  - {fileID: 597037675}
   m_Father: {fileID: 1879303694}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5369,41 +5368,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595182682}
   m_CullTransparentMesh: 0
---- !u!1 &597037674
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 597037675}
-  m_Layer: 5
-  m_Name: Tooltips
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &597037675
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 597037674}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 214506629}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &600319195
 GameObject:
   m_ObjectHideFlags: 0
@@ -5677,6 +5641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062aa6279fbf59c4d9c6289517a018da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipsParent: {fileID: 1097173312}
   cheatConsole: {fileID: 2071409040}
   researchView: {fileID: 1098509857}
   musicSource: {fileID: 1145276744}
@@ -8040,7 +8005,6 @@ RectTransform:
   - {fileID: 1417411359}
   - {fileID: 1980791894}
   - {fileID: 950185130}
-  - {fileID: 1587569414}
   m_Father: {fileID: 122588002}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8100,13 +8064,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flagBackground: {fileID: 1618523802}
   flagSymbol: {fileID: 1327659658}
-  empireNameTooltip: {fileID: 1618523804}
   creditsText: {fileID: 485129498}
   prescriptionsText: {fileID: 424492034}
   scienceText: {fileID: 1678753971}
   productionText: {fileID: 550644879}
   turnText: {fileID: 1515225391}
-  updatesPerSecond: 23
+  empireNameTooltip: {fileID: 1618523804}
 --- !u!114 &949235015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9283,6 +9246,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083869208}
   m_CullTransparentMesh: 0
+--- !u!1 &1097173311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1097173312}
+  m_Layer: 5
+  m_Name: Tooltips
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1097173312
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097173311}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 122588002}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1098509857
 GameObject:
   m_ObjectHideFlags: 0
@@ -10033,11 +10031,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -215, y: -27.5}
+  initialLocalPosition: {x: -335, y: 185}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
-  tooltipText: Credits
+  text: Credits
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
   fontSize: 14
   textShadowEnabled: 1
@@ -10424,11 +10421,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: 52.5, y: -27.5}
+  initialLocalPosition: {x: -67, y: 185}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
-  tooltipText: Science
+  text: Science
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
   fontSize: 14
   textShadowEnabled: 1
@@ -10886,11 +10882,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -125, y: -27.5}
+  initialLocalPosition: {x: -245, y: 185}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
-  tooltipText: Prescriptions
+  text: Prescriptions
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
   fontSize: 14
   textShadowEnabled: 1
@@ -12514,14 +12509,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 597037675}
   initialLocalPosition: {x: 5, y: -15}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
-  tooltipText: Rename
+  text: Rename
   font: {fileID: 0}
   fontSize: 0
-  textShadowEnabled: 0
+  textShadowEnabled: 1
   textShadowEffectDistance: {x: 1, y: -1}
   textColorOption: 0
   textCustomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -14058,41 +14052,6 @@ Transform:
   m_Father: {fileID: 644450515}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1587569413
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1587569414}
-  m_Layer: 5
-  m_Name: Tooltips
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1587569414
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1587569413}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 949235011}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1588470403
 GameObject:
   m_ObjectHideFlags: 0
@@ -14458,8 +14417,8 @@ GameObject:
   - component: {fileID: 1618523801}
   - component: {fileID: 1618523803}
   - component: {fileID: 1618523802}
-  - component: {fileID: 1618523804}
   - component: {fileID: 1618523805}
+  - component: {fileID: 1618523804}
   m_Layer: 5
   m_Name: Flag Background
   m_TagString: Untagged
@@ -14536,11 +14495,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -277.5, y: -27.5}
+  initialLocalPosition: {x: -398, y: 185}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
-  tooltipText: Empire Name
+  text: Empire Name
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
   fontSize: 14
   textShadowEnabled: 1
@@ -19012,11 +18970,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 1587569414}
-  initialLocalPosition: {x: -37.5, y: -27.5}
+  initialLocalPosition: {x: -155, y: 185}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 0
-  tooltipText: Production
+  text: Production
   font: {fileID: 12800000, guid: 963343e7f6ef05e4497d148e667a41df, type: 3}
   fontSize: 14
   textShadowEnabled: 1

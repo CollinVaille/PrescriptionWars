@@ -5,8 +5,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class GalaxyManager : MonoBehaviour
+public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
 {
+    [Header("Galaxy Tooltip Handler")]
+
+    [SerializeField] private Transform tooltipsParent = null;
+    public Transform TooltipsParent
+    {
+        get
+        {
+            return tooltipsParent;
+        }
+    }
+
     [Header("Cheat Console")]
 
     public CheatConsole cheatConsole;

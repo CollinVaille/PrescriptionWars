@@ -189,19 +189,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 5411475158897467266}
   initialLocalPosition: {x: 5, y: -15}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
-  tooltipText: 
+  text: 
   font: {fileID: 0}
   fontSize: 0
   textShadowEnabled: 0
   textShadowEffectDistance: {x: 1, y: -1}
-  textColor: 0
-  textShadowColor: 0
-  backgroundColor: 0
-  customColors: []
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &3245131155243447202
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,19 +392,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 5411475158897467266}
   initialLocalPosition: {x: 5, y: -15}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
-  tooltipText: 
+  text: 
   font: {fileID: 0}
   fontSize: 0
   textShadowEnabled: 0
   textShadowEffectDistance: {x: 1, y: -1}
-  textColor: 0
-  textShadowColor: 0
-  backgroundColor: 0
-  customColors: []
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &3245131155450335828
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,49 +862,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 1
-  tooltipParent: {fileID: 5411475158897467266}
   initialLocalPosition: {x: 5, y: -15}
   edgeBuffer: {x: 5, y: 3}
   updateToMousePosition: 1
-  tooltipText: 
+  text: 
   font: {fileID: 0}
   fontSize: 0
   textShadowEnabled: 0
   textShadowEffectDistance: {x: 1, y: -1}
-  textColor: 0
-  textShadowColor: 0
-  backgroundColor: 0
-  customColors: []
---- !u!1 &5143485006914419795
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5411475158897467266}
-  m_Layer: 0
-  m_Name: Tooltips
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5411475158897467266
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5143485006914419795}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6597292083406066152}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5182917103694532587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,7 +1220,6 @@ Transform:
   - {fileID: 6597292083321178125}
   - {fileID: 6597292083917640687}
   - {fileID: 3245131156419035603}
-  - {fileID: 5411475158897467266}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

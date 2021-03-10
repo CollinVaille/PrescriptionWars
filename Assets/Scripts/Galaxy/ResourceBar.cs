@@ -128,7 +128,7 @@ public class ResourceBar : MonoBehaviour
 
     public static void UpdateEmpireNameTooltip()
     {
-        resourceBar.empireNameTooltip.SetTooltipText(Empire.empires[GalaxyManager.PlayerID].EmpireName);
+        resourceBar.empireNameTooltip.Text = Empire.empires[GalaxyManager.PlayerID].EmpireName;
     }
 
     public static void UpdateTurnText()

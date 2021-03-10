@@ -17,7 +17,6 @@ public class Empire
     public void OnGalaxyGenerationCompletion()
     {
         pillSkins = Resources.LoadAll<Material>("Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString()));
-        Debug.Log(GeneralHelperMethods.GetEnumText(empireCulture.ToString()) + " Pill Skins: " + pillSkins.Length);
     }
 
     //Contains all of the possible pill skins that pills that belong to this empire can be.

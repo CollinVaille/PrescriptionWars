@@ -27,7 +27,7 @@ public class PlanetIcon : MonoBehaviour
 
     public GameObject ship;
 
-    Vector3 rotation;
+    private Vector3 rotation;
 
     //Cities
     public List<GalaxyCity> cities = new List<GalaxyCity>();
