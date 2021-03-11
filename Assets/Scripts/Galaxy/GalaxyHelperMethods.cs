@@ -54,3 +54,10 @@ public class GalaxyHelperMethods : MonoBehaviour
         }
     }
 }
+
+[System.Serializable]
+public enum DefaultOrCustomOption
+{
+    Default,
+    Custom
+}

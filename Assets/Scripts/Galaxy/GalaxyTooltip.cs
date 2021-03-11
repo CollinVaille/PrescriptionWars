@@ -4,26 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+#if UNITY_EDITOR
+
+using UnityEditor;
+using UnityEditor.AnimatedValues;
+
+#endif
+
+[System.Serializable]
 public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [System.Serializable]
     public enum TooltipClosingType
     {
-        Deactivate,     //The tooltip game object is not destroyed, but rather still in the background and deactivated (More Processor Friendly).
-        Destroy     //The tooltip game object is not in the background and deactivated, but rather completely destroyed (More Memory Friendly).
+        Destroy,     //The tooltip game object is not in the background and deactivated, but rather completely destroyed (More Memory Friendly).
+        Deactivate     //The tooltip game object is not destroyed, but rather still in the background and deactivated (More Processor Friendly).
     }
 
-    [Header("Logic Options")]
+    //[Header("Logic Options")]
 
     //Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).
-    [Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
-    public TooltipClosingType closingType;
+    //[Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
+    [SerializeField, HideInInspector]
+    private TooltipClosingType closingType;
 
     //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
-    [SerializeField, Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
+    //[SerializeField, Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
+    [SerializeField, HideInInspector]
     private Vector2 initialLocalPosition = new Vector2(5, -15);
 
     //Indicates the amount of space between the text of the tooltip and the edge of the tooltip.
-    [SerializeField, Tooltip("Indicates the amount of space between the text of the tooltip and the edge of the tooltip.")]
+    //[SerializeField, Tooltip("Indicates the amount of space between the text of the tooltip and the edge of the tooltip.")]
+    [SerializeField, HideInInspector]
     private Vector2 edgeBuffer = new Vector2(5, 3);
     public Vector2 EdgeBuffer
     {
@@ -40,13 +52,15 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     //Indicates whether the tooltip will have its location set to the mouse's location every update.
-    [Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
+    //[Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
+    [HideInInspector]
     public bool followsMouse;
 
     [Header("Text Content")]
 
     //The text that the tooltip displays to the user.
-    [SerializeField, TextArea, Tooltip("The text that the tooltip displays to the user.")]
+    //[SerializeField, TextArea, Tooltip("The text that the tooltip displays to the user.")]
+    [SerializeField, HideInInspector]
     private string text = "";
     public string Text
     {
@@ -63,12 +77,17 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     //The font that the text of the tooltip will be.
-    [SerializeField, Tooltip("The font that the text of the tooltip will be.")]
+    //[SerializeField, Tooltip("The font that the text of the tooltip will be.")]
+    [SerializeField, HideInInspector]
+    private DefaultOrCustomOption fontOption = DefaultOrCustomOption.Default;
+    [SerializeField, HideInInspector]
     private Font font = null;
     public Font Font
     {
         get
         {
+            if (font == null)
+                return tooltipPrefab.transform.GetChild(1).GetComponent<Text>().font;
             return font;
         }
         set
@@ -80,12 +99,17 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     //Indicates the size of the font of the tooltip text.
-    [SerializeField, Tooltip("Indicates the size of the font of the tooltip text.")]
-    private int fontSize;
+    //[SerializeField, Tooltip("Indicates the size of the font of the tooltip text.")]
+    [SerializeField, HideInInspector]
+    private DefaultOrCustomOption fontSizeOption = DefaultOrCustomOption.Default;
+    [SerializeField, HideInInspector]
+    private int fontSize = 0;
     public int FontSize
     {
         get
         {
+            if(fontSize == 0)
+                return tooltipPrefab.transform.GetChild(1).GetComponent<Text>().font.fontSize;
             return fontSize;
         }
         set
@@ -96,14 +120,16 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    [Header("Text Shadow")]
+    //[Header("Text Shadow")]
 
     //Indicates whether the shadow component of the tooltip's text is enabled.
-    [Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
-    public bool textShadowEnabled = false;
+    //[Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
+    [SerializeField, HideInInspector]
+    private bool textShadowEnabled = false;
 
     //Indicates the effect distance of the shadow component of the tooltip's text.
-    [SerializeField, Tooltip("Indicates the effect distance of the shadow component of the tooltip's text."), ConditionalField("textShadowEnabled", true, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    //[SerializeField, Tooltip("Indicates the effect distance of the shadow component of the tooltip's text."), ConditionalField("textShadowEnabled", true, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    [SerializeField, HideInInspector]
     private Vector2 textShadowEffectDistance = new Vector2(1, -1);
     public Vector2 TextShadowEffectDistance
     {
@@ -127,27 +153,33 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         CustomColor
     }
 
-    [Header("Coloring Options")]
+    //[Header("Coloring Options")]
 
     //Indicates the color of the text of the tooltip.
-    [SerializeField, LabelOverride("Text Color"), Tooltip("Indicates the color of the text of the tooltip.")]
-    public GalaxyTooltipColorOption textColorOption = GalaxyTooltipColorOption.Default;
+    //[SerializeField, LabelOverride("Text Color"), Tooltip("Indicates the color of the text of the tooltip.")]
+    [SerializeField, HideInInspector]
+    private GalaxyTooltipColorOption textColorOption = GalaxyTooltipColorOption.Default;
 
-    [SerializeField, ConditionalField("textColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    //[SerializeField, ConditionalField("textColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    [SerializeField, HideInInspector]
     private Color textCustomColor = Color.white;
 
     //Indicates the color of the shadow component of the tooltip's text.
-    [LabelOverride("Text Shadow Color"), Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
-    public GalaxyTooltipColorOption textShadowColorOption = GalaxyTooltipColorOption.Default;
+    //[LabelOverride("Text Shadow Color"), Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
+    [SerializeField, HideInInspector]
+    private GalaxyTooltipColorOption textShadowColorOption = GalaxyTooltipColorOption.Default;
 
-    [SerializeField, ConditionalField("textShadowColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    //[SerializeField, ConditionalField("textShadowColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    [SerializeField, HideInInspector]
     private Color textShadowCustomColor = Color.white;
 
     //Indicates the background color of the tooltip.
-    [LabelOverride("Background Color"), Tooltip("Indicates the background color of the tooltip.")]
-    public GalaxyTooltipColorOption backgroundColorOption = GalaxyTooltipColorOption.Default;
+    //[LabelOverride("Background Color"), Tooltip("Indicates the background color of the tooltip.")]
+    [SerializeField, HideInInspector]
+    private GalaxyTooltipColorOption backgroundColorOption = GalaxyTooltipColorOption.Default;
 
-    [SerializeField, ConditionalField("backgroundColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    //[SerializeField, ConditionalField("backgroundColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
+    [SerializeField, HideInInspector]
     private Color backgroundCustomColor = Color.white;
 
     //---------------------------------------------------------------------------------------
@@ -354,10 +386,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         Text textElementOfTooltip = tooltip.transform.GetChild(1).GetComponent<Text>();
         //Sets the font of the text of the tooltip.
-        if(font != null)
-            textElementOfTooltip.font = font;
+        textElementOfTooltip.font = Font;
         //Sets the font size of the text of the tooltip.
-        if(fontSize > 0)
+        if (fontSize > 0)
             textElementOfTooltip.fontSize = fontSize;
         //Sets the color of the text of the tooltip.
         textElementOfTooltip.color = GetColorFromColorOption(textColorOption, "Text");
@@ -400,14 +431,6 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void SetTextShadowEnabled(bool isTextShadowEnabled)
     {
         textShadowEnabled = isTextShadowEnabled;
-        if (Open || (closingType == TooltipClosingType.Deactivate && tooltip != null))
-            UpdateTooltipText();
-    }
-
-    //Should be called in order to set the effect distance of the shadow component of the tooltip's text through code.
-    public void SetTextShadowEffectDistance(Vector2 newTextShadowEffectDistance)
-    {
-        textShadowEffectDistance = newTextShadowEffectDistance;
         if (Open || (closingType == TooltipClosingType.Deactivate && tooltip != null))
             UpdateTooltipText();
     }
@@ -469,4 +492,172 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         CloseTooltip();
     }
+
+    //Custom Inspector.
+    #region Editor
+    #if UNITY_EDITOR
+    [CustomEditor(typeof(GalaxyTooltip))]
+
+    public class GalaxyTooltipEdtior : Editor
+    {
+        AnimBool showFontExtraField = new AnimBool(true);
+        AnimBool showFontSizeExtraField = new AnimBool(true);
+        AnimBool showTextShadowExtraFields = new AnimBool(true);
+        AnimBool showTextCustomColor = new AnimBool(true);
+        AnimBool showTextShadowCustomColor = new AnimBool(true);
+        AnimBool showBackgroundCustomColor = new AnimBool(true);
+
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            //serializedObject.Update();
+
+            GalaxyTooltip galaxyTooltip = (GalaxyTooltip)target;
+
+            EditorGUILayout.BeginVertical();
+
+            //---------------------------------------------
+            //Logic Options Section.
+            //---------------------------------------------
+
+            EditorGUILayout.LabelField("Logic Options", EditorStyles.boldLabel);
+
+            //Closing Type Enum.
+
+            galaxyTooltip.closingType = (TooltipClosingType)EditorGUILayout.EnumPopup("Closing Type", galaxyTooltip.closingType);
+
+            //Initital Local Position Vector2.
+
+            galaxyTooltip.initialLocalPosition = EditorGUILayout.Vector2Field("Initial Local Position", galaxyTooltip.initialLocalPosition);
+
+            //Edge Buffer Vector2.
+
+            galaxyTooltip.edgeBuffer = EditorGUILayout.Vector2Field("Edge Buffer", galaxyTooltip.edgeBuffer);
+
+            //Follows Mouse Bool.
+
+            galaxyTooltip.followsMouse = EditorGUILayout.Toggle("Follows Mouse", galaxyTooltip.followsMouse);
+
+            //---------------------------------------------
+            //Text Content Section.
+            //---------------------------------------------
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Text Content", EditorStyles.boldLabel);
+
+            //Text String.
+
+            EditorGUILayout.LabelField("Text");
+            galaxyTooltip.text = EditorGUILayout.TextArea(galaxyTooltip.text, GUILayout.MaxHeight(75));
+
+            //Font Font.
+
+            galaxyTooltip.fontOption = (DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font", galaxyTooltip.fontOption);
+            if (galaxyTooltip.fontOption == DefaultOrCustomOption.Default)
+                galaxyTooltip.font = null;
+            showFontExtraField.target = galaxyTooltip.fontOption == DefaultOrCustomOption.Custom;
+            if (EditorGUILayout.BeginFadeGroup(showFontExtraField.faded))
+            {
+                EditorGUI.indentLevel++;
+                galaxyTooltip.font = (Font)EditorGUILayout.ObjectField(galaxyTooltip.font, typeof(Font), true);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            //Font Size Int.
+
+            galaxyTooltip.fontSizeOption = (DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font Size", galaxyTooltip.fontSizeOption);
+            if (galaxyTooltip.fontSizeOption == DefaultOrCustomOption.Default)
+                galaxyTooltip.fontSize = 0;
+            showFontSizeExtraField.target = galaxyTooltip.fontSizeOption == DefaultOrCustomOption.Custom;
+            if (EditorGUILayout.BeginFadeGroup(showFontSizeExtraField.faded))
+            {
+                EditorGUI.indentLevel++;
+                galaxyTooltip.fontSize = EditorGUILayout.IntField("Font Size", galaxyTooltip.fontSize);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            //---------------------------------------------
+            //Text Shadow Section.
+            //---------------------------------------------
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Text Shadow", EditorStyles.boldLabel);
+
+            //Text Shadow Enabled Bool.
+
+            galaxyTooltip.textShadowEnabled = EditorGUILayout.Toggle("Text Shadow Enabled", galaxyTooltip.textShadowEnabled);
+            showTextShadowExtraFields.target = galaxyTooltip.textShadowEnabled;
+
+            //Text Shadow Effect Distance Vector2.
+
+            if (EditorGUILayout.BeginFadeGroup(showTextShadowExtraFields.faded))
+            {
+                galaxyTooltip.textShadowEffectDistance = EditorGUILayout.Vector2Field("Text Shadow Effect Distance", galaxyTooltip.textShadowEffectDistance);
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            //---------------------------------------------
+            //Coloring Options Section.
+            //---------------------------------------------
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Coloring Options", EditorStyles.boldLabel);
+
+            //Text Color Option GalaxyTooltipColorOption.
+
+            galaxyTooltip.textColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Color", galaxyTooltip.textColorOption);
+            showTextCustomColor.target = galaxyTooltip.textColorOption == GalaxyTooltipColorOption.CustomColor;
+
+            //Text Custom Color Color.
+
+            if (EditorGUILayout.BeginFadeGroup(showTextCustomColor.faded))
+            {
+                EditorGUI.indentLevel++;
+                galaxyTooltip.textCustomColor = EditorGUILayout.ColorField(galaxyTooltip.textCustomColor);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            //Text Shadow Color Option GalaxyTooltipColorOption.
+
+            galaxyTooltip.textShadowColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Shadow Color", galaxyTooltip.textShadowColorOption);
+            showTextShadowCustomColor.target = galaxyTooltip.textShadowColorOption == GalaxyTooltipColorOption.CustomColor;
+
+            //Text Shadow Custom Color Color.
+
+            if (EditorGUILayout.BeginFadeGroup(showTextShadowCustomColor.faded))
+            {
+                EditorGUI.indentLevel++;
+                galaxyTooltip.textShadowCustomColor = EditorGUILayout.ColorField(galaxyTooltip.textShadowCustomColor);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            //Background Color Option GalaxyTooltipColorOption.
+
+            galaxyTooltip.backgroundColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Background Color", galaxyTooltip.backgroundColorOption);
+            showBackgroundCustomColor.target = galaxyTooltip.backgroundColorOption == GalaxyTooltipColorOption.CustomColor;
+
+            //Background Custom Color Color.
+
+            if (EditorGUILayout.BeginFadeGroup(showBackgroundCustomColor.faded))
+            {
+                EditorGUI.indentLevel++;
+                galaxyTooltip.backgroundCustomColor = EditorGUILayout.ColorField(galaxyTooltip.backgroundCustomColor);
+                EditorGUI.indentLevel--;
+            }
+            EditorGUILayout.EndFadeGroup();
+
+            EditorGUILayout.EndVertical();
+
+            serializedObject.ApplyModifiedProperties();
+
+            EditorUtility.SetDirty(galaxyTooltip);
+        }
+    }
+    #endif
+    #endregion
 }
