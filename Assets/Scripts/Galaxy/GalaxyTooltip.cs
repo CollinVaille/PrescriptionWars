@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEditor;
 
 public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -42,7 +41,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //Indicates whether the tooltip will have its location set to the mouse's location every update.
     [Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
-    public bool updateToMousePosition;
+    public bool followsMouse;
 
     [Header("Text Content")]
 
@@ -194,7 +193,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void Update()
     {
         //Updates the position of the tooltip to the position of the player's mouse if the tooltip is open.
-        if (Open && updateToMousePosition)
+        if (Open && followsMouse)
         {
             tooltip.transform.position = Input.mousePosition;
             tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + (initialLocalPosition.y - (edgeBuffer.y / 2)));
