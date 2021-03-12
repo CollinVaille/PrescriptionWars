@@ -26,7 +26,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).
     //[Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
     [SerializeField, HideInInspector]
-    private TooltipClosingType closingType;
+    private TooltipClosingType closingType = TooltipClosingType.Destroy;
 
     //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
     //[SerializeField, Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
@@ -54,7 +54,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Indicates whether the tooltip will have its location set to the mouse's location every update.
     //[Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
     [HideInInspector]
-    public bool followsMouse;
+    public bool followsMouse = true;
 
     [Header("Text Content")]
 
@@ -298,8 +298,11 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             {
                 if (nextTransformToCheckTooltipHandler.TooltipsParent != null)
                 {
-                    currentParent = nextTransformToCheckTooltipHandler.TooltipsParent;
-                    break;
+                    if (!followsMouse || IsTopmostValidParent(nextTransformToCheck))
+                    {
+                        currentParent = nextTransformToCheckTooltipHandler.TooltipsParent;
+                        break;
+                    }
                 }
             }
 
@@ -313,6 +316,27 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         return currentParent;
+    }
+
+    //Indicates whether the parent transform specified is the topmost parent transform that implements the IGalaxyTooltipHandler interface.
+    private bool IsTopmostValidParent(Transform parent)
+    {
+        Transform transformToCheck = parent;
+
+        while (true)
+        {
+            if (transformToCheck.parent == null)
+                break;
+            transformToCheck = transformToCheck.parent;
+            IGalaxyTooltipHandler tooltipHandler = transformToCheck.GetComponent<IGalaxyTooltipHandler>();
+            if (tooltipHandler != null)
+            {
+                if(tooltipHandler.TooltipsParent != null)
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     //Opens the tooltip whenever the mouse/pointer enters the trigger zone.
@@ -500,20 +524,71 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public class GalaxyTooltipEdtior : Editor
     {
-        AnimBool showFontExtraField = new AnimBool(true);
-        AnimBool showFontSizeExtraField = new AnimBool(true);
-        AnimBool showTextShadowExtraFields = new AnimBool(true);
-        AnimBool showTextCustomColor = new AnimBool(true);
-        AnimBool showTextShadowCustomColor = new AnimBool(true);
-        AnimBool showBackgroundCustomColor = new AnimBool(true);
+        private GalaxyTooltip galaxyTooltip;
+
+        private SerializedProperty propClosingType; //Enum.
+        private SerializedProperty propInitialLocalPosition;    //Vector2.
+        private SerializedProperty propEdgeBuffer;  //Vector2.
+        private SerializedProperty propFollowsMouse;    //Bool.
+        private SerializedProperty propText;    //String.
+        private SerializedProperty propFontOption;  //Enum.
+        private SerializedProperty propFont;    //Font.
+        private SerializedProperty propFontSizeOption;  //Enum.
+        private SerializedProperty propFontSize;    //Int.
+        private SerializedProperty propTextShadowEnabled;   //Bool.
+        private SerializedProperty propTextShadowEffectDistance;    //Vector2.
+        private SerializedProperty propTextColorOption; //Enum.
+        private SerializedProperty propTextCustomColor; //Color.
+        private SerializedProperty propTextShadowColorOption;   //Enum.
+        private SerializedProperty propTextShadowCustomColor;   //Color.
+        private SerializedProperty propBackgroundColorOption;   //Enum.
+        private SerializedProperty propBackgroundCustomColor;   //Color.
+
+        private AnimBool showFontExtraField = new AnimBool(true);
+        private AnimBool showFontSizeExtraField = new AnimBool(true);
+        private AnimBool showTextShadowExtraFields = new AnimBool(true);
+        private AnimBool showTextCustomColor = new AnimBool(true);
+        private AnimBool showTextShadowCustomColor = new AnimBool(true);
+        private AnimBool showBackgroundCustomColor = new AnimBool(true);
+
+        private bool IsAnyAnimBoolAnimating
+        {
+            get
+            {
+                return showFontExtraField.isAnimating || showFontSizeExtraField.isAnimating || showTextShadowExtraFields.isAnimating || showTextCustomColor.isAnimating || showTextShadowCustomColor.isAnimating || showBackgroundCustomColor.isAnimating;
+            }
+        }
+
+        private void OnEnable()
+        {
+            galaxyTooltip = target as GalaxyTooltip;
+
+            propClosingType = serializedObject.FindProperty("closingType");
+            propInitialLocalPosition = serializedObject.FindProperty("initialLocalPosition");
+            propEdgeBuffer = serializedObject.FindProperty("edgeBuffer");
+            propFollowsMouse = serializedObject.FindProperty("followsMouse");
+            propText = serializedObject.FindProperty("text");
+            propFontOption = serializedObject.FindProperty("fontOption");
+            propFont = serializedObject.FindProperty("font");
+            propFontSizeOption = serializedObject.FindProperty("fontSizeOption");
+            propFontSize = serializedObject.FindProperty("fontSize");
+            propTextShadowEnabled = serializedObject.FindProperty("textShadowEnabled");
+            propTextShadowEffectDistance = serializedObject.FindProperty("textShadowEffectDistance");
+            propTextColorOption = serializedObject.FindProperty("textColorOption");
+            propTextCustomColor = serializedObject.FindProperty("textCustomColor");
+            propTextShadowColorOption = serializedObject.FindProperty("textShadowColorOption");
+            propTextShadowCustomColor = serializedObject.FindProperty("textShadowCustomColor");
+            propBackgroundColorOption = serializedObject.FindProperty("backgroundColorOption");
+            propBackgroundCustomColor = serializedObject.FindProperty("backgroundCustomColor");
+        }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            //base.OnInspectorGUI();
 
-            //serializedObject.Update();
+            //GalaxyTooltip galaxyTooltip = (GalaxyTooltip)target;
 
-            GalaxyTooltip galaxyTooltip = (GalaxyTooltip)target;
+            serializedObject.Update();
 
             EditorGUILayout.BeginVertical();
 
@@ -525,19 +600,19 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             //Closing Type Enum.
 
-            galaxyTooltip.closingType = (TooltipClosingType)EditorGUILayout.EnumPopup("Closing Type", galaxyTooltip.closingType);
+            propClosingType.enumValueIndex = (int)(TooltipClosingType)EditorGUILayout.EnumPopup("Closing Type", galaxyTooltip.closingType);
 
             //Initital Local Position Vector2.
 
-            galaxyTooltip.initialLocalPosition = EditorGUILayout.Vector2Field("Initial Local Position", galaxyTooltip.initialLocalPosition);
+            propInitialLocalPosition.vector2Value = EditorGUILayout.Vector2Field("Initial Local Position", galaxyTooltip.initialLocalPosition);
 
             //Edge Buffer Vector2.
 
-            galaxyTooltip.edgeBuffer = EditorGUILayout.Vector2Field("Edge Buffer", galaxyTooltip.edgeBuffer);
+            propEdgeBuffer.vector2Value = EditorGUILayout.Vector2Field("Edge Buffer", galaxyTooltip.edgeBuffer);
 
             //Follows Mouse Bool.
 
-            galaxyTooltip.followsMouse = EditorGUILayout.Toggle("Follows Mouse", galaxyTooltip.followsMouse);
+            propFollowsMouse.boolValue = EditorGUILayout.Toggle("Follows Mouse", galaxyTooltip.followsMouse);
 
             //---------------------------------------------
             //Text Content Section.
@@ -549,32 +624,32 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             //Text String.
 
             EditorGUILayout.LabelField("Text");
-            galaxyTooltip.text = EditorGUILayout.TextArea(galaxyTooltip.text, GUILayout.MaxHeight(75));
+            propText.stringValue = EditorGUILayout.TextArea(galaxyTooltip.text, GUILayout.MaxHeight(75));
 
             //Font Font.
 
-            galaxyTooltip.fontOption = (DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font", galaxyTooltip.fontOption);
-            if (galaxyTooltip.fontOption == DefaultOrCustomOption.Default)
+            propFontOption.enumValueIndex = (int)(DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font", galaxyTooltip.fontOption);
+            if (propFontOption.enumValueIndex == (int)DefaultOrCustomOption.Default)
                 galaxyTooltip.font = null;
-            showFontExtraField.target = galaxyTooltip.fontOption == DefaultOrCustomOption.Custom;
+            showFontExtraField.target = propFontOption.enumValueIndex == (int)DefaultOrCustomOption.Custom;
             if (EditorGUILayout.BeginFadeGroup(showFontExtraField.faded))
             {
                 EditorGUI.indentLevel++;
-                galaxyTooltip.font = (Font)EditorGUILayout.ObjectField(galaxyTooltip.font, typeof(Font), true);
+                propFont.objectReferenceValue = (Font)EditorGUILayout.ObjectField(galaxyTooltip.font, typeof(Font), true);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
 
             //Font Size Int.
 
-            galaxyTooltip.fontSizeOption = (DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font Size", galaxyTooltip.fontSizeOption);
-            if (galaxyTooltip.fontSizeOption == DefaultOrCustomOption.Default)
+            propFontSizeOption.enumValueIndex = (int)(DefaultOrCustomOption)EditorGUILayout.EnumPopup("Font Size", galaxyTooltip.fontSizeOption);
+            if (propFontSizeOption.enumValueIndex == (int)DefaultOrCustomOption.Default)
                 galaxyTooltip.fontSize = 0;
-            showFontSizeExtraField.target = galaxyTooltip.fontSizeOption == DefaultOrCustomOption.Custom;
+            showFontSizeExtraField.target = propFontSizeOption.enumValueIndex == (int)DefaultOrCustomOption.Custom;
             if (EditorGUILayout.BeginFadeGroup(showFontSizeExtraField.faded))
             {
                 EditorGUI.indentLevel++;
-                galaxyTooltip.fontSize = EditorGUILayout.IntField("Font Size", galaxyTooltip.fontSize);
+                propFontSize.intValue = EditorGUILayout.IntField(galaxyTooltip.fontSize);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
@@ -588,14 +663,16 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             //Text Shadow Enabled Bool.
 
-            galaxyTooltip.textShadowEnabled = EditorGUILayout.Toggle("Text Shadow Enabled", galaxyTooltip.textShadowEnabled);
-            showTextShadowExtraFields.target = galaxyTooltip.textShadowEnabled;
+            propTextShadowEnabled.boolValue = EditorGUILayout.Toggle("Text Shadow Enabled", galaxyTooltip.textShadowEnabled);
 
             //Text Shadow Effect Distance Vector2.
 
+            showTextShadowExtraFields.target = propTextShadowEnabled.boolValue;
             if (EditorGUILayout.BeginFadeGroup(showTextShadowExtraFields.faded))
             {
-                galaxyTooltip.textShadowEffectDistance = EditorGUILayout.Vector2Field("Text Shadow Effect Distance", galaxyTooltip.textShadowEffectDistance);
+                EditorGUI.indentLevel++;
+                propTextShadowEffectDistance.vector2Value = EditorGUILayout.Vector2Field("Effect Distance", galaxyTooltip.textShadowEffectDistance);
+                EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
 
@@ -608,54 +685,56 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             //Text Color Option GalaxyTooltipColorOption.
 
-            galaxyTooltip.textColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Color", galaxyTooltip.textColorOption);
-            showTextCustomColor.target = galaxyTooltip.textColorOption == GalaxyTooltipColorOption.CustomColor;
+            propTextColorOption.enumValueIndex = (int)(GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Color", galaxyTooltip.textColorOption);
+            showTextCustomColor.target = propTextColorOption.enumValueIndex == (int)GalaxyTooltipColorOption.CustomColor;
 
             //Text Custom Color Color.
 
             if (EditorGUILayout.BeginFadeGroup(showTextCustomColor.faded))
             {
                 EditorGUI.indentLevel++;
-                galaxyTooltip.textCustomColor = EditorGUILayout.ColorField(galaxyTooltip.textCustomColor);
+                propTextCustomColor.colorValue = EditorGUILayout.ColorField(galaxyTooltip.textCustomColor);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
 
             //Text Shadow Color Option GalaxyTooltipColorOption.
 
-            galaxyTooltip.textShadowColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Shadow Color", galaxyTooltip.textShadowColorOption);
-            showTextShadowCustomColor.target = galaxyTooltip.textShadowColorOption == GalaxyTooltipColorOption.CustomColor;
+            propTextShadowColorOption.enumValueIndex = (int)(GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Text Shadow Color", galaxyTooltip.textShadowColorOption);
+            showTextShadowCustomColor.target = propTextShadowColorOption.enumValueIndex == (int)GalaxyTooltipColorOption.CustomColor;
 
             //Text Shadow Custom Color Color.
 
             if (EditorGUILayout.BeginFadeGroup(showTextShadowCustomColor.faded))
             {
                 EditorGUI.indentLevel++;
-                galaxyTooltip.textShadowCustomColor = EditorGUILayout.ColorField(galaxyTooltip.textShadowCustomColor);
+                propTextShadowCustomColor.colorValue = EditorGUILayout.ColorField(galaxyTooltip.textShadowCustomColor);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
 
             //Background Color Option GalaxyTooltipColorOption.
 
-            galaxyTooltip.backgroundColorOption = (GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Background Color", galaxyTooltip.backgroundColorOption);
-            showBackgroundCustomColor.target = galaxyTooltip.backgroundColorOption == GalaxyTooltipColorOption.CustomColor;
+            propBackgroundColorOption.enumValueIndex = (int)(GalaxyTooltipColorOption)EditorGUILayout.EnumPopup("Background Color", galaxyTooltip.backgroundColorOption);
+            showBackgroundCustomColor.target = propBackgroundColorOption.enumValueIndex == (int)GalaxyTooltipColorOption.CustomColor;
 
             //Background Custom Color Color.
 
             if (EditorGUILayout.BeginFadeGroup(showBackgroundCustomColor.faded))
             {
                 EditorGUI.indentLevel++;
-                galaxyTooltip.backgroundCustomColor = EditorGUILayout.ColorField(galaxyTooltip.backgroundCustomColor);
+                propBackgroundCustomColor.colorValue = EditorGUILayout.ColorField(galaxyTooltip.backgroundCustomColor);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
 
             EditorGUILayout.EndVertical();
 
-            serializedObject.ApplyModifiedProperties();
+            if(GUI.changed)
+                serializedObject.ApplyModifiedProperties();
 
-            EditorUtility.SetDirty(galaxyTooltip);
+            if(IsAnyAnimBoolAnimating)
+                EditorUtility.SetDirty(target);
         }
     }
     #endif
