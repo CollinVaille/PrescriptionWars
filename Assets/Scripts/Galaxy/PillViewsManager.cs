@@ -29,12 +29,14 @@ public class PillViewsManager : MonoBehaviour
         
     }
 
-    public static PillView GetNewPillView()
+    public static PillView GetNewPillView(GalaxyPill pill)
     {
         //Instantiates a new pill view from the pill view prefab.
         GameObject pillView = Instantiate(pillViewPrefab);
         PillView pillViewScript = pillView.GetComponent<PillView>();
 
+        //Sets the pill displayed by the pill view to be the specified pill.
+        pillViewScript.DisplayedPill = pill;
         //Sets the parent transform of the pill view.
         pillView.transform.SetParent(pillViewsManager.transform);
         //Adds the new pill view to the list of pill views.

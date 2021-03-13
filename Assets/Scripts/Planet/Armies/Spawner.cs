@@ -115,7 +115,7 @@ public class Spawner : MonoBehaviour
         pill.OnCreationFromSpawner(this);
 
         //Skin pill
-        pill.GetComponent<Renderer>().sharedMaterial = pillClass.skin;
+        //pill.GetComponent<Renderer>().sharedMaterial = pillClass.skin;
 
         //Name pill
         /*

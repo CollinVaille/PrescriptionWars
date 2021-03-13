@@ -181,7 +181,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     groundUnitNameText.text = pillSelected.GetName();
                     if (pillView != null)
                         pillView.Delete();
-                    pillView = PillViewsManager.GetNewPillView();
+                    pillView = PillViewsManager.GetNewPillView(pillSelected);
                     pillRawImage.texture = pillView.GetRenderTexture();
                     pillRawImage.color = Color.white;
                     pillRotationSlider.gameObject.SetActive(true);

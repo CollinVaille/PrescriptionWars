@@ -293,6 +293,7 @@ public class ArmyManagerScrollList : MonoBehaviour
             GalaxySquad squad = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[0]].GetSquadAt(indexesNeededToSaveData[1]);
             GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[0]].RemoveSquadAt(indexesNeededToSaveData[1]);
             GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[2]].InsertSquad(indexesNeededToSaveData[3], squad);
+            squad.SetAssignedArmy(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[2]]);
             return;
         }
         else if (buttonType == ArmyManagementScrollListButton.ArmyManagementButtonType.PillChildButton)
@@ -300,6 +301,7 @@ public class ArmyManagerScrollList : MonoBehaviour
             GalaxyPill pill = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[0]].GetSquadAt(indexesNeededToSaveData[1]).GetPillAt(indexesNeededToSaveData[2]);
             GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[0]].GetSquadAt(indexesNeededToSaveData[1]).RemovePillAt(indexesNeededToSaveData[2]);
             GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[3]].GetSquadAt(indexesNeededToSaveData[4]).InsertPill(indexesNeededToSaveData[5], pill);
+            pill.SetAssignedSquad(GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[indexesNeededToSaveData[3]].GetSquadAt(indexesNeededToSaveData[4]));
         }
     }
 

@@ -4,11 +4,30 @@ using UnityEngine;
 
 public class PillView : MonoBehaviour
 {
+    [Header("Components")]
+
     [SerializeField]
     private Camera pillViewCamera = null;
 
     [SerializeField]
-    private Transform pill = null;
+    private Transform pillTransform = null;
+
+    private GalaxyPill displayedPill = null;
+    public GalaxyPill DisplayedPill
+    {
+        get
+        {
+            return displayedPill;
+        }
+        set
+        {
+            displayedPill = value;
+            if(displayedPill != null)
+            {
+                pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.Skin;
+            }
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +47,7 @@ public class PillView : MonoBehaviour
         gameObject.name = "Pill View " + (newPillViewIndex + 1);
 
         //Resets the position of the pill view.
-        transform.localPosition = new Vector3(10 * newPillViewIndex, transform.localPosition.y, transform.localPosition.z);
+        transform.localPosition = new Vector3(250 * newPillViewIndex, transform.localPosition.y, transform.localPosition.z);
 
         //Resets the render texture of the pill view's camera.
         if(pillViewCamera.targetTexture != null)
@@ -47,7 +66,7 @@ public class PillView : MonoBehaviour
     //This method should be used in order to set the y rotation of the pill.
     public void SetPillRotation(float pillRotationValue)
     {
-        pill.localEulerAngles = new Vector3(pill.localEulerAngles.x, pillRotationValue, pill.localEulerAngles.z);
+        pillTransform.localEulerAngles = new Vector3(pillTransform.localEulerAngles.x, pillRotationValue, pillTransform.localEulerAngles.z);
     }
 
     //This method returns the target render texture of the pill view's camera.
