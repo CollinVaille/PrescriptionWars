@@ -55,10 +55,10 @@ public class ArmyManagerScrollList : MonoBehaviour
             {
                 GameObject dropdownButton = Instantiate(armyDropdownButtonPrefab);
                 dropdownButton.transform.SetParent(dropdownButtonParent);
-                dropdownButton.name = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].GetName();
+                dropdownButton.name = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].Name;
                 ArmyManagementScrollListButton armyDropDownButtonScript = dropdownButton.GetComponent<ArmyManagementScrollListButton>();
                 //armyDropDownButtonScript.index = x;
-                armyDropDownButtonScript.nameText.text = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].GetName();
+                armyDropDownButtonScript.nameText.text = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[x].Name;
                 armyDropDownButtonScript.SetAssignedScrollList(this);
                 armyDropDownButtonScript.SetButtonType(ArmyManagementScrollListButton.ArmyManagementButtonType.ArmyDropDownButton);
                 armyDropDownButtonScript.SetButtonImageColor(Empire.empires[GalaxyManager.PlayerID].empireColor);
@@ -76,9 +76,9 @@ public class ArmyManagerScrollList : MonoBehaviour
         {
             GameObject dropdownButton = Instantiate(squadDropdownButtonPrefab);
             dropdownButton.transform.SetParent(dropdownButtonParent);
-            dropdownButton.name = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].GetSquadAt(squadID).GetName();
+            dropdownButton.name = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].GetSquadAt(squadID).Name;
             ArmyManagementScrollListButton squadDropDownButtonScript = dropdownButton.GetComponent<ArmyManagementScrollListButton>();
-            squadDropDownButtonScript.nameText.text = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].GetSquadAt(squadID).GetName();
+            squadDropDownButtonScript.nameText.text = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[armyID].GetSquadAt(squadID).Name;
             squadDropDownButtonScript.SetAssignedScrollList(this);
             squadDropDownButtonScript.SetButtonType(ArmyManagementScrollListButton.ArmyManagementButtonType.SquadDropDownButton);
             squadDropDownButtonScript.SetButtonImageColor(Empire.empires[GalaxyManager.PlayerID].empireColor);
@@ -106,9 +106,9 @@ public class ArmyManagerScrollList : MonoBehaviour
             int childButtonsToAdd = 0;
 
             if (scrollListButton.GetButtonType() == ArmyManagementScrollListButton.ArmyManagementButtonType.ArmyDropDownButton)
-                childButtonsToAdd = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()].GetNumberOfSquads();
+                childButtonsToAdd = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()].TotalNumberOfSquads;
             else if (scrollListButton.GetButtonType() == ArmyManagementScrollListButton.ArmyManagementButtonType.SquadDropDownButton)
-                childButtonsToAdd = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentDataIndex()].GetSquadAt(scrollListButton.GetDataIndex()).GetNumberOfPills();
+                childButtonsToAdd = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentDataIndex()].GetSquadAt(scrollListButton.GetDataIndex()).TotalNumberOfPills;
 
             for (int siblingIndex = buttonSiblingIndex + 1; siblingIndex <= buttonSiblingIndex + childButtonsToAdd; siblingIndex++)
             {
@@ -137,8 +137,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                 {
                     case ArmyManagementScrollListButton.ArmyManagementButtonType.SquadChildButton:
                         GalaxySquad squad = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()].GetSquadAt(siblingIndex - buttonSiblingIndex - 1);
-                        childButton.name = squad.GetName();
-                        childButtonScript.nameText.text = squad.GetName();
+                        childButton.name = squad.Name;
+                        childButtonScript.nameText.text = squad.Name;
                         ArmyManagementScrollListButton squadDropdownButton = ArmyManagementMenu.armyManagementMenu.GetScrollListButton(ArmyManagementScrollListButton.ArmyManagementButtonType.SquadDropDownButton, childButtonScript.GetDataIndex(), childButtonScript.GetParentDataIndex());
                         if (squadDropdownButton != null)
                         {
@@ -149,8 +149,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                         break;
                     case ArmyManagementScrollListButton.ArmyManagementButtonType.PillChildButton:
                         GalaxyPill pill = GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentDataIndex()].GetSquadAt(scrollListButton.GetDataIndex()).GetPillAt(siblingIndex - buttonSiblingIndex - 1);
-                        childButton.name = pill.GetName();
-                        childButtonScript.nameText.text = pill.GetName();
+                        childButton.name = pill.Name;
+                        childButtonScript.nameText.text = pill.Name;
                         break;
                 }
             }
@@ -434,7 +434,7 @@ public class ArmyManagerScrollList : MonoBehaviour
         }
         else if (mode == ArmyManagerScrollListMode.Squad)
         {
-            for (int disbandingSquadIndex = 0; disbandingSquadIndex < disbandingArmy.GetNumberOfSquads(); disbandingSquadIndex++)
+            for (int disbandingSquadIndex = 0; disbandingSquadIndex < disbandingArmy.TotalNumberOfSquads; disbandingSquadIndex++)
             {
                 int indexOfSquadButton = -1;
 
@@ -560,8 +560,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                 {
                     if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetDataIndex()] == renamingArmy)
                     {
-                        scrollListButton.gameObject.name = renamingArmy.GetName();
-                        scrollListButton.nameText.text = renamingArmy.GetName();
+                        scrollListButton.gameObject.name = renamingArmy.Name;
+                        scrollListButton.nameText.text = renamingArmy.Name;
                     }
                 }
             }
@@ -579,8 +579,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                 {
                     if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentDataIndex()].GetSquadAt(scrollListButton.GetDataIndex()) == renamingSquad)
                     {
-                        scrollListButton.gameObject.name = renamingSquad.GetName();
-                        scrollListButton.nameText.text = renamingSquad.GetName();
+                        scrollListButton.gameObject.name = renamingSquad.Name;
+                        scrollListButton.nameText.text = renamingSquad.Name;
                         return;
                     }
                 }
@@ -595,8 +595,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                 {
                     if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[scrollListButton.GetParentDataIndex()].GetSquadAt(scrollListButton.GetDataIndex()) == renamingSquad)
                     {
-                        scrollListButton.gameObject.name = renamingSquad.GetName();
-                        scrollListButton.nameText.text = renamingSquad.GetName();
+                        scrollListButton.gameObject.name = renamingSquad.Name;
+                        scrollListButton.nameText.text = renamingSquad.Name;
                         return;
                     }
                 }
@@ -615,8 +615,8 @@ public class ArmyManagerScrollList : MonoBehaviour
                 {
                     if (GalaxyManager.planets[ArmyManagementMenu.armyManagementMenu.planetSelected].armies[dropdownButtonParent.GetChild(scrollListButton.GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].GetSquadAt(scrollListButton.GetParentDataIndex()).GetPillAt(scrollListButton.GetDataIndex()) == renamingPill)
                     {
-                        scrollListButton.gameObject.name = renamingPill.GetName();
-                        scrollListButton.nameText.text = renamingPill.GetName();
+                        scrollListButton.gameObject.name = renamingPill.Name;
+                        scrollListButton.nameText.text = renamingPill.Name;
                         return;
                     }
                 }

@@ -87,7 +87,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     public override void Open()
     {
         //Test code.
-        GalaxyPill bob = new GalaxyPill("Bob", GalaxyPill.PillClass.Assault);
+        GalaxyPill bob = new GalaxyPill("Bob", new PillClass("Test", PillClassType.Assault, Resources.Load<GameObject>("Planet/Gear/Head Gear/Goggles"), Resources.Load<GameObject>("Planet/Gear/Body Gear/Utility Backpack"), Resources.Load<GameObject>("Items/Laser Rifle"), Resources.Load<GameObject>("Items/WD-40")));
         GalaxySquad deltaSquad = new GalaxySquad("Delta Squad");
         deltaSquad.AddPill(bob);
         GalaxyArmy armyOfTheSouth = new GalaxyArmy("Army " + (GalaxyManager.planets[planetSelected].armies.Count + 1), GalaxyManager.PlayerID);
@@ -152,7 +152,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 if (armySelected != null)
                 {
                     middleSection.SetActive(true);
-                    groundUnitNameText.text = armySelected.GetName();
+                    groundUnitNameText.text = armySelected.Name;
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
@@ -165,7 +165,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 if(squadSelected != null)
                 {
                     middleSection.SetActive(true);
-                    groundUnitNameText.text = squadSelected.GetName();
+                    groundUnitNameText.text = squadSelected.Name;
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
@@ -178,11 +178,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 if(pillSelected != null)
                 {
                     middleSection.SetActive(true);
-                    groundUnitNameText.text = pillSelected.GetName();
+                    groundUnitNameText.text = pillSelected.Name;
                     if (pillView != null)
                         pillView.Delete();
                     pillView = PillViewsManager.GetNewPillView(pillSelected);
-                    pillRawImage.texture = pillView.GetRenderTexture();
+                    pillRawImage.texture = pillView.RenderTexture;
                     pillRawImage.color = Color.white;
                     pillRotationSlider.gameObject.SetActive(true);
                     ResetPillRotationSliderValue();
@@ -223,13 +223,13 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         switch (groundUnitTypeSelected)
         {
             case GalaxyGroundUnitType.Army:
-                bodyText += armySelected.GetName() + "?";
+                bodyText += armySelected.Name + "?";
                 break;
             case GalaxyGroundUnitType.Squad:
-                bodyText += squadSelected.GetName() + "?";
+                bodyText += squadSelected.Name + "?";
                 break;
             case GalaxyGroundUnitType.Pill:
-                bodyText += pillSelected.GetName() + "?";
+                bodyText += pillSelected.Name + "?";
                 break;
 
             default:
@@ -273,7 +273,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 bool squadDeleted = false;
                 foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].armies)
                 {
-                    for(int x = 0; x < army.GetNumberOfSquads(); x++)
+                    for(int x = 0; x < army.TotalNumberOfSquads; x++)
                     {
                         if(army.GetSquadAt(x) == squadSelected)
                         {
@@ -294,9 +294,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 bool pillDeleted = false;
                 foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].armies)
                 {
-                    for(int squadIndex = 0; squadIndex < army.GetNumberOfSquads(); squadIndex++)
+                    for(int squadIndex = 0; squadIndex < army.TotalNumberOfSquads; squadIndex++)
                     {
-                        for(int x = 0; x < army.GetSquadAt(squadIndex).GetNumberOfPills(); x++)
+                        for(int x = 0; x < army.GetSquadAt(squadIndex).TotalNumberOfPills; x++)
                         {
                             if(army.GetSquadAt(squadIndex).GetPillAt(x) == pillSelected)
                             {
@@ -347,10 +347,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             switch (groundUnitTypeSelected)
             {
                 case GalaxyGroundUnitType.Army:
-                    confirmationPopupScript.SetInputFieldText(armySelected.GetName());
+                    confirmationPopupScript.SetInputFieldText(armySelected.Name);
                     break;
                 case GalaxyGroundUnitType.Pill:
-                    confirmationPopupScript.SetInputFieldText(pillSelected.GetName());
+                    confirmationPopupScript.SetInputFieldText(pillSelected.Name);
                     break;
 
                 default:
@@ -377,7 +377,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             {
                 confirmationPopupScript.AddDropdownOption(validSquadName);
             }
-            confirmationPopupScript.SetDropdownOptionSelected(squadSelected.GetName());
+            confirmationPopupScript.SetDropdownOptionSelected(squadSelected.Name);
 
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
@@ -395,33 +395,33 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         switch (groundUnitTypeSelected)
         {
             case GalaxyGroundUnitType.Army:
-                armySelected.SetName(newName);
+                armySelected.Name = newName;
 
                 foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
                 {
                     scrollList.RenameArmy(armySelected);
                 }
-                groundUnitNameText.text = armySelected.GetName();
+                groundUnitNameText.text = armySelected.Name;
 
                 break;
             case GalaxyGroundUnitType.Squad:
-                squadSelected.SetName(newName);
+                squadSelected.Name = newName;
 
                 foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
                 {
                     scrollList.RenameSquad(squadSelected);
                 }
-                groundUnitNameText.text = squadSelected.GetName();
+                groundUnitNameText.text = squadSelected.Name;
 
                 break;
             case GalaxyGroundUnitType.Pill:
-                pillSelected.SetName(newName);
+                pillSelected.Name = newName;
 
                 foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
                 {
                     scrollList.RenamePill(pillSelected);
                 }
-                groundUnitNameText.text = pillSelected.GetName();
+                groundUnitNameText.text = pillSelected.Name;
 
                 break;
         }
@@ -429,7 +429,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         PlayRenameSFX();
     }
 
-    List<string> GetListOfValidSquadNames()
+    private List<string> GetListOfValidSquadNames()
     {
         List<string> listOfValidSquadNames = new List<string>();
 
@@ -532,7 +532,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     public void OnPillRotationSliderValueChanged()
     {
-        pillView.SetPillRotation(pillRotationSlider.value * 360);
+        pillView.PillRotation = pillRotationSlider.value * 360;
     }
 
     private void ResetPillRotationSliderValue()

@@ -5,19 +5,31 @@ using UnityEngine;
 [System.Serializable]
 public class PillClass
 {
-    public string className;
-    public GameObject primary;
-    public GameObject secondary;
-    public GameObject bodyGear;
-    public GameObject headGear;
-    [Tooltip("The probability that a pill of this class will spawn in on the planet view.")] public float probability;
-
-    public PillClass(string className, GameObject primary, GameObject secondary, GameObject bodyGear, GameObject headGear)
+    public PillClass(string className, PillClassType classType, GameObject headGear, GameObject bodyGear, GameObject primary, GameObject secondary)
     {
         this.className = className;
+        this.classType = classType;
+        this.headGear = headGear;
+        this.bodyGear = bodyGear;
         this.primary = primary;
         this.secondary = secondary;
-        this.bodyGear = bodyGear;
-        this.headGear = headGear;
     }
+
+    public string className;
+    public PillClassType classType;
+    public GameObject headGear;
+    public GameObject bodyGear;
+    public GameObject primary;
+    public GameObject secondary;
+    [Tooltip("The probability that a pill of this class will spawn in on the planet view.")] public float probability;
+}
+
+public enum PillClassType
+{
+    Assault,
+    Riot,
+    Officer,
+    Medic,
+    Flamethrower,
+    Rocket
 }

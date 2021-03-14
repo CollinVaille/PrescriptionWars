@@ -9,8 +9,23 @@ public class PillView : MonoBehaviour
     [SerializeField]
     private Camera pillViewCamera = null;
 
+    public RenderTexture RenderTexture
+    {
+        get
+        {
+            if(pillViewCamera != null)
+                return pillViewCamera.targetTexture;
+            return null;
+        }
+    }
+
     [SerializeField]
     private Transform pillTransform = null;
+
+    private GameObject currentHeadGear = null;
+    private GameObject currentBodyGear = null;
+    private GameObject currentPrimary = null;
+    private GameObject currentSecondary = null;
 
     private GalaxyPill displayedPill = null;
     public GalaxyPill DisplayedPill
@@ -24,8 +39,28 @@ public class PillView : MonoBehaviour
             displayedPill = value;
             if(displayedPill != null)
             {
+                //Sets the skin of the pill.
                 pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.Skin;
+                //Sets the head gear of the pill.
+                SetHeadGear(displayedPill.PillClass.headGear);
+                //Sets the body gear of the pill.
+                SetBodyGear(displayedPill.PillClass.bodyGear);
+                //Sets the primary of the pill.
+                SetPrimary(displayedPill.PillClass.primary);
+                //Sets the secondary of the pill.
+                SetSecondary(displayedPill.PillClass.secondary);
             }
+        }
+    }
+    public float PillRotation
+    {
+        get
+        {
+            return pillTransform.localEulerAngles.y + 180;
+        }
+        set
+        {
+            pillTransform.localEulerAngles = new Vector3(pillTransform.localEulerAngles.x, value + 180, pillTransform.localEulerAngles.z);
         }
     }
 
@@ -63,21 +98,82 @@ public class PillView : MonoBehaviour
         }
     }
 
-    //This method should be used in order to set the y rotation of the pill.
-    public void SetPillRotation(float pillRotationValue)
-    {
-        pillTransform.localEulerAngles = new Vector3(pillTransform.localEulerAngles.x, pillRotationValue, pillTransform.localEulerAngles.z);
-    }
-
-    //This method returns the target render texture of the pill view's camera.
-    public RenderTexture GetRenderTexture()
-    {
-        return pillViewCamera.targetTexture;
-    }
-
     //This method should be called to delete the pill view.
     public void Delete()
     {
         PillViewsManager.DeletePillView(this);
+    }
+
+    private void SetHeadGear(GameObject headGear)
+    {
+        if(currentHeadGear != null)
+        {
+            Destroy(currentHeadGear);
+        }
+
+        if(headGear != null)
+        {
+            currentHeadGear = Instantiate(headGear);
+            currentHeadGear.transform.SetParent(pillTransform);
+            currentHeadGear.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            currentHeadGear.transform.localPosition = Vector3.up * 0.5f;
+        }
+    }
+
+    private void SetBodyGear(GameObject bodyGear)
+    {
+        if(currentBodyGear != null)
+        {
+            Destroy(currentBodyGear);
+        }
+
+        if(bodyGear != null)
+        {
+            currentBodyGear = Instantiate(bodyGear);
+            currentBodyGear.transform.SetParent(pillTransform);
+            currentBodyGear.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            currentBodyGear.transform.localPosition = Vector3.zero;
+        }
+    }
+
+    private void SetPrimary(GameObject primary)
+    {
+        if (currentPrimary != null)
+        {
+            Destroy(currentPrimary);
+        }
+
+        if(primary != null)
+        {
+            currentPrimary = Instantiate(primary, pillTransform.position, pillTransform.rotation);
+            Destroy(currentPrimary.GetComponent<Item>());
+            Destroy(currentPrimary.GetComponent<Rigidbody>());
+            Destroy(currentPrimary.GetComponent<BoxCollider>());
+            currentPrimary.transform.SetParent(pillTransform);
+            currentPrimary.transform.localPosition = new Vector3(0.5f, -0.25f, 0.0f) + Vector3.up * 0.5f;
+            currentPrimary.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            currentPrimary.name = currentPrimary.name.Substring(0, currentPrimary.name.Length - 7);
+        }
+    }
+
+    private void SetSecondary(GameObject secondary)
+    {
+        if (currentSecondary != null)
+        {
+            Destroy(currentSecondary);
+        }
+
+        if (secondary != null)
+        {
+            currentSecondary = Instantiate(secondary, pillTransform.position, pillTransform.rotation);
+            currentSecondary.transform.SetParent(pillTransform);
+            Item item = currentSecondary.GetComponent<Item>();
+            currentSecondary.transform.localPosition = item.GetPlaceOnBack();
+            currentSecondary.transform.localRotation = Quaternion.Euler(item.GetRotationOnBack());
+            Destroy(item);
+            Destroy(currentSecondary.GetComponent<Rigidbody>());
+            Destroy(currentSecondary.GetComponent<BoxCollider>());
+            currentSecondary.name = currentSecondary.name.Substring(0, currentSecondary.name.Length - 7);
+        }
     }
 }

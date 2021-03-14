@@ -13,7 +13,7 @@ public class GalaxyArmy
         this.ownerEmpireID = ownerEmpireID;
 
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        AssignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
+        assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
     }
 
     //Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
@@ -21,12 +21,39 @@ public class GalaxyArmy
 
     //Indicates the name of the army.
     private string name;
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+        set
+        {
+            name = value;
+        }
+    }
 
     //The material that will be applied to all pills in the army that are not part of a special squad.
-    public Material AssignedPillSkin { get; }
+    private Material assignedPillSkin = null;
+    public Material AssignedPillSkin
+    {
+        get
+        {
+            return assignedPillSkin;
+        }
+    }
 
     //List of all of the squads in the army.
     private List<GalaxySquad> squads = new List<GalaxySquad>();
+
+    //Returns the number of squads in the list of squads (count).
+    public int TotalNumberOfSquads
+    {
+        get
+        {
+            return squads.Count;
+        }
+    }
 
     //Returns the average experience level of the army.
     public float GetExperienceLevel()
@@ -36,14 +63,30 @@ public class GalaxyArmy
 
         foreach (GalaxySquad squad in squads)
         {
-            for (int pillIndex = 0; pillIndex < squad.GetNumberOfPills(); pillIndex++)
+            for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
             {
-                totalExperience += squad.GetPillAt(pillIndex).GetExperienceLevel();
+                totalExperience += squad.GetPillAt(pillIndex).ExperienceLevel;
                 totalPills++;
             }
         }
 
         return totalExperience / totalPills;
+    }
+
+    //Returns the total number of pills in the army.
+    public int TotalNumberOfPills
+    {
+        get
+        {
+            int totalNumberOfPills = 0;
+
+            foreach(GalaxySquad squad in squads)
+            {
+                totalNumberOfPills += squad.TotalNumberOfPills;
+            }
+
+            return totalNumberOfPills;
+        }
     }
 
     //Adds the specified squad to the list of squads.
@@ -77,24 +120,6 @@ public class GalaxyArmy
     {
         return squads[index];
     }
-
-    //Returns the total number of squads in the list of squads.
-    public int GetNumberOfSquads()
-    {
-        return squads.Count;
-    }
-
-    //This method returns the name of the army.
-    public string GetName()
-    {
-        return name;
-    }
-
-    //This method sets the name of the army to the specified name.
-    public void SetName(string name)
-    {
-        this.name = name;
-    }
 }
 
 public class GalaxySquad
@@ -113,6 +138,17 @@ public class GalaxySquad
 
     //Indicates the name of the squad.
     private string name;
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+        set
+        {
+            name = value;
+        }
+    }
 
     //The material that will be assigned to all pills of this squad (will usually be null and the material assigned to pills in the army class will be used, should only be used for special squads).
     public Material AssignedPillSkin { get; }
@@ -120,36 +156,48 @@ public class GalaxySquad
     //List of all of the pills in the squad.
     private List<GalaxyPill> pills = new List<GalaxyPill>();
 
+    //Returns the length (count) of the list of pills.
+    public int TotalNumberOfPills
+    {
+        get
+        {
+            return pills.Count;
+        }
+    }
+
     //The army that this squad is assigned to.
     private GalaxyArmy assignedArmy = null;
 
-    //Returns the average experience level of the squad.
-    public float GetExperienceLevel()
+    //Returns the average experience level (experience casted to an int) of the army.
+    public float ExperienceLevel
     {
-        float totalExperience = 0.0f;
-
-        foreach (GalaxyPill pill in pills)
+        get
         {
-            totalExperience += pill.GetExperienceLevel();
-        }
+            float totalExperience = 0.0f;
 
-        return totalExperience / pills.Count;
+            foreach (GalaxyPill pill in pills)
+            {
+                totalExperience += pill.ExperienceLevel;
+            }
+
+            return totalExperience / pills.Count;
+        }
     }
 
     //Returns the total number of pills in the squad of the specified class.
-    public int GetNumberOfPillsWithClass(GalaxyPill.PillClass pillClass)
+    public int GetNumberOfPillsOfClassType(PillClassType classType)
     {
-        int pillsWithClass = 0;
+        int pillsOfClassType = 0;
 
         foreach (GalaxyPill pill in pills)
         {
-            if (pill.GetPillClass() == pillClass)
+            if (pill.PillClassType == classType)
             {
-                pillsWithClass++;
+                pillsOfClassType++;
             }
         }
 
-        return pillsWithClass;
+        return pillsOfClassType;
     }
 
     //This method sets the variable that indicates what army that this squad is assigned to equal to the specified army.
@@ -195,24 +243,6 @@ public class GalaxySquad
     {
         return pills[index];
     }
-
-    //Returns the total number of squads in the list of squads.
-    public int GetNumberOfPills()
-    {
-        return pills.Count;
-    }
-
-    //This method returns the name of the squad.
-    public string GetName()
-    {
-        return name;
-    }
-
-    //This method sets the name of the squad to the specified name.
-    public void SetName(string name)
-    {
-        this.name = name;
-    }
 }
 
 public class GalaxyPill
@@ -226,23 +256,62 @@ public class GalaxyPill
         this.pillClass = pillClass;
     }
 
-    public enum PillClass
-    {
-        Assault,
-        Riot,
-        Officer,
-        Medic,
-        Flamethrower,
-        Rocket
-    }
-    //Indicates the class of the pill.
-    private PillClass pillClass;
-
     //Indicates the amount of experience that the pill has.
     private float experience;
+    public float Experience
+    {
+        get
+        {
+            return experience;
+        }
+        set
+        {
+            experience = value;
+        }
+    }
+    public int ExperienceLevel
+    {
+        get
+        {
+            return (int)experience;
+        }
+    }
 
     //Indicates the name of the pill.
     private string name;
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+        set
+        {
+            name = value;
+        }
+    }
+
+    //The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
+    private PillClass pillClass;
+    public PillClass PillClass
+    {
+        get
+        {
+            return pillClass;
+        }
+        set
+        {
+            pillClass = value;
+        }
+    }
+    //Indicates what type of class the class of the pill is (ex: Assault or Officer).
+    public PillClassType PillClassType
+    {
+        get
+        {
+            return pillClass.classType;
+        }
+    }
 
     //The squad that this pill is assigned to.
     private GalaxySquad assignedSquad;
@@ -259,45 +328,10 @@ public class GalaxyPill
         }
     }
 
-    //This method returns the experience level of the pill.
-    public int GetExperienceLevel()
-    {
-        return (int)experience;
-    }
-
-    //This method sets the amount of experience that the pill has to the specified amount.
-    public void SetExperience(float newExperience)
-    {
-        experience = newExperience;
-    }
-
-    //This method adds the specified amount of experience to the pill.
-    public void AddExperience(float experienceToAdd)
-    {
-        experience += experienceToAdd;
-    }
-
-    //This method returns the name of the pill.
-    public string GetName()
-    {
-        return name;
-    }
-
-    //This method sets the name of the pill to the specified name.
-    public void SetName(string name)
-    {
-        this.name = name;
-    }
 
     //This method assigns the pill to the specified squad.
     public void SetAssignedSquad(GalaxySquad squad)
     {
         assignedSquad = squad;
-    }
-
-    //Returns the class of the pill.
-    public PillClass GetPillClass()
-    {
-        return pillClass;
     }
 }
