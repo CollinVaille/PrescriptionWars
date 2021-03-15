@@ -93,7 +93,7 @@ public class GalaxyArmy
     public void AddSquad(GalaxySquad squad)
     {
         squads.Add(squad);
-        squad.SetAssignedArmy(this);
+        squad.AssignedArmy = this;
     }
 
     //This method inserts the specified squad at the specified index.
@@ -105,7 +105,7 @@ public class GalaxyArmy
     //Removes the specified squad from the list of squads.
     public void RemoveSquad(GalaxySquad squad)
     {
-        squad.SetAssignedArmy(null);
+        squad.AssignedArmy = null;
         squads.Remove(squad);
     }
 
@@ -167,6 +167,17 @@ public class GalaxySquad
 
     //The army that this squad is assigned to.
     private GalaxyArmy assignedArmy = null;
+    public GalaxyArmy AssignedArmy
+    {
+        get
+        {
+            return assignedArmy;
+        }
+        set
+        {
+            assignedArmy = value;
+        }
+    }
 
     //Returns the average experience level (experience casted to an int) of the army.
     public float ExperienceLevel
@@ -200,23 +211,11 @@ public class GalaxySquad
         return pillsOfClassType;
     }
 
-    //This method sets the variable that indicates what army that this squad is assigned to equal to the specified army.
-    public void SetAssignedArmy(GalaxyArmy army)
-    {
-        assignedArmy = army;
-    }
-
-    //Returns the army that the squad is assigned to.
-    public GalaxyArmy GetAssignedArmy()
-    {
-        return assignedArmy;
-    }
-
     //Adds the specified squad to the list of squads.
     public void AddPill(GalaxyPill pill)
     {
         pills.Add(pill);
-        pill.SetAssignedSquad(this);
+        pill.AssignedSquad = this;
     }
 
     //This method inserts the specified pill at the specified index.
@@ -228,7 +227,7 @@ public class GalaxySquad
     //Removes the specified squad from the list of squads.
     public void RemovePill(GalaxyPill pill)
     {
-        pill.SetAssignedSquad(null);
+        pill.AssignedSquad = null;
         pills.Remove(pill);
     }
 
@@ -254,6 +253,9 @@ public class GalaxyPill
         this.name = name;
         //Assigns the pill the specified class.
         this.pillClass = pillClass;
+        //Assigns the type of the pill to the initial pill type specified in the PillClass of the pill.
+        if(pillClass != null)
+            pillType = pillClass.initialPillType;
     }
 
     //Indicates the amount of experience that the pill has.
@@ -313,9 +315,35 @@ public class GalaxyPill
         }
     }
 
-    //The squad that this pill is assigned to.
-    private GalaxySquad assignedSquad;
+    //Indicates what type of pill the pill is (Example: Player or Bot1).
+    private PillType pillType;
+    public PillType PillType
+    {
+        get
+        {
+            return pillType;
+        }
+        set
+        {
+            pillType = value;
+        }
+    }
 
+    //The squad that this pill is assigned to.
+    private GalaxySquad assignedSquad = null;
+    public GalaxySquad AssignedSquad
+    {
+        get
+        {
+            return assignedSquad;
+        }
+        set
+        {
+            assignedSquad = value;
+        }
+    }
+
+    //Returns the skin material of the pill that is specified either in the squad (checked first) or the army.
     public Material Skin
     {
         get
@@ -324,14 +352,16 @@ public class GalaxyPill
             if(assignedSquad.AssignedPillSkin != null)
                 return assignedSquad.AssignedPillSkin;
             //Else if the squad is not a special squad then it returns the pill skin assigned to the army.
-            return assignedSquad.GetAssignedArmy().AssignedPillSkin;
+            return assignedSquad.AssignedArmy.AssignedPillSkin;
         }
     }
 
-
-    //This method assigns the pill to the specified squad.
-    public void SetAssignedSquad(GalaxySquad squad)
+    //Indicates whether the secondary weapon game object of the pill should be visible in pill views.
+    public bool IsSecondaryVisible
     {
-        assignedSquad = squad;
+        get
+        {
+            return pillType == PillType.Player;
+        }
     }
 }

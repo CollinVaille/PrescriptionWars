@@ -87,7 +87,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     public override void Open()
     {
         //Test code.
-        GalaxyPill bob = new GalaxyPill("Bob", new PillClass("Test", PillClassType.Assault, Resources.Load<GameObject>("Planet/Gear/Head Gear/Goggles"), Resources.Load<GameObject>("Planet/Gear/Body Gear/Utility Backpack"), Resources.Load<GameObject>("Items/Laser Rifle"), Resources.Load<GameObject>("Items/WD-40")));
+        GalaxyPill bob = new GalaxyPill("Bob", new PillClass("Test", PillClassType.Assault, PillType.Bot1, Resources.Load<GameObject>("Planet/Gear/Head Gear/Goggles"), Resources.Load<GameObject>("Planet/Gear/Body Gear/Utility Backpack"), Resources.Load<GameObject>("Items/Laser Rifle"), Resources.Load<GameObject>("Items/WD-40")));
         GalaxySquad deltaSquad = new GalaxySquad("Delta Squad");
         deltaSquad.AddPill(bob);
         GalaxyArmy armyOfTheSouth = new GalaxyArmy("Army " + (GalaxyManager.planets[planetSelected].armies.Count + 1), GalaxyManager.PlayerID);

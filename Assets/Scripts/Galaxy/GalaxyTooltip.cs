@@ -244,15 +244,15 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 tooltip.transform.position = new Vector2(-5, tooltip.transform.position.y);
             }
             //Right barrier.
-            else if (tooltip.transform.GetChild(0).position.x + (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor) > GalaxyManager.galaxyCamera.scaledPixelWidth)
+            else if (tooltip.transform.GetChild(0).position.x + (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor) > GalaxyManager.GalaxyCamera.scaledPixelWidth)
             {
-                tooltip.transform.position = new Vector2(GalaxyManager.galaxyCamera.scaledPixelWidth - (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor), tooltip.transform.position.y);
+                tooltip.transform.position = new Vector2(GalaxyManager.GalaxyCamera.scaledPixelWidth - (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor), tooltip.transform.position.y);
             }
 
             //Top barrier.
-            if(tooltip.transform.GetChild(0).position.y + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor) > GalaxyManager.galaxyCamera.scaledPixelHeight)
+            if(tooltip.transform.GetChild(0).position.y + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor) > GalaxyManager.GalaxyCamera.scaledPixelHeight)
             {
-                tooltip.transform.position = new Vector2(tooltip.transform.position.x, GalaxyManager.galaxyCamera.scaledPixelHeight - ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
+                tooltip.transform.position = new Vector2(tooltip.transform.position.x, GalaxyManager.GalaxyCamera.scaledPixelHeight - ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
             }
             //Bottom barrier.
             else if (tooltip.transform.GetChild(0).position.y < 0 + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor))

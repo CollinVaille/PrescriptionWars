@@ -20,11 +20,27 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
 
     [Header("Cheat Console")]
 
-    public CheatConsole cheatConsole;
+    [SerializeField]
+    private CheatConsole cheatConsole = null;
+    public CheatConsole CheatConsole
+    {
+        get
+        {
+            return cheatConsole;
+        }
+    }
     
     [Header("Other Views")]
 
-    public GameObject researchView;
+    [SerializeField]
+    private GameObject researchView = null;
+    public GameObject ResearchView
+    {
+        get
+        {
+            return researchView;
+        }
+    }
 
     [Header("Audio Sources")]
 
@@ -87,11 +103,32 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
     public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null};
     public static Dictionary<Empire.Culture, Material[]> pillMaterials = new Dictionary<Empire.Culture, Material[]>();
 
-    public static Camera galaxyCamera;
+    private static Camera galaxyCamera = null;
+    public static Camera GalaxyCamera
+    {
+        get
+        {
+            return galaxyCamera;
+        }
+    }
 
-    public static Canvas galaxyCanvas;
+    private static Canvas galaxyCanvas = null;
+    public static Canvas GalaxyCanvas
+    {
+        get
+        {
+            return galaxyCanvas;
+        }
+    }
 
-    public static Transform galaxyConfirmationPopupParent;
+    private static Transform galaxyConfirmationPopupParent = null;
+    public static Transform GalaxyConfirmationPopupParent
+    {
+        get
+        {
+            return galaxyConfirmationPopupParent;
+        }
+    }
 
     public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
     {

@@ -124,8 +124,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < GalaxyManager.galaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f));
+                if (mouseToMenuDistance.x < GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
+                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f));
             }
             //Right barrier.
             if (transform.localPosition.x > 291 + ((221.16664f / 2) - (popupWidthAndHeight.x / 2)))
@@ -134,8 +134,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > GalaxyManager.galaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.galaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f));
+                if (mouseToMenuDistance.x > GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
+                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f));
             }
             //Top barrier.
             float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : 99.0f;
@@ -145,8 +145,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > GalaxyManager.galaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f));
+                if (mouseToMenuDistance.y > GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
+                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f));
             }
             //Bottom barrier.
             if (transform.localPosition.y < -1 * (99 + ((255.3096f / 2) - (popupWidthAndHeight.y / 2))))
@@ -155,8 +155,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < GalaxyManager.galaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.galaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f));
+                if (mouseToMenuDistance.y < GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
+                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f));
             }
         }
 

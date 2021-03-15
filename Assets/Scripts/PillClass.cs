@@ -5,10 +5,11 @@ using UnityEngine;
 [System.Serializable]
 public class PillClass
 {
-    public PillClass(string className, PillClassType classType, GameObject headGear, GameObject bodyGear, GameObject primary, GameObject secondary)
+    public PillClass(string className, PillClassType classType, PillType initialPillType, GameObject headGear, GameObject bodyGear, GameObject primary, GameObject secondary)
     {
         this.className = className;
         this.classType = classType;
+        this.initialPillType = initialPillType;
         this.headGear = headGear;
         this.bodyGear = bodyGear;
         this.primary = primary;
@@ -17,6 +18,7 @@ public class PillClass
 
     public string className;
     public PillClassType classType;
+    public PillType initialPillType;
     public GameObject headGear;
     public GameObject bodyGear;
     public GameObject primary;
@@ -32,4 +34,10 @@ public enum PillClassType
     Medic,
     Flamethrower,
     Rocket
+}
+
+public enum PillType
+{
+    Player,
+    Bot1
 }

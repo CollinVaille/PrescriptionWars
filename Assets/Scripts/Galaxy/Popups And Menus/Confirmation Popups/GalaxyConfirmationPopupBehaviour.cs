@@ -54,7 +54,7 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
     {
         topText.text = popupTopText;
 
-        transform.parent = GalaxyManager.galaxyConfirmationPopupParent;
+        transform.parent = GalaxyManager.GalaxyConfirmationPopupParent;
         transform.localScale = new Vector3(1, 1, 1);
         transform.localPosition = new Vector3(0, 0, 0);
 

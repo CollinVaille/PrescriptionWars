@@ -146,12 +146,15 @@ public class PillView : MonoBehaviour
         if(primary != null)
         {
             currentPrimary = Instantiate(primary, pillTransform.position, pillTransform.rotation);
+            currentPrimary.transform.SetParent(pillTransform);
+
+            currentPrimary.transform.localPosition = new Vector3(0.5f, -0.25f, 0.0f) + Vector3.up * 0.5f;
+            currentPrimary.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
             Destroy(currentPrimary.GetComponent<Item>());
             Destroy(currentPrimary.GetComponent<Rigidbody>());
             Destroy(currentPrimary.GetComponent<BoxCollider>());
-            currentPrimary.transform.SetParent(pillTransform);
-            currentPrimary.transform.localPosition = new Vector3(0.5f, -0.25f, 0.0f) + Vector3.up * 0.5f;
-            currentPrimary.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
             currentPrimary.name = currentPrimary.name.Substring(0, currentPrimary.name.Length - 7);
         }
     }
@@ -163,16 +166,19 @@ public class PillView : MonoBehaviour
             Destroy(currentSecondary);
         }
 
-        if (secondary != null)
+        if (secondary != null && displayedPill.IsSecondaryVisible)
         {
             currentSecondary = Instantiate(secondary, pillTransform.position, pillTransform.rotation);
             currentSecondary.transform.SetParent(pillTransform);
             Item item = currentSecondary.GetComponent<Item>();
+
             currentSecondary.transform.localPosition = item.GetPlaceOnBack();
             currentSecondary.transform.localRotation = Quaternion.Euler(item.GetRotationOnBack());
+
             Destroy(item);
             Destroy(currentSecondary.GetComponent<Rigidbody>());
             Destroy(currentSecondary.GetComponent<BoxCollider>());
+
             currentSecondary.name = currentSecondary.name.Substring(0, currentSecondary.name.Length - 7);
         }
     }

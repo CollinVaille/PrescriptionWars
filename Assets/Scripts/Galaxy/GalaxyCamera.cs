@@ -104,7 +104,7 @@ public class GalaxyCamera : MonoBehaviour
 
     public static bool IsMouseInViewport()
     {
-        if (Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.galaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.galaxyCamera.pixelHeight)
+        if (Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.GalaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.GalaxyCamera.pixelHeight)
             return true;
         return false;
     }
