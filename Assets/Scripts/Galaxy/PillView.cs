@@ -56,11 +56,14 @@ public class PillView : MonoBehaviour
     {
         get
         {
-            return pillTransform.localEulerAngles.y + 180;
+            return pillTransform.localEulerAngles.y - 180;
         }
         set
         {
-            pillTransform.localEulerAngles = new Vector3(pillTransform.localEulerAngles.x, value + 180, pillTransform.localEulerAngles.z);
+            //The rotation that the pill is supposed to now have.
+            float pillRotation = value + 180;
+            //Actually sets the rotation of the pill.
+            pillTransform.localEulerAngles = new Vector3(pillTransform.localEulerAngles.x, pillRotation, pillTransform.localEulerAngles.z);
         }
     }
 

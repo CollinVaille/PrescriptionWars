@@ -30,9 +30,6 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     [SerializeField]
     private GameObject middleSection = null;
 
-    [SerializeField]
-    private Slider pillRotationSlider = null;
-
     [Header("Army Management Menu SFX Options")]
 
     [SerializeField]
@@ -43,6 +40,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     private AudioClip mouseClickMiddleButtonSFX = null;
     [SerializeField]
     private AudioClip renameSFX = null;
+
+    [Header("Army Management Pill View Options")]
+
+    [SerializeField]
+    private Texture2D mouseOverPillViewCursor = null;
+
+    [SerializeField]
+    private float pillViewRotationSpeed = 0;
 
     [Header("Additional Information")]
 
@@ -57,6 +62,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     private GalaxyPill pillSelected = null;
 
     private PillView pillView = null;
+
+    private float initialMouseXOnPillViewDrag;
+    private float initialPillRotationOnPillViewDrag;
 
     public enum GalaxyGroundUnitType
     {
@@ -118,10 +126,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         //Executes the logic of the super class for a popup closing.
         base.Close();
 
+        //Clears each scroll list in the army management menu.
         foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
         {
             scrollList.ClearScrollList();
         }
+
+        //Resets the cursor.
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
     public void ClearAllScrollLists()
@@ -144,9 +156,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 if(pillView != null)
                     pillView.Delete();
                 pillRawImage.texture = null;
-                pillRawImage.color = Color.clear;
-                pillRotationSlider.gameObject.SetActive(false);
-                ResetPillRotationSliderValue();
+                pillRawImage.gameObject.SetActive(false);
                 break;
             case GalaxyGroundUnitType.Army:
                 if (armySelected != null)
@@ -156,9 +166,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
-                    pillRawImage.color = Color.clear;
-                    pillRotationSlider.gameObject.SetActive(false);
-                    ResetPillRotationSliderValue();
+                    pillRawImage.gameObject.SetActive(false);
                 }
                 break;
             case GalaxyGroundUnitType.Squad:
@@ -169,9 +177,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
-                    pillRawImage.color = Color.clear;
-                    pillRotationSlider.gameObject.SetActive(false);
-                    ResetPillRotationSliderValue();
+                    pillRawImage.gameObject.SetActive(false);
                 }
                 break;
             case GalaxyGroundUnitType.Pill:
@@ -180,12 +186,16 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     middleSection.SetActive(true);
                     groundUnitNameText.text = pillSelected.Name;
                     if (pillView != null)
-                        pillView.Delete();
-                    pillView = PillViewsManager.GetNewPillView(pillSelected);
-                    pillRawImage.texture = pillView.RenderTexture;
-                    pillRawImage.color = Color.white;
-                    pillRotationSlider.gameObject.SetActive(true);
-                    ResetPillRotationSliderValue();
+                    {
+                        pillView.DisplayedPill = pillSelected;
+                        pillView.PillRotation = 0;
+                    }
+                    else
+                    {
+                        pillView = PillViewsManager.GetNewPillView(pillSelected);
+                        pillRawImage.texture = pillView.RenderTexture;
+                        pillRawImage.gameObject.SetActive(true);
+                    }
                 }
                 break;
         }
@@ -530,13 +540,24 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         return null;
     }
 
-    public void OnPillRotationSliderValueChanged()
+    public void MouseEnterPillViewRawImage()
     {
-        pillView.PillRotation = pillRotationSlider.value * 360;
+        Cursor.SetCursor(mouseOverPillViewCursor, new Vector2(0, 10), CursorMode.Auto);
     }
 
-    private void ResetPillRotationSliderValue()
+    public void MouseExitPillViewRawImage()
     {
-        pillRotationSlider.SetValueWithoutNotify(0);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
+
+    public void BeginDragPillViewRawImage()
+    {
+        initialMouseXOnPillViewDrag = Input.mousePosition.x;
+        initialPillRotationOnPillViewDrag = pillView.PillRotation;
+    }
+
+    public void DragPillViewRawImage()
+    {
+        pillView.PillRotation = initialPillRotationOnPillViewDrag - ((Input.mousePosition.x - initialMouseXOnPillViewDrag) * pillViewRotationSpeed);
     }
 }
