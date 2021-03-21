@@ -5,57 +5,59 @@ using UnityEngine.UI;
 
 public class ArmyManagementMenu : GalaxyPopupBehaviour
 {
-    [Header("Army Management Menu Image Components")]
-
-    [SerializeField]
-    private Image backgroundColorImage = null;
-
     [Header("Army Management Menu Raw Image Components")]
 
-    [SerializeField]
-    private RawImage pillRawImage = null;
+    [SerializeField] private RawImage pillRawImage = null;
 
     [Header("Army Management Menu Text Components")]
 
-    [SerializeField]
-    private Text planetNameText = null;
-    [SerializeField]
-    private Text groundUnitNameText = null;
+    [SerializeField] private Text planetNameText = null;
+    [SerializeField] private Text groundUnitNameText = null;
 
     [Header("Army Management Menu Other Components")]
 
-    [SerializeField]
-    private List<ArmyManagerScrollList> armyManagerScrollLists = new List<ArmyManagerScrollList>();
+    [SerializeField] private List<ArmyManagerScrollList> armyManagerScrollLists = new List<ArmyManagerScrollList>();
 
-    [SerializeField]
-    private GameObject middleSection = null;
+    [SerializeField] private GameObject middleSection = null;
 
     [Header("Army Management Menu SFX Options")]
 
-    [SerializeField]
-    private AudioClip disbandUnitSFX = null;
-    [SerializeField]
-    private AudioClip mouseOverMiddleButtonSFX = null;
-    [SerializeField]
-    private AudioClip mouseClickMiddleButtonSFX = null;
-    [SerializeField]
-    private AudioClip renameSFX = null;
+    [SerializeField] private AudioClip disbandUnitSFX = null;
+    [SerializeField] private AudioClip mouseOverMiddleButtonSFX = null;
+    [SerializeField] private AudioClip mouseClickMiddleButtonSFX = null;
+    [SerializeField] private AudioClip renameSFX = null;
 
     [Header("Army Management Pill View Options")]
 
-    [SerializeField]
-    private Texture2D mouseOverPillViewCursor = null;
+    [SerializeField] private Texture2D mouseOverPillViewCursor = null;
 
-    [SerializeField]
-    private float pillViewRotationSpeed = 0;
+    [SerializeField] private float pillViewRotationSpeed = 0;
 
     [Header("Additional Information")]
 
-    [ReadOnly] public int planetSelected = 0;
+    [SerializeField, ReadOnly] private int planetSelected = 0;
+    public int PlanetSelected
+    {
+        get
+        {
+            return planetSelected;
+        }
+        set
+        {
+            planetSelected = value;
+        }
+    }
 
     //Non-inspector variables.
 
-    public static ArmyManagementMenu armyManagementMenu;
+    private static ArmyManagementMenu armyManagementMenu = null;
+    public static ArmyManagementMenu Menu
+    {
+        get
+        {
+            return armyManagementMenu;
+        }
+    }
 
     private GalaxyArmy armySelected = null;
     private GalaxySquad squadSelected = null;
@@ -74,6 +76,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         Pill
     }
     GalaxyGroundUnitType groundUnitTypeSelected;
+
+    public static void InitializeFromGalaxyGenerator(ArmyManagementMenu armyManagementMenu)
+    {
+        ArmyManagementMenu.armyManagementMenu = armyManagementMenu;
+    }
 
     // Start is called before the first frame update
     public override void Start()
@@ -104,9 +111,6 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
         //Executes the logic of the base class for a popup opening.
         base.Open();
-
-        //Sets the color of the menu's foreground background image to the player empire's color.
-        backgroundColorImage.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
 
         //Sets the planet name text at the top of the menu to the name of the planet that the player has selected to manage the armies on.
         planetNameText.text = GalaxyManager.planets[planetSelected].nameLabel.text;

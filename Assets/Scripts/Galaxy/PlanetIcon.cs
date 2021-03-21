@@ -215,7 +215,7 @@ public class PlanetIcon : MonoBehaviour
     public void SetPlanetOwner(int ownerID)
     {
         this.ownerID = ownerID;
-        nameLabel.color = Empire.empires[this.ownerID].GetLabelColor();
+        nameLabel.color = Empire.empires[this.ownerID].LabelColor;
     }
 
     public void ConquerPlanet(int conquerorID)
@@ -237,7 +237,7 @@ public class PlanetIcon : MonoBehaviour
         Empire.empires[conquerorID].planetsOwned.Add(planetID);
 
         //Updates the color of the planet label.
-        nameLabel.color = Empire.empires[conquerorID].GetLabelColor();
+        nameLabel.color = Empire.empires[conquerorID].LabelColor;
 
         //Updates the planet's ship's material to match the color of the conquering empire's ships.
         ship.GetComponent<MeshRenderer>().sharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
@@ -251,7 +251,7 @@ public class PlanetIcon : MonoBehaviour
         if(ownerID == GalaxyManager.PlayerID && !GalaxyCamera.GetMouseOverUIElement())
         {
             //Tells the planet management menu to display the information from this planet.
-            PlanetManagementMenu.planetSelected = transform.gameObject;
+            PlanetManagementMenu.planetManagementMenu.PlanetSelected = this;
             
             //Closes the planet management menu if it is already open, this is purely just to reset it before we immediately reopen it.
             if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)

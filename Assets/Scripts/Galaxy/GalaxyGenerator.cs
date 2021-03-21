@@ -181,7 +181,7 @@ public class GalaxyGenerator : MonoBehaviour
         //Manager objects.
         HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu;
-        ArmyManagementMenu.armyManagementMenu = armyManagementMenu;
+        ArmyManagementMenu.InitializeFromGalaxyGenerator(armyManagementMenu);
     }
 
     // Update is called once per frame
@@ -358,17 +358,17 @@ public class GalaxyGenerator : MonoBehaviour
             if(empireID == GalaxyManager.PlayerID)
             {
                 Vector3 randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
-                Empire.empires[empireID].empireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
+                Empire.empires[empireID].EmpireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
             }
             else
             {
-                Empire.empires[empireID].empireColor =  new Color(Empire.empires[empireID].EmpireFlag.symbolColor.x, Empire.empires[empireID].EmpireFlag.symbolColor.y, Empire.empires[empireID].EmpireFlag.symbolColor.z, 1.0f);
+                Empire.empires[empireID].EmpireColor =  new Color(Empire.empires[empireID].EmpireFlag.symbolColor.x, Empire.empires[empireID].EmpireFlag.symbolColor.y, Empire.empires[empireID].EmpireFlag.symbolColor.z, 1.0f);
             }
 
             //----------------------------------------------------------------------------------------------------
             //Sets the empire's material color.
             int materialIndex = (int)Empire.empires[empireID].empireCulture;
-            empireMaterials[materialIndex].color = Empire.empires[empireID].empireColor;
+            empireMaterials[materialIndex].color = Empire.empires[empireID].EmpireColor;
             GalaxyManager.empireMaterials[materialIndex] = empireMaterials[materialIndex];
 
             //----------------------------------------------------------------------------------------------------

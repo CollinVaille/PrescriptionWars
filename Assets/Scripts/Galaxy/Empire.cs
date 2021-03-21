@@ -57,7 +57,36 @@ public class Empire
         }
     }
     public Culture empireCulture;
-    public Color empireColor;
+
+    private Color empireColor;
+    public Color EmpireColor
+    {
+        get
+        {
+            return empireColor;
+        }
+        set
+        {
+            empireColor = value;
+        }
+    }
+    public Color LabelColor
+    {
+        get
+        {
+            Color labelColor = empireColor;
+
+            if (empireCulture == Culture.Red || empireCulture == Culture.Green || empireCulture == Culture.Blue)
+            {
+                labelColor.r += 0.3f;
+                labelColor.g += 0.3f;
+                labelColor.b += 0.3f;
+            }
+
+            return labelColor;
+        }
+    }
+
     public int EmpireID { get; }
     public bool IsPlayerEmpire
     {
@@ -192,20 +221,6 @@ public class Empire
             if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
                 ResourceBar.UpdateScienceText();
         }
-    }
-
-    public Color GetLabelColor()
-    {
-        Color labelColor = empireColor;
-
-        if (empireCulture == Culture.Red || empireCulture == Culture.Green || empireCulture == Culture.Blue)
-        {
-            labelColor.r += 0.3f;
-            labelColor.g += 0.3f;
-            labelColor.b += 0.3f;
-        }
-
-        return labelColor;
     }
 
     public float GetCreditsPerTurn()

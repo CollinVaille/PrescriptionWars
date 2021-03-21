@@ -21,36 +21,27 @@ public class GalaxyPopupBehaviour : MonoBehaviour
     public PopupOpeningAnimationType openingAnimationType = PopupOpeningAnimationType.Instant;
 
     //Indicates the constant rate at which the scale of the popup will increase if it has an expand opening animation type.
-    [SerializeField]
-    //[ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.Disappear)]
-    [ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.ReadOnly)]
+    [SerializeField, ConditionalField("openingAnimationType", PopupOpeningAnimationType.Instant, ConditionalFieldComparisonType.NotEqual, ConditionalFieldDisablingType.ReadOnly)]
     private float openingAnimationSpeed = 3.0f;
 
     //Indicates whether the logic for the popup opening is called in the start method.
-    [SerializeField]
-    private bool opensAtStart = false;
+    [SerializeField] private bool opensAtStart = false;
     //Indicates whether the top barrier for the popup is limited by the resource bar.
-    [SerializeField]
-    private bool isResourceBarTopBarrier = false;
-
-    //Indicates the width and height of the popup (x: width, y: height).
-    [SerializeField]
-    private Vector2 popupWidthAndHeight = Vector2.zero;
+    [SerializeField] private bool isResourceBarTopBarrier = false;
 
     [Header("Base Popup SFX Options")]
 
     //Sound effect that will be played as soon as the popup has been opened.
-    [SerializeField]
-    private AudioClip openPopupSFX = null;
+    [SerializeField] private AudioClip openPopupSFX = null;
     //Sound effect that will be played when the popup is closed.
-    [SerializeField]
-    private AudioClip closePopupSFX = null;
+    [SerializeField] private AudioClip closePopupSFX = null;
 
     [Header("Base Popup Image Components")]
 
     //List of all of the images on the popup that will have their color changed to the player empire's color when the popup opens.
-    [SerializeField]
-    private List<Image> imagesWithEmpireColor = new List<Image>();
+    [SerializeField] private List<Image> imagesWithEmpireColor = new List<Image>();
+    //List of all of the images on the popup that will have their color changed to the player empire's label color when the popup opens.
+    [SerializeField] private List<Image> imagesWithEmpireLabelColor = new List<Image>();
 
     //Non-inspector variables.
 
@@ -62,6 +53,15 @@ public class GalaxyPopupBehaviour : MonoBehaviour
     //Indicates the set distance between the mouse and the popup's location (used for dragging popups and probably shouldn't be messed with otherwise).
     private Vector2 mouseToMenuDistance = Vector2.zero;
 
+    //The rect transform of the popup that contains the width and height.
+    private RectTransform RectTransform
+    {
+        get
+        {
+            return (RectTransform)transform;
+        }
+    }
+
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -72,7 +72,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
     public virtual void Awake()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -118,45 +118,45 @@ public class GalaxyPopupBehaviour : MonoBehaviour
             transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
 
             //Left barrier.
-            if (transform.localPosition.x < -1 * (291 + ((221.16664f / 2) - (popupWidthAndHeight.x / 2))))
+            if (transform.localPosition.x < -1 * (291 + ((221.16664f / 2) - (RectTransform.rect.width / 2))))
             {
-                transform.localPosition = new Vector2(-1 * (291 + ((221.16664f / 2) - (popupWidthAndHeight.x / 2))), transform.localPosition.y);
+                transform.localPosition = new Vector2(-1 * (291 + ((221.16664f / 2) - (RectTransform.rect.width / 2))), transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (popupWidthAndHeight.x / 221.16664f));
+                if (mouseToMenuDistance.x < GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f));
             }
             //Right barrier.
-            if (transform.localPosition.x > 291 + ((221.16664f / 2) - (popupWidthAndHeight.x / 2)))
+            if (transform.localPosition.x > 291 + ((221.16664f / 2) - (RectTransform.rect.width / 2)))
             {
-                transform.localPosition = new Vector2(291 + ((221.16664f / 2) - (popupWidthAndHeight.x / 2)), transform.localPosition.y);
+                transform.localPosition = new Vector2(291 + ((221.16664f / 2) - (RectTransform.rect.width / 2)), transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (popupWidthAndHeight.x / 221.16664f));
+                if (mouseToMenuDistance.x > GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f));
             }
             //Top barrier.
             float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : 99.0f;
-            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)))
+            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (RectTransform.rect.height / 2)))
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (popupWidthAndHeight.y / 2)));
+                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (RectTransform.rect.height / 2)));
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (popupWidthAndHeight.y / 255.3096f));
+                if (mouseToMenuDistance.y > GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f));
             }
             //Bottom barrier.
-            if (transform.localPosition.y < -1 * (99 + ((255.3096f / 2) - (popupWidthAndHeight.y / 2))))
+            if (transform.localPosition.y < -1 * (99 + ((255.3096f / 2) - (RectTransform.rect.height / 2))))
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, -1 * (99 + ((255.3096f / 2) - (popupWidthAndHeight.y / 2))));
+                transform.localPosition = new Vector2(transform.localPosition.x, -1 * (99 + ((255.3096f / 2) - (RectTransform.rect.height / 2))));
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (popupWidthAndHeight.y / 255.3096f));
+                if (mouseToMenuDistance.y < GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f));
             }
         }
 
@@ -268,7 +268,13 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         //Sets the color of every image that is supposed to be the player empire's color to the player empire's color.
         foreach (Image imageWithEmpireColor in imagesWithEmpireColor)
         {
-            imageWithEmpireColor.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
+            imageWithEmpireColor.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
+        }
+
+        //Sets the color of every image that is supposed to be the player empire's label color to the player empire's label color.
+        foreach(Image imageWithEmpireLabelColor in imagesWithEmpireLabelColor)
+        {
+            imageWithEmpireLabelColor.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
         }
 
         //Plays the sound effect for whenever the popup opens.

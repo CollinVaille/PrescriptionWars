@@ -10,11 +10,11 @@ public class PlanetShip : MonoBehaviour
     {
         if (!GalaxyCamera.GetMouseOverUIElement())
         {
-            if (ArmyManagementMenu.armyManagementMenu.gameObject.activeInHierarchy)
-                ArmyManagementMenu.armyManagementMenu.ClearAllScrollLists();
+            if (ArmyManagementMenu.Menu.gameObject.activeInHierarchy)
+                ArmyManagementMenu.Menu.ClearAllScrollLists();
 
-            ArmyManagementMenu.armyManagementMenu.planetSelected = attachedPlanetID;
-            ArmyManagementMenu.armyManagementMenu.Open();
+            ArmyManagementMenu.Menu.PlanetSelected = attachedPlanetID;
+            ArmyManagementMenu.Menu.Open();
         }
     }
 }

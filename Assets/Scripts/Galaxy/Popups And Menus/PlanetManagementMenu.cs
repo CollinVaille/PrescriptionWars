@@ -5,74 +5,112 @@ using UnityEngine.UI;
 
 public class PlanetManagementMenu : GalaxyPopupBehaviour
 {
-    public AudioClip clickOnCityAudioClip;
-    public AudioClip clickOnTabAudioClip;
-    public AudioClip clickThreeAudioClip;
-    public AudioClip cancelAudioClip;
-    public AudioClip demolishAudioClip;
+    [Header("Planet Management Menu Sub Menus")]
 
-    //General stuff.
-    public Image foregroundImage;
+    [SerializeField] private GameObject chooseCityMenu = null;
+    [SerializeField] private GameObject cityManagementMenu = null;
+    [SerializeField] private List<GameObject> tabs = null;
 
-    public List<Image> dividers;
+    [Header("Planet Management Menu Sub Menu Components")]
 
-    public Image tabUnderlineImage;
+    [SerializeField] private List<GameObject> cities = null;
 
-    public Text planetNameText;
+    [Header("Planet Management Menu Image Components")]
 
-    public static GameObject planetSelected;
+    [SerializeField] private Image tabUnderlineImage = null;
+    [SerializeField] private Image buildingImage = null;
+    [SerializeField] private List<Image> dividers = null;
+    [SerializeField] private List<Image> cityImages = null;
+    [SerializeField] private List<Image> demolishBuildingImages = null;
+    [SerializeField] private List<Image> cancelBuildingQueuedImages = null;
 
-    public List<Shadow> shadows;
+    [Header("Planet Management Menu Text Components")]
 
-    public List<GameObject> tabs;
+    [SerializeField] private Text planetNameText = null;
+    [SerializeField] private Text buildingsListText = null;
+    [SerializeField] private Text buildingQueueListText = null;
+    [SerializeField] private Text buildingsLimitText = null;
+    [SerializeField] private Text buildButtonText = null;
+    [SerializeField] private Text buildingDescriptionText = null;
+    [SerializeField] private Text buildingTitleText = null;
+    [SerializeField] private Text buildingCostText = null;
+    [SerializeField] private Text infoCultureText = null;
+    [SerializeField] private Text infoCitiesText = null;
+    [SerializeField] private Text infoCapitalText = null;
+    [SerializeField] private Text infoIncomeText = null;
+    [SerializeField] private Text infoPrescriptionText = null;
+    [SerializeField] private List<Text> cityTexts = null;
 
-    public Sprite unselectedButtonSprite;
-    public Sprite selectedButtonSprite;
+    [Header("Planet Management Menu Scrollbar Components")]
 
-    //Choose city menu stuff.
-    public GameObject chooseCityMenu;
-    public List<GameObject> cities;
-    public List<Image> cityImages;
-    public List<Text> cityTexts;
+    [SerializeField] private Scrollbar buildingsCompletedScrollbar = null;
+    [SerializeField] private Scrollbar buildingQueueScrollbar = null;
 
-    //City management menu stuff here.
-    public GameObject cityManagementMenu;
-    public Scrollbar buildingsCompletedScrollbar;
-    public List<Image> demolishBuildingImages;
-    int buildingsListTextStartIndex;
-    public Scrollbar buildingQueueScrollbar;
-    public List<Image> cancelBuildingQueuedImages;
-    int buildingQueueListTextStartIndex;
-    public Text buildingsListText;
-    public Text buildingQueueListText;
-    public Text buildingsLimitText;
-    public Text buildButtonText;
-    public Text buildingDescriptionText;
-    public Text buildingTitleText;
-    public Text buildingCostText;
-    public List<Button> cityManagementMenuButtons;
-    public int buildingSelected;
-    int buildingDisplayed = -1;
-    public List<Sprite> buildingSprites;
-    public List<string> buildingDescriptions;
-    public Image buildingImage;
+    [Header("Planet Management Menu Button Components")]
 
-    //City sprite here.
-    public Sprite desertCitySprite;
-    public Sprite frozenCitySprite;
-    public Sprite temperateCitySprite;
-    public Sprite swampCitySprite;
-    public Sprite hellCitySprite;
-    public Sprite spiritCitySprite;
+    [SerializeField] private List<Button> cityManagementMenuButtons = null;
 
-    //Info tab stuff here.
-    public Text infoCultureText;
-    public Text infoCitiesText;
-    public Text infoCapitalText;
-    public Text infoIncomeText;
-    public Text infoPrescriptionText;
+    [Header("Planet Management Menu Other Components")]
 
-    public int citySelected;
+    [SerializeField] private List<Shadow> shadows = null;
+
+    [Header("Planet Management Menu Sprite Options")]
+
+    [SerializeField] private Sprite unselectedButtonSprite = null;
+    [SerializeField] private Sprite desertCitySprite = null;
+    [SerializeField] private Sprite frozenCitySprite = null;
+    [SerializeField] private Sprite temperateCitySprite = null;
+    [SerializeField] private Sprite swampCitySprite = null;
+    [SerializeField] private Sprite hellCitySprite = null;
+    [SerializeField] private Sprite spiritCitySprite = null;
+    [SerializeField] private List<Sprite> buildingSprites = null;
+
+    [Header("Planet Management Menu SFX Options")]
+
+    [SerializeField] private AudioClip clickOnCityAudioClip = null;
+    [SerializeField] private AudioClip clickOnTabAudioClip = null;
+    [SerializeField] private AudioClip clickThreeAudioClip = null;
+    [SerializeField] private AudioClip cancelAudioClip = null;
+    [SerializeField] private AudioClip demolishAudioClip = null;
+
+    [Header("Planet Management Menu Other Options")]
+
+    [SerializeField] private List<string> buildingDescriptions = null;
+
+    [Header("Additional Information")]
+
+    [SerializeField, ReadOnly] private PlanetIcon planetSelected = null;
+    public PlanetIcon PlanetSelected
+    {
+        get
+        {
+            return planetSelected;
+        }
+        set
+        {
+            planetSelected = value;
+        }
+    }
+
+    [SerializeField, ReadOnly] private int citySelected = 0;
+    public int CitySelected
+    {
+        get
+        {
+            return citySelected;
+        }
+        set
+        {
+            citySelected = value;
+        }
+    }
+
+    //Non-inspector variables.
+
+    private int buildingSelected;
+    private int buildingDisplayed = -1;
+    private int buildingsListTextStartIndex = 0;
+    private int buildingQueueListTextStartIndex = 0;
 
     public static PlanetManagementMenu planetManagementMenu;
 
@@ -95,23 +133,22 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     public void UpdateUI()
     {
-        //Sets the color of the foreground and all of the dividers based on the player empire's label color.
-        foregroundImage.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
+        //Sets the color of all of the dividers based on the player empire's label color.
         foreach (Image divider in dividers)
         {
-            divider.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
+            divider.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
         }
 
-        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
-        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
-        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
-        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
-        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].empireColor;
+        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
+        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
+        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
+        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
+        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
         {
-            PlanetIcon planetSelectedScript = planetSelected.GetComponent<PlanetIcon>();
+            PlanetIcon planetSelectedScript = planetSelected;
 
             planetNameText.text = planetSelectedScript.nameLabel.text;
 
@@ -220,7 +257,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Demolish Building";
-        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";
+        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.nameLabel.text + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -237,7 +274,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     public void DemolishBuilding(int indexToDemolish)
     {
         //Removes the building at the requested index.
-        planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
+        planetSelected.cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
 
         //Plays the demolish and cancel sound effects.
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
@@ -261,7 +298,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Cancel Building Queued";
-        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].cityName + " on planet " + planetSelected.GetComponent<PlanetIcon>().nameLabel.text + "?";
+        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.nameLabel.text + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -278,10 +315,10 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     public void CancelBuildingQueued(int indexToCancel)
     {
         //Refunds the player of the credits that they spent putting that building into the building queue.
-        Empire.empires[GalaxyManager.PlayerID].Credits += GalaxyBuilding.GetCreditsCost(planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
+        Empire.empires[GalaxyManager.PlayerID].Credits += GalaxyBuilding.GetCreditsCost(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
 
         //Removes the building in the queue at the requested index.
-        planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
+        planetSelected.cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
 
         //Plays the removal/cancel sound effect.
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
@@ -324,10 +361,10 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingsCompleted.Count + planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.PlayerID].Credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
+        if(planetSelected != null && planetSelected.cities[citySelected].buildingsCompleted.Count + planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.PlayerID].Credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
         {
             //Adds a building of the specified type to the building queue.
-            planetSelected.GetComponent<PlanetIcon>().cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.PlayerID);
+            planetSelected.cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.PlayerID);
 
             //Plays the add to queue sound effect.
             GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
@@ -355,7 +392,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Sets the correct number of cities active.
         for(int x = 0; x < cities.Count; x++)
         {
-            if (x < planetSelected.GetComponent<PlanetIcon>().cities.Count)
+            if (x < planetSelected.cities.Count)
                 cities[x].SetActive(true);
             else
                 cities[x].SetActive(false);
@@ -364,14 +401,14 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Resets the image of each city based on the biome.
         foreach(Image cityImage in cityImages)
         {
-            cityImage.sprite = GetCityImage(planetSelected.GetComponent<PlanetIcon>().biome);
+            cityImage.sprite = GetCityImage(planetSelected.biome);
         }
 
         //Resets the name of each city.
         for(int x = 0; x < cityTexts.Count; x++)
         {
             if(cities[x].activeInHierarchy)
-                cityTexts[x].text = planetSelected.GetComponent<PlanetIcon>().cities[x].cityName;
+                cityTexts[x].text = planetSelected.cities[x].cityName;
         }
     }
 
@@ -402,13 +439,13 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     {
         buildingsListText.text = "";
 
-        List<string> getBuildingsListText = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText();
+        List<string> getBuildingsListText = planetSelected.cities[citySelected].GetBuildingsListText();
 
-        if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count <= 4)
+        if (planetSelected.cities[citySelected].GetBuildingsListText().Count <= 4)
         {
             buildingsListTextStartIndex = 0;
 
-            for(int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count; x++)
+            for(int x = 0; x < planetSelected.cities[citySelected].GetBuildingsListText().Count; x++)
             {
                 if(x == 0)
                 {
@@ -422,7 +459,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         }
         else
         {
-            int possibleValues = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].GetBuildingsListText().Count - 3;
+            int possibleValues = planetSelected.cities[citySelected].GetBuildingsListText().Count - 3;
 
             int closestIndex = 0;
 
@@ -461,13 +498,13 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     {
         buildingQueueListText.text = "";
 
-        List<string> buildingQueueText = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.GetQueueText();
+        List<string> buildingQueueText = planetSelected.cities[citySelected].buildingQueue.GetQueueText();
 
-        if (planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count <= 4)
+        if (planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count <= 4)
         {
             buildingQueueListTextStartIndex = 0;
 
-            for (int x = 0; x < planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count; x++)
+            for (int x = 0; x < planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count; x++)
             {
                 if (x == 0)
                 {
@@ -481,7 +518,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         }
         else
         {
-            int possibleValues = planetSelected.GetComponent<PlanetIcon>().cities[citySelected].buildingQueue.buildingsQueued.Count - 3;
+            int possibleValues = planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count - 3;
 
             int closestIndex = 0;
 
@@ -586,7 +623,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     public void ToggleShadow(Shadow shadow)
     {
-        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].GetLabelColor();
+        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].LabelColor;
         shadow.enabled = !shadow.enabled;
     }
 }
