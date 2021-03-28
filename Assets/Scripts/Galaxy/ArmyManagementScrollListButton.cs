@@ -323,16 +323,16 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
         switch (type)
         {
             case ArmyManagementButtonType.ArmyDropDownButton:
-                ArmyManagementMenu.Menu.SetArmySelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].armies[GetDataIndex()]);
+                ArmyManagementMenu.Menu.SetArmySelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].Armies[GetDataIndex()]);
                 break;
             case ArmyManagementButtonType.SquadChildButton:
-                ArmyManagementMenu.Menu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
+                ArmyManagementMenu.Menu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].Armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
                 break;
             case ArmyManagementButtonType.SquadDropDownButton:
-                ArmyManagementMenu.Menu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
+                ArmyManagementMenu.Menu.SetSquadSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].Armies[GetParentDataIndex()].GetSquadAt(GetDataIndex()));
                 break;
             case ArmyManagementButtonType.PillChildButton:
-                ArmyManagementMenu.Menu.SetPillSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].armies[transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].GetSquadAt(GetParentDataIndex()).GetPillAt(GetDataIndex()));
+                ArmyManagementMenu.Menu.SetPillSelected(GalaxyManager.planets[ArmyManagementMenu.Menu.PlanetSelected].Armies[transform.parent.GetChild(GetParentSiblingIndex()).GetComponent<ArmyManagementScrollListButton>().GetParentDataIndex()].GetSquadAt(GetParentDataIndex()).GetPillAt(GetDataIndex()));
                 break;
         }
     }

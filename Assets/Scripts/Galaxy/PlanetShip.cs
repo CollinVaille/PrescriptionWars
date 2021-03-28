@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlanetShip : MonoBehaviour
 {
@@ -8,13 +9,13 @@ public class PlanetShip : MonoBehaviour
 
     private void OnMouseUpAsButton()
     {
-        if (!GalaxyCamera.GetMouseOverUIElement())
-        {
-            if (ArmyManagementMenu.Menu.gameObject.activeInHierarchy)
-                ArmyManagementMenu.Menu.ClearAllScrollLists();
+        if (GalaxyCamera.IsMouseOverUIElement)
+            return;
 
-            ArmyManagementMenu.Menu.PlanetSelected = attachedPlanetID;
-            ArmyManagementMenu.Menu.Open();
-        }
+        if (ArmyManagementMenu.Menu.gameObject.activeInHierarchy)
+            ArmyManagementMenu.Menu.ClearAllScrollLists();
+
+        ArmyManagementMenu.Menu.PlanetSelected = attachedPlanetID;
+        ArmyManagementMenu.Menu.Open();
     }
 }

@@ -153,12 +153,6 @@ public class GalaxyPopup : GalaxyPopupBehaviour
     public void PointerEnterOptionButton(int buttonNum)
     {
         GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
-        SetMouseOverPopup(true);
-    }
-
-    public void PointerExitOptionButton(int buttonNum)
-    {
-        SetMouseOverPopup(false);
     }
 
     public string GetHeadLine()

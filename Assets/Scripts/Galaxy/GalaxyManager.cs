@@ -91,12 +91,21 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         }
     }
 
-    public static List<PlanetIcon> planets;
+    public static List<GalaxyPlanet> planets;
 
     public static List<Sprite> flagSymbols;
 
     public static bool observationModeEnabled = false;
     public static bool popupClosedOnFrame = false;
+    public static bool IsGalaxyViewActiveInHierarchy
+    {
+        get
+        {
+            if (galaxyManager == null)
+                return false;
+            return galaxyManager.gameObject.activeInHierarchy;
+        }
+    }
 
     public static GalaxyManager galaxyManager;
 
@@ -130,7 +139,7 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         }
     }
 
-    public static void Initialize(List<PlanetIcon> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
+    public static void Initialize(List<GalaxyPlanet> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
         flagSymbols = flagSymbolsList;

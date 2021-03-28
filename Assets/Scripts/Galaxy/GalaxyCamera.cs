@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GalaxyCamera : MonoBehaviour
 {
@@ -10,31 +11,26 @@ public class GalaxyCamera : MonoBehaviour
     private Vector3 movementVector = Vector3.zero;
     private Vector3 previousMousePosition = Vector3.zero;
 
-    public InputField consoleInputField;
-
-    public GameObject planetManagementMenu;
-    public GameObject armyManagementMenu;
-    public GameObject cheatConsole;
-    public GameObject galaxyView;
-
-    public static bool mouseOverPlanetManagementMenu;
-    public static bool mouseOverArmyManagementMenu;
-    public static bool mouseOverCheatConsole;
-    public static bool mouseOverRightSideNotification;
-    public static bool mouseOverPopup;
-    public static bool mouseOverResourceBar;
-
-    public static bool GetMouseOverUIElement()
+    public static bool IsMouseOverUIElement
     {
-        if (mouseOverPlanetManagementMenu || mouseOverArmyManagementMenu || mouseOverCheatConsole || mouseOverRightSideNotification || mouseOverPopup || mouseOverResourceBar || GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
-            return true;
-        return false;
+        get
+        {
+            return EventSystem.current.IsPointerOverGameObject();
+        }
+    }
+
+    public static bool IsMouseInViewport
+    {
+        get
+        {
+            return Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.GalaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.GalaxyCamera.pixelHeight;
+        }
     }
 
     private void Update ()
     {
         //WASD and scrollwheel movement
-        if (!consoleInputField.isFocused && galaxyView.activeInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
+        if (!CheatConsole.IsInputFieldFocused && GalaxyManager.IsGalaxyViewActiveInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");
@@ -44,18 +40,12 @@ public class GalaxyCamera : MonoBehaviour
             movementVector.x = 0.0f;
             movementVector.y = 0.0f;
         }
-        if(galaxyView.activeInHierarchy && !GetMouseOverUIElement())
+        if(GalaxyManager.IsGalaxyViewActiveInHierarchy && !IsMouseOverUIElement)
             movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
-        if (!planetManagementMenu.activeInHierarchy)
-            mouseOverPlanetManagementMenu = false;
-        if (!armyManagementMenu.activeInHierarchy)
-            mouseOverArmyManagementMenu = false;
-        if (!cheatConsole.activeInHierarchy)
-            mouseOverCheatConsole = false;
 
-        if (Input.GetMouseButton(0) && !GetMouseOverUIElement() && galaxyView.activeInHierarchy && IsMouseInViewport())
+        if (Input.GetMouseButton(0) && !IsMouseOverUIElement && GalaxyManager.IsGalaxyViewActiveInHierarchy && IsMouseInViewport)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;
@@ -80,32 +70,5 @@ public class GalaxyCamera : MonoBehaviour
 
         //Clean up at end of update
         previousMousePosition = Input.mousePosition;
-    }
-
-    public void ToggleMouseOverPlanetManagementMenu()
-    {
-        mouseOverPlanetManagementMenu = !mouseOverPlanetManagementMenu;
-    }
-
-    public void ToggleMouseOverArmyManagementMenu()
-    {
-        mouseOverArmyManagementMenu = !mouseOverArmyManagementMenu;
-    }
-
-    public void ToggleMouseOverCheatConsole()
-    {
-        mouseOverCheatConsole = !mouseOverCheatConsole;
-    }
-
-    public void SetMouseOverResourceBar(bool isMouseOverResourceBar)
-    {
-        mouseOverResourceBar = isMouseOverResourceBar;
-    }
-
-    public static bool IsMouseInViewport()
-    {
-        if (Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.GalaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.GalaxyCamera.pixelHeight)
-            return true;
-        return false;
     }
 }

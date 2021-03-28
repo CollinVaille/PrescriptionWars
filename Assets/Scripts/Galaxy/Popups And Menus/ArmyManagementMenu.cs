@@ -105,15 +105,15 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         GalaxyPill bob = new GalaxyPill("Bob", new PillClass("Test", PillClassType.Assault, PillType.Bot1, Resources.Load<GameObject>("Planet/Gear/Head Gear/Goggles"), Resources.Load<GameObject>("Planet/Gear/Body Gear/Utility Backpack"), Resources.Load<GameObject>("Items/Laser Rifle"), Resources.Load<GameObject>("Items/WD-40")));
         GalaxySquad deltaSquad = new GalaxySquad("Delta Squad");
         deltaSquad.AddPill(bob);
-        GalaxyArmy armyOfTheSouth = new GalaxyArmy("Army " + (GalaxyManager.planets[planetSelected].armies.Count + 1), GalaxyManager.PlayerID);
+        GalaxyArmy armyOfTheSouth = new GalaxyArmy("Army " + (GalaxyManager.planets[planetSelected].Armies.Count + 1), GalaxyManager.PlayerID);
         armyOfTheSouth.AddSquad(deltaSquad);
-        GalaxyManager.planets[planetSelected].armies.Add(armyOfTheSouth);
+        GalaxyManager.planets[planetSelected].Armies.Add(armyOfTheSouth);
 
         //Executes the logic of the base class for a popup opening.
         base.Open();
 
         //Sets the planet name text at the top of the menu to the name of the planet that the player has selected to manage the armies on.
-        planetNameText.text = GalaxyManager.planets[planetSelected].nameLabel.text;
+        planetNameText.text = GalaxyManager.planets[planetSelected].Name;
 
         //Populates each scroll list with what information they need to display.
         foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
@@ -270,11 +270,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 foreach(ArmyManagerScrollList scrollList in armyManagerScrollLists)
                     scrollList.DisbandArmy(armySelected);
 
-                for(int x = 0; x < GalaxyManager.planets[planetSelected].armies.Count; x++)
+                for(int x = 0; x < GalaxyManager.planets[planetSelected].Armies.Count; x++)
                 {
-                    if (GalaxyManager.planets[planetSelected].armies[x] == armySelected)
+                    if (GalaxyManager.planets[planetSelected].Armies[x] == armySelected)
                     {
-                        GalaxyManager.planets[planetSelected].armies.RemoveAt(x);
+                        GalaxyManager.planets[planetSelected].Armies.RemoveAt(x);
                         break;
                     }
                 }
@@ -285,7 +285,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     scrollList.DisbandSquad(squadSelected);
 
                 bool squadDeleted = false;
-                foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].armies)
+                foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].Armies)
                 {
                     for(int x = 0; x < army.TotalNumberOfSquads; x++)
                     {
@@ -306,7 +306,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     scrollList.DisbandPill(pillSelected);
 
                 bool pillDeleted = false;
-                foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].armies)
+                foreach(GalaxyArmy army in GalaxyManager.planets[planetSelected].Armies)
                 {
                     for(int squadIndex = 0; squadIndex < army.TotalNumberOfSquads; squadIndex++)
                     {

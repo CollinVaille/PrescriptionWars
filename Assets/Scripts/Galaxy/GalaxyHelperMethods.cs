@@ -48,7 +48,7 @@ public class GalaxyHelperMethods : MonoBehaviour
 
     public static void ConquerPlanet(int planetID, int conquerorID)
     {
-        if(GalaxyManager.planets[planetID].ownerID != conquerorID)
+        if(GalaxyManager.planets[planetID].OwnerID != conquerorID)
         {
             GalaxyManager.planets[planetID].ConquerPlanet(conquerorID);
         }

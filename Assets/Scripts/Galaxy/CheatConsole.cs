@@ -7,13 +7,29 @@ using UnityEngine.UI;
 
 public class CheatConsole : MonoBehaviour
 {
+    //Inspector variables.
+
     public InputField commandInputField;
 
     public Text commandHistoryText;
 
-    List<string> previousCommands;
+    //Non-inspector variables.
 
-    int previousCommandSelected;
+    public static bool IsInputFieldFocused
+    {
+        get
+        {
+            if (cheatConsole == null)
+                return false;
+            return cheatConsole.commandInputField.isFocused;
+        }
+    }
+
+    private List<string> previousCommands = new List<string>();
+
+    private int previousCommandSelected = 0;
+
+    private static CheatConsole cheatConsole;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +37,11 @@ public class CheatConsole : MonoBehaviour
         previousCommands = new List<string>();
 
         previousCommandSelected = 0;
+    }
+
+    private void Awake()
+    {
+        cheatConsole = this;
     }
 
     // Update is called once per frame
@@ -149,10 +170,10 @@ public class CheatConsole : MonoBehaviour
 
         for(int x = 0; x < GalaxyManager.planets.Count; x++)
         {
-            PlanetIcon planet = GalaxyManager.planets[x].GetComponent<PlanetIcon>();
+            GalaxyPlanet planet = GalaxyManager.planets[x].GetComponent<GalaxyPlanet>();
 
             //string planetName = GeneralHelperMethods.RemoveCarriageReturn(planet.nameLabel.text.ToLower());
-            string planetName = planet.nameLabel.text.ToLower();
+            string planetName = planet.Name.ToLower();
 
             if (inputedPlanetName.Equals(planetName))
             {
@@ -180,7 +201,7 @@ public class CheatConsole : MonoBehaviour
     {
         foreach(int planetIndex in Empire.empires[GalaxyManager.PlayerID].planetsOwned)
         {
-            foreach(GalaxyCity city in GalaxyManager.planets[planetIndex].GetComponent<PlanetIcon>().cities)
+            foreach(GalaxyCity city in GalaxyManager.planets[planetIndex].GetComponent<GalaxyPlanet>().cities)
             {
                 city.buildingsCompleted.Clear();
             }
@@ -288,7 +309,7 @@ public class CheatConsole : MonoBehaviour
 
             for(int x = 0; x < GalaxyManager.planets.Count; x++)
             {
-                if (GalaxyManager.planets[x].GetComponent<PlanetIcon>().name.ToLower().Equals(planetName))      //Gets hung up here.
+                if (GalaxyManager.planets[x].GetComponent<GalaxyPlanet>().name.ToLower().Equals(planetName))      //Gets hung up here.
                 {
                     index = x;
                 }
@@ -311,13 +332,13 @@ public class CheatConsole : MonoBehaviour
             switch(command.Substring(command.IndexOf(' ', command.IndexOf(' ') + 1) + 1, command.Length - (command.IndexOf(' ', command.IndexOf(' ') + 1) + 1)).ToLower())
             {
                 case "red":
-                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Red;
+                    GalaxyManager.planets[index].GetComponent<GalaxyPlanet>().Culture = Empire.Culture.Red;
                     break;
                 case "green":
-                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Green;
+                    GalaxyManager.planets[index].GetComponent<GalaxyPlanet>().Culture = Empire.Culture.Green;
                     break;
                 case "blue":
-                    GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture = Empire.Culture.Blue;
+                    GalaxyManager.planets[index].GetComponent<GalaxyPlanet>().Culture = Empire.Culture.Blue;
                     break;
             }
         }
@@ -328,7 +349,7 @@ public class CheatConsole : MonoBehaviour
         }
 
         commandHistoryText.text += "\nSuccess";
-        Debug.Log(GalaxyManager.planets[index].GetComponent<PlanetIcon>().culture);
+        Debug.Log(GalaxyManager.planets[index].GetComponent<GalaxyPlanet>().Culture);
     }
 
     void ChangeEmpireBasedOnID(string command)

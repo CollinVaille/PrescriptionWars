@@ -330,7 +330,7 @@ public class Empire
     {
         foreach (int planetID in planetsOwned)
         {
-            PlanetIcon planetScript = GalaxyManager.planets[planetID];
+            GalaxyPlanet planetScript = GalaxyManager.planets[planetID];
 
             //Runs the logic for when a turn ends for each planet in the empire.
             planetScript.EndTurn();

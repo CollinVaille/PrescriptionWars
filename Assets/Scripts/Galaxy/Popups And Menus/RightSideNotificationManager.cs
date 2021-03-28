@@ -13,28 +13,7 @@ public class RightSideNotificationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*GalaxyPopupData newPopUpData = new GalaxyPopupData();
-        newPopUpData.headLine = "Test Notification";
-        newPopUpData.spriteName = "Research Completed";
-        newPopUpData.bodyText = "This is a test notification.";
-        newPopUpData.specialOpenSFXName = "Research Completed";
-        newPopUpData.answerRequired = true;
-        GalaxyPopupOptionData galaxyPopupOptionData = new GalaxyPopupOptionData();
-        galaxyPopupOptionData.mainText = "This is merely a test?";
-        galaxyPopupOptionData.effectDescriptionText = "Nothing happens.";
-        GalaxyPopupOptionEffect galaxyPopupOptionEffect = new GalaxyPopupOptionEffect();
-        galaxyPopupOptionEffect.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
-        galaxyPopupOptionData.effects.Add(galaxyPopupOptionEffect);
-        newPopUpData.options.Add(galaxyPopupOptionData);
-        GalaxyPopupOptionData gp = new GalaxyPopupOptionData();
-        gp.mainText = "Hello";
-        gp.effectDescriptionText = "Nothing happens here either.";
-        GalaxyPopupOptionEffect gpfx = new GalaxyPopupOptionEffect();
-        gpfx.effectType = GalaxyPopupOptionEffect.GalaxyPopupOptionEffectType.None;
-        gp.effects.Add(gpfx);
-        newPopUpData.options.Add(gp);
-        CreateNewRightSideNotification("Research Completed", "Test Notification 1", newPopUpData);
-        CreateNewRightSideNotification(null, "Test Notification 2", newPopUpData);*/
+
     }
 
     void Awake()
@@ -45,15 +24,7 @@ public class RightSideNotificationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GalaxyCamera.mouseOverRightSideNotification = false;
-        foreach(RightSideNotification notification in rightSideNotifications)
-        {
-            if (notification.GetMouseOverNotification())
-            {
-                GalaxyCamera.mouseOverRightSideNotification = true;
-                break;
-            }
-        }
+
     }
 
     public static void CreateNewRightSideNotification(string spriteName, string notificationTopic, bool dismissable, GalaxyPopupData popupData)

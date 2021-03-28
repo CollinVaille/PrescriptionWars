@@ -4,36 +4,125 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlanetIcon : MonoBehaviour
+public class GalaxyPlanet : MonoBehaviour
 {
-    //Name label
-    public Text nameLabel;
-    private int currentFontSize = 10, fontScale = 10000;
-    private static Transform mainCamTransform = null;
+    [Header("Components")]
+
+    [SerializeField] private Text nameLabel = null;
+
+    [SerializeField] private GameObject ship = null;
+
+    [Header("Additional Information")]
 
     //Planet biome
-    public Planet.Biome biome;
+    [ReadOnly, SerializeField] private Planet.Biome biome = Planet.Biome.Unknown;
+    public Planet.Biome Biome
+    {
+        get
+        {
+            return biome;
+        }
+        set
+        {
+            biome = value;
+        }
+    }
 
     //Planet culture
-    public Empire.Culture culture;
+    [ReadOnly, SerializeField] private Empire.Culture culture = Empire.Culture.Red;
+    public Empire.Culture Culture
+    {
+        get
+        {
+            return culture;
+        }
+        set
+        {
+            culture = value;
+        }
+    }
 
-    //Planet information
-    public int ownerID = -1;
-    public int planetID = -1;
-    public bool isCapital;
+    [ReadOnly, SerializeField] private Vector3 rotationSpeed = Vector3.zero;
+
+    [ReadOnly, SerializeField] private int ownerID = -1;
+    public int OwnerID
+    {
+        get
+        {
+            return ownerID;
+        }
+        set
+        {
+            ownerID = value;
+            nameLabel.color = Empire.empires[ownerID].LabelColor;
+        }
+    }
+    [ReadOnly, SerializeField] private int planetID = -1;
+    public int PlanetID
+    {
+        get
+        {
+            return planetID;
+        }
+        set
+        {
+            planetID = value;
+        }
+    }
+    [ReadOnly, SerializeField] private bool isCapital;
+    public bool IsCapital
+    {
+        get
+        {
+            return isCapital;
+        }
+        set
+        {
+            isCapital = value;
+        }
+    }
+
+    public List<int> NeighborPlanets
+    {
+        get
+        {
+            return neighborPlanets;
+        }
+    }
+
+    //Non-inspector variables.
+
+    public string Name
+    {
+        get
+        {
+            return nameLabel.text;
+        }
+        set
+        {
+            nameLabel.text = value;
+            gameObject.name = value;
+        }
+    }
 
     //A list of all the planets this planet is connected to via the hyperspace lanes
-    public List<int> neighborPlanets;
-
-    public GameObject ship;
-
-    private Vector3 rotation;
+    private List<int> neighborPlanets = new List<int>();
 
     //Cities
     public List<GalaxyCity> cities = new List<GalaxyCity>();
 
     //Armies
-    public List<GalaxyArmy> armies = new List<GalaxyArmy>();
+    private List<GalaxyArmy> armies = new List<GalaxyArmy>();
+    public List<GalaxyArmy> Armies
+    {
+        get
+        {
+            return armies;
+        }
+    }
+
+    private int currentFontSize = 10, fontScale = 10000;
+    private static Transform mainCamTransform = null;
 
     public void GenerateShip(Transform shipParent, GameObject shipPrefab)
     {
@@ -101,7 +190,7 @@ public class PlanetIcon : MonoBehaviour
         AddNameLabel(planetName);
 
         //Amount the planet will rotate.
-        rotation = new Vector3(0, 0, UnityEngine.Random.Range(5, 21));
+        rotationSpeed = new Vector3(0, 0, UnityEngine.Random.Range(5, 21));
     }
 
     public void GenerateCities(bool isCapital)
@@ -178,6 +267,9 @@ public class PlanetIcon : MonoBehaviour
 
         //Center text below planet
         nameLabel.alignment = TextAnchor.MiddleCenter;
+
+        //Disable raycast target in order to be able to press 3D objects below it
+        nameLabel.raycastTarget = false;
     }
 
     private void Update ()
@@ -197,7 +289,7 @@ public class PlanetIcon : MonoBehaviour
         }
 
         //Rotates the planet.
-        transform.localEulerAngles += rotation * Time.deltaTime;
+        transform.localEulerAngles += rotationSpeed * Time.deltaTime;
 
         //Updates the ship.
         if(ownerID == GalaxyManager.PlayerID)
@@ -210,12 +302,6 @@ public class PlanetIcon : MonoBehaviour
             if (ship.activeInHierarchy)
                 ship.SetActive(false);
         }
-    }
-
-    public void SetPlanetOwner(int ownerID)
-    {
-        this.ownerID = ownerID;
-        nameLabel.color = Empire.empires[this.ownerID].LabelColor;
     }
 
     public void ConquerPlanet(int conquerorID)
@@ -248,7 +334,7 @@ public class PlanetIcon : MonoBehaviour
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.PlayerID && !GalaxyCamera.GetMouseOverUIElement())
+        if(ownerID == GalaxyManager.PlayerID && !GalaxyCamera.IsMouseOverUIElement)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetManagementMenu.PlanetSelected = this;

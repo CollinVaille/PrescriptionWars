@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class PlanetManagementMenu : GalaxyPopupBehaviour
 {
-    [Header("Planet Management Menu Sub Menus")]
+    [Header("Sub Menus")]
 
     [SerializeField] private GameObject chooseCityMenu = null;
     [SerializeField] private GameObject cityManagementMenu = null;
     [SerializeField] private List<GameObject> tabs = null;
 
-    [Header("Planet Management Menu Sub Menu Components")]
+    [Header("Sub Menu Components")]
 
     [SerializeField] private List<GameObject> cities = null;
 
-    [Header("Planet Management Menu Image Components")]
+    [Header("Image Components")]
 
     [SerializeField] private Image tabUnderlineImage = null;
     [SerializeField] private Image buildingImage = null;
@@ -24,7 +24,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private List<Image> demolishBuildingImages = null;
     [SerializeField] private List<Image> cancelBuildingQueuedImages = null;
 
-    [Header("Planet Management Menu Text Components")]
+    [Header("Text Components")]
 
     [SerializeField] private Text planetNameText = null;
     [SerializeField] private Text buildingsListText = null;
@@ -41,20 +41,20 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private Text infoPrescriptionText = null;
     [SerializeField] private List<Text> cityTexts = null;
 
-    [Header("Planet Management Menu Scrollbar Components")]
+    [Header("Scrollbar Components")]
 
     [SerializeField] private Scrollbar buildingsCompletedScrollbar = null;
     [SerializeField] private Scrollbar buildingQueueScrollbar = null;
 
-    [Header("Planet Management Menu Button Components")]
+    [Header("Button Components")]
 
     [SerializeField] private List<Button> cityManagementMenuButtons = null;
 
-    [Header("Planet Management Menu Other Components")]
+    [Header("Other Components")]
 
     [SerializeField] private List<Shadow> shadows = null;
 
-    [Header("Planet Management Menu Sprite Options")]
+    [Header("Sprite Options")]
 
     [SerializeField] private Sprite unselectedButtonSprite = null;
     [SerializeField] private Sprite desertCitySprite = null;
@@ -65,7 +65,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private Sprite spiritCitySprite = null;
     [SerializeField] private List<Sprite> buildingSprites = null;
 
-    [Header("Planet Management Menu SFX Options")]
+    [Header("SFX Options")]
 
     [SerializeField] private AudioClip clickOnCityAudioClip = null;
     [SerializeField] private AudioClip clickOnTabAudioClip = null;
@@ -73,14 +73,14 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private AudioClip cancelAudioClip = null;
     [SerializeField] private AudioClip demolishAudioClip = null;
 
-    [Header("Planet Management Menu Other Options")]
+    [Header("Other Options")]
 
     [SerializeField] private List<string> buildingDescriptions = null;
 
     [Header("Additional Information")]
 
-    [SerializeField, ReadOnly] private PlanetIcon planetSelected = null;
-    public PlanetIcon PlanetSelected
+    [SerializeField, ReadOnly] private GalaxyPlanet planetSelected = null;
+    public GalaxyPlanet PlanetSelected
     {
         get
         {
@@ -148,9 +148,9 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
         {
-            PlanetIcon planetSelectedScript = planetSelected;
+            GalaxyPlanet planetSelectedScript = planetSelected;
 
-            planetNameText.text = planetSelectedScript.nameLabel.text;
+            planetNameText.text = planetSelectedScript.Name;
 
             if (tabs[0].activeInHierarchy)
             {
@@ -171,7 +171,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
                 //Changes the planet name text to include the city name before it.
                 if (cityManagementMenu.activeInHierarchy)
                 {
-                    planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.nameLabel.text;
+                    planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.Name;
                 }
 
                 //Updates the tabs unerline image location.
@@ -189,9 +189,9 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
             }
             if (tabs[2].activeInHierarchy)
             {
-                infoCultureText.text = "Culture: " + planetSelectedScript.culture;
+                infoCultureText.text = "Culture: " + planetSelectedScript.Culture;
                 infoCitiesText.text = "Cities: " + planetSelectedScript.cities.Count;
-                infoCapitalText.text = "Capital: " + planetSelectedScript.isCapital;
+                infoCapitalText.text = "Capital: " + planetSelectedScript.IsCapital;
                 infoIncomeText.text = "Income: " + planetSelectedScript.creditsPerTurn();
                 infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
 
@@ -257,7 +257,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Demolish Building";
-        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.nameLabel.text + "?";
+        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.Name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -298,7 +298,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Cancel Building Queued";
-        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.nameLabel.text + "?";
+        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.Name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -401,7 +401,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Resets the image of each city based on the biome.
         foreach(Image cityImage in cityImages)
         {
-            cityImage.sprite = GetCityImage(planetSelected.biome);
+            cityImage.sprite = GetCityImage(planetSelected.Biome);
         }
 
         //Resets the name of each city.

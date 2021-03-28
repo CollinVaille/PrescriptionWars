@@ -520,7 +520,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Custom Inspector.
     #region Editor
     #if UNITY_EDITOR
-    [CustomEditor(typeof(GalaxyTooltip))]
+    [CustomEditor(typeof(GalaxyTooltip)), CanEditMultipleObjects]
 
     public class GalaxyTooltipEdtior : Editor
     {

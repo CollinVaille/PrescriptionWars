@@ -27,7 +27,7 @@ public class TechDetailsButton : MonoBehaviour, IPointerEnterHandler
     [Tooltip("The text component that displays the cost of the tech that is having its details displayed.")]
     private Text techCostText = null;
 
-    [Header("Audio Options")]
+    [Header("SFX Options")]
 
     [SerializeField]
     [Tooltip("The sound effect that will be played whenever the player mouses over the button.")]

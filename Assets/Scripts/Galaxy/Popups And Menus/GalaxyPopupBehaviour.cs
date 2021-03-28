@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 
-public class GalaxyPopupBehaviour : MonoBehaviour
+public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public enum PopupOpeningAnimationType
     {
@@ -45,8 +46,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour
 
     //Non-inspector variables.
 
-    //Indicates whether the mouse is over the popup.
-    private bool mouseOverPopup = false;
     //Indicates whether the popup is being moved/dragged.
     private bool beingMoved = false;
 
@@ -159,10 +158,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour
                     mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f));
             }
         }
-
-        //If the popup is clicked, it is brought to the top of the popup hierarchy.
-        if (mouseOverPopup && Input.GetMouseButtonDown(0))
-            transform.SetAsLastSibling();
     }
 
     //Indicates whether the popup should close due to the player pressing escape.
@@ -171,8 +166,10 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
     }
 
-    public void PointerDownPopup()
+    public void OnPointerDown(PointerEventData eventData)
     {
+        transform.SetAsLastSibling();
+
         //Tells the update function that the player is dragging the menu.
         beingMoved = true;
 
@@ -184,31 +181,13 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         transform.SetAsLastSibling();
     }
 
-    public void PointerUpPopup()
+    public void OnPointerUp(PointerEventData eventData)
     {
         //Tells the update function that the player is no longer dragging the menu.
         beingMoved = false;
 
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
-    }
-
-    //Toggles the boolean that indicates whether the mouse is over the popup or not.
-    public void ToggleMouseOverPopup()
-    {
-        mouseOverPopup = !mouseOverPopup;
-    }
-
-    //Gets the boolean that indicates whether the mouse is over the popup or not.
-    public bool IsMouseOverPopup()
-    {
-        return mouseOverPopup;
-    }
-
-    //Sets the boolean that indicates whether the mouse is over the popup or not to the specified value.
-    public void SetMouseOverPopup(bool value)
-    {
-        mouseOverPopup = value;
     }
 
     //Plays the sound effect for whenever the popup opens.
@@ -232,7 +211,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour
         GalaxyManager.popupClosedOnFrame = true;
 
         // Resets whether the popup is being dragged by the player.
-        PointerUpPopup();
+        OnPointerUp(null);
 
         //Places the popup at the top of the popup parent object's hierarchy (last priority).
         transform.SetSiblingIndex(0);

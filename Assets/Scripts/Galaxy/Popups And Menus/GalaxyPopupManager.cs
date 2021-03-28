@@ -58,7 +58,7 @@ public class GalaxyPopupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GalaxyCamera.mouseOverPopup = IsMouseOverPopup();
+
     }
 
     public static void CreateNewPopup(GalaxyPopupData popupData)
@@ -70,17 +70,6 @@ public class GalaxyPopupManager : MonoBehaviour
         popup.GetComponent<GalaxyPopup>().CreatePopup(popupData, popups.Count);
 
         popups.Add(popup.GetComponent<GalaxyPopup>());
-    }
-
-    public static bool IsMouseOverPopup()
-    {
-        foreach(GalaxyPopup popup in popups)
-        {
-            if (popup.IsMouseOverPopup())
-                return true;
-        }
-
-        return false;
     }
 
     public static void ClosePopup(int popupIndex)
