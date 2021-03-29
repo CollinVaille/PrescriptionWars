@@ -272,6 +272,9 @@ public class ArmyManagerScrollList : MonoBehaviour
                 //Saves the data needed concerning the button that the player was dragging.
                 SaveButtonDragData(scrollListButton.GetButtonType(), indexesNeededToSaveData);
             }
+
+            //Plays the sound effect.
+            scrollListButton.PlayMoveButtonSFX();
         }
         else
         {

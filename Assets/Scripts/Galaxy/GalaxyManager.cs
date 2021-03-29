@@ -56,6 +56,25 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
     [SerializeField]
     private AudioClip endTurnSFX = null;
 
+    [Header("Settings")]
+
+    [SerializeField]
+    private bool ironmanModeEnabled = false;
+    public static bool IronmanModeEnabled
+    {
+        get
+        {
+            if (galaxyManager == null)
+                return false;
+            return galaxyManager.ironmanModeEnabled;
+        }
+        set
+        {
+            if(galaxyManager != null)
+                galaxyManager.ironmanModeEnabled = value;
+        }
+    }
+
     //Non-inspector variables.
 
     //Indicates the empire ID of the player's empire.
@@ -147,6 +166,12 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         galaxyCanvas = canvasOfGalaxy;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
 
+        if (NewGameMenu.initialized)
+        {
+            //Sets whether or not the game has ironman mode enabled.
+            IronmanModeEnabled = NewGameMenu.ironmanModeEnabled;
+        }
+
         //Loads in all of the materials that will be applied to pills in pill views.
         galaxyManager.LoadInPillMaterials();
     }
@@ -181,7 +206,8 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         //Toggles the cheat console if the player presses tilde.
         if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
-            cheatConsole.ToggleConsole();
+            if(!IronmanModeEnabled)
+                cheatConsole.ToggleConsole();
         }
     }
 

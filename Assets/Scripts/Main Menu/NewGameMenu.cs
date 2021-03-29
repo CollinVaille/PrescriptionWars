@@ -5,8 +5,21 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 //using UnityEditorInternal.VR;
 
-public class NewGameMenu : MonoBehaviour
+public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 {
+    [Header("Galaxy Tooltip Handler Options")]
+
+    [SerializeField] private Transform tooltipsParent = null;
+    public Transform TooltipsParent
+    {
+        get
+        {
+            return tooltipsParent;
+        }
+    }
+
+    [Header("Old New Game Menu Settings")]
+
     public InputField empireNameInputField;
     public InputField numberOfPlanetsInputField;
     public InputField numberOfEmpiresInputField;
@@ -18,6 +31,15 @@ public class NewGameMenu : MonoBehaviour
 
     public Dropdown empireCultureDropdown;
 
+    [Header("Ironman Mode Setting")]
+
+    [SerializeField]
+    private Toggle ironmanModeToggle = null;
+    [SerializeField]
+    private Text ironmanModeToggleLabel = null;
+    [SerializeField]
+    private Image ironmanModeIconImage = null;
+
     public static Empire.Culture empireCulture = Empire.Culture.Red;
 
     public static string empireName = "";
@@ -26,6 +48,7 @@ public class NewGameMenu : MonoBehaviour
     public static int numberOfEmpires = 3;
 
     public static bool initialized = false;
+    public static bool ironmanModeEnabled = false;
 
     public static Flag empireFlag = new Flag();
 
@@ -139,5 +162,12 @@ public class NewGameMenu : MonoBehaviour
                 empireCulture = Empire.Culture.Gold;
                 break;
         }
+    }
+
+    public void OnIronmanModeToggleChangeValue()
+    {
+        ironmanModeToggleLabel.text = ironmanModeToggle.isOn ? "Enabled" : "Disabled";
+        ironmanModeIconImage.gameObject.SetActive(ironmanModeToggle.isOn);
+        ironmanModeEnabled = ironmanModeToggle.isOn;
     }
 }

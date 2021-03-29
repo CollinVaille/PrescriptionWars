@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 
@@ -211,6 +212,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
+    //The camera that this tooltip will be viewed by.
+    private Camera sceneCamera = null;
+
     //Indicates whether the tooltip is open or not.
     public bool Open { get; private set; } = false;
 
@@ -219,6 +223,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         parentCanvas = GetCurrentParentCanvas();
         parent = GetCurrentParent();
+        sceneCamera = GetCurrentSceneCamera();
     }
 
     // Update is called once per frame
@@ -244,15 +249,15 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 tooltip.transform.position = new Vector2(-5, tooltip.transform.position.y);
             }
             //Right barrier.
-            else if (tooltip.transform.GetChild(0).position.x + (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor) > GalaxyManager.GalaxyCamera.scaledPixelWidth)
+            else if (tooltip.transform.GetChild(0).position.x + (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor) > sceneCamera.scaledPixelWidth)
             {
-                tooltip.transform.position = new Vector2(GalaxyManager.GalaxyCamera.scaledPixelWidth - (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor), tooltip.transform.position.y);
+                tooltip.transform.position = new Vector2(sceneCamera.scaledPixelWidth - (tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.x * parentCanvas.scaleFactor), tooltip.transform.position.y);
             }
 
             //Top barrier.
-            if(tooltip.transform.GetChild(0).position.y + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor) > GalaxyManager.GalaxyCamera.scaledPixelHeight)
+            if(tooltip.transform.GetChild(0).position.y + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor) > sceneCamera.scaledPixelHeight)
             {
-                tooltip.transform.position = new Vector2(tooltip.transform.position.x, GalaxyManager.GalaxyCamera.scaledPixelHeight - ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
+                tooltip.transform.position = new Vector2(tooltip.transform.position.x, sceneCamera.scaledPixelHeight - ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
             }
             //Bottom barrier.
             else if (tooltip.transform.GetChild(0).position.y < 0 + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor))
@@ -316,6 +321,21 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         return currentParent;
+    }
+
+    //Returns the camera of the scene that the tooltip is currently in.
+    private Camera GetCurrentSceneCamera()
+    {
+        switch (SceneManager.GetActiveScene().name)
+        {
+            case "Galaxy":
+                return GalaxyManager.GalaxyCamera;
+            case "Main Menu":
+                return MainMenu.SceneCamera;
+
+            default:
+                return null;
+        }
     }
 
     //Indicates whether the parent transform specified is the topmost parent transform that implements the IGalaxyTooltipHandler interface.

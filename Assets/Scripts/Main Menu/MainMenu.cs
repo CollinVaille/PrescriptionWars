@@ -10,6 +10,27 @@ public class MainMenu : MonoBehaviour
     public AudioSettingsMenu audioSettingsMenu;
     public VideoSettingsMenu videoSettingsMenu;
 
+    [Header("Scene Components")]
+
+    [SerializeField]
+    private Camera mainMenuSceneCamera = null;
+    public static Camera SceneCamera
+    {
+        get
+        {
+            return mainMenu.mainMenuSceneCamera;
+        }
+    }
+
+    [Header("Prefabs")]
+
+    [SerializeField]
+    private GameObject tooltipPrefab = null;
+
+    //Non-inspector variables.
+
+    private static MainMenu mainMenu = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +38,13 @@ public class MainMenu : MonoBehaviour
         videoSettingsMenu.LoadSettings();
 
         FlagCreationMenu.Initialize();
+    }
+
+    private void Awake()
+    {
+        mainMenu = this;
+
+        GalaxyTooltip.tooltipPrefab = tooltipPrefab;
     }
 
     // Update is called once per frame
