@@ -59,19 +59,19 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
     [Header("Settings")]
 
     [SerializeField]
-    private bool ironmanModeEnabled = false;
-    public static bool IronmanModeEnabled
+    private bool ironpillModeEnabled = false;
+    public static bool IronpillModeEnabled
     {
         get
         {
             if (galaxyManager == null)
                 return false;
-            return galaxyManager.ironmanModeEnabled;
+            return galaxyManager.ironpillModeEnabled;
         }
         set
         {
             if(galaxyManager != null)
-                galaxyManager.ironmanModeEnabled = value;
+                galaxyManager.ironpillModeEnabled = value;
         }
     }
 
@@ -169,7 +169,7 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         if (NewGameMenu.initialized)
         {
             //Sets whether or not the game has ironman mode enabled.
-            IronmanModeEnabled = NewGameMenu.ironmanModeEnabled;
+            IronpillModeEnabled = NewGameMenu.IronmanModeEnabled;
         }
 
         //Loads in all of the materials that will be applied to pills in pill views.
@@ -206,7 +206,7 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         //Toggles the cheat console if the player presses tilde.
         if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
-            if(!IronmanModeEnabled)
+            if(!IronpillModeEnabled)
                 cheatConsole.ToggleConsole();
         }
     }

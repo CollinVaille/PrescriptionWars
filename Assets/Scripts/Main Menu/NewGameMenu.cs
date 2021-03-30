@@ -31,14 +31,19 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 
     public Dropdown empireCultureDropdown;
 
-    [Header("Ironman Mode Setting")]
+    [Header("Ironpill Mode Setting")]
 
     [SerializeField]
-    private Toggle ironmanModeToggle = null;
+    private Toggle ironpillModeToggle = null;
     [SerializeField]
-    private Text ironmanModeToggleLabel = null;
+    private Text ironpillModeToggleLabel = null;
     [SerializeField]
-    private Image ironmanModeIconImage = null;
+    private Image ironpillModeIconImage = null;
+
+    [Header("Achievements")]
+
+    [SerializeField]
+    private Text achievementsStatusText = null;
 
     public static Empire.Culture empireCulture = Empire.Culture.Red;
 
@@ -48,9 +53,30 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     public static int numberOfEmpires = 3;
 
     public static bool initialized = false;
-    public static bool ironmanModeEnabled = false;
+    private static bool ironmanModeEnabled = false;
+    public static bool IronmanModeEnabled
+    {
+        get
+        {
+            return ironmanModeEnabled;
+        }
+        set
+        {
+            ironmanModeEnabled = value;
+            newGameMenu.UpdateAchievementsStatusText();
+        }
+    }
+    public static bool AchievementsEnabled
+    {
+        get
+        {
+            return ironmanModeEnabled;
+        }
+    }
 
     public static Flag empireFlag = new Flag();
+
+    private static NewGameMenu newGameMenu = null;
 
     // Start is called before the first frame update
     void Start()
@@ -64,10 +90,20 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         initialized = true;
     }
 
+    void Awake()
+    {
+        newGameMenu = this;
+    }
+
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    private void UpdateAchievementsStatusText()
+    {
+        achievementsStatusText.text = "Achievements: " + (AchievementsEnabled ? "Enabled" : "Disabled");
     }
 
     public void PlayGame()
@@ -75,7 +111,7 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         SceneManager.LoadScene(sceneName:"Galaxy");
     }
 
-    string RemoveNonNumbers(string s)
+    private string RemoveNonNumbers(string s)
     {
         string output = "";
 
@@ -166,8 +202,8 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 
     public void OnIronmanModeToggleChangeValue()
     {
-        ironmanModeToggleLabel.text = ironmanModeToggle.isOn ? "Enabled" : "Disabled";
-        ironmanModeIconImage.gameObject.SetActive(ironmanModeToggle.isOn);
-        ironmanModeEnabled = ironmanModeToggle.isOn;
+        ironpillModeToggleLabel.text = ironpillModeToggle.isOn ? "Enabled" : "Disabled";
+        ironpillModeIconImage.gameObject.SetActive(ironpillModeToggle.isOn);
+        IronmanModeEnabled = ironpillModeToggle.isOn;
     }
 }
