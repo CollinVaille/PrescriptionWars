@@ -13,6 +13,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     [Header("Initial Game Settings")]
 
+    [SerializeField]
     private string playerEmpireName;
 
     [SerializeField]

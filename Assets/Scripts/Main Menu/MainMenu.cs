@@ -18,7 +18,14 @@ public class MainMenu : MonoBehaviour
     {
         get
         {
-            return mainMenu.mainMenuSceneCamera;
+            if(mainMenu != null)
+                return mainMenu.mainMenuSceneCamera;
+            return null;
+        }
+        set
+        {
+            if (mainMenu != null)
+                mainMenu.mainMenuSceneCamera = value;
         }
     }
 
@@ -40,11 +47,14 @@ public class MainMenu : MonoBehaviour
         FlagCreationMenu.Initialize();
     }
 
-    private void Awake()
+    public void Awake()
     {
         mainMenu = this;
 
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
+
+        if (mainMenuSceneCamera == null)
+            mainMenuSceneCamera = Camera.main;
     }
 
     // Update is called once per frame

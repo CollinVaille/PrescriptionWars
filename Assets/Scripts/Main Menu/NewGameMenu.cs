@@ -31,6 +31,11 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 
     public Dropdown empireCultureDropdown;
 
+    [Header("Connected Menus")]
+
+    [SerializeField]
+    private GameObject empireCreationMenu = null;
+
     [Header("Ironpill Mode Setting")]
 
     [SerializeField]
@@ -45,12 +50,19 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     [SerializeField]
     private Text achievementsStatusText = null;
 
+    [Header("Editor")]
+
+    [SerializeField]
+    private MainMenu mainMenu = null;
+
+    //Non-inspector variables.
+
     public static Empire.Culture empireCulture = Empire.Culture.Red;
 
     public static string empireName = "";
 
     public static int numberOfPlanets = 60;
-    public static int numberOfEmpires = 3;
+    public static int numberOfEmpires = 5;
 
     public static bool initialized = false;
     private static bool ironmanModeEnabled = false;
@@ -84,8 +96,8 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         numberOfPlanets = maximumNumberOfPlanets;
         numberOfEmpires = 3;
 
-        numberOfPlanetsInputField.placeholder.GetComponent<Text>().text = "Number of Planets... (" + minimumNumberOfPlanets + "-" + maximumNumberOfPlanets + ")";
-        numberOfEmpiresInputField.placeholder.GetComponent<Text>().text = "Number of Empires... (" + minimumNumberOfEmpires + "-" + maximumNumberOfEmpires + ")";
+        numberOfPlanetsInputField.placeholder.GetComponent<Text>().text = maximumNumberOfPlanets.ToString();
+        numberOfEmpiresInputField.placeholder.GetComponent<Text>().text = maximumNumberOfEmpires.ToString();
 
         initialized = true;
     }
@@ -93,6 +105,12 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     void Awake()
     {
         newGameMenu = this;
+
+        if (MainMenu.SceneCamera == null)
+        {
+            if (mainMenu != null)
+                mainMenu.Awake();
+        }
     }
 
     // Update is called once per frame
@@ -203,7 +221,13 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     public void OnIronmanModeToggleChangeValue()
     {
         ironpillModeToggleLabel.text = ironpillModeToggle.isOn ? "Enabled" : "Disabled";
-        ironpillModeIconImage.gameObject.SetActive(ironpillModeToggle.isOn);
+        ironpillModeIconImage.color = ironpillModeToggle.isOn ? new Color(ironpillModeIconImage.color.r, ironpillModeIconImage.color.g, ironpillModeIconImage.color.b, 1) : new Color(ironpillModeIconImage.color.r, ironpillModeIconImage.color.g, ironpillModeIconImage.color.b, 128.0f / 255);
         IronmanModeEnabled = ironpillModeToggle.isOn;
+    }
+
+    public void ClickEmpireCreationButton()
+    {
+        empireCreationMenu.SetActive(true);
+        gameObject.SetActive(false);
     }
 }
