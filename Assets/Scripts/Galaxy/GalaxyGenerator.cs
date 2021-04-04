@@ -272,7 +272,7 @@ public class GalaxyGenerator : MonoBehaviour
             Empire.empires[empireID].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
             if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized)
-                empireCulture = NewGameMenu.empireCulture;
+                empireCulture = NewGameMenu.EmpireCulture;
             else
             {
                 while (true)
@@ -424,7 +424,7 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generate the empire's name.
 
-            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized && !playerEmpireName.Equals(""))
+            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized && !playerEmpireName.Equals(""))
                 Empire.empires[empireID].EmpireName = playerEmpireName;
             else
             {

@@ -11,12 +11,19 @@ public class EmpireNameGenerator
 
     private static string capitalPlanet = "";
 
-    //Should be unique, also parameter is optional
-    public static string GenerateEmpireName (string capitalPlanetName = "")
+    private static bool prospective = true;
+    private static int lastProspectiveAdjectivePicker = -1;
+    private static int lastProspectiveFactionNamePicker = -1;
+
+    //Very unlikely to get duplicates. Manage cache system to guarantee uniqueness.
+    //Optional parameter "capitalPlanet": If specified, there's a chance it will be included in the empire name.
+    //Optional parameter "prospective": The system will remember the last prospective name generated. This can be used to generate a name for the player empire in the new game menu that you can tell the cache to reserve when you reset it for the galaxy.
+    public static string GenerateEmpireName (string capitalPlanet = "", bool prospective = false)
     {
         string empireName = "";
 
-        capitalPlanet = capitalPlanetName;
+        EmpireNameGenerator.capitalPlanet = capitalPlanet;
+        EmpireNameGenerator.prospective = prospective;
 
         int typePicker = Random.Range(1, 7);
 
@@ -43,6 +50,14 @@ public class EmpireNameGenerator
         }
 
         return empireName;
+    }
+
+    //Call once at the start of a new game menu and once at the start of a new galaxy scene.
+    //Only set "reserveLastProspective" to true at the start of the new galaxy scene when it wants to reserve the auto-generated player name.
+    public static void ResetCache(bool reserveLastProspective = false)
+    {
+        InitializeFactionNames(reserveLastProspective);
+        InitializeAdjectives(reserveLastProspective);    
     }
 
     private static string GetPillName(bool plural)
@@ -97,6 +112,8 @@ public class EmpireNameGenerator
         int indexOfPicker = Random.Range(0, availableFactions.Count);
         int picker = availableFactions[indexOfPicker];
         availableFactions.RemoveAt(indexOfPicker);
+        if (prospective)
+            lastProspectiveFactionNamePicker = picker;
 
         switch (picker)
         {
@@ -142,6 +159,8 @@ public class EmpireNameGenerator
         int indexOfPicker = Random.Range(0, availableAdjectives.Count);
         int picker = availableAdjectives[indexOfPicker];
         availableAdjectives.RemoveAt(indexOfPicker);
+        if (prospective)
+            lastProspectiveAdjectivePicker = picker;
 
         switch (picker)
         {
@@ -204,24 +223,34 @@ public class EmpireNameGenerator
         return adjective;
     }
 
-    private static void InitializeFactionNames()
+    private static void InitializeFactionNames(bool reserveLastProspective = false)
     {
         //Initialize list of available faction names
         availableFactions = new List<int>(factionNames);
         for (int x = 1; x <= factionNames; x++)
-            availableFactions.Add(x);
+        {
+            if (reserveLastProspective && x == lastProspectiveFactionNamePicker)
+                continue;
+            else
+                availableFactions.Add(x);
+        }
     }
 
-    private static void InitializeAdjectives()
+    private static void InitializeAdjectives(bool reserveLastProspective = false)
     {
         //Initialize list of available adjectives
         availableAdjectives = new List<int>(adjectives);
         for (int x = 1; x <= adjectives; x++)
-            availableAdjectives.Add(x);
+        {
+            if (reserveLastProspective && x == lastProspectiveAdjectivePicker)
+                continue;
+            else
+                availableAdjectives.Add(x);
+        }
     }
 
     //This assumes planetName is not empty
-    public static string GetRandomEthnicName(string planetName)
+    private static string GetRandomEthnicName(string planetName)
     {
         //Remove any spaces from name by just selecting first "word"
         planetName = GetFirstWord(planetName);

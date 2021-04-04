@@ -18,25 +18,14 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         }
     }
 
-    [Header("Old New Game Menu Settings")]
-
-    public InputField empireNameInputField;
-    public InputField numberOfPlanetsInputField;
-    public InputField numberOfEmpiresInputField;
+    [Header("New Game Menu Options")]
 
     public int minimumNumberOfPlanets;
     public int maximumNumberOfPlanets;
     public int minimumNumberOfEmpires;
     public int maximumNumberOfEmpires;
 
-    public Dropdown empireCultureDropdown;
-
-    [Header("Connected Menus")]
-
-    [SerializeField]
-    private GameObject empireCreationMenu = null;
-
-    [Header("Ironpill Mode Setting")]
+    [Header("Game Settings")]
 
     [SerializeField]
     private Toggle ironpillModeToggle = null;
@@ -44,6 +33,23 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     private Text ironpillModeToggleLabel = null;
     [SerializeField]
     private Image ironpillModeIconImage = null;
+
+    [Header("Galaxy Settings")]
+
+    public InputField numberOfPlanetsInputField;
+    public InputField numberOfEmpiresInputField;
+
+    [Header("Empire Creation")]
+
+    [SerializeField]
+    private InputField empireNameInputField = null;
+    [SerializeField]
+    private Dropdown empireCultureDropdown = null;
+
+    [Header("Connected Menus")]
+
+    [SerializeField]
+    private GameObject empireCreationMenu = null;
 
     [Header("Achievements")]
 
@@ -57,7 +63,18 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 
     //Non-inspector variables.
 
-    public static Empire.Culture empireCulture = Empire.Culture.Red;
+    private static Empire.Culture empireCulture = Empire.Culture.Red;
+    public static Empire.Culture EmpireCulture
+    {
+        get
+        {
+            return empireCulture;
+        }
+        set
+        {
+            empireCulture = value;
+        }
+    }
 
     public static string empireName = "";
 
@@ -99,6 +116,9 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         numberOfPlanetsInputField.placeholder.GetComponent<Text>().text = maximumNumberOfPlanets.ToString();
         numberOfEmpiresInputField.placeholder.GetComponent<Text>().text = maximumNumberOfEmpires.ToString();
 
+        empireName = EmpireNameGenerator.GenerateEmpireName("", true);
+        empireNameInputField.placeholder.GetComponent<Text>().text = empireName;
+
         initialized = true;
     }
 
@@ -111,6 +131,8 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
             if (mainMenu != null)
                 mainMenu.Awake();
         }
+
+        EmpireNameGenerator.ResetCache(false);
     }
 
     // Update is called once per frame
@@ -126,6 +148,9 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
 
     public void PlayGame()
     {
+        EmpireNameGenerator.ResetCache(empireNameInputField.text.Equals(""));
+
+        //Switches to the galaxy scene.
         SceneManager.LoadScene(sceneName:"Galaxy");
     }
 
@@ -142,24 +167,39 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         return output;
     }
 
-    public void ChangeNumberOfEmpires()
+    public void OnEndEditNumberOfEmpiresInputField()
     {
-        if (numberOfEmpiresInputField.text.Length > 0)
-            numberOfEmpiresInputField.text = RemoveNonNumbers(numberOfEmpiresInputField.text);
-
-        if(numberOfEmpiresInputField.text.Length > 0)
+        if(numberOfEmpiresInputField.text.Equals(""))
         {
-            if(int.Parse(numberOfEmpiresInputField.text) >= minimumNumberOfEmpires)
-            {
-                if (int.Parse(numberOfEmpiresInputField.text) > maximumNumberOfEmpires)
-                    numberOfEmpiresInputField.text = "" + maximumNumberOfEmpires;
+            numberOfEmpires = maximumNumberOfEmpires;
+            return;
+        }
 
-                numberOfEmpires = int.Parse(numberOfEmpiresInputField.text);
-            }
+        int specifiedNumberOfEmpires = int.Parse(numberOfEmpiresInputField.text);
+
+        if(specifiedNumberOfEmpires < minimumNumberOfEmpires)
+        {
+            numberOfEmpires = minimumNumberOfEmpires;
+            numberOfEmpiresInputField.text = minimumNumberOfEmpires.ToString();
+        }
+        else if (specifiedNumberOfEmpires > maximumNumberOfEmpires)
+        {
+            numberOfEmpires = maximumNumberOfEmpires;
+            numberOfEmpiresInputField.text = maximumNumberOfEmpires.ToString();
         }
         else
         {
-            numberOfEmpires = maximumNumberOfEmpires;
+            numberOfEmpires = specifiedNumberOfEmpires;
+        }
+    }
+
+    public void OnEndEditEmpireNameInputField()
+    {
+        empireName = empireNameInputField.text;
+
+        if (empireName.Equals(""))
+        {
+            empireName = empireNameInputField.placeholder.GetComponent<Text>().text;
         }
     }
 
@@ -191,29 +231,24 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         empireFlag.symbolColor = symbolColor;
     }
 
-    public void ChangeEmpireName()
-    {
-        empireName = empireNameInputField.text;
-    }
-
     public void ChangeEmpireCulture()
     {
         switch (empireCultureDropdown.value)
         {
             case 0:
-                empireCulture = Empire.Culture.Red;
+                EmpireCulture = Empire.Culture.Red;
                 break;
             case 1:
-                empireCulture = Empire.Culture.Green;
+                EmpireCulture = Empire.Culture.Green;
                 break;
             case 2:
-                empireCulture = Empire.Culture.Blue;
+                EmpireCulture = Empire.Culture.Blue;
                 break;
             case 3:
-                empireCulture = Empire.Culture.Purple;
+                EmpireCulture = Empire.Culture.Purple;
                 break;
             case 4:
-                empireCulture = Empire.Culture.Gold;
+                EmpireCulture = Empire.Culture.Gold;
                 break;
         }
     }

@@ -50,7 +50,7 @@ public class FlagCreationMenu : MonoBehaviour
     void Start()
     {
         //Remove after testing
-        //Initialize();
+        Initialize();
 
         //Don't Remove
         symbol.sprite = symbols[symbolSelected];
