@@ -3,20 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FlagCreationMenu : MonoBehaviour
+public class FlagCreationMenu : GalaxyMenuBehaviour
 {
     public enum EditMode
     {
         Background,
         Symbol
     }
-    public static EditMode mode;
+    public static EditMode mode = EditMode.Symbol;
 
-    public static int symbolSelected;
+    public static int symbolSelected = 0;
     public static int symbolsCount;
 
-    public static Vector3 backgroundColor;
-    public static Vector3 symbolColor;
+    public static Vector3 backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
+    public static Vector3 symbolColor = new Vector3(0, 0, 0);
+
+    [Header("Flag Creation Menu")]
 
     public List<Sprite> symbols;
 
@@ -32,33 +34,20 @@ public class FlagCreationMenu : MonoBehaviour
     public Text blueSliderText;
     public Text modeText;
 
-    public static bool initialized;
-
-    public static void Initialize()
-    {
-        mode = EditMode.Symbol;
-
-        symbolSelected = 0;
-
-        backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
-        symbolColor = new Vector3(0, 0, 0);
-
-        initialized = true;
-    }
-
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        //Remove after testing
-        Initialize();
+        base.Start();
 
         //Don't Remove
         symbol.sprite = symbols[symbolSelected];
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
+        base.Update();
+
         background.color = new Color(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
         symbol.color = new Color(symbolColor.x, symbolColor.y, symbolColor.z, 1);
 

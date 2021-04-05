@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class GalaxyBackArrow : MonoBehaviour
@@ -18,7 +19,11 @@ public class GalaxyBackArrow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(SceneManager.GetActiveScene().name.Equals("Main Menu"))
+        {
+            ((RectTransform)transform).sizeDelta = new Vector2(88.66666f, 76.66666f);
+            transform.localPosition = new Vector2(-470, 285);
+        }
     }
 
     // Update is called once per frame

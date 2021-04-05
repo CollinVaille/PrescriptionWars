@@ -1066,7 +1066,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5482,6 +5482,7 @@ MonoBehaviour:
     type: 3}
   techFinishedSFX: {fileID: 8300000, guid: 7b728edab63c7ff4391af73a92e7d038, type: 3}
   endTurnSFX: {fileID: 8300000, guid: c08d86bda65e2124891f83d4be53c0df, type: 3}
+  ironpillModeEnabled: 0
 --- !u!114 &644450517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5643,6 +5644,7 @@ MonoBehaviour:
     effects:
     - effectType: 4
       amount: 1
+  playerEmpireName: 
   numberOfPlanets: 60
   numberOfEmpires: 5
   distanceBetweenPlanets: 30
@@ -8667,7 +8669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -8984,7 +8986,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -9997,7 +9999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -13143,7 +13145,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Turn: '
+  m_Text: 'Turn: 0'
 --- !u!222 &1515225392
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14803,7 +14805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

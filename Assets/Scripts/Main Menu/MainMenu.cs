@@ -33,6 +33,8 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField]
     private GameObject tooltipPrefab = null;
+    [SerializeField]
+    private GameObject backArrowPrefab = null;
 
     //Non-inspector variables.
 
@@ -43,8 +45,6 @@ public class MainMenu : MonoBehaviour
     {
         audioSettingsMenu.LoadSettings();
         videoSettingsMenu.LoadSettings();
-
-        FlagCreationMenu.Initialize();
     }
 
     public void Awake()
@@ -52,6 +52,7 @@ public class MainMenu : MonoBehaviour
         mainMenu = this;
 
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
+        GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
 
         if (mainMenuSceneCamera == null)
             mainMenuSceneCamera = Camera.main;

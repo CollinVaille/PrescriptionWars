@@ -95,6 +95,14 @@ public class TechTotemsView : GalaxyMenuBehaviour
             else
                 techTotemSelectedOutlineImages[x].gameObject.SetActive(true);
         }
+
+        for(int x = 0; x < researchProgressRawImages.Count; x++)
+        {
+            if (x != newTechTotemSelected)
+                researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, -400);
+            else
+                researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, Empire.empires[GalaxyManager.PlayerID].Science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost * 350 + -400);
+        }
     }
 
     private void UpdateTechTotems()

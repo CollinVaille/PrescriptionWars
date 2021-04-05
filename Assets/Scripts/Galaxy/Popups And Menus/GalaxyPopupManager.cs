@@ -64,7 +64,7 @@ public class GalaxyPopupManager : MonoBehaviour
     public static void CreateNewPopup(GalaxyPopupData popupData)
     {
         GameObject popup = Instantiate(galaxyPopupManager.popupPrefab);
-        popup.transform.parent = galaxyPopupManager.transform;
+        popup.transform.SetParent(galaxyPopupManager.transform);
         popup.transform.localPosition = galaxyPopupManager.popupPrefab.transform.localPosition;
 
         popup.GetComponent<GalaxyPopup>().CreatePopup(popupData, popups.Count);

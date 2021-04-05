@@ -3,37 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VideoSettingsMenu : MonoBehaviour
+public class VideoSettingsMenu : GalaxyMenuBehaviour
 {
+    [Header("Video Settings Menu")]
+
     public Dropdown fullscreenDropdown;
     public Dropdown resolutionDropdown;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        /*if (Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen)
-            fullscreenDropdown.value = 0;
-        else if (Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
-            fullscreenDropdown.value = 1;
-        else if (Screen.fullScreenMode == FullScreenMode.MaximizedWindow)
-            fullscreenDropdown.value = 2;
-        else if (Screen.fullScreenMode == FullScreenMode.Windowed)
-            fullscreenDropdown.value = 3;
-
-        if (Screen.currentResolution.height == 720)
-            resolutionDropdown.value = 0;
-        else if (Screen.currentResolution.height == 1080)
-            resolutionDropdown.value = 1;
-        else if (Screen.currentResolution.height == 1440)
-            resolutionDropdown.value = 2;
-        else if (Screen.currentResolution.height == 2160)
-            resolutionDropdown.value = 3;*/
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-
+        base.Update();
     }
 
     public void ToggleFullScreen()

@@ -32,7 +32,8 @@ public class ResourceBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        UpdateTurnText();
+        UpdateProductionText();
     }
 
     private void Awake()

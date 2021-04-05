@@ -271,7 +271,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             Empire.empires[empireID].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
-            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized)
+            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
                 empireCulture = NewGameMenu.EmpireCulture;
             else
             {
@@ -315,7 +315,7 @@ public class GalaxyGenerator : MonoBehaviour
             //Generates the empire's flag.
 
             Empire.empires[empireID].EmpireFlag = new Flag();
-            if (empireID == GalaxyManager.PlayerID && FlagCreationMenu.initialized)
+            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
             {
                 Empire.empires[empireID].EmpireFlag.symbolSelected = FlagCreationMenu.symbolSelected;
                 Empire.empires[empireID].EmpireFlag.backgroundColor = FlagCreationMenu.backgroundColor;

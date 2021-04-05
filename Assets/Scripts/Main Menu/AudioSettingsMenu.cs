@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AudioSettingsMenu : MonoBehaviour
+public class AudioSettingsMenu : GalaxyMenuBehaviour
 {
+    [Header("Audio Settings Menu")]
+
     public Slider masterVolumeSlider;
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
@@ -15,15 +17,15 @@ public class AudioSettingsMenu : MonoBehaviour
     public AudioSource sfxSource;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        
+        base.Update();
     }
 
     public void SetText(Text text)

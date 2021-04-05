@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CreditsMenu : MonoBehaviour
+public class CreditsMenu : GalaxyMenuBehaviour
 {
+    [Header("Credits Menu")]
+
     public Sprite dropdownItemSelected;
     public Sprite dropdownItemUnselected;
 
@@ -14,8 +16,10 @@ public class CreditsMenu : MonoBehaviour
     private Transform sections;
     private Dropdown sectionDropdown;
 
-    public void Start()
+    public override void Start()
     {
+        base.Start();
+
         //Get references
         sections = transform.Find("Sections");
         sectionDropdown = transform.Find("Section Dropdown").GetComponent<Dropdown>();

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 //using UnityEditorInternal.VR;
 
-public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
+public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
 {
     [Header("Galaxy Tooltip Handler Options")]
 
@@ -45,11 +46,12 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     private InputField empireNameInputField = null;
     [SerializeField]
     private Dropdown empireCultureDropdown = null;
-
-    [Header("Connected Menus")]
-
     [SerializeField]
-    private GameObject empireCreationMenu = null;
+    private Image empireFlagBackgroundImage = null;
+    [SerializeField]
+    private Image empireFlagSymbolImage = null;
+    [SerializeField]
+    private FlagCreationMenu flagCreationMenu = null;
 
     [Header("Achievements")]
 
@@ -108,22 +110,27 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     private static NewGameMenu newGameMenu = null;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        base.Start();
+
         numberOfPlanets = maximumNumberOfPlanets;
-        numberOfEmpires = 3;
+        numberOfEmpires = maximumNumberOfEmpires;
+
+        UpdateEmpireCultureDropdownValues();
 
         numberOfPlanetsInputField.placeholder.GetComponent<Text>().text = maximumNumberOfPlanets.ToString();
         numberOfEmpiresInputField.placeholder.GetComponent<Text>().text = maximumNumberOfEmpires.ToString();
 
-        empireName = EmpireNameGenerator.GenerateEmpireName("", true);
-        empireNameInputField.placeholder.GetComponent<Text>().text = empireName;
+        RandomizePlaceholderEmpireName();
 
         initialized = true;
     }
 
-    void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         newGameMenu = this;
 
         if (MainMenu.SceneCamera == null)
@@ -136,9 +143,21 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
+        base.Update();
+    }
 
+    private void UpdateEmpireCultureDropdownValues()
+    {
+        empireCultureDropdown.options.Clear();
+        for(int cultureIndex = 0; cultureIndex < Enum.GetNames(typeof(Empire.Culture)).Length; cultureIndex++)
+        {
+            Dropdown.OptionData empireCultureDropdownOptionData = new Dropdown.OptionData();
+            empireCultureDropdownOptionData.text = ((Empire.Culture)cultureIndex).ToString();
+            empireCultureDropdown.options.Add(empireCultureDropdownOptionData);
+        }
+        empireCultureDropdown.captionText.text = ((Empire.Culture)0).ToString();
     }
 
     private void UpdateAchievementsStatusText()
@@ -231,26 +250,9 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         empireFlag.symbolColor = symbolColor;
     }
 
-    public void ChangeEmpireCulture()
+    public void OnEmpireCultureDropdownValueChange()
     {
-        switch (empireCultureDropdown.value)
-        {
-            case 0:
-                EmpireCulture = Empire.Culture.Red;
-                break;
-            case 1:
-                EmpireCulture = Empire.Culture.Green;
-                break;
-            case 2:
-                EmpireCulture = Empire.Culture.Blue;
-                break;
-            case 3:
-                EmpireCulture = Empire.Culture.Purple;
-                break;
-            case 4:
-                EmpireCulture = Empire.Culture.Gold;
-                break;
-        }
+        EmpireCulture = (Empire.Culture)empireCultureDropdown.value;
     }
 
     public void OnIronmanModeToggleChangeValue()
@@ -260,9 +262,23 @@ public class NewGameMenu : MonoBehaviour, IGalaxyTooltipHandler
         IronmanModeEnabled = ironpillModeToggle.isOn;
     }
 
-    public void ClickEmpireCreationButton()
+    public void RandomizePlaceholderEmpireName()
     {
-        empireCreationMenu.SetActive(true);
+        empireName = EmpireNameGenerator.GenerateEmpireName("", true);
+        empireNameInputField.placeholder.GetComponent<Text>().text = empireName;
+        empireNameInputField.text = "";
+    }
+
+    private void OnEnable()
+    {
+        empireFlagBackgroundImage.color = new Color(FlagCreationMenu.backgroundColor.x, FlagCreationMenu.backgroundColor.y, FlagCreationMenu.backgroundColor.z);
+        empireFlagSymbolImage.sprite = flagCreationMenu.symbols[FlagCreationMenu.symbolSelected];
+        empireFlagSymbolImage.color = new Color(FlagCreationMenu.symbolColor.x, FlagCreationMenu.symbolColor.y, FlagCreationMenu.symbolColor.z);
+    }
+
+    public void ClickEmpireFlagButton()
+    {
+        flagCreationMenu.gameObject.SetActive(true);
         gameObject.SetActive(false);
     }
 }
