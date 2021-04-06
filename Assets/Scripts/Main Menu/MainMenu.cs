@@ -29,6 +29,23 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    private AudioSource sfxSource = null;
+    public static AudioSource SFXSource
+    {
+        get
+        {
+            if (mainMenu != null)
+                return mainMenu.sfxSource;
+            return null;
+        }
+        set
+        {
+            if (mainMenu != null)
+                mainMenu.sfxSource = value;
+        }
+    }
+
     [Header("Prefabs")]
 
     [SerializeField]

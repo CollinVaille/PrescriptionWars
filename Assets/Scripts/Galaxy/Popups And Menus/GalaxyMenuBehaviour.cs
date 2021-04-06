@@ -74,7 +74,7 @@ public class GalaxyMenuBehaviour : MonoBehaviour
     //Indicates whether the menu should close (or switch to the previous menu) when the player presses escape.
     public virtual bool ShouldCloseDueToEscape()
     {
-        return previousMenu != null && Input.GetKeyDown(KeyCode.Escape);
+        return previousMenu != null && Input.GetKeyDown(KeyCode.Escape) && !GalaxyPopupBehaviour.IsAPopupActiveInHierarchy;
     }
 
     //Returns the previous menu.

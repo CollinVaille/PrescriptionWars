@@ -5,34 +5,81 @@ using UnityEngine.UI;
 
 public class FlagCreationMenu : GalaxyMenuBehaviour
 {
-    public enum EditMode
-    {
-        Background,
-        Symbol
-    }
-    public static EditMode mode = EditMode.Symbol;
-
-    public static int symbolSelected = 0;
-    public static int symbolsCount;
-
-    public static Vector3 backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
-    public static Vector3 symbolColor = new Vector3(0, 0, 0);
-
     [Header("Flag Creation Menu")]
 
-    public List<Sprite> symbols;
+    public List<Sprite> flagSymbols;
 
-    public Image background;
-    public Image symbol;
+    [SerializeField]
+    private Image flagBackgroundImage = null;
+    [SerializeField]
+    private Image flagSymbolImage = null;
 
-    public Slider redSlider;
-    public Slider greenSlider;
-    public Slider blueSlider;
+    [SerializeField]
+    private FlexibleColorPicker symbolColorPicker = null;
+    [SerializeField]
+    private FlexibleColorPicker backgroundColorPicker = null;
 
-    public Text redSliderText;
-    public Text greenSliderText;
-    public Text blueSliderText;
-    public Text modeText;
+    [SerializeField]
+    private AudioClip hoverOverDropdownOptionSFX = null;
+    [SerializeField]
+    private AudioClip clickDropdownOptionSFX = null;
+    [SerializeField]
+    private AudioClip hoverButtonSFX = null;
+    [SerializeField]
+    private AudioClip clickButtonSFX = null;
+
+    [Header("Additional Information")]
+
+    [ReadOnly, SerializeField] private int symbolSelected = 0;
+    public int SymbolSelected
+    {
+        get
+        {
+            return symbolSelected;
+        }
+        set
+        {
+            symbolSelected = value;
+            flagSymbolImage.sprite = flagSymbols[SymbolSelected];
+        }
+    }
+
+    private Color flagBackgroundColor = Color.white;
+    public Color FlagBackgroundColor
+    {
+        get
+        {
+            return flagBackgroundColor;
+        }
+        set
+        {
+            flagBackgroundColor = value;
+            flagBackgroundImage.color = FlagBackgroundColor;
+        }
+    }
+    private Color flagSymbolColor = Color.white;
+    public Color FlagSymbolColor
+    {
+        get
+        {
+            return flagSymbolColor;
+        }
+        set
+        {
+            flagSymbolColor = value;
+            flagSymbolImage.color = FlagSymbolColor;
+        }
+    }
+
+    //Non-inspector variables.
+
+    public Flag EmpireFlag
+    {
+        get
+        {
+            return new Flag(SymbolSelected, FlagBackgroundColor, FlagSymbolColor);
+        }
+    }
 
     // Start is called before the first frame update
     public override void Start()
@@ -40,7 +87,7 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         base.Start();
 
         //Don't Remove
-        symbol.sprite = symbols[symbolSelected];
+        flagSymbolImage.sprite = flagSymbols[symbolSelected];
     }
 
     // Update is called once per frame
@@ -48,141 +95,77 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
     {
         base.Update();
 
-        background.color = new Color(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
-        symbol.color = new Color(symbolColor.x, symbolColor.y, symbolColor.z, 1);
-
-        NewGameMenu.UpdateEmpireFlag(symbolSelected, backgroundColor, symbolColor);
+        if (symbolColorPicker.gameObject.activeInHierarchy)
+            FlagSymbolColor = symbolColorPicker.color;
+        if (backgroundColorPicker.gameObject.activeInHierarchy)
+            FlagBackgroundColor = backgroundColorPicker.color;
     }
 
-    public void OnButtonClick(string direction)
+    public void ClickSymbolSelectedBackArrow()
     {
-        if(direction.Equals("previous"))
-        {
-            if(mode == EditMode.Symbol)
-            {
-                if (symbolSelected > 0)
-                {
-                    symbolSelected--;
-                }
-                else
-                {
-                    symbolSelected = symbols.Count - 1;
-                }
-            }
-            else if (mode == EditMode.Background)
-            {
-
-            }
-        }
-        else if(direction.Equals("next"))
-        {
-            if(mode == EditMode.Symbol)
-            {
-                if (symbolSelected < symbols.Count - 1)
-                {
-                    symbolSelected++;
-                }
-                else
-                {
-                    symbolSelected = 0;
-                }
-            }
-            else if (mode == EditMode.Background)
-            {
-
-            }
-        }
-
-        if (mode == EditMode.Symbol)
-        {
-            symbol.sprite = symbols[symbolSelected];
-        }
-        else if (mode == EditMode.Background)
-        {
-
-        }
+        SymbolSelected = SymbolSelected == 0 ? flagSymbols.Count - 1 : SymbolSelected - 1;
+        PlayClickButtonSFX();
     }
 
-    public void ChangeSliderValue(string color)
+    public void ClickSymbolSelectedNextArrow()
     {
-        if(mode == EditMode.Symbol)
-        {
-            if (color.Equals("red"))
-            {
-                symbolColor.x = redSlider.value / 255.0f;
-                redSliderText.text = "" + redSlider.value;
-            }
-            else if (color.Equals("green"))
-            {
-                symbolColor.y = greenSlider.value / 255.0f;
-                greenSliderText.text = "" + greenSlider.value;
-            }
-            else if (color.Equals("blue"))
-            {
-                symbolColor.z = blueSlider.value / 255.0f;
-                blueSliderText.text = "" + blueSlider.value;
-            }
-        }
-        else if (mode == EditMode.Background)
-        {
-            if (color.Equals("red"))
-            {
-                backgroundColor.x = redSlider.value / 255.0f;
-                redSliderText.text = "" + redSlider.value;
-            }
-            else if (color.Equals("green"))
-            {
-                backgroundColor.y = greenSlider.value / 255.0f;
-                greenSliderText.text = "" + greenSlider.value;
-            }
-            else if (color.Equals("blue"))
-            {
-                backgroundColor.z = blueSlider.value / 255.0f;
-                blueSliderText.text = "" + blueSlider.value;
-            }
-        }
+        SymbolSelected = SymbolSelected == flagSymbols.Count - 1 ? 0 : SymbolSelected + 1;
+        PlayClickButtonSFX();
     }
 
-    public void ChangeMode()
+    public void ClickPickSymbolColorButton()
     {
-        if (mode == EditMode.Symbol)
-        {
-            mode = EditMode.Background;
-            modeText.text = "Background Mode";
-        }
-        else if (mode == EditMode.Background)
-        {
-            mode = EditMode.Symbol;
-            modeText.text = "Symbol Mode";
-        }
-        UpdateSliders();
+        symbolColorPicker.Open();
+        PlayClickButtonSFX();
     }
 
-    void UpdateSliders()
+    public void ClickPickBackgroundColorButton()
     {
-        if (mode == EditMode.Symbol)
-        {
-            redSlider.value = Mathf.RoundToInt(symbolColor.x * 255.0f);
-            greenSlider.value = Mathf.RoundToInt(symbolColor.y * 255.0f);
-            blueSlider.value = Mathf.RoundToInt(symbolColor.z * 255.0f);
-        }
-        else if (mode == EditMode.Background)
-        {
-            redSlider.value = Mathf.RoundToInt(backgroundColor.x * 255.0f);
-            greenSlider.value = Mathf.RoundToInt(backgroundColor.y * 255.0f);
-            blueSlider.value = Mathf.RoundToInt(backgroundColor.z * 255.0f);
-        }
+        backgroundColorPicker.Open();
+        PlayClickButtonSFX();
+    }
 
-        redSliderText.text = "" + redSlider.value;
-        greenSliderText.text = "" + greenSlider.value;
-        blueSliderText.text = "" + blueSlider.value;
+    public void PlayHoverOverDropdownOptionSFX()
+    {
+        if(MainMenu.SFXSource != null && hoverOverDropdownOptionSFX != null)
+            MainMenu.SFXSource.PlayOneShot(hoverOverDropdownOptionSFX);
+    }
+
+    public void PlayClickDropdownOptionSFX()
+    {
+        if (MainMenu.SFXSource != null && clickDropdownOptionSFX != null)
+            MainMenu.SFXSource.PlayOneShot(clickDropdownOptionSFX);
+    }
+
+    public void PlayHoverButtonSFX()
+    {
+        if (MainMenu.SFXSource != null && hoverButtonSFX != null)
+            MainMenu.SFXSource.PlayOneShot(hoverButtonSFX);
+    }
+
+    public void PlayClickButtonSFX()
+    {
+        if (MainMenu.SFXSource != null && clickButtonSFX != null)
+            MainMenu.SFXSource.PlayOneShot(clickButtonSFX);
     }
 }
 
 public class Flag
 {
-    public int symbolSelected;
+    public Flag()
+    {
 
-    public Vector3 backgroundColor;
-    public Vector3 symbolColor;
+    }
+
+    public Flag(int symbolSelected, Color backgroundColor, Color symbolColor)
+    {
+        this.symbolSelected = symbolSelected;
+        this.backgroundColor = backgroundColor;
+        this.symbolColor = symbolColor;
+    }
+
+    public int symbolSelected = 0;
+
+    public Color backgroundColor = Color.white;
+    public Color symbolColor = Color.white;
 }

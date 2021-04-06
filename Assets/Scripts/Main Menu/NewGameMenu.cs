@@ -173,19 +173,6 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
         SceneManager.LoadScene(sceneName:"Galaxy");
     }
 
-    private string RemoveNonNumbers(string s)
-    {
-        string output = "";
-
-        foreach(char c in s)
-        {
-            if (char.IsDigit(c))
-                output += c;
-        }
-
-        return output;
-    }
-
     public void OnEndEditNumberOfEmpiresInputField()
     {
         if(numberOfEmpiresInputField.text.Equals(""))
@@ -224,9 +211,6 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
 
     public void ChangeNumberOfPlanets()
     {
-        if (numberOfPlanetsInputField.text.Length > 0)
-            numberOfPlanetsInputField.text = RemoveNonNumbers(numberOfPlanetsInputField.text);
-
         if(numberOfPlanetsInputField.text.Length > 0)
         {
             if (int.Parse(numberOfPlanetsInputField.text) >= minimumNumberOfPlanets)
@@ -241,13 +225,6 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
         {
             numberOfPlanets = maximumNumberOfPlanets;
         }
-    }
-
-    public static void UpdateEmpireFlag(int symbolSelected, Vector3 backgroundColor, Vector3 symbolColor)
-    {
-        empireFlag.symbolSelected = symbolSelected;
-        empireFlag.backgroundColor = backgroundColor;
-        empireFlag.symbolColor = symbolColor;
     }
 
     public void OnEmpireCultureDropdownValueChange()
@@ -271,9 +248,11 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
 
     private void OnEnable()
     {
-        empireFlagBackgroundImage.color = new Color(FlagCreationMenu.backgroundColor.x, FlagCreationMenu.backgroundColor.y, FlagCreationMenu.backgroundColor.z);
-        empireFlagSymbolImage.sprite = flagCreationMenu.symbols[FlagCreationMenu.symbolSelected];
-        empireFlagSymbolImage.color = new Color(FlagCreationMenu.symbolColor.x, FlagCreationMenu.symbolColor.y, FlagCreationMenu.symbolColor.z);
+        empireFlag = flagCreationMenu.EmpireFlag;
+
+        empireFlagBackgroundImage.color = empireFlag.backgroundColor;
+        empireFlagSymbolImage.sprite = flagCreationMenu.flagSymbols[empireFlag.symbolSelected];
+        empireFlagSymbolImage.color = empireFlag.symbolColor;
     }
 
     public void ClickEmpireFlagButton()

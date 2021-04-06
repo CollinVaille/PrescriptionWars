@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 
@@ -61,6 +62,24 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         }
     }
 
+    //List that contains all popups that inherit from galaxy popup behaviour.
+    private static List<GalaxyPopupBehaviour> galaxyPopupBehaviours = new List<GalaxyPopupBehaviour>();
+
+    //Indicates whether any popup that inherits from galaxy popup behaviour is active in the hierarchy.
+    public static bool IsAPopupActiveInHierarchy
+    {
+        get
+        {
+            foreach(GalaxyPopupBehaviour galaxyPopupBehaviour in galaxyPopupBehaviours)
+            {
+                if (galaxyPopupBehaviour.gameObject.activeInHierarchy)
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -71,7 +90,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     public virtual void Awake()
     {
-        
+        galaxyPopupBehaviours.Add(this);
     }
 
     // Update is called once per frame
@@ -123,8 +142,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f));
+                if (mouseToMenuDistance.x < Camera.main.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = Camera.main.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f));
             }
             //Right barrier.
             if (transform.localPosition.x > 291 + ((221.16664f / 2) - (RectTransform.rect.width / 2)))
@@ -133,8 +152,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = GalaxyManager.GalaxyCamera.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f));
+                if (mouseToMenuDistance.x > Camera.main.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = Camera.main.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f));
             }
             //Top barrier.
             float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : 99.0f;
@@ -144,8 +163,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f));
+                if (mouseToMenuDistance.y > Camera.main.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = Camera.main.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f));
             }
             //Bottom barrier.
             if (transform.localPosition.y < -1 * (99 + ((255.3096f / 2) - (RectTransform.rect.height / 2))))
@@ -154,8 +173,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = GalaxyManager.GalaxyCamera.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f));
+                if (mouseToMenuDistance.y < Camera.main.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = Camera.main.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f));
             }
         }
     }
@@ -163,7 +182,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
     //Indicates whether the popup should close due to the player pressing escape.
     public virtual bool ShouldClose()
     {
-        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyManager.popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
+        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && ((SceneManager.GetActiveScene().name.Equals("Galaxy") && !GalaxyManager.popupClosedOnFrame) || (SceneManager.GetActiveScene().name.Equals("Main Menu") && !MainMenuManager.PopupClosedOnFrame)) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -194,14 +213,32 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
     void PlayOpenPopupSFX()
     {
         if(openPopupSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(openPopupSFX);
+        {
+            if (SceneManager.GetActiveScene().name.Equals("Galaxy"))
+            {
+                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(openPopupSFX);
+            }
+            else if (SceneManager.GetActiveScene().name.Equals("Main Menu"))
+            {
+                MainMenu.SFXSource.PlayOneShot(openPopupSFX);
+            }
+        }
     }
 
     //Plays the sound effect for whenever the popup closes.
     void PlayClosePopupSFX()
     {
         if (closePopupSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(closePopupSFX);
+        {
+            if (SceneManager.GetActiveScene().name.Equals("Galaxy"))
+            {
+                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(closePopupSFX);
+            }
+            else if (SceneManager.GetActiveScene().name.Equals("Main Menu"))
+            {
+                MainMenu.SFXSource.PlayOneShot(closePopupSFX);
+            }
+        }
     }
 
     //Deactivates the popup game object and sends it to the back of the popups priority hierarchy, but does not destroy the game object or do any specific logic that might be needed for some popups, and to add more logic you will need to add an override method for this in the subclass.

@@ -123,8 +123,8 @@ public class ResourceBar : MonoBehaviour
             resourceBar.flagSymbolNum = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected;
         }
 
-        resourceBar.flagBackground.color = new Color(Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.x, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.y, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor.z, 1.0f);
-        resourceBar.flagSymbol.color = new Color(Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.x, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.y, Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor.z, 1.0f);
+        resourceBar.flagBackground.color = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor;
+        resourceBar.flagSymbol.color = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor;
     }
 
     public static void UpdateEmpireNameTooltip()

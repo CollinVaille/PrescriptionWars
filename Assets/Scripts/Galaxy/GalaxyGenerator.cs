@@ -317,9 +317,9 @@ public class GalaxyGenerator : MonoBehaviour
             Empire.empires[empireID].EmpireFlag = new Flag();
             if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
             {
-                Empire.empires[empireID].EmpireFlag.symbolSelected = FlagCreationMenu.symbolSelected;
-                Empire.empires[empireID].EmpireFlag.backgroundColor = FlagCreationMenu.backgroundColor;
-                Empire.empires[empireID].EmpireFlag.symbolColor = FlagCreationMenu.symbolColor;
+                Empire.empires[empireID].EmpireFlag.symbolSelected = NewGameMenu.empireFlag.symbolSelected;
+                Empire.empires[empireID].EmpireFlag.backgroundColor = NewGameMenu.empireFlag.backgroundColor;
+                Empire.empires[empireID].EmpireFlag.symbolColor = NewGameMenu.empireFlag.symbolColor;
             }
             else
             {
@@ -327,10 +327,10 @@ public class GalaxyGenerator : MonoBehaviour
                 Empire.empires[empireID].EmpireFlag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
 
                 //Generates the background color of each empire's flag.
-                if (Empire.empires[empireID].EmpireFlag.symbolColor.x + Empire.empires[empireID].EmpireFlag.symbolColor.y + Empire.empires[empireID].EmpireFlag.symbolColor.z < 0.6f)
-                    Empire.empires[empireID].EmpireFlag.backgroundColor = new Vector3(1.0f, 1.0f, 1.0f);
+                if (Empire.empires[empireID].EmpireFlag.symbolColor.r + Empire.empires[empireID].EmpireFlag.symbolColor.g + Empire.empires[empireID].EmpireFlag.symbolColor.b < 0.6f)
+                    Empire.empires[empireID].EmpireFlag.backgroundColor = Color.white;
                 else
-                    Empire.empires[empireID].EmpireFlag.backgroundColor = new Vector3(0, 0, 0);
+                    Empire.empires[empireID].EmpireFlag.backgroundColor = Color.black;
 
                 //Generates the symbol on each empire's flag (ensures there will be no duplicates).
                 int random = 0;
@@ -358,12 +358,12 @@ public class GalaxyGenerator : MonoBehaviour
 
             if(empireID == GalaxyManager.PlayerID)
             {
-                Vector3 randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
-                Empire.empires[empireID].EmpireColor = new Color(randomColor.x, randomColor.y, randomColor.z, 1.0f);
+                Color randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
+                Empire.empires[empireID].EmpireColor = randomColor;
             }
             else
             {
-                Empire.empires[empireID].EmpireColor =  new Color(Empire.empires[empireID].EmpireFlag.symbolColor.x, Empire.empires[empireID].EmpireFlag.symbolColor.y, Empire.empires[empireID].EmpireFlag.symbolColor.z, 1.0f);
+                Empire.empires[empireID].EmpireColor = Empire.empires[empireID].EmpireFlag.symbolColor;
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -474,41 +474,41 @@ public class GalaxyGenerator : MonoBehaviour
         }
     }
 
-    public Vector3 GetRandomColorBasedOnCulture(Empire.Culture culture)
+    public Color GetRandomColorBasedOnCulture(Empire.Culture culture)
     {
         switch (culture)
         {
             case Empire.Culture.Red:
-                return new Vector3(Random.Range(0.25f, 1.0f), 0, 0);
+                return new Color(Random.Range(0.25f, 1.0f), 0, 0, 1);
             case Empire.Culture.Green:
-                return new Vector3(0, Random.Range(0.25f, 1.0f), 0);
+                return new Color(0, Random.Range(0.25f, 1.0f), 0, 1);
             case Empire.Culture.Blue:
-                return new Vector3(0, 0, Random.Range(0.25f, 1.0f));
+                return new Color(0, 0, Random.Range(0.25f, 1.0f), 1);
             case Empire.Culture.Purple:
-                List<Vector3> purpleColors = new List<Vector3>();
-                purpleColors.Add(new Vector3(186.0f / 255, 85.0f / 255, 211.0f / 255));         //Medium Orchid
-                purpleColors.Add(new Vector3(147.0f / 255, 112.0f / 255, 219.0f / 255));        //Medium Purple
-                purpleColors.Add(new Vector3(138.0f / 255, 43.0f / 255, 226.0f / 255));         //Blue Violet
-                purpleColors.Add(new Vector3(148.0f / 255, 0.0f / 255, 211.0f / 255));          //Dark Violet
-                purpleColors.Add(new Vector3(153.0f / 255, 50.0f / 255, 204.0f / 255));         //Dark Orchid
-                purpleColors.Add(new Vector3(139.0f / 255, 0.0f / 255, 139.0f / 255));          //Dark Magenta
-                purpleColors.Add(new Vector3(128.0f / 255, 0.0f / 255, 128.0f / 255));          //Purple
+                List<Color> purpleColors = new List<Color>();
+                purpleColors.Add(new Color(186.0f / 255, 85.0f / 255, 211.0f / 255, 1));         //Medium Orchid
+                purpleColors.Add(new Color(147.0f / 255, 112.0f / 255, 219.0f / 255, 1));        //Medium Purple
+                purpleColors.Add(new Color(138.0f / 255, 43.0f / 255, 226.0f / 255, 1));         //Blue Violet
+                purpleColors.Add(new Color(148.0f / 255, 0.0f / 255, 211.0f / 255, 1));          //Dark Violet
+                purpleColors.Add(new Color(153.0f / 255, 50.0f / 255, 204.0f / 255, 1));         //Dark Orchid
+                purpleColors.Add(new Color(139.0f / 255, 0.0f / 255, 139.0f / 255, 1));          //Dark Magenta
+                purpleColors.Add(new Color(128.0f / 255, 0.0f / 255, 128.0f / 255, 1));          //Purple
                 int random = Random.Range(0, purpleColors.Count);
                 return purpleColors[random];
             case Empire.Culture.Gold:
-                List<Vector3> goldColors = new List<Vector3>();
-                goldColors.Add(new Vector3(238.0f / 255, 232.0f / 255, 170.0f / 255));          //Pale Golden Rod
-                goldColors.Add(new Vector3(240.0f / 255, 230.0f / 255, 140.0f / 255));          //Khaki
-                goldColors.Add(new Vector3(255.0f / 255, 215.0f / 255, 0.0f / 255));            //Gold
-                goldColors.Add(new Vector3(255.0f / 255, 223.0f / 255, 0.0f / 255));            //Golden Yellow
-                goldColors.Add(new Vector3(212.0f / 255, 175.0f / 255, 55.0f / 255));           //Metallic Gold
-                goldColors.Add(new Vector3(207.0f / 255, 181.0f / 255, 59.0f / 255));           //Old Gold
-                goldColors.Add(new Vector3(197.0f / 255, 179.0f / 255, 88.0f / 255));           //Vegas Gold
+                List<Color> goldColors = new List<Color>();
+                goldColors.Add(new Color(238.0f / 255, 232.0f / 255, 170.0f / 255, 1));          //Pale Golden Rod
+                goldColors.Add(new Color(240.0f / 255, 230.0f / 255, 140.0f / 255, 1));          //Khaki
+                goldColors.Add(new Color(255.0f / 255, 215.0f / 255, 0.0f / 255, 1));            //Gold
+                goldColors.Add(new Color(255.0f / 255, 223.0f / 255, 0.0f / 255, 1));            //Golden Yellow
+                goldColors.Add(new Color(212.0f / 255, 175.0f / 255, 55.0f / 255, 1));           //Metallic Gold
+                goldColors.Add(new Color(207.0f / 255, 181.0f / 255, 59.0f / 255, 1));           //Old Gold
+                goldColors.Add(new Color(197.0f / 255, 179.0f / 255, 88.0f / 255, 1));           //Vegas Gold
                 int randomIndex = Random.Range(0, goldColors.Count);
                 return goldColors[randomIndex];
         }
 
-        return new Vector3(1.0f, 1.0f, 1.0f);
+        return new Color(1, 1, 1, 1);
     }
 
     private int PlanetsAttachedToEmpires()

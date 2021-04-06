@@ -45,6 +45,15 @@ public class GalaxyBackArrow : MonoBehaviour
 
         //Plays the sound effect for clicking the back arrow.
         if (backArrowClickSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(backArrowClickSFX);
+        {
+            if (SceneManager.GetActiveScene().name.Equals("Galaxy"))
+            {
+                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(backArrowClickSFX);
+            }
+            else if (SceneManager.GetActiveScene().name.Equals("Main Menu"))
+            {
+                MainMenu.SFXSource.PlayOneShot(backArrowClickSFX);
+            }
+        }
     }
 }
