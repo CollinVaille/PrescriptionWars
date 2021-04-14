@@ -52,15 +52,15 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     //Indicates the set distance between the mouse and the popup's location (used for dragging popups and probably shouldn't be messed with otherwise).
     private Vector2 mouseToMenuDistance = Vector2.zero;
+    //Indicates the min/max x and y positions of the popup (set in the awake method).
+    private Vector2 screenBounds = Vector2.zero;
+    //new Vector2(291, 99)  492
 
-    //The rect transform of the popup that contains the width and height.
-    private RectTransform RectTransform
-    {
-        get
-        {
-            return (RectTransform)transform;
-        }
-    }
+    //Indicates the canvas that the popup is parented under in the hierarchy (set in the awake method).
+    //private Canvas parentCanvas = null;
+
+    //The rect transform of the popup that contains the width and height (set in the awake method).
+    private RectTransform rectTransform = null;
 
     //List that contains all popups that inherit from galaxy popup behaviour.
     private static List<GalaxyPopupBehaviour> galaxyPopupBehaviours = new List<GalaxyPopupBehaviour>();
@@ -90,7 +90,36 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     public virtual void Awake()
     {
+        //Adds the popup to the static list that contains all things with popup behaviour.
         galaxyPopupBehaviours.Add(this);
+
+        //Sets the variable that holds the value of the rect transform of the popup.
+        rectTransform = (RectTransform)transform;
+
+        //Sets the variable that holds the value of the canvas that the popup is parented under.
+        //parentCanvas = GeneralHelperMethods.GetParentCanvas(transform);
+
+        //Sets the variable that indicates the bounds of the screen.
+        SetScreenBoundsIndicatorVector();
+    }
+
+    private void SetScreenBoundsIndicatorVector()
+    {
+        Transform nextTransformToCheck = transform.parent;
+        while (true)
+        {
+            IGalaxyPopupBehaviourHandler nextTransformToCheckPopupBehaviourHandler = nextTransformToCheck.GetComponent<IGalaxyPopupBehaviourHandler>();
+            if (nextTransformToCheckPopupBehaviourHandler != null)
+            {
+                screenBounds = nextTransformToCheckPopupBehaviourHandler.PopupScreenBounds;
+                break;
+            }
+
+            if (nextTransformToCheck.parent != null)
+                nextTransformToCheck = nextTransformToCheck.parent;
+            else
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -136,45 +165,45 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
             transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
 
             //Left barrier.
-            if (transform.localPosition.x < -1 * (291 + ((221.16664f / 2) - (RectTransform.rect.width / 2))))
+            if (transform.localPosition.x < -1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))))
             {
-                transform.localPosition = new Vector2(-1 * (291 + ((221.16664f / 2) - (RectTransform.rect.width / 2))), transform.localPosition.y);
+                transform.localPosition = new Vector2(-1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))), transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x < Camera.main.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = Camera.main.pixelWidth * -1 * (.13545f * (RectTransform.rect.width / 221.16664f));
+                if (mouseToMenuDistance.x < Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f));
             }
             //Right barrier.
-            if (transform.localPosition.x > 291 + ((221.16664f / 2) - (RectTransform.rect.width / 2)))
+            if (transform.localPosition.x > screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)))
             {
-                transform.localPosition = new Vector2(291 + ((221.16664f / 2) - (RectTransform.rect.width / 2)), transform.localPosition.y);
+                transform.localPosition = new Vector2(screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)), transform.localPosition.y);
 
                 mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
 
-                if (mouseToMenuDistance.x > Camera.main.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = Camera.main.pixelWidth * (.13545f * (RectTransform.rect.width / 221.16664f));
+                if (mouseToMenuDistance.x > Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f)))
+                    mouseToMenuDistance.x = Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f));
             }
             //Top barrier.
-            float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : 99.0f;
-            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (RectTransform.rect.height / 2)))
+            float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : screenBounds.y;
+            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)))
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (RectTransform.rect.height / 2)));
+                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)));
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y > Camera.main.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = Camera.main.pixelHeight * (.2771f * (RectTransform.rect.height / 255.3096f));
+                if (mouseToMenuDistance.y > Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f));
             }
             //Bottom barrier.
-            if (transform.localPosition.y < -1 * (99 + ((255.3096f / 2) - (RectTransform.rect.height / 2))))
+            if (transform.localPosition.y < -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))))
             {
-                transform.localPosition = new Vector2(transform.localPosition.x, -1 * (99 + ((255.3096f / 2) - (RectTransform.rect.height / 2))));
+                transform.localPosition = new Vector2(transform.localPosition.x, -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))));
 
                 mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
 
-                if (mouseToMenuDistance.y < Camera.main.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = Camera.main.pixelHeight * -1 * (.2771f * (RectTransform.rect.height / 255.3096f));
+                if (mouseToMenuDistance.y < Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f)))
+                    mouseToMenuDistance.y = Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f));
             }
         }
     }

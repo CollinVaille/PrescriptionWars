@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
+public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupBehaviourHandler
 {
     [Header("Galaxy Tooltip Handler")]
 
@@ -15,6 +15,18 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler
         get
         {
             return tooltipsParent;
+        }
+    }
+
+    [Header("Galaxy Popup Behaviour Handler")]
+
+    [SerializeField]
+    private Vector2 popupScreenBounds = Vector2.zero;
+    public Vector2 PopupScreenBounds
+    {
+        get
+        {
+            return popupScreenBounds;
         }
     }
 

@@ -21,6 +21,11 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
 
     [Header("New Game Menu Options")]
 
+    [SerializeField]
+    private AudioClip mouseEnterButtonSFX = null;
+    [SerializeField]
+    private AudioClip openNewMenuSFX = null;
+
     public int minimumNumberOfPlanets;
     public int maximumNumberOfPlanets;
     public int minimumNumberOfEmpires;
@@ -259,5 +264,19 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
     {
         flagCreationMenu.gameObject.SetActive(true);
         gameObject.SetActive(false);
+
+        PlayOpenNewMenuSFX();
+    }
+
+    public void PlayMouseEnterButtonSFX()
+    {
+        if(mouseEnterButtonSFX != null)
+            MainMenu.SFXSource.PlayOneShot(mouseEnterButtonSFX);
+    }
+
+    public void PlayOpenNewMenuSFX()
+    {
+        if (openNewMenuSFX != null)
+            MainMenu.SFXSource.PlayOneShot(openNewMenuSFX);
     }
 }

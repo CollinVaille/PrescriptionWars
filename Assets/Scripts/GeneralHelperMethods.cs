@@ -132,6 +132,29 @@ public class GeneralHelperMethods
 
         return int.Parse(numberTextFromText);
     }
+
+    //Returns the canvas that the specified transform is under in the hierarchy.
+    public static Canvas GetParentCanvas(Transform transform)
+    {
+        Canvas currentParentCanvas = null;
+
+        Transform nextTransformToCheck = transform.parent;
+        while (currentParentCanvas == null)
+        {
+            if (nextTransformToCheck.GetComponent<Canvas>() != null)
+            {
+                currentParentCanvas = nextTransformToCheck.GetComponent<Canvas>();
+                break;
+            }
+
+            if (nextTransformToCheck.parent != null)
+                nextTransformToCheck = nextTransformToCheck.parent;
+            else
+                break;
+        }
+
+        return currentParentCanvas;
+    }
 }
 
 public class ReadOnlyAttribute : PropertyAttribute

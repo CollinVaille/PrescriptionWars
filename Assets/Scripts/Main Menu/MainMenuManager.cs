@@ -2,8 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuManager : MonoBehaviour
+public class MainMenuManager : MonoBehaviour, IGalaxyPopupBehaviourHandler
 {
+    [Header("Galaxy Popup Behaviour Handler")]
+
+    [SerializeField]
+    private Vector2 popupScreenBounds = Vector2.zero;
+    public Vector2 PopupScreenBounds
+    {
+        get
+        {
+            return popupScreenBounds;
+        }
+    }
+
     private static bool popupClosedOnFrame = false;
     public static bool PopupClosedOnFrame
     {

@@ -221,7 +221,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // Start is called before the first frame update
     private void Start()
     {
-        parentCanvas = GetCurrentParentCanvas();
+        parentCanvas = GeneralHelperMethods.GetParentCanvas(transform);
         parent = GetCurrentParent();
         sceneCamera = GetCurrentSceneCamera();
     }
@@ -265,29 +265,6 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 tooltip.transform.position = new Vector2(tooltip.transform.position.x, 0 + ((tooltip.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta.y / 2) * parentCanvas.scaleFactor));
             }
         }
-    }
-
-    //Returns the canvas that the tooltip is under in the hierarchy.
-    private Canvas GetCurrentParentCanvas()
-    {
-        Canvas currentParentCanvas = null;
-
-        Transform nextTransformToCheck = transform.parent;
-        while (currentParentCanvas == null)
-        {
-            if (nextTransformToCheck.GetComponent<Canvas>() != null)
-            {
-                currentParentCanvas = nextTransformToCheck.GetComponent<Canvas>();
-                break;
-            }
-
-            if (nextTransformToCheck.parent != null)
-                nextTransformToCheck = nextTransformToCheck.parent;
-            else
-                break;
-        }
-
-        return currentParentCanvas;
     }
 
     //Returns the transform that the tooltip will be under when it is open.
