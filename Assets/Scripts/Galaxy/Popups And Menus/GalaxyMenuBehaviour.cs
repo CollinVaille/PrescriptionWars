@@ -64,11 +64,11 @@ public class GalaxyMenuBehaviour : MonoBehaviour
     //This method activates the game object of the previous menu and then de-activates the game object of the current menu.
     public virtual void SwitchToPreviousMenu()
     {
-        //Activates the game object of the previous menu.
-        previousMenu.SetActive(true);
-
         //De-activates the game object of the current menu.
         currentMenu.SetActive(false);
+
+        //Activates the game object of the previous menu.
+        previousMenu.SetActive(true);
     }
 
     //Indicates whether the menu should close (or switch to the previous menu) when the player presses escape.

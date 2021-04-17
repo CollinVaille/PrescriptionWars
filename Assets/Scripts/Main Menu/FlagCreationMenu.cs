@@ -127,26 +127,22 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
 
     public void PlayHoverOverDropdownOptionSFX()
     {
-        if(MainMenu.SFXSource != null && hoverOverDropdownOptionSFX != null)
-            MainMenu.SFXSource.PlayOneShot(hoverOverDropdownOptionSFX);
+        AudioManager.PlaySFX(hoverOverDropdownOptionSFX);
     }
 
     public void PlayClickDropdownOptionSFX()
     {
-        if (MainMenu.SFXSource != null && clickDropdownOptionSFX != null)
-            MainMenu.SFXSource.PlayOneShot(clickDropdownOptionSFX);
+        AudioManager.PlaySFX(clickDropdownOptionSFX);
     }
 
     public void PlayHoverButtonSFX()
     {
-        if (MainMenu.SFXSource != null && hoverButtonSFX != null)
-            MainMenu.SFXSource.PlayOneShot(hoverButtonSFX);
+        AudioManager.PlaySFX(hoverButtonSFX);
     }
 
     public void PlayClickButtonSFX()
     {
-        if (MainMenu.SFXSource != null && clickButtonSFX != null)
-            MainMenu.SFXSource.PlayOneShot(clickButtonSFX);
+        AudioManager.PlaySFX(clickButtonSFX);
     }
 }
 

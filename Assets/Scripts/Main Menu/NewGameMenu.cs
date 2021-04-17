@@ -6,19 +6,8 @@ using UnityEngine.SceneManagement;
 using System;
 //using UnityEditorInternal.VR;
 
-public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
+public class NewGameMenu : GalaxyMenuBehaviour
 {
-    [Header("Galaxy Tooltip Handler Options")]
-
-    [SerializeField] private Transform tooltipsParent = null;
-    public Transform TooltipsParent
-    {
-        get
-        {
-            return tooltipsParent;
-        }
-    }
-
     [Header("New Game Menu Options")]
 
     [SerializeField]
@@ -265,18 +254,11 @@ public class NewGameMenu : GalaxyMenuBehaviour, IGalaxyTooltipHandler
         flagCreationMenu.gameObject.SetActive(true);
         gameObject.SetActive(false);
 
-        PlayOpenNewMenuSFX();
+        AudioManager.PlaySFX(openNewMenuSFX);
     }
 
-    public void PlayMouseEnterButtonSFX()
+    public void OnMouseEnterButton()
     {
-        if(mouseEnterButtonSFX != null)
-            MainMenu.SFXSource.PlayOneShot(mouseEnterButtonSFX);
-    }
-
-    public void PlayOpenNewMenuSFX()
-    {
-        if (openNewMenuSFX != null)
-            MainMenu.SFXSource.PlayOneShot(openNewMenuSFX);
+        AudioManager.PlaySFX(mouseEnterButtonSFX);
     }
 }

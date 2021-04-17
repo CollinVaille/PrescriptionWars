@@ -173,8 +173,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
 
     void PlayClickDropdownButtonSFX()
     {
-        if(clickDropdownButtonSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickDropdownButtonSFX);
+        AudioManager.PlaySFX(clickDropdownButtonSFX);
     }
 
     public void ExecuteDropDownLogic()
@@ -214,8 +213,7 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
             transferArrowImage.transform.localScale = new Vector3(transferArrowImage.transform.localScale.x * -1, 1, 1);
 
             //Plays the transfer sound effect.
-            if (clickTransferButtonSFX != null)
-                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickTransferButtonSFX);
+            AudioManager.PlaySFX(clickTransferButtonSFX);
         }
     }
 
@@ -412,7 +410,6 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
 
     public void PlayMoveButtonSFX()
     {
-        if (moveButtonSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(moveButtonSFX);
+        AudioManager.PlaySFX(moveButtonSFX);
     }
 }

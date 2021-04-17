@@ -70,8 +70,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
 
         if (!specialOpenPopupSFXPlayed)
         {
-            if (specialOpenPopupSFX != null)
-                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(specialOpenPopupSFX);
+            AudioManager.PlaySFX(specialOpenPopupSFX);
             specialOpenPopupSFXPlayed = true;
         }
     }
@@ -130,7 +129,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
                 }
                 optionsProcessed++;
             }
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOptionButtonSFX);
+            AudioManager.PlaySFX(clickOptionButtonSFX);
             Close();
         }
     }
@@ -152,7 +151,7 @@ public class GalaxyPopup : GalaxyPopupBehaviour
 
     public void PointerEnterOptionButton(int buttonNum)
     {
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverOptionButton);
+        AudioManager.PlaySFX(mouseOverOptionButton);
     }
 
     public string GetHeadLine()

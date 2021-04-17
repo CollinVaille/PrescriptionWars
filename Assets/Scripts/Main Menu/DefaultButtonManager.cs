@@ -11,8 +11,6 @@ public class DefaultButtonManager : MonoBehaviour
     public AudioClip mouseOverSoundEffect;
     public AudioClip mouseClickSoundEffect;
 
-    public AudioSource sfxSource;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +26,7 @@ public class DefaultButtonManager : MonoBehaviour
     public void OnButtonEnter(Transform button)
     {
         button.GetComponent<Image>().sprite = selectedButtonTexture;
-        sfxSource.PlayOneShot(mouseOverSoundEffect);
+        AudioManager.PlaySFX(mouseOverSoundEffect);
     }
 
     public void OnButtonExit(Transform button)
@@ -38,6 +36,6 @@ public class DefaultButtonManager : MonoBehaviour
 
     public void OnButtonClick()
     {
-        sfxSource.PlayOneShot(mouseClickSoundEffect);
+        AudioManager.PlaySFX(mouseClickSoundEffect);
     }
 }

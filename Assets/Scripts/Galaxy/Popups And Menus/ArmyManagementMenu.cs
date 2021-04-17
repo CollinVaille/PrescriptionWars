@@ -339,8 +339,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     void PlayDisbandUnitSFX()
     {
-        if(disbandUnitSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(disbandUnitSFX);
+        AudioManager.PlaySFX(disbandUnitSFX);
     }
 
     public void ClickRenameButton()
@@ -461,20 +460,17 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     public void PlayMouseOverMiddleButtonSFX()
     {
-        if (mouseOverMiddleButtonSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverMiddleButtonSFX);
+        AudioManager.PlaySFX(mouseOverMiddleButtonSFX);
     }
 
     public void PlayMouseClickMiddleButtonSFX()
     {
-        if (mouseClickMiddleButtonSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseClickMiddleButtonSFX);
+        AudioManager.PlaySFX(mouseClickMiddleButtonSFX);
     }
 
     void PlayRenameSFX()
     {
-        if (renameSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(renameSFX);
+        AudioManager.PlaySFX(renameSFX);
     }
 
     public void AddNewSquadDropdownButton(int armyID, int squadID, ArmyManagementScrollListButton squadChildButton)

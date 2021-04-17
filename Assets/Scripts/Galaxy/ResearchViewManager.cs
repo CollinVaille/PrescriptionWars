@@ -3,32 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ResearchViewManager : MonoBehaviour, IGalaxyPopupBehaviourHandler
+public class ResearchViewManager : GalaxyViewBehaviour
 {
-    [Header("Galaxy Popup Behaviour Handler")]
-
-    [SerializeField] private Vector2 popupScreenBounds = Vector2.zero;
-    public Vector2 PopupScreenBounds
-    {
-        get
-        {
-            return popupScreenBounds;
-        }
-    }
-
-    [Header("Options")]
+    [Header("Research View Options")]
 
     public Material skyboxMaterial;
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        GalaxyManager.ResetPopupClosedOnFrame();
+        base.Update();
+
+        GalaxyManager.galaxyManager.ResetPopupClosedOnFrame();
     }
 }

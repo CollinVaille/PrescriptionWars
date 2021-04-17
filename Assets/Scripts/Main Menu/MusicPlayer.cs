@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class MusicPlayer : MonoBehaviour
 {
-    public AudioSource musicSource;
-
     public List<AudioClip> songs;
 
-    static List<int> songsQueued = new List<int>();
-    static List<int> songsAvailable = new List<int>();
+    private static List<int> songsQueued = new List<int>();
+    private static List<int> songsAvailable = new List<int>();
 
-    static int previousSong = -1;
+    private static int previousSong = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -22,15 +20,14 @@ public class MusicPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(musicSource.isPlaying == false)
+        if(!AudioManager.IsMusicPlaying)
         {
             if(songsQueued.Count == 0)
             {
                 ShuffleSongs();
             }
 
-            musicSource.clip = songs[songsQueued[0]];
-            musicSource.Play();
+            AudioManager.PlaySong(songs[songsQueued[0]]);
             previousSong = songsQueued[0];
             songsQueued.RemoveAt(0);
         }

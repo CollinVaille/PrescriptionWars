@@ -53,6 +53,28 @@ public class GalaxyHelperMethods : MonoBehaviour
             GalaxyManager.planets[planetID].ConquerPlanet(conquerorID);
         }
     }
+
+    public static GalaxyViewBehaviour GetParentGalaxyView(Transform transform)
+    {
+        GalaxyViewBehaviour currentParentGalaxyView = null;
+
+        Transform nextTransformToCheck = transform.parent;
+        while (currentParentGalaxyView == null)
+        {
+            if (nextTransformToCheck.GetComponent<GalaxyViewBehaviour>() != null)
+            {
+                currentParentGalaxyView = nextTransformToCheck.GetComponent<GalaxyViewBehaviour>();
+                break;
+            }
+
+            if (nextTransformToCheck.parent != null)
+                nextTransformToCheck = nextTransformToCheck.parent;
+            else
+                break;
+        }
+
+        return currentParentGalaxyView;
+    }
 }
 
 [System.Serializable]

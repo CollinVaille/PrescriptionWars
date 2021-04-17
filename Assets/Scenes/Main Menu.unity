@@ -794,7 +794,6 @@ RectTransform:
   - {fileID: 1794721622}
   - {fileID: 2145042615}
   - {fileID: 794311363}
-  - {fileID: 593016152}
   m_Father: {fileID: 1068848731}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -838,7 +837,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   previousMenu: {fileID: 911445609}
   currentMenu: {fileID: 58430092}
-  tooltipsParent: {fileID: 593016152}
   mouseEnterButtonSFX: {fileID: 8300000, guid: 6e92c0943ffe6d44bb0d4c13e31ed71d, type: 3}
   openNewMenuSFX: {fileID: 8300000, guid: dbca9e78acb0f25439e35e3f51c086aa, type: 3}
   minimumNumberOfPlanets: 5
@@ -4734,7 +4732,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 58430096}
-          m_MethodName: PlayMouseEnterButtonSFX
+          m_MethodName: OnMouseEnterButton
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6025,12 +6023,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593016151}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 58430093}
-  m_RootOrder: 4
+  m_Father: {fileID: 1068848731}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9173,7 +9171,6 @@ MonoBehaviour:
   audioSettingsMenu: {fileID: 1810743038}
   videoSettingsMenu: {fileID: 1123917657}
   mainMenuSceneCamera: {fileID: 405166906}
-  sfxSource: {fileID: 1055968302}
   tooltipPrefab: {fileID: 9151189739358545427, guid: 8c236b0cf373064408bb80ee707fc456,
     type: 3}
   backArrowPrefab: {fileID: 2736054851655851295, guid: 760be810cf8de85499574c8ed0dfa9e5,
@@ -10968,6 +10965,7 @@ RectTransform:
   - {fileID: 1849849745}
   - {fileID: 1810743036}
   - {fileID: 1123917655}
+  - {fileID: 593016152}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10988,7 +10986,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36ddc8639e406148b67c1ce4a81ae1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipsParent: {fileID: 593016152}
   popupScreenBounds: {x: 491, y: 211}
+  sfxSource: {fileID: 1055968302}
+  musicSource: {fileID: 1458659388}
 --- !u!1 &1080109618
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,42 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuManager : MonoBehaviour, IGalaxyPopupBehaviourHandler
+public class MainMenuManager : GalaxyViewBehaviour
 {
-    [Header("Galaxy Popup Behaviour Handler")]
-
-    [SerializeField]
-    private Vector2 popupScreenBounds = Vector2.zero;
-    public Vector2 PopupScreenBounds
-    {
-        get
-        {
-            return popupScreenBounds;
-        }
-    }
-
-    private static bool popupClosedOnFrame = false;
-    public static bool PopupClosedOnFrame
-    {
-        get
-        {
-            return popupClosedOnFrame;
-        }
-        set
-        {
-            popupClosedOnFrame = value;
-        }
-    }
-
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
+        base.Update();
+
         PopupClosedOnFrame = false;
     }
 }

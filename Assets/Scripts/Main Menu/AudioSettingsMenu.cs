@@ -11,15 +11,14 @@ public class AudioSettingsMenu : GalaxyMenuBehaviour
     public Slider musicVolumeSlider;
     public Slider sfxVolumeSlider;
 
-    Text selectedText;
-
-    public AudioSource musicSource;
-    public AudioSource sfxSource;
+    private Text selectedText;
 
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+
+        UpdateSliderValues();
     }
 
     // Update is called once per frame
@@ -37,68 +36,104 @@ public class AudioSettingsMenu : GalaxyMenuBehaviour
     {
         if (type.Equals("Master Volume"))
         {
-            AudioListener.volume = masterVolumeSlider.value / 100.0f;
+            AudioSettings.MasterVolume = masterVolumeSlider.value / 100.0f;
             selectedText.text = masterVolumeSlider.value + "%";
         }
         if(type.Equals("Music Volume"))
         {
-            musicSource.volume = musicVolumeSlider.value / 100.0f;
+            AudioSettings.MusicVolume = musicVolumeSlider.value / 100.0f;
             selectedText.text = musicVolumeSlider.value + "%";
         }
         if(type.Equals("SFX Volume"))
         {
-            sfxSource.volume = sfxVolumeSlider.value / 100.0f;
+            AudioSettings.SFXVolume = sfxVolumeSlider.value / 100.0f;
             selectedText.text = sfxVolumeSlider.value + "%";
         }
     }
 
-    public void LoadSettings()
+    //Updates the sliders to accurately reflect the master volume, music volume, and sfx volume.
+    public void UpdateSliderValues()
     {
-        AudioSettings.LoadSettings();
-
-        AudioListener.volume = AudioSettings.masterVolume;
-        musicSource.volume = AudioSettings.musicVolume;
-        sfxSource.volume = AudioSettings.sfxVolume;
-
-        masterVolumeSlider.value = Mathf.RoundToInt(AudioSettings.masterVolume * 100.0f);
-        musicVolumeSlider.value = Mathf.RoundToInt(AudioSettings.musicVolume * 100.0f);
-        sfxVolumeSlider.value = Mathf.RoundToInt(AudioSettings.sfxVolume * 100.0f);
+        masterVolumeSlider.value = Mathf.RoundToInt(AudioSettings.MasterVolume * 100.0f);
+        musicVolumeSlider.value = Mathf.RoundToInt(AudioSettings.MusicVolume * 100.0f);
+        sfxVolumeSlider.value = Mathf.RoundToInt(AudioSettings.SFXVolume * 100.0f);
     }
 
     public void SaveSettings()
     {
-        AudioSettings.masterVolume = masterVolumeSlider.value / 100.0f;
-        AudioSettings.musicVolume = musicVolumeSlider.value / 100.0f;
-        AudioSettings.sfxVolume = sfxVolumeSlider.value / 100.0f;
-
         AudioSettings.SaveSettings();
     }
 }
 
 public class AudioSettings
 {
-    public static bool loaded = false;
+    private static bool loaded = false;
+    public static bool Loaded
+    {
+        get
+        {
+            return loaded;
+        }
+    }
 
-    public static float masterVolume;
-    public static float musicVolume;
-    public static float sfxVolume;
+    private static float masterVolume;
+    public static float MasterVolume
+    {
+        get
+        {
+            return masterVolume;
+        }
+        set
+        {
+            masterVolume = value;
+            AudioManager.UpdateMasterVolume();
+        }
+    }
+
+    private static float sfxVolume;
+    public static float SFXVolume
+    {
+        get
+        {
+            return sfxVolume;
+        }
+        set
+        {
+            sfxVolume = value;
+            AudioManager.UpdateSFXVolume();
+        }
+    }
+
+    private static float musicVolume;
+    public static float MusicVolume
+    {
+        get
+        {
+            return musicVolume;
+        }
+        set
+        {
+            musicVolume = value;
+            AudioManager.UpdateMusicVolume();
+        }
+    }
 
     public static void SaveSettings()
     {
-        PlayerPrefs.SetFloat("Master Volume", masterVolume);
-        PlayerPrefs.SetFloat("Music Volume", musicVolume);
-        PlayerPrefs.SetFloat("SFX Volume", sfxVolume);
+        PlayerPrefs.SetFloat("Master Volume", MasterVolume);
+        PlayerPrefs.SetFloat("Music Volume", MusicVolume);
+        PlayerPrefs.SetFloat("SFX Volume", SFXVolume);
         //PlayerPrefs.Save();
     }
 
     public static void LoadSettings()
     {
-        if (loaded)
+        if (Loaded)
             return;
         loaded = true;
 
-        masterVolume = PlayerPrefs.GetFloat("Master Volume", 1.0f);
-        musicVolume = PlayerPrefs.GetFloat("Music Volume", 1.0f);
-        sfxVolume = PlayerPrefs.GetFloat("SFX Volume", 1.0f);
+        MasterVolume = PlayerPrefs.GetFloat("Master Volume", 1.0f);
+        MusicVolume = PlayerPrefs.GetFloat("Music Volume", 1.0f);
+        SFXVolume = PlayerPrefs.GetFloat("SFX Volume", 1.0f);
     }
 }

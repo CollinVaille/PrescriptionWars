@@ -157,15 +157,13 @@ public class TechTotemDetailsView : GalaxyMenuBehaviour
     public void OnMouseOverDropdownOption()
     {
         //Plays the appropriate sound effect.
-        if(mouseOverDropdownOptionSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverDropdownOptionSFX);
+        AudioManager.PlaySFX(mouseOverDropdownOptionSFX);
     }
 
     //This method will be called (through an event trigger) whenever the player clicks on an option of a dropdown.
     public void OnMouseClickDropdownOption()
     {
         //Plays the appropriate sound effect.
-        if(clickDropdownOptionSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickDropdownOptionSFX);
+        AudioManager.PlaySFX(clickDropdownOptionSFX);
     }
 }

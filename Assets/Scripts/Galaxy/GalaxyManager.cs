@@ -5,31 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupBehaviourHandler
+public class GalaxyManager : GalaxyViewBehaviour
 {
-    [Header("Galaxy Tooltip Handler")]
-
-    [SerializeField] private Transform tooltipsParent = null;
-    public Transform TooltipsParent
-    {
-        get
-        {
-            return tooltipsParent;
-        }
-    }
-
-    [Header("Galaxy Popup Behaviour Handler")]
-
-    [SerializeField]
-    private Vector2 popupScreenBounds = Vector2.zero;
-    public Vector2 PopupScreenBounds
-    {
-        get
-        {
-            return popupScreenBounds;
-        }
-    }
-
     [Header("Cheat Console")]
 
     [SerializeField]
@@ -53,11 +30,6 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
             return researchView;
         }
     }
-
-    [Header("Audio Sources")]
-
-    public AudioSource musicSource;
-    public AudioSource sfxSource;
 
     [Header("Sound Effects")]
 
@@ -127,7 +99,6 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
     public static List<Sprite> flagSymbols;
 
     public static bool observationModeEnabled = false;
-    public static bool popupClosedOnFrame = false;
     public static bool IsGalaxyViewActiveInHierarchy
     {
         get
@@ -189,13 +160,15 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
     }
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
-
+        base.Start();
     }
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         //Assigns the static reference of galaxy manager.
         galaxyManager = this;
     }
@@ -210,8 +183,10 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
     }
 
     // Update is called once per frame
-    void Update()
+    public override void Update()
     {
+        base.Update();
+
         //Resets the boolean that indicates if a popup was closed on the frame.
         ResetPopupClosedOnFrame();
 
@@ -243,15 +218,15 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
         if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
             PlanetManagementMenu.planetManagementMenu.Close();
 
+        //Turns off the galaxy view.
+        transform.gameObject.SetActive(false);
         //Turns on the research view.
         researchView.SetActive(true);
         //Switches the skybox material to the one assigned to the research view.
         RenderSettings.skybox = researchView.GetComponent<ResearchViewManager>().skyboxMaterial;
-        //Turns off the galaxy view.
-        transform.gameObject.SetActive(false);
 
         //Plays the switch to research view sound effect.
-        sfxSource.PlayOneShot(switchToResearchViewSFX);
+        AudioManager.PlaySFX(switchToResearchViewSFX);
     }
 
     public void EndTurn()
@@ -264,7 +239,7 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
             GalaxyPopupManager.CloseAllPopups();
 
             //Plays the end turn sound effect.
-            sfxSource.PlayOneShot(endTurnSFX);
+            AudioManager.PlaySFX(endTurnSFX);
 
             //Closes the planet management menu if it is currently open.
             if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
@@ -290,14 +265,8 @@ public class GalaxyManager : MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupB
         }
     }
 
-    public static void ResetPopupClosedOnFrame()
-    {
-        popupClosedOnFrame = false;
-    }
-
     public void PlayTechFinishedSFX()
     {
-        if(techFinishedSFX != null)
-            sfxSource.PlayOneShot(techFinishedSFX);
+        AudioManager.PlaySFX(techFinishedSFX);
     }
 }

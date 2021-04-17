@@ -5475,10 +5475,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tooltipsParent: {fileID: 1097173312}
   popupScreenBounds: {x: 291, y: 99}
+  sfxSource: {fileID: 1492085428}
+  musicSource: {fileID: 1145276744}
   cheatConsole: {fileID: 2071409040}
   researchView: {fileID: 1098509857}
-  musicSource: {fileID: 1145276744}
-  sfxSource: {fileID: 1492085428}
   switchToResearchViewSFX: {fileID: 8300000, guid: cb1d7b753a457b044b9a48c683e8b321,
     type: 3}
   techFinishedSFX: {fileID: 8300000, guid: 7b728edab63c7ff4391af73a92e7d038, type: 3}
@@ -9087,7 +9087,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b0d3f9485df654d861994fae66cb93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tooltipsParent: {fileID: 1603826844}
   popupScreenBounds: {x: 291, y: 99}
+  sfxSource: {fileID: 1492085428}
+  musicSource: {fileID: 1145276744}
   skyboxMaterial: {fileID: 2100000, guid: 85031a0780356064aa3d727e613dc2da, type: 2}
 --- !u!1 &1119400085
 GameObject:
@@ -9406,7 +9409,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359ff5da69b1aaf489532ef85d51004a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 1145276744}
   songs:
   - {fileID: 8300000, guid: 6dbdaa4fd1bd5f4498d81744c23f9d86, type: 3}
   - {fileID: 8300000, guid: 81255f69c30a613438d24e2cd8f348e7, type: 3}
@@ -9843,6 +9845,7 @@ RectTransform:
   - {fileID: 1364221796}
   - {fileID: 1154283341}
   - {fileID: 776853753}
+  - {fileID: 1603826844}
   m_Father: {fileID: 1098509858}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13855,6 +13858,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1588470403}
   m_CullTransparentMesh: 0
+--- !u!1 &1603826843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1603826844}
+  m_Layer: 5
+  m_Name: Tooltips
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1603826844
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603826843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1192561339}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1609044614
 GameObject:
   m_ObjectHideFlags: 0
@@ -15076,8 +15114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d3aac08b8ed74742bb032b56dea246d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 1145276744}
-  sfxSource: {fileID: 1492085428}
 --- !u!1 &1677638360
 GameObject:
   m_ObjectHideFlags: 0

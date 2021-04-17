@@ -111,7 +111,6 @@ public class TechDetailsButton : MonoBehaviour, IPointerEnterHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         //Plays the appropriate sound effect.
-        if(mouseOverSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverSFX);
+        AudioManager.PlaySFX(mouseOverSFX);
     }
 }

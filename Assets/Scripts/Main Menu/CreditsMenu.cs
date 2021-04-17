@@ -10,7 +10,6 @@ public class CreditsMenu : GalaxyMenuBehaviour
     public Sprite dropdownItemSelected;
     public Sprite dropdownItemUnselected;
 
-    public AudioSource sfxSource;
     public AudioClip dropdownOptionSelected;
 
     private Transform sections;
@@ -59,7 +58,7 @@ public class CreditsMenu : GalaxyMenuBehaviour
     public void OnDropDownItemEnter(Transform item)
     {
         item.GetComponent<Image>().sprite = dropdownItemSelected;
-        sfxSource.PlayOneShot(dropdownOptionSelected);
+        AudioManager.PlaySFX(dropdownOptionSelected);
     }
 
     public void OnDropDownItemExit(Transform item)

@@ -211,7 +211,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
     //Indicates whether the popup should close due to the player pressing escape.
     public virtual bool ShouldClose()
     {
-        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && ((SceneManager.GetActiveScene().name.Equals("Galaxy") && !GalaxyManager.popupClosedOnFrame) || (SceneManager.GetActiveScene().name.Equals("Main Menu") && !MainMenuManager.PopupClosedOnFrame)) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
+        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -238,43 +238,11 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         mouseToMenuDistance = Vector2.zero;
     }
 
-    //Plays the sound effect for whenever the popup opens.
-    void PlayOpenPopupSFX()
-    {
-        if(openPopupSFX != null)
-        {
-            if (SceneManager.GetActiveScene().name.Equals("Galaxy"))
-            {
-                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(openPopupSFX);
-            }
-            else if (SceneManager.GetActiveScene().name.Equals("Main Menu"))
-            {
-                MainMenu.SFXSource.PlayOneShot(openPopupSFX);
-            }
-        }
-    }
-
-    //Plays the sound effect for whenever the popup closes.
-    void PlayClosePopupSFX()
-    {
-        if (closePopupSFX != null)
-        {
-            if (SceneManager.GetActiveScene().name.Equals("Galaxy"))
-            {
-                GalaxyManager.galaxyManager.sfxSource.PlayOneShot(closePopupSFX);
-            }
-            else if (SceneManager.GetActiveScene().name.Equals("Main Menu"))
-            {
-                MainMenu.SFXSource.PlayOneShot(closePopupSFX);
-            }
-        }
-    }
-
     //Deactivates the popup game object and sends it to the back of the popups priority hierarchy, but does not destroy the game object or do any specific logic that might be needed for some popups, and to add more logic you will need to add an override method for this in the subclass.
     public virtual void Close()
     {
         //Logs with the galaxy manager that a popup has been closed on this frame (so that other popups will not close on the same frame because of the escape key being pressed).
-        GalaxyManager.popupClosedOnFrame = true;
+        GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame = true;
 
         // Resets whether the popup is being dragged by the player.
         OnPointerUp(null);
@@ -286,7 +254,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         transform.gameObject.SetActive(false);
 
         //Plays the close popup sound effect.
-        PlayClosePopupSFX();
+        AudioManager.PlaySFX(closePopupSFX);
     }
 
     public virtual void Open()
@@ -323,7 +291,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         }
 
         //Plays the sound effect for whenever the popup opens.
-        PlayOpenPopupSFX();
+        AudioManager.PlaySFX(openPopupSFX);
     }
 
     //Indicates whether the opening animation for the popup is done.

@@ -81,12 +81,12 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 
     public void PlayMouseOverSFX()
     {
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverSFX);
+        AudioManager.PlaySFX(mouseOverSFX);
     }
 
     public void PlayMouseClickSFX()
     {
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseClickSFX);
+        AudioManager.PlaySFX(mouseClickSFX);
     }
 
     public static bool IsAGalaxyConfirmationPopupOpen()

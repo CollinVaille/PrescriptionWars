@@ -10,8 +10,6 @@ public class DefaultDropdownManager : MonoBehaviour
 
     public AudioClip dropdownOptionSelected;
 
-    public AudioSource sfxSource;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +25,7 @@ public class DefaultDropdownManager : MonoBehaviour
     public void OnDropDownItemEnter(Transform item)
     {
         item.GetComponent<Image>().sprite = dropdownItemSelected;
-        sfxSource.PlayOneShot(dropdownOptionSelected);
+        AudioManager.PlaySFX(dropdownOptionSelected);
     }
 
     public void OnDropDownItemExit(Transform item)

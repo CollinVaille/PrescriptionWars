@@ -277,8 +277,8 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         planetSelected.cities[citySelected].buildingsCompleted.RemoveAt(indexToDemolish);
 
         //Plays the demolish and cancel sound effects.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(demolishAudioClip);
+        AudioManager.PlaySFX(cancelAudioClip);
+        AudioManager.PlaySFX(demolishAudioClip);
 
         //Updates the ui.
         UpdateUI();
@@ -321,7 +321,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         planetSelected.cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
 
         //Plays the removal/cancel sound effect.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(cancelAudioClip);
+        AudioManager.PlaySFX(cancelAudioClip);
 
         //Updates the ui.
         UpdateUI();
@@ -353,7 +353,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         }
 
         //Plays the sound effect.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
+        AudioManager.PlaySFX(clickThreeAudioClip);
         //Updates the ui.
         UpdateUI();
     }
@@ -367,7 +367,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
             planetSelected.cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.PlayerID);
 
             //Plays the add to queue sound effect.
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickThreeAudioClip);
+            AudioManager.PlaySFX(clickThreeAudioClip);
             //Updates the ui.
             UpdateUI();
         }
@@ -384,7 +384,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         UpdateUI();
 
         //Plays sound effect.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOnCityAudioClip);
+        AudioManager.PlaySFX(clickOnCityAudioClip);
     }
 
     public void ResetChooseCityMenu()
@@ -575,7 +575,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         UpdateUI();
 
         //Plays the click on tab sound effect.
-        GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickOnTabAudioClip);
+        AudioManager.PlaySFX(clickOnTabAudioClip);
     }
 
     public override void Open()

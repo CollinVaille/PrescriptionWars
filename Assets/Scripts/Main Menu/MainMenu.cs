@@ -29,23 +29,6 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private AudioSource sfxSource = null;
-    public static AudioSource SFXSource
-    {
-        get
-        {
-            if (mainMenu != null)
-                return mainMenu.sfxSource;
-            return null;
-        }
-        set
-        {
-            if (mainMenu != null)
-                mainMenu.sfxSource = value;
-        }
-    }
-
     [Header("Prefabs")]
 
     [SerializeField]
@@ -60,7 +43,7 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSettingsMenu.LoadSettings();
+        //audioSettingsMenu.LoadSettings();
         videoSettingsMenu.LoadSettings();
     }
 

@@ -84,14 +84,12 @@ public class GalaxyDropdownConfirmationPopup : GalaxyConfirmationPopupBehaviour
     //This method is called whenever the mouse goes over a dropdown option (called through an event trigger) and plays the mouse over dropdown option sound effect.
     public void MouseOverDropdownOption()
     {
-        if(mouseOverDropdownOptionSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(mouseOverDropdownOptionSFX);
+        AudioManager.PlaySFX(mouseOverDropdownOptionSFX);
     }
 
     //This method is called whenever a dropdown option is clicked (called through an event trigger) and plays the appropriate sound effect.
     public void ClickDropdownOption()
     {
-        if (clickDropdownOptionSFX != null)
-            GalaxyManager.galaxyManager.sfxSource.PlayOneShot(clickDropdownOptionSFX);
+        AudioManager.PlaySFX(clickDropdownOptionSFX);
     }
 }
