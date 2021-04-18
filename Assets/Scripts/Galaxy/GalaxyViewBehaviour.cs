@@ -30,8 +30,6 @@ public class GalaxyViewBehaviour : MonoBehaviour, IGalaxyTooltipHandler, IGalaxy
 
     [SerializeField]
     private AudioSource sfxSource = null;
-    [SerializeField]
-    private AudioSource musicSource = null;
 
     //Non-inspector variables.
 
@@ -49,11 +47,18 @@ public class GalaxyViewBehaviour : MonoBehaviour, IGalaxyTooltipHandler, IGalaxy
         }
     }
 
+    //Indicates whether the audio sources have been set already on the current frame.
+    private bool audioSourcesAlreadySetOnFrame = false;
+
     // Start is called before the first frame update
     public virtual void Start()
     {
         //Sets the sfx and music audio sources of the view.
-        AudioManager.SetAudioSources(sfxSource, musicSource);
+        if (!audioSourcesAlreadySetOnFrame)
+        {
+            AudioManager.SetSFXSource(sfxSource);
+            audioSourcesAlreadySetOnFrame = true;
+        }
     }
 
     public virtual void Awake()
@@ -66,23 +71,18 @@ public class GalaxyViewBehaviour : MonoBehaviour, IGalaxyTooltipHandler, IGalaxy
     // Update is called once per frame
     public virtual void Update()
     {
-        
+        //Resets the variable that indicates whether the audio sources have been set already on the current frame.
+        audioSourcesAlreadySetOnFrame = false;
     }
 
     public virtual void OnEnable()
     {
         //Sets the sfx and music audio sources of the view.
-        AudioManager.SetAudioSources(sfxSource, musicSource);
-    }
-
-    public virtual void OnDisable()
-    {
-        AudioManager.SaveMusicSourceDetails();
-    }
-
-    public virtual void OnDestroy()
-    {
-        AudioManager.SaveMusicSourceDetails();
+        if (!audioSourcesAlreadySetOnFrame)
+        {
+            AudioManager.SetSFXSource(sfxSource);
+            audioSourcesAlreadySetOnFrame = true;
+        }
     }
 
     //Resets the boolean that indicates whether a popup has been closed on this frame for this view to false.

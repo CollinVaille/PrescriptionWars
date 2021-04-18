@@ -83,6 +83,9 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
     // Start is called before the first frame update
     public virtual void Start()
     {
+        //Sets the variable that indicates the bounds of the screen.
+        SetScreenBoundsIndicatorVector();
+
         //Executes the logic for opening the popup if the logic for opening the popup is supposed to be executed in the start method.
         if (opensAtStart)
             Open();
@@ -98,9 +101,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
         //Sets the variable that holds the value of the canvas that the popup is parented under.
         //parentCanvas = GeneralHelperMethods.GetParentCanvas(transform);
-
-        //Sets the variable that indicates the bounds of the screen.
-        SetScreenBoundsIndicatorVector();
     }
 
     private void SetScreenBoundsIndicatorVector()
@@ -309,5 +309,11 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
             default:
                 return true;
         }
+    }
+
+    private void OnDestroy()
+    {
+        //Removes the popup from the static list that contains all things with popup behaviour.
+        galaxyPopupBehaviours.Remove(this);
     }
 }

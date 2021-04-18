@@ -4,17 +4,14 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Audio Options")]
+
+    [SerializeField, LabelOverride("Music Source")] private AudioSource localMusicSource = null;
+
     //Audio source that sound effects will play through. Example: sfxSource.PlayOneShot(soundEffectAudioClip).
     private static AudioSource sfxSource = null;
     //Audio source that music will play through. Example: musicSource.Play(musicAudioClip).
     private static AudioSource musicSource = null;
-
-    //Indicates the previously used music source.
-    private static AudioSource previousMusicSource = null;
-    //Indicates the last song that was played.
-    private static AudioClip lastSongPlayed = null;
-    //Indicates what time the last song that was played got to.
-    private static float lastSongPlayedTime;
 
     //Bool return value indicates whether music is playing in the game through the musicSource AudioSource.
     public static bool IsMusicPlaying
@@ -35,7 +32,10 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        
+        if (musicSource == null)
+            SetMusicSource(localMusicSource);
+        else
+            Destroy(localMusicSource.gameObject);
     }
 
     // Update is called once per frame
@@ -44,27 +44,22 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    //Assigns the sfxSource and the musicSource to the specified audio sources.
-    public static void SetAudioSources(AudioSource sfxSource, AudioSource musicSource)
+    //Assigns the sfxSource to the specified audio source.
+    public static void SetSFXSource(AudioSource sfxSource)
     {
         //Asigns the sfx source and updates its volume.
         AudioManager.sfxSource = sfxSource;
         if(AudioManager.sfxSource != null)
             AudioManager.sfxSource.volume = AudioSettings.SFXVolume;
+    }
 
-        //Assigns the music source and updates its volume and makes sure that the song that was already playing continues to play.
+    //Assigns the musicSource to the specified audio source.
+    private static void SetMusicSource(AudioSource musicSource)
+    {
+        //Assigns the music source and updates its volume.
         AudioManager.musicSource = musicSource;
-        if(AudioManager.musicSource != null)
-        {
+        if (AudioManager.musicSource != null)
             AudioManager.musicSource.volume = AudioSettings.MusicVolume;
-
-            if(previousMusicSource != musicSource && lastSongPlayed != null)
-            {
-                AudioManager.musicSource.clip = lastSongPlayed;
-                AudioManager.musicSource.Play();
-                AudioManager.musicSource.time = lastSongPlayedTime;
-            }
-        }
     }
 
     //Updates the volume of the audio listener to equal the master volume value indicated in the AudioSettings.
@@ -101,23 +96,6 @@ public class AudioManager : MonoBehaviour
         {
             musicSource.clip = song;
             musicSource.Play();
-        }
-    }
-
-    //Stores the clip of the music source and the time of the music source into two respective static variables.
-    public static void SaveMusicSourceDetails()
-    {
-        if(musicSource != null)
-        {
-            previousMusicSource = musicSource;
-            lastSongPlayed = musicSource.clip;
-            lastSongPlayedTime = musicSource.time;
-        }
-        else
-        {
-            previousMusicSource = null;
-            lastSongPlayed = null;
-            lastSongPlayedTime = 0;
         }
     }
 }

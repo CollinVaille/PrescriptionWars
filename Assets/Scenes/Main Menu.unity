@@ -822,7 +822,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &58430096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2311,7 +2310,6 @@ MonoBehaviour:
     type: 3}
   dropdownOptionSelected: {fileID: 8300000, guid: 135f8c7446ded034a9e60b2f2ca81717,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!1 &186799118
 GameObject:
   m_ObjectHideFlags: 0
@@ -3168,7 +3166,6 @@ MonoBehaviour:
     type: 3}
   dropdownOptionSelected: {fileID: 8300000, guid: 135f8c7446ded034a9e60b2f2ca81717,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!1 &314227698
 GameObject:
   m_ObjectHideFlags: 0
@@ -3936,6 +3933,7 @@ GameObject:
   - component: {fileID: 405166907}
   - component: {fileID: 405166906}
   - component: {fileID: 405166905}
+  - component: {fileID: 405166908}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4008,6 +4006,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &405166908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405166904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d3aac08b8ed74742bb032b56dea246d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localMusicSource: {fileID: 1458659388}
 --- !u!1 &406728102
 GameObject:
   m_ObjectHideFlags: 0
@@ -5961,7 +5972,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &589114548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9150,7 +9160,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &911445612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10989,7 +10998,6 @@ MonoBehaviour:
   tooltipsParent: {fileID: 593016152}
   popupScreenBounds: {x: 491, y: 211}
   sfxSource: {fileID: 1055968302}
-  musicSource: {fileID: 1458659388}
 --- !u!1 &1080109618
 GameObject:
   m_ObjectHideFlags: 0
@@ -11571,7 +11579,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!1 &1129492937
 GameObject:
   m_ObjectHideFlags: 0
@@ -13382,7 +13389,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 359ff5da69b1aaf489532ef85d51004a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 1458659388}
   songs:
   - {fileID: 8300000, guid: 6dbdaa4fd1bd5f4498d81744c23f9d86, type: 3}
   - {fileID: 8300000, guid: 81255f69c30a613438d24e2cd8f348e7, type: 3}
@@ -15005,7 +15011,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &1699037226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16947,8 +16952,6 @@ MonoBehaviour:
   masterVolumeSlider: {fileID: 254769144}
   musicVolumeSlider: {fileID: 1222553663}
   sfxVolumeSlider: {fileID: 264538241}
-  musicSource: {fileID: 1458659388}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &1810743039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16969,7 +16972,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!1 &1811264148
 GameObject:
   m_ObjectHideFlags: 0
@@ -17253,7 +17255,6 @@ MonoBehaviour:
     type: 3}
   mouseClickSoundEffect: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &1849849747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17272,7 +17273,6 @@ MonoBehaviour:
     type: 3}
   dropdownItemUnselected: {fileID: 21300000, guid: a3e6dc9f15d87124197cc32224f78a7e,
     type: 3}
-  sfxSource: {fileID: 1055968302}
   dropdownOptionSelected: {fileID: 8300000, guid: 135f8c7446ded034a9e60b2f2ca81717,
     type: 3}
 --- !u!1 &1851292165
@@ -18846,7 +18846,6 @@ MonoBehaviour:
     type: 3}
   dropdownOptionSelected: {fileID: 8300000, guid: 135f8c7446ded034a9e60b2f2ca81717,
     type: 3}
-  sfxSource: {fileID: 1055968302}
 --- !u!114 &1937598854
 MonoBehaviour:
   m_ObjectHideFlags: 0
