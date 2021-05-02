@@ -81,6 +81,15 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         }
     }
 
+    //Indicates whether a popup is hovering over and blocking the back arrow.
+    private bool IsAPopupOverTheBackArrow
+    {
+        get
+        {
+            return (symbolColorPicker.transform.localPosition.x < -325 && symbolColorPicker.transform.localPosition.y > 90) || (backgroundColorPicker.transform.localPosition.x < -325 && backgroundColorPicker.transform.localPosition.y > 90);
+        }
+    }
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -99,6 +108,22 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
             FlagSymbolColor = symbolColorPicker.color;
         if (backgroundColorPicker.gameObject.activeInHierarchy)
             FlagBackgroundColor = backgroundColorPicker.color;
+    }
+
+    //Closes any color picker popups that might be open before it switches to the previous menu.
+    public override void SwitchToPreviousMenu()
+    {
+        if (symbolColorPicker.gameObject.activeInHierarchy)
+            symbolColorPicker.CloseWithoutSFX();
+        if (backgroundColorPicker.gameObject.activeInHierarchy)
+            backgroundColorPicker.CloseWithoutSFX();
+
+        base.SwitchToPreviousMenu();
+    }
+
+    public override bool ShouldBackArrowBeDisabled()
+    {
+        return IsAPopupOverTheBackArrow;
     }
 
     public void ClickSymbolSelectedBackArrow()

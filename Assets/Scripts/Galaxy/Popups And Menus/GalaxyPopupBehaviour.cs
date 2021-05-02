@@ -49,6 +49,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     //Indicates whether the popup is being moved/dragged.
     private bool beingMoved = false;
+    //Indicates whether the popup should close without playing the closing sound effect.
+    private bool closeWithoutSFX = false;
 
     //Indicates the set distance between the mouse and the popup's location (used for dragging popups and probably shouldn't be messed with otherwise).
     private Vector2 mouseToMenuDistance = Vector2.zero;
@@ -244,7 +246,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         //Logs with the galaxy manager that a popup has been closed on this frame (so that other popups will not close on the same frame because of the escape key being pressed).
         GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame = true;
 
-        // Resets whether the popup is being dragged by the player.
+        //Resets whether the popup is being dragged by the player.
         OnPointerUp(null);
 
         //Places the popup at the top of the popup parent object's hierarchy (last priority).
@@ -253,8 +255,22 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         //Deactivates the whole popup.
         transform.gameObject.SetActive(false);
 
-        //Plays the close popup sound effect.
-        AudioManager.PlaySFX(closePopupSFX);
+        //Plays the popup's closing sound effect if it is supposed to.
+        if(!closeWithoutSFX)
+            AudioManager.PlaySFX(closePopupSFX);
+    }
+
+    //This method should be called in order to close the popup without actually playing the closing sound effect.
+    public virtual void CloseWithoutSFX()
+    {
+        //Indicates that the popup should close without playing the closing sound effect.
+        closeWithoutSFX = true;
+
+        //Closes the popup.
+        Close();
+
+        //Resets the bool that indicates whether the popup should close without playing the closing sound effect.
+        closeWithoutSFX = false;
     }
 
     public virtual void Open()

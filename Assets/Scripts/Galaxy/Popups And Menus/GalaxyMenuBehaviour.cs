@@ -42,6 +42,18 @@ public class GalaxyMenuBehaviour : MonoBehaviour
         {
             SwitchToPreviousMenu();
         }
+
+        //Switches the back arrow to enabled or disabled based on the conditions.
+        if (ShouldBackArrowBeDisabled())
+        {
+            if (backArrow.gameObject.activeInHierarchy)
+                backArrow.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (!backArrow.gameObject.activeInHierarchy)
+                backArrow.gameObject.SetActive(true);
+        }
     }
 
     //This method creates the actual back arrow of the menu.
@@ -75,6 +87,12 @@ public class GalaxyMenuBehaviour : MonoBehaviour
     public virtual bool ShouldCloseDueToEscape()
     {
         return previousMenu != null && Input.GetKeyDown(KeyCode.Escape) && !GalaxyPopupBehaviour.IsAPopupActiveInHierarchy;
+    }
+
+    //Indicates whether the back button should be disabled.
+    public virtual bool ShouldBackArrowBeDisabled()
+    {
+        return false;
     }
 
     //Returns the previous menu.

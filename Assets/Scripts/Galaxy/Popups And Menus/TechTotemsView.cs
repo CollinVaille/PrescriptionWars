@@ -86,22 +86,27 @@ public class TechTotemsView : GalaxyMenuBehaviour
 
     public void SetTechTotemSelected(int newTechTotemSelected)
     {
-        Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected = newTechTotemSelected;
+        if(newTechTotemSelected >= 0 && newTechTotemSelected < Empire.empires[GalaxyManager.PlayerID].techManager.techTotems.Count && Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[newTechTotemSelected].techsAvailable.Count != 0)
+            Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected = newTechTotemSelected;
 
         for (int x = 0; x < techTotemSelectedOutlineImages.Count; x++)
         {
             if (x != newTechTotemSelected)
                 techTotemSelectedOutlineImages[x].gameObject.SetActive(false);
-            else
+            else if (newTechTotemSelected >= 0 && newTechTotemSelected < Empire.empires[GalaxyManager.PlayerID].techManager.techTotems.Count && Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[newTechTotemSelected].techsAvailable.Count != 0)
                 techTotemSelectedOutlineImages[x].gameObject.SetActive(true);
+            else
+                techTotemSelectedOutlineImages[x].gameObject.SetActive(false);
         }
 
-        for(int x = 0; x < researchProgressRawImages.Count; x++)
+        for (int x = 0; x < researchProgressRawImages.Count; x++)
         {
             if (x != newTechTotemSelected)
                 researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, -400);
-            else
+            else if (newTechTotemSelected >= 0 && newTechTotemSelected < Empire.empires[GalaxyManager.PlayerID].techManager.techTotems.Count && Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[newTechTotemSelected].techsAvailable.Count != 0)
                 researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, Empire.empires[GalaxyManager.PlayerID].Science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost * 350 + -400);
+            else
+                researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, -400);
         }
     }
 

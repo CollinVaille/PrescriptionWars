@@ -48,6 +48,7 @@ public class PillViewsManager : MonoBehaviour
         return pillViewScript;
     }
 
+    //Completely deletes the specified pill view.
     public static void DeletePillView(PillView pillView)
     {
         //Removes the pill view from the list of pill views.
@@ -66,6 +67,18 @@ public class PillViewsManager : MonoBehaviour
         for(int pillViewIndex = 0; pillViewIndex < pillViews.Count; pillViewIndex++)
         {
             pillViews[pillViewIndex].OnOtherPillViewAdditionOrDeletion(pillViewIndex);
+        }
+    }
+
+    //This method updates the pill view that has any pill under the specified army.
+    public static void UpdatePillViewsOfArmy(GalaxyArmy army)
+    {
+        foreach(PillView pillView in pillViews)
+        {
+            if(pillView.DisplayedPill.AssignedSquad.AssignedArmy == army)
+            {
+                pillView.DisplayedPill = pillView.DisplayedPill;
+            }
         }
     }
 }

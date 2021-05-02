@@ -14,6 +14,8 @@ public class NewGameMenu : GalaxyMenuBehaviour
     private AudioClip mouseEnterButtonSFX = null;
     [SerializeField]
     private AudioClip openNewMenuSFX = null;
+    [SerializeField]
+    private AudioClip clickToggleSFX = null;
 
     public int minimumNumberOfPlanets;
     public int maximumNumberOfPlanets;
@@ -231,6 +233,8 @@ public class NewGameMenu : GalaxyMenuBehaviour
         ironpillModeToggleLabel.text = ironpillModeToggle.isOn ? "Enabled" : "Disabled";
         ironpillModeIconImage.color = ironpillModeToggle.isOn ? new Color(ironpillModeIconImage.color.r, ironpillModeIconImage.color.g, ironpillModeIconImage.color.b, 1) : new Color(ironpillModeIconImage.color.r, ironpillModeIconImage.color.g, ironpillModeIconImage.color.b, 128.0f / 255);
         IronmanModeEnabled = ironpillModeToggle.isOn;
+
+        AudioManager.PlaySFX(clickToggleSFX);
     }
 
     public void RandomizePlaceholderEmpireName()

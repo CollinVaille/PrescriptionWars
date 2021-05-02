@@ -20,6 +20,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     [SerializeField] private GameObject middleSection = null;
 
+    [Header("Army Management Menu Middle Buttons")]
+
+    [SerializeField] private Button renameButton = null;
+    [SerializeField] private Button disbandButton = null;
+    [SerializeField] private Button changeAssignedPillSkinButton = null;
+
     [Header("Army Management Menu SFX Options")]
 
     [SerializeField] private AudioClip disbandUnitSFX = null;
@@ -148,15 +154,20 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
     }
 
-    void SetGroundUnitTypeSelected(GalaxyGroundUnitType groundUnitType)
+    private void SetGroundUnitTypeSelected(GalaxyGroundUnitType groundUnitType)
     {
         groundUnitTypeSelected = groundUnitType;
 
         switch (groundUnitTypeSelected)
         {
             case GalaxyGroundUnitType.None:
+                //Middle section.
                 middleSection.SetActive(false);
+
+                //Unit name.
                 groundUnitNameText.text = "";
+
+                //Pill view.
                 if(pillView != null)
                     pillView.Delete();
                 pillRawImage.texture = null;
@@ -165,30 +176,60 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             case GalaxyGroundUnitType.Army:
                 if (armySelected != null)
                 {
+                    //Middle section.
                     middleSection.SetActive(true);
+
+                    //Unit name.
                     groundUnitNameText.text = armySelected.Name;
+
+                    //Pill view.
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
                     pillRawImage.gameObject.SetActive(false);
+
+                    //Middle buttons.
+                    renameButton.gameObject.SetActive(true);
+                    renameButton.transform.localPosition = new Vector2(-30, renameButton.transform.localPosition.y);
+                    disbandButton.gameObject.SetActive(true);
+                    disbandButton.transform.localPosition = new Vector2(0, disbandButton.transform.localPosition.y);
+                    changeAssignedPillSkinButton.gameObject.SetActive(true);
+                    changeAssignedPillSkinButton.transform.localPosition = new Vector2(30, changeAssignedPillSkinButton.transform.localPosition.y);
                 }
                 break;
             case GalaxyGroundUnitType.Squad:
                 if(squadSelected != null)
                 {
+                    //Middle section.
                     middleSection.SetActive(true);
+
+                    //Unit name.
                     groundUnitNameText.text = squadSelected.Name;
+
+                    //Pill view.
                     if (pillView != null)
                         pillView.Delete();
                     pillRawImage.texture = null;
                     pillRawImage.gameObject.SetActive(false);
+
+                    //Middle buttons.
+                    renameButton.gameObject.SetActive(true);
+                    renameButton.transform.localPosition = new Vector2(-15, renameButton.transform.localPosition.y);
+                    disbandButton.gameObject.SetActive(true);
+                    disbandButton.transform.localPosition = new Vector2(15, disbandButton.transform.localPosition.y);
+                    changeAssignedPillSkinButton.gameObject.SetActive(false);
                 }
                 break;
             case GalaxyGroundUnitType.Pill:
                 if(pillSelected != null)
                 {
+                    //Middle section.
                     middleSection.SetActive(true);
+
+                    //Unit name.
                     groundUnitNameText.text = pillSelected.Name;
+
+                    //Pill view.
                     if (pillView != null)
                     {
                         pillView.DisplayedPill = pillSelected;
@@ -200,6 +241,13 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                         pillRawImage.texture = pillView.RenderTexture;
                         pillRawImage.gameObject.SetActive(true);
                     }
+
+                    //Middle buttons.
+                    renameButton.gameObject.SetActive(true);
+                    renameButton.transform.localPosition = new Vector2(-15, renameButton.transform.localPosition.y);
+                    disbandButton.gameObject.SetActive(true);
+                    disbandButton.transform.localPosition = new Vector2(15, disbandButton.transform.localPosition.y);
+                    changeAssignedPillSkinButton.gameObject.SetActive(false);
                 }
                 break;
         }
@@ -262,7 +310,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         confirmationPopupScript.DestroyConfirmationPopup();
     }
 
-    void DisbandSelectedGroundUnit()
+    private void DisbandSelectedGroundUnit()
     {
         switch (groundUnitTypeSelected)
         {
@@ -403,7 +451,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
     }
 
-    void RenameSelectedGroundUnit(string newName)
+    private void RenameSelectedGroundUnit(string newName)
     {
         switch (groundUnitTypeSelected)
         {
@@ -440,6 +488,34 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
 
         PlayRenameSFX();
+    }
+
+    public void ClickChangeAssignedPillSkinButton()
+    {
+        StartCoroutine(ConfirmChangingAssignedPillSkinAction());
+    }
+
+    IEnumerator ConfirmChangingAssignedPillSkinAction()
+    {
+        GameObject confirmationPopup = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab);
+        GalaxyPillSkinConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyPillSkinConfirmationPopup>();
+        string topText = "Change Assigned Pill Skin";
+        string bodyText = "You are changing the assigned pill skin for " + armySelected.Name;
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, GalaxyManager.pillMaterials[Empire.empires[GalaxyManager.PlayerID].empireCulture]);
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            ChangeAssignedPillSkin(confirmationPopupScript.ReturnValue);
+        }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    private void ChangeAssignedPillSkin(Material newPillSkin)
+    {
+        armySelected.AssignedPillSkin = newPillSkin;
     }
 
     private List<string> GetListOfValidSquadNames()

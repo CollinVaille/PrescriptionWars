@@ -16,6 +16,17 @@ public class GalaxyArmy
         assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
     }
 
+    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin)
+    {
+        //Assigns the name of the army.
+        this.name = name;
+        //Assigns the owner empire id.
+        this.ownerEmpireID = ownerEmpireID;
+
+        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
+        assignedPillSkin = pillSkin;
+    }
+
     //Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
     private int ownerEmpireID;
 
@@ -40,6 +51,11 @@ public class GalaxyArmy
         get
         {
             return assignedPillSkin;
+        }
+        set
+        {
+            assignedPillSkin = value;
+            PillViewsManager.UpdatePillViewsOfArmy(this);
         }
     }
 
@@ -121,6 +137,10 @@ public class GalaxyArmy
         return squads[index];
     }
 }
+
+
+
+
 
 public class GalaxySquad
 {
@@ -243,6 +263,10 @@ public class GalaxySquad
         return pills[index];
     }
 }
+
+
+
+
 
 public class GalaxyPill
 {
