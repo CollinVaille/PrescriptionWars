@@ -502,6 +502,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         string topText = "Change Assigned Pill Skin";
         string bodyText = "You are changing the assigned pill skin for " + armySelected.Name;
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, GalaxyManager.pillMaterials[Empire.empires[GalaxyManager.PlayerID].empireCulture]);
+        confirmationPopupScript.SetPillSkinSelected(armySelected.AssignedPillSkin);
 
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 

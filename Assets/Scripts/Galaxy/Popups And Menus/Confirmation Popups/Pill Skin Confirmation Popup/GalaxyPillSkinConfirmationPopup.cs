@@ -83,4 +83,26 @@ public class GalaxyPillSkinConfirmationPopup : GalaxyConfirmationPopupBehaviour
 
         scrollListContent.GetChild(pillSkinSeletced).GetComponent<PillSkinOptionButton>().SetBackgroundImageColor(new Color(68 / 255.0f, 99 / 255.0f, 93 / 255.0f, 1));
     }
+
+    //This method is called in order to set the pill skin selected index to the index that the specified pill skin is located at.
+    public void SetPillSkinSelected(Material pillSkin)
+    {
+        int skinIndex = -1;
+        for(int x = 0; x < pillSkins.Length; x++)
+        {
+            if(pillSkin == pillSkins[x])
+            {
+                skinIndex = x;
+                break;
+            }
+        }
+        if (skinIndex < 0)
+            return;
+
+        scrollListContent.GetChild(pillSkinSeletced).GetComponent<PillSkinOptionButton>().SetBackgroundImageColor(new Color(82 / 255.0f, 137 / 255.0f, 126 / 255.0f, 1));
+
+        pillSkinSeletced = skinIndex;
+
+        scrollListContent.GetChild(pillSkinSeletced).GetComponent<PillSkinOptionButton>().SetBackgroundImageColor(new Color(68 / 255.0f, 99 / 255.0f, 93 / 255.0f, 1));
+    }
 }

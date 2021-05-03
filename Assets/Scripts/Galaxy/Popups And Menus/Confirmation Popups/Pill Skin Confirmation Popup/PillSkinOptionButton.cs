@@ -11,6 +11,34 @@ public class PillSkinOptionButton : MonoBehaviour
 
     [SerializeField] private Image backgroundImage = null;
 
+    [Header("Pill Skin Option Button Options")]
+
+    [SerializeField] private Texture2D mouseOverPillViewCursor = null;
+    public Texture2D MouseOverPillViewCursor
+    {
+        get
+        {
+            return mouseOverPillViewCursor;
+        }
+        set
+        {
+            mouseOverPillViewCursor = value;
+        }
+    }
+
+    [SerializeField] private float pillViewRotationSpeed = 2.5f;
+    public float PillViewRotationSpeed
+    {
+        get
+        {
+            return pillViewRotationSpeed;
+        }
+        set
+        {
+            pillViewRotationSpeed = value;
+        }
+    }
+
     //Non-inspector variables.
 
     private bool hasBecameVisible = false;
@@ -18,6 +46,17 @@ public class PillSkinOptionButton : MonoBehaviour
     private Material pillSkin = null;
 
     private PillView pillView = null;
+    public PillView PillView
+    {
+        get
+        {
+            return pillView;
+        }
+        set
+        {
+            pillView = value;
+        }
+    }
 
     private GalaxyPillSkinConfirmationPopup assignedConfirmationPopup = null;
 
