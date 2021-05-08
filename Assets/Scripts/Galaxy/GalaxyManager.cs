@@ -156,7 +156,8 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
 
         //Loads in all of the materials that will be applied to pills in pill views.
-        galaxyManager.LoadInPillMaterials();
+        if(pillMaterials == null || pillMaterials.Keys.Count == 0)
+            galaxyManager.LoadInPillMaterials();
     }
 
     // Start is called before the first frame update

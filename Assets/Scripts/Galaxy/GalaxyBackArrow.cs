@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class GalaxyBackArrow : MonoBehaviour
+public class GalaxyBackArrow : MonoBehaviour, IPointerEnterHandler
 {
     [Header("Options")]
 
     [SerializeField]
     [Tooltip("The sound effect that will be played whenever the back arrow is clicked.")]
     private AudioClip backArrowClickSFX = null;
+
+    [SerializeField]
+    [Tooltip("The sound effect that will be played whenever the pointer enters the bounds of the back arrow's image.")]
+    private AudioClip backArrowPointerEnterSFX = null;
 
     [Header("Additional Information")]
 
@@ -45,5 +50,12 @@ public class GalaxyBackArrow : MonoBehaviour
 
         //Plays the sound effect for clicking the back arrow.
         AudioManager.PlaySFX(backArrowClickSFX);
+    }
+
+    //This method is called whenever the pointer enters the bounds of the back arrow.
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        //Plays the sound effect for the pointer entering the bounds of the image component of the back arrow.
+        AudioManager.PlaySFX(backArrowPointerEnterSFX);
     }
 }
