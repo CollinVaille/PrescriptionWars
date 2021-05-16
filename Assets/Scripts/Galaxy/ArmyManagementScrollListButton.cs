@@ -44,8 +44,12 @@ public class ArmyManagementScrollListButton : MonoBehaviour, IDragHandler, IEndD
 
     [Header("Additional Information")]
 
-    [SerializeField]
-    [ReadOnly] private ArmyManagementButtonType type;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private ArmyManagementButtonType type;
 
     //Non-inspector variables.
     private int arrowRotationTargetDegrees;

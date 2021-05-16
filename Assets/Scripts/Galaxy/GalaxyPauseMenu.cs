@@ -10,22 +10,62 @@ public class GalaxyPauseMenu : MonoBehaviour
 
     [SerializeField, Tooltip("The sound effect that will be played when a button is clicked.")] private AudioClip clickButtonSFX = null;
     [SerializeField, Tooltip("The sound effect that will be played when the pointer enters or hovers over a button.")] private AudioClip hoverButtonSFX = null;
+    [SerializeField, Tooltip("The sound effect that will be played when the pause menu closes.")] private AudioClip closeMenuSFX = null;
 
     [Header("Text Components")]
 
     [SerializeField, Tooltip("This text displays the current version of the game as a whole (Ex: Skunk Bomb v0.0.1).")] private Text versionText = null;
 
+    [Header("Other Components")]
+
+    [SerializeField] private GalaxySettingsMenu settingsMenu = null;
+
+    //Non-inspector variables.
+
+    //Indicates whether the pause menu should close due to the player pressing the escape key.
+    private bool ShouldCloseDueToEscape
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Escape) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && (!GalaxySettingsMenu.ClosedOnFrame && !settingsMenu.gameObject.activeInHierarchy);
+        }
+    }
+
+    //Static reference of the pause menu.
+    private static GalaxyPauseMenu pauseMenu = null;
+
+    /// <summary>
+    /// Indicates whether the pause menu is currently active in the hierarchy.
+    /// Note: Returns false if the internal static reference to the pause menu is null.
+    /// </summary>
+    public static bool IsOpen
+    {
+        get
+        {
+            return pauseMenu != null ? pauseMenu.gameObject.activeInHierarchy : false;
+        }
+    }
+
+    private void Awake()
+    {
+        pauseMenu = this;
+    }
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //Updates the text that displays the current version of the game.
         UpdateVersionText();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        //Closes the pause menu if the player is attempting to close it with the escape key.
+        if (ShouldCloseDueToEscape)
+        {
+            Close();
+        }
     }
 
     //Updates the version text to display the current version of the game.
@@ -49,6 +89,9 @@ public class GalaxyPauseMenu : MonoBehaviour
     {
         //Deactivates the pause menu's game object.
         gameObject.SetActive(false);
+
+        //Plays the sound effect for the pause menu closing.
+        AudioManager.PlaySFX(closeMenuSFX);
     }
 
     //This method is called whenever the pointer enters or hovers over a button and plays the appropriate sound effect.
@@ -71,7 +114,7 @@ public class GalaxyPauseMenu : MonoBehaviour
     //Saves the game.
     private void SaveGame()
     {
-
+        Debug.LogWarning("Save Game Logic For Pause Menu Not Implemented Yet.");
     }
 
     //Loads the game and plays the appropriate sound effect.
@@ -87,7 +130,7 @@ public class GalaxyPauseMenu : MonoBehaviour
     //Loads the game.
     private void LoadGame()
     {
-
+        Debug.LogWarning("Load Game Logic For Pause Menu Not Implemented Yet.");
     }
 
     //Opens the setting menu and plays the appropriate sound effect.
@@ -103,7 +146,7 @@ public class GalaxyPauseMenu : MonoBehaviour
     //Opens the settings menu by activating the settings menu's game object.
     private void OpenSettingsMenu()
     {
-
+        settingsMenu.Open();
     }
 
     //Exits to the main menu and plays the appropriate sound effect.
@@ -113,7 +156,36 @@ public class GalaxyPauseMenu : MonoBehaviour
         AudioManager.PlaySFX(clickButtonSFX);
 
         //Exits to the main menu.
-        ExitToMenu();
+        StartCoroutine(ConfirmExitToMenu());
+    }
+
+    //Confirms that the player wishes to exit to the main menu.
+    IEnumerator ConfirmExitToMenu()
+    {
+        GameObject confirmationPopup = Instantiate(GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab);
+        GalaxyDropdownConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyDropdownConfirmationPopup>();
+        string topText = "Exit to Menu";
+        confirmationPopupScript.CreateConfirmationPopup(topText);
+        confirmationPopupScript.AddDropdownOption("Exit Without Saving");
+        confirmationPopupScript.AddDropdownOption("Save And Exit");
+        confirmationPopupScript.SetDropdownOptionSelected("Exit Without Saving");
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            if (confirmationPopupScript.GetReturnValue().Equals("Exit Without Saving"))
+            {
+                ExitToMenu();
+            }
+            else
+            {
+                SaveGame();
+                ExitToMenu();
+            }
+        }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
     }
 
     //Exits to the main menu.

@@ -30,6 +30,8 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
     [SerializeField] private bool opensAtStart = false;
     //Indicates whether the top barrier for the popup is limited by the resource bar.
     [SerializeField] private bool isResourceBarTopBarrier = false;
+    //Indicates whether the popup can be dragged by the player with the cursor.
+    [SerializeField] private bool isDraggable = true;
 
     [Header("Base Popup SFX Options")]
 
@@ -218,17 +220,18 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        transform.SetAsLastSibling();
-
-        //Tells the update function that the player is dragging the menu.
-        beingMoved = true;
-
-        //Tells the update function the set difference between the mouse position and the menu's position.
-        mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-        mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
         //Brings the popup to the top of the priority hierarchy.
         transform.SetAsLastSibling();
+
+        if (isDraggable)
+        {
+            //Tells the update function that the player is dragging the menu.
+            beingMoved = true;
+
+            //Tells the update function the set difference between the mouse position and the menu's position.
+            mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+            mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -325,6 +328,12 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
             default:
                 return true;
         }
+    }
+
+    //Sets whether the popup can be dragged or not according to the specified bool value.
+    public void SetDraggable(bool isDraggable)
+    {
+        this.isDraggable = isDraggable;
     }
 
     private void OnDestroy()

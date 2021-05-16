@@ -18,8 +18,12 @@ public class GalaxyBackArrow : MonoBehaviour, IPointerEnterHandler
 
     [Header("Additional Information")]
 
-    [SerializeField]
-    [ReadOnly] private GalaxyMenuBehaviour assignedMenu = null;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private GalaxyMenuBehaviour assignedMenu = null;
 
     // Start is called before the first frame update
     void Start()

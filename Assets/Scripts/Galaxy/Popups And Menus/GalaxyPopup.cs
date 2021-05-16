@@ -39,11 +39,19 @@ public class GalaxyPopup : GalaxyPopupBehaviour
 
     [Header("Additional Information")]
 
-    [SerializeField]
-    [ReadOnly] private GalaxyPopupSpriteFit spriteFit = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private GalaxyPopupSpriteFit spriteFit = 0;
 
-    [SerializeField]
-    [ReadOnly] private float spritePositionPercentage = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private float spritePositionPercentage = 0;
 
     //Non-inspector variables.
 

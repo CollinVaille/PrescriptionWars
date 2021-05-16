@@ -119,7 +119,7 @@ public class ResourceBar : MonoBehaviour
         //Updates the flag's symbol.
         if (resourceBar.flagSymbolNum != Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected)
         {
-            resourceBar.flagSymbol.sprite = GalaxyManager.flagSymbols[Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected];
+            resourceBar.flagSymbol.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected]);
             resourceBar.flagSymbolNum = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected;
         }
 

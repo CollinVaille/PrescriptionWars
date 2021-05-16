@@ -96,8 +96,6 @@ public class GalaxyManager : GalaxyViewBehaviour
 
     public static List<GalaxyPlanet> planets;
 
-    public static List<Sprite> flagSymbols;
-
     public static bool observationModeEnabled = false;
     public static bool IsGalaxyViewActiveInHierarchy
     {
@@ -141,10 +139,9 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
 
-    public static void Initialize(List<GalaxyPlanet> planetList, List<Sprite> flagSymbolsList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
+    public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
     {
         planets = planetList;
-        flagSymbols = flagSymbolsList;
         galaxyCamera = galaxyCam;
         galaxyCanvas = canvasOfGalaxy;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
@@ -190,6 +187,9 @@ public class GalaxyManager : GalaxyViewBehaviour
 
         //Resets the boolean that indicates if a popup was closed on the frame.
         ResetPopupClosedOnFrame();
+
+        //Resets the boolean that indicates if the settings menu was closed on the current frame.
+        GalaxySettingsMenu.ResetClosedOnFrameBool();
 
         //Toggles the cheat console if the player presses tilde.
         if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())

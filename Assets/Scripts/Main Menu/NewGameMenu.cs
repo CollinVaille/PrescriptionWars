@@ -249,7 +249,7 @@ public class NewGameMenu : GalaxyMenuBehaviour
         empireFlag = flagCreationMenu.EmpireFlag;
 
         empireFlagBackgroundImage.color = empireFlag.backgroundColor;
-        empireFlagSymbolImage.sprite = flagCreationMenu.flagSymbols[empireFlag.symbolSelected];
+        empireFlagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
         empireFlagSymbolImage.color = empireFlag.symbolColor;
     }
 

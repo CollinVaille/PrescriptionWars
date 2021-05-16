@@ -25,9 +25,6 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField]
     private int hyperspaceLaneCheckingRadius = 60;
 
-    [SerializeField]
-    private List<Sprite> flagSymbols = null;
-
     [Header("Camera Settings")]
 
     [SerializeField]
@@ -147,7 +144,7 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.GetComponent<GalaxyPlanet>());
         }
-        GalaxyManager.Initialize(planetScripts, flagSymbols, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent);
+        GalaxyManager.Initialize(planetScripts, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent);
 
         //Generates the tech of the game.
         GenerateTech();
@@ -339,7 +336,7 @@ public class GalaxyGenerator : MonoBehaviour
                 int random = 0;
                 while (true)
                 {
-                    random = Random.Range(0, flagSymbols.Count);
+                    random = Random.Range(0, FlagDataLoader.flagSymbolNames.Length);
 
                     if (empireID == 0)
                         break;

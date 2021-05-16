@@ -79,7 +79,12 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     [Header("Additional Information")]
 
-    [SerializeField, ReadOnly] private GalaxyPlanet planetSelected = null;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private GalaxyPlanet planetSelected = null;
     public GalaxyPlanet PlanetSelected
     {
         get
@@ -92,7 +97,12 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         }
     }
 
-    [SerializeField, ReadOnly] private int citySelected = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private int citySelected = 0;
     public int CitySelected
     {
         get

@@ -7,8 +7,6 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
 {
     [Header("Flag Creation Menu")]
 
-    public List<Sprite> flagSymbols;
-
     [SerializeField]
     private Image flagBackgroundImage = null;
     [SerializeField]
@@ -30,7 +28,12 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
 
     [Header("Additional Information")]
 
-    [ReadOnly, SerializeField] private int symbolSelected = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private int symbolSelected = 0;
     public int SymbolSelected
     {
         get
@@ -40,7 +43,7 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         set
         {
             symbolSelected = value;
-            flagSymbolImage.sprite = flagSymbols[SymbolSelected];
+            flagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
         }
     }
 
@@ -96,7 +99,7 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         base.Start();
 
         //Don't Remove
-        flagSymbolImage.sprite = flagSymbols[symbolSelected];
+        flagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
     }
 
     // Update is called once per frame
@@ -128,13 +131,13 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
 
     public void ClickSymbolSelectedBackArrow()
     {
-        SymbolSelected = SymbolSelected == 0 ? flagSymbols.Count - 1 : SymbolSelected - 1;
+        SymbolSelected = SymbolSelected == 0 ? FlagDataLoader.flagSymbolNames.Length - 1 : SymbolSelected - 1;
         PlayClickButtonSFX();
     }
 
     public void ClickSymbolSelectedNextArrow()
     {
-        SymbolSelected = SymbolSelected == flagSymbols.Count - 1 ? 0 : SymbolSelected + 1;
+        SymbolSelected = SymbolSelected == FlagDataLoader.flagSymbolNames.Length - 1 ? 0 : SymbolSelected + 1;
         PlayClickButtonSFX();
     }
 

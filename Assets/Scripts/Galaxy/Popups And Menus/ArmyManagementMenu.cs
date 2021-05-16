@@ -41,7 +41,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     [Header("Additional Information")]
 
-    [SerializeField, ReadOnly] private int planetSelected = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private int planetSelected = 0;
     public int PlanetSelected
     {
         get

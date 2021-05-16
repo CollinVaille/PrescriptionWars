@@ -156,7 +156,8 @@ public class GeneralHelperMethods
         return currentParentCanvas;
     }
 }
-
+#region Editor
+#if UNITY_EDITOR
 public class ReadOnlyAttribute : PropertyAttribute
 {
     //Collin please do not delete this.
@@ -180,3 +181,5 @@ public class ReadOnlyDrawer : PropertyDrawer
         GUI.enabled = true;
     }
 }
+#endif
+#endregion

@@ -15,7 +15,12 @@ public class GalaxyPlanet : MonoBehaviour
     [Header("Additional Information")]
 
     //Planet biome
-    [ReadOnly, SerializeField] private Planet.Biome biome = Planet.Biome.Unknown;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private Planet.Biome biome = Planet.Biome.Unknown;
     public Planet.Biome Biome
     {
         get
@@ -29,7 +34,12 @@ public class GalaxyPlanet : MonoBehaviour
     }
 
     //Planet culture
-    [ReadOnly, SerializeField] private Empire.Culture culture = Empire.Culture.Red;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private Empire.Culture culture = Empire.Culture.Red;
     public Empire.Culture Culture
     {
         get
@@ -42,9 +52,19 @@ public class GalaxyPlanet : MonoBehaviour
         }
     }
 
-    [ReadOnly, SerializeField] private Vector3 rotationSpeed = Vector3.zero;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private Vector3 rotationSpeed = Vector3.zero;
 
-    [ReadOnly, SerializeField] private int ownerID = -1;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private int ownerID = -1;
     public int OwnerID
     {
         get
@@ -57,7 +77,12 @@ public class GalaxyPlanet : MonoBehaviour
             nameLabel.color = Empire.empires[ownerID].LabelColor;
         }
     }
-    [ReadOnly, SerializeField] private int planetID = -1;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private int planetID = -1;
     public int PlanetID
     {
         get
@@ -69,7 +94,12 @@ public class GalaxyPlanet : MonoBehaviour
             planetID = value;
         }
     }
-    [ReadOnly, SerializeField] private bool isCapital;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private bool isCapital;
     public bool IsCapital
     {
         get
