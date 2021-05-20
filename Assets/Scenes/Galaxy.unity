@@ -6118,22 +6118,9 @@ MonoBehaviour:
       amount: 1
   playerEmpireName: 
   numberOfPlanets: 60
-  numberOfEmpires: 5
+  numberOfEmpires: 6
   distanceBetweenPlanets: 30
   hyperspaceLaneCheckingRadius: 60
-  flagSymbols:
-  - {fileID: 21300000, guid: c6393a2b5e395874192a01fa554d4d34, type: 3}
-  - {fileID: 21300000, guid: 679d3e079f458a64182ce5327f92be95, type: 3}
-  - {fileID: 21300000, guid: 437ac173d82e9f74986df156026de543, type: 3}
-  - {fileID: 21300000, guid: 9c37fb95ff281aa43b56c25fec858b34, type: 3}
-  - {fileID: 21300000, guid: d76b501a041097a4c81ad4a196124b98, type: 3}
-  - {fileID: 21300000, guid: 813645bd7ca651343b0f15a2d29cc758, type: 3}
-  - {fileID: 21300000, guid: 90e4abe2933f42f45b540f80cdc3a1e7, type: 3}
-  - {fileID: 21300000, guid: 35cb024d987f77f4a98873e627aaa2a9, type: 3}
-  - {fileID: 21300000, guid: ab7401dd1468ec84fac4dcf492528206, type: 3}
-  - {fileID: 21300000, guid: 482f14fce01b7a24bbcf4a67822542a7, type: 3}
-  - {fileID: 21300000, guid: c72459df99c505346962a28c81dad529, type: 3}
-  - {fileID: 21300000, guid: a892549ea7a5a9c428c6da39c5f620da, type: 3}
   galaxyCamera: {fileID: 1676803077}
   galaxyCanvas: {fileID: 122588001}
   skyboxMaterial: {fileID: 2100000, guid: 5ee91479e858d7043a1fb410c5a60f51, type: 2}
@@ -6199,6 +6186,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ceddc292cbdcf0d4090f224a85e48888, type: 2}
   - {fileID: 2100000, guid: ec880dcad11aaf44691b0c67fbab845c, type: 2}
   - {fileID: 2100000, guid: 11246b68c6b503f4783a8eb241403a4f, type: 2}
+  - {fileID: 2100000, guid: 8e706ed4166fa4f4cba16068e126d714, type: 2}
   planetPrefab: {fileID: 4495200285863478047, guid: bcdb2a27a1d37e540a013c1a2a2a73c4,
     type: 3}
   shipPrefab: {fileID: 8531751786611237472, guid: 88730df31a26e4b4c91f58dc578daad7,
@@ -8645,9 +8633,9 @@ RectTransform:
   m_Father: {fileID: 2015328747}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -113.333336}
   m_SizeDelta: {x: 147.16667, y: 36.666668}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &956079480
@@ -9677,7 +9665,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1066972867
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10023,9 +10011,9 @@ RectTransform:
   m_Father: {fileID: 2015328747}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -186.66667}
   m_SizeDelta: {x: 147.16667, y: 36.666668}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1117250450
@@ -10523,9 +10511,9 @@ RectTransform:
   m_Father: {fileID: 2015328747}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -223.33334}
   m_SizeDelta: {x: 147.16667, y: 36.666668}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1152438085
@@ -15148,7 +15136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1556183325
 Transform:
   m_ObjectHideFlags: 0
@@ -17311,9 +17299,9 @@ RectTransform:
   m_Father: {fileID: 2015328747}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -76.666664}
   m_SizeDelta: {x: 147.16667, y: 36.666668}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696373403
@@ -18974,9 +18962,9 @@ RectTransform:
   m_Father: {fileID: 2015328747}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -150}
   m_SizeDelta: {x: 147.16667, y: 36.666668}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1865734191

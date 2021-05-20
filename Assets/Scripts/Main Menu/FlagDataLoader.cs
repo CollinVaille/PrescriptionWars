@@ -23,13 +23,22 @@ public class FlagDataLoader : MonoBehaviour
 
     public static string[] flagSymbolNames;
 
+    #region Editor
+    #if UNITY_EDITOR
+    private static bool flagSymbolNamesSaved = false;
+    #endif
+    #endregion
+
     public void OnFlagDataLoaderAwake()
     {
         #region Editor
         #if UNITY_EDITOR
-        string[] flagSymbolNamesFromDirectory = GetFlagSymbolNamesFromDirectory();
-        SaveFlagSymbolNames(flagSymbolNamesFromDirectory);
-        flagSymbolNames = flagSymbolNamesFromDirectory;
+        if (!flagSymbolNamesSaved)
+        {
+            string[] flagSymbolNamesFromDirectory = GetFlagSymbolNamesFromDirectory();
+            SaveFlagSymbolNames(flagSymbolNamesFromDirectory);
+            flagSymbolNames = flagSymbolNamesFromDirectory;
+        }
         #endif
         #endregion
         if (!Application.isEditor && flagSymbolNames == null)
@@ -77,6 +86,8 @@ public class FlagDataLoader : MonoBehaviour
         }
         File.WriteAllText(AssetDatabase.GetAssetPath(flagSymbolsDataTextAsset), flagSymbolsTextToSave);
         EditorUtility.SetDirty(flagSymbolsDataTextAsset);
+
+        flagSymbolNamesSaved = true;
     }
     #endif
     #endregion

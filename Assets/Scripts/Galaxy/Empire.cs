@@ -28,7 +28,8 @@ public class Empire
         Green,
         Blue,
         Purple,
-        Gold
+        Gold,
+        Silver
     }
 
     //Contains all of the empires in the galaxy and can be accessed from anywhere.

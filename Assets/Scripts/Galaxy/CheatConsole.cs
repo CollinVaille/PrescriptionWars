@@ -297,7 +297,7 @@ public class CheatConsole : MonoBehaviour
         commandHistoryText.text += "\nSuccess";
     }
 
-    void SetPlanetCulture(string command)       //Doesn't work atm.
+    /*void SetPlanetCulture(string command)       //Doesn't work atm.
     {
         int index = -1;
 
@@ -350,7 +350,7 @@ public class CheatConsole : MonoBehaviour
 
         commandHistoryText.text += "\nSuccess";
         Debug.Log(GalaxyManager.planets[index].GetComponent<GalaxyPlanet>().Culture);
-    }
+    }*/
 
     void ChangeEmpireBasedOnID(string command)
     {
@@ -428,6 +428,10 @@ public class CheatConsole : MonoBehaviour
                 break;
             case "gold":
                 selectedCulture = Empire.Culture.Gold;
+                commandSuccessful = true;
+                break;
+            case "silver":
+                selectedCulture = Empire.Culture.Silver;
                 commandSuccessful = true;
                 break;
         }

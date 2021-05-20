@@ -195,6 +195,32 @@ public class NewGameMenu : GalaxyMenuBehaviour
         }
     }
 
+    public void OnEndEditNumberOfPlanetsInputField()
+    {
+        if (numberOfPlanetsInputField.text.Equals(""))
+        {
+            numberOfPlanets = maximumNumberOfPlanets;
+            return;
+        }
+
+        int specifiedNumberOfPlanets = int.Parse(numberOfPlanetsInputField.text);
+
+        if(specifiedNumberOfPlanets < minimumNumberOfPlanets)
+        {
+            numberOfPlanets = minimumNumberOfPlanets;
+            numberOfPlanetsInputField.text = minimumNumberOfPlanets.ToString();
+        }
+        else if (specifiedNumberOfPlanets > maximumNumberOfPlanets)
+        {
+            numberOfPlanets = maximumNumberOfPlanets;
+            numberOfPlanetsInputField.text = maximumNumberOfPlanets.ToString();
+        }
+        else
+        {
+            numberOfPlanets = specifiedNumberOfPlanets;
+        }
+    }
+
     public void OnEndEditEmpireNameInputField()
     {
         empireName = empireNameInputField.text;

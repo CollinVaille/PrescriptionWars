@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -277,25 +278,7 @@ public class GalaxyGenerator : MonoBehaviour
             {
                 while (true)
                 {
-                    int random = Random.Range(0, 5);
-                    switch (random)
-                    {
-                        case 0:
-                            empireCulture = Empire.Culture.Red;
-                            break;
-                        case 1:
-                            empireCulture = Empire.Culture.Green;
-                            break;
-                        case 2:
-                            empireCulture = Empire.Culture.Blue;
-                            break;
-                        case 3:
-                            empireCulture = Empire.Culture.Purple;
-                            break;
-                        case 4:
-                            empireCulture = Empire.Culture.Gold;
-                            break;
-                    }
+                    empireCulture = (Empire.Culture)UnityEngine.Random.Range(0, Enum.GetNames(typeof(Empire.Culture)).Length);
 
                     if (empireID == 0)
                         break;
@@ -336,7 +319,7 @@ public class GalaxyGenerator : MonoBehaviour
                 int random = 0;
                 while (true)
                 {
-                    random = Random.Range(0, FlagDataLoader.flagSymbolNames.Length);
+                    random = UnityEngine.Random.Range(0, FlagDataLoader.flagSymbolNames.Length);
 
                     if (empireID == 0)
                         break;
@@ -479,11 +462,11 @@ public class GalaxyGenerator : MonoBehaviour
         switch (culture)
         {
             case Empire.Culture.Red:
-                return new Color(Random.Range(0.25f, 1.0f), 0, 0, 1);
+                return new Color(UnityEngine.Random.Range(0.25f, 1.0f), 0, 0, 1);
             case Empire.Culture.Green:
-                return new Color(0, Random.Range(0.25f, 1.0f), 0, 1);
+                return new Color(0, UnityEngine.Random.Range(0.25f, 1.0f), 0, 1);
             case Empire.Culture.Blue:
-                return new Color(0, 0, Random.Range(0.25f, 1.0f), 1);
+                return new Color(0, 0, UnityEngine.Random.Range(0.25f, 1.0f), 1);
             case Empire.Culture.Purple:
                 List<Color> purpleColors = new List<Color>();
                 purpleColors.Add(new Color(186.0f / 255, 85.0f / 255, 211.0f / 255, 1));         //Medium Orchid
@@ -493,7 +476,7 @@ public class GalaxyGenerator : MonoBehaviour
                 purpleColors.Add(new Color(153.0f / 255, 50.0f / 255, 204.0f / 255, 1));         //Dark Orchid
                 purpleColors.Add(new Color(139.0f / 255, 0.0f / 255, 139.0f / 255, 1));          //Dark Magenta
                 purpleColors.Add(new Color(128.0f / 255, 0.0f / 255, 128.0f / 255, 1));          //Purple
-                int random = Random.Range(0, purpleColors.Count);
+                int random = UnityEngine.Random.Range(0, purpleColors.Count);
                 return purpleColors[random];
             case Empire.Culture.Gold:
                 List<Color> goldColors = new List<Color>();
@@ -504,8 +487,15 @@ public class GalaxyGenerator : MonoBehaviour
                 goldColors.Add(new Color(212.0f / 255, 175.0f / 255, 55.0f / 255, 1));           //Metallic Gold
                 goldColors.Add(new Color(207.0f / 255, 181.0f / 255, 59.0f / 255, 1));           //Old Gold
                 goldColors.Add(new Color(197.0f / 255, 179.0f / 255, 88.0f / 255, 1));           //Vegas Gold
-                int randomIndex = Random.Range(0, goldColors.Count);
+                int randomIndex = UnityEngine.Random.Range(0, goldColors.Count);
                 return goldColors[randomIndex];
+            case Empire.Culture.Silver:
+                List<Color> silverColors = new List<Color>();
+                silverColors.Add(new Color(211.0f / 255, 211.0f / 255, 211.0f / 255, 1));
+                silverColors.Add(new Color(192.0f / 255, 192.0f / 255, 192.0f / 255, 1));
+                silverColors.Add(new Color(169.0f / 255, 169.0f / 255, 169.0f / 255, 1));
+                int silverRandomIndex = UnityEngine.Random.Range(0, silverColors.Count);
+                return silverColors[silverRandomIndex];
         }
 
         return new Color(1, 1, 1, 1);
@@ -661,7 +651,7 @@ public class GalaxyGenerator : MonoBehaviour
         for(int attempt = 1; attempt <= 1000; attempt++)
         {
             goodPosition = true;
-            randomPosition = new Vector3(Random.Range(leftBoundary, rightBoundary), 0, Random.Range(bottomBoundary, topBoundary));
+            randomPosition = new Vector3(UnityEngine.Random.Range(leftBoundary, rightBoundary), 0, UnityEngine.Random.Range(bottomBoundary, topBoundary));
             for(int x = 0; x < planets.Count; x++)
             {
                 /*if(Mathf.Abs(randomPosition.x - planets[x].transform.localPosition.x) <= 30 || Mathf.Abs(randomPosition.z - planets[x].transform.localPosition.z) <= 30)
@@ -683,7 +673,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     private int GeneratePlanetScale()
     {
-        return Random.Range(8, 16);
+        return UnityEngine.Random.Range(8, 16);
     }
 
     //Gets the material for the planet depending on the planet's randomly generated biome.
@@ -692,17 +682,17 @@ public class GalaxyGenerator : MonoBehaviour
         switch (biome)
         {
             case Planet.Biome.Frozen:
-                return frozenMaterials[Random.Range(0, frozenMaterials.Count)];
+                return frozenMaterials[UnityEngine.Random.Range(0, frozenMaterials.Count)];
             case Planet.Biome.Temperate:
-                return temperateMaterials[Random.Range(0, temperateMaterials.Count)];
+                return temperateMaterials[UnityEngine.Random.Range(0, temperateMaterials.Count)];
             case Planet.Biome.Desert:
-                return desertMaterials[Random.Range(0, desertMaterials.Count)];
+                return desertMaterials[UnityEngine.Random.Range(0, desertMaterials.Count)];
             case Planet.Biome.Swamp:
-                return swampMaterials[Random.Range(0, swampMaterials.Count)];
+                return swampMaterials[UnityEngine.Random.Range(0, swampMaterials.Count)];
             case Planet.Biome.Hell:
-                return hellMaterials[Random.Range(0, hellMaterials.Count)];
+                return hellMaterials[UnityEngine.Random.Range(0, hellMaterials.Count)];
             case Planet.Biome.Spirit:
-                return spiritMaterials[Random.Range(0, spiritMaterials.Count)];
+                return spiritMaterials[UnityEngine.Random.Range(0, spiritMaterials.Count)];
 
             default:
                 return frozenMaterials[0];
@@ -712,7 +702,7 @@ public class GalaxyGenerator : MonoBehaviour
     //Method the randomly generates a biome for a planet.
     private Planet.Biome GenerateBiome()
     {
-        int random = Random.Range(0, 6);
+        int random = UnityEngine.Random.Range(0, 6);
 
         switch (random)
         {
@@ -758,12 +748,12 @@ public class GalaxyGenerator : MonoBehaviour
     {
         string planetName = "";
 
-        if (Random.Range(0, 6) != 0) //Normal random name
+        if (UnityEngine.Random.Range(0, 6) != 0) //Normal random name
         {
             //Pick a random name
-            planetName = planetNames[Random.Range(0, planetNames.Length)];
+            planetName = planetNames[UnityEngine.Random.Range(0, planetNames.Length)];
         }
-        else if (Random.Range(0, 2) == 0) //Greek letter + astrological/zodiac/birth sign name
+        else if (UnityEngine.Random.Range(0, 2) == 0) //Greek letter + astrological/zodiac/birth sign name
         {
             string[] greekLetters = new string[] { "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Rho", "Omikron", "Zeta",
             "Sigma", "Omega"};
@@ -771,18 +761,18 @@ public class GalaxyGenerator : MonoBehaviour
             string[] zodiacSigns = new string[] { "Carinae", "Tauri", "Pegasi", "Centauri", "Scuti", "Orionis", "Scorpius",
             "Geminorum"};
 
-            planetName = greekLetters[Random.Range(0, greekLetters.Length)] + " "
-                + zodiacSigns[Random.Range(0, zodiacSigns.Length)];
+            planetName = greekLetters[UnityEngine.Random.Range(0, greekLetters.Length)] + " "
+                + zodiacSigns[UnityEngine.Random.Range(0, zodiacSigns.Length)];
         }
-        else if (Random.Range(0, 2) == 0) //Some prefix + major or minor name
+        else if (UnityEngine.Random.Range(0, 2) == 0) //Some prefix + major or minor name
         {
             string[] prefixes = new string[] { "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Rho", "Omikron", "Zeta",
             "Sigma", "Omega", "Ursa", "Virgo", "Canis", "Pisces", "Saega", "Polis"};
 
-            if (Random.Range(0, 2) == 0)
-                planetName = prefixes[Random.Range(0, prefixes.Length)] + " Major";
+            if (UnityEngine.Random.Range(0, 2) == 0)
+                planetName = prefixes[UnityEngine.Random.Range(0, prefixes.Length)] + " Major";
             else
-                planetName = prefixes[Random.Range(0, prefixes.Length)] + " Minor";
+                planetName = prefixes[UnityEngine.Random.Range(0, prefixes.Length)] + " Minor";
         }
         else //Some guy's name that wanted to shove his dick into history + some edgy sounding fate
         {
@@ -792,15 +782,15 @@ public class GalaxyGenerator : MonoBehaviour
             string[] edgyFates = new string[] { "Fall", "Demise", "Oblivion", "End", "Moon", "Shame", "Hell",
             "Garden", "Domain", "Eyrie", "Madness", "Lost Plane", "Last"};
 
-            planetName = dickShovers[Random.Range(0, dickShovers.Length)] + " "
-                + edgyFates[Random.Range(0, edgyFates.Length)];
+            planetName = dickShovers[UnityEngine.Random.Range(0, dickShovers.Length)] + " "
+                + edgyFates[UnityEngine.Random.Range(0, edgyFates.Length)];
         }
 
         //Add roman numeral onto end for variation
-        if (Random.Range(0, 5) == 0)
+        if (UnityEngine.Random.Range(0, 5) == 0)
         {
             string[] numerals = new string[] { "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
-            planetName += " " + numerals[Random.Range(0, numerals.Length)];
+            planetName += " " + numerals[UnityEngine.Random.Range(0, numerals.Length)];
         }
 
         return planetName;

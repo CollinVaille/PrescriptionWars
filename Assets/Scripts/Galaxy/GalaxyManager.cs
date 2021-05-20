@@ -109,7 +109,7 @@ public class GalaxyManager : GalaxyViewBehaviour
 
     public static GalaxyManager galaxyManager;
 
-    public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null};
+    public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null, null };
     public static Dictionary<Empire.Culture, Material[]> pillMaterials = new Dictionary<Empire.Culture, Material[]>();
 
     private static Camera galaxyCamera = null;
