@@ -275,8 +275,39 @@ public class NewGameMenu : GalaxyMenuBehaviour
         empireFlag = flagCreationMenu.EmpireFlag;
 
         empireFlagBackgroundImage.color = empireFlag.backgroundColor;
-        empireFlagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
         empireFlagSymbolImage.color = empireFlag.symbolColor;
+        //empireFlagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
+
+        StartCoroutine(UpdateFlagSymbolImageSprite());
+    }
+
+    IEnumerator UpdateFlagSymbolImageSprite()
+    {
+        //Enables the loading text on the flag symbol image.
+        if(empireFlagSymbolImage.transform.childCount > 0)
+        {
+            empireFlagSymbolImage.transform.GetChild(0).gameObject.SetActive(true);
+        }
+
+        //Puts in the resource request for the flag image sprite.
+        ResourceRequest flagSymbolImageSpriteResourceRequest = Resources.LoadAsync<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
+
+        //Waits until the resource request has been completed and the flag image sprite has been loaded.
+        yield return new WaitUntil(() => flagSymbolImageSpriteResourceRequest.isDone);
+
+        //Sets the sprite of the flag image to the updated sprite.
+        empireFlagSymbolImage.sprite = (Sprite)flagSymbolImageSpriteResourceRequest.asset;
+
+        //Disables the loading text on the flag symbol image.
+        if (empireFlagSymbolImage.transform.childCount > 0)
+        {
+            empireFlagSymbolImage.transform.GetChild(0).gameObject.SetActive(false);
+        }
+    }
+
+    private bool IsResourceRequestDone(ResourceRequest resourceRequest)
+    {
+        return resourceRequest.isDone;
     }
 
     public void ClickEmpireFlagButton()
