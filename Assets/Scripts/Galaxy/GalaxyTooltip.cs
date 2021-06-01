@@ -218,23 +218,36 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Indicates whether the tooltip is open or not.
     public bool Open { get; private set; } = false;
 
+    //Indicates whether the tooltip component has been applied to a 3D object.
+    private bool componentAppliedTo3DObject = false;
+
     // Start is called before the first frame update
     private void Start()
     {
-        parentCanvas = GeneralHelperMethods.GetParentCanvas(transform);
         parent = GetCurrentParent();
+        parentCanvas = GeneralHelperMethods.GetParentCanvas(parent);
         sceneCamera = GetCurrentSceneCamera();
+        componentAppliedTo3DObject = gameObject.GetComponent<Renderer>() != null;
     }
 
     // Update is called once per frame
     private void Update()
     {
         //Updates the position of the tooltip to the position of the player's mouse if the tooltip is open.
-        if (Open && followsMouse)
+        if (Open)
         {
-            tooltip.transform.position = Input.mousePosition;
-            tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + (initialLocalPosition.y - (edgeBuffer.y / 2)));
+            if (followsMouse)
+            {
+                tooltip.transform.position = Input.mousePosition;
+                tooltip.transform.localPosition = new Vector2(tooltip.transform.localPosition.x + initialLocalPosition.x, tooltip.transform.localPosition.y + (initialLocalPosition.y - (edgeBuffer.y / 2)));
+            }
             PreventTooltipGoingOffscreen();
+            if (componentAppliedTo3DObject)
+            {
+                //Closes the tooltip if the actual component is applied to a 3D object and the mouse is over a 2D ui element.
+                if (GalaxyCamera.IsMouseOverUIElement)
+                    CloseTooltip();
+            }
         }
     }
 
@@ -336,14 +349,30 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         return true;
     }
 
-    //Opens the tooltip whenever the mouse/pointer enters the trigger zone.
+    //Opens the tooltip whenever the mouse/pointer enters the trigger zone (2D).
     public void OnPointerEnter(PointerEventData eventData)
     {
         OpenTooltip();
     }
 
-    //Closes the tooltip whenever the mouse/pointer exits the trigger zone.
+    //Opens the tooltip whenever the mouse/pointer enters the trigger zone (3D).
+    public void OnMouseEnter()
+    {
+        //Ensures that the mouse is not over a 2D ui element.
+        if (GalaxyCamera.IsMouseOverUIElement)
+            return;
+
+        OpenTooltip();
+    }
+
+    //Closes the tooltip whenever the mouse/pointer exits the trigger zone (2D).
     public void OnPointerExit(PointerEventData eventData)
+    {
+        CloseTooltip();
+    }
+
+    //Closes the tooltip whenever the mouse/pointer exits the trigger zone (3D).
+    private void OnMouseExit()
     {
         CloseTooltip();
     }

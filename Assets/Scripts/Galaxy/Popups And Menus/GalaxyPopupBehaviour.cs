@@ -297,6 +297,19 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         else if (openingAnimationType == PopupOpeningAnimationType.HorizontalExpand)
             transform.localScale = new Vector3(0, 1, 1);
 
+        //Sets the color of every image that is supposed to be the player empire's color to the player empire's color and every image that is supposed to be the player empire's label color to the player empire's label color.
+        if(imagesWithEmpireColor.Count > 0 || imagesWithEmpireLabelColor.Count > 0)
+            StartCoroutine(SetImageColorOfImagesWithEmpireColorOrEmpireLabelColor());
+
+        //Plays the sound effect for whenever the popup opens.
+        AudioManager.PlaySFX(openPopupSFX);
+    }
+
+    IEnumerator SetImageColorOfImagesWithEmpireColorOrEmpireLabelColor()
+    {
+        //Waits until the player's empire object exists.
+        yield return new WaitUntil(() => Empire.empires != null);
+
         //Sets the color of every image that is supposed to be the player empire's color to the player empire's color.
         foreach (Image imageWithEmpireColor in imagesWithEmpireColor)
         {
@@ -304,13 +317,10 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         }
 
         //Sets the color of every image that is supposed to be the player empire's label color to the player empire's label color.
-        foreach(Image imageWithEmpireLabelColor in imagesWithEmpireLabelColor)
+        foreach (Image imageWithEmpireLabelColor in imagesWithEmpireLabelColor)
         {
             imageWithEmpireLabelColor.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
         }
-
-        //Plays the sound effect for whenever the popup opens.
-        AudioManager.PlaySFX(openPopupSFX);
     }
 
     //Indicates whether the opening animation for the popup is done.

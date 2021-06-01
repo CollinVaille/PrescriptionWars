@@ -75,6 +75,8 @@ public class GalaxyManager : GalaxyViewBehaviour
             playerID = value;
             //Updates the resource bar to accurately reflect the new empire that the player has switched to.
             ResourceBar.UpdateAllEmpireDependantComponents();
+            //Logs with the planet ships that the playerID value has been changed and that the visibility of the planet ships might need to be updated.
+            PlanetShip.OnPlayerIDChange();
         }
     }
     //Indicates the turn that the game is on.

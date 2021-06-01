@@ -10,8 +10,6 @@ public class GalaxyPlanet : MonoBehaviour
 
     [SerializeField] private Text nameLabel = null;
 
-    [SerializeField] private GameObject ship = null;
-
     [Header("Additional Information")]
 
     //Planet biome
@@ -143,28 +141,16 @@ public class GalaxyPlanet : MonoBehaviour
 
     //Armies
     private List<GalaxyArmy> armies = new List<GalaxyArmy>();
-    public List<GalaxyArmy> Armies
-    {
-        get
-        {
-            return armies;
-        }
-    }
+
+    //Ships
+    private List<PlanetShip> planetShips = new List<PlanetShip>();
 
     private int currentFontSize = 10, fontScale = 10000;
     private static Transform mainCamTransform = null;
 
-    public void GenerateShip(Transform shipParent, GameObject shipPrefab)
+    private void Start()
     {
-        GameObject newShip = Instantiate(shipPrefab);
-        newShip.transform.parent = shipParent.transform;
-
-        newShip.transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z + 10);
-        newShip.GetComponent<PlanetShip>().attachedPlanetID = planetID;
-
-        newShip.GetComponent<MeshRenderer>().sharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerID].empireCulture];
-
-        ship = newShip;
+        AddArmy(new GalaxyArmy("Army of the South", ownerID));
     }
 
     public float creditsPerTurn()
@@ -322,7 +308,7 @@ public class GalaxyPlanet : MonoBehaviour
         transform.localEulerAngles += rotationSpeed * Time.deltaTime;
 
         //Updates the ship.
-        if(ownerID == GalaxyManager.PlayerID)
+        /*if(ownerID == GalaxyManager.PlayerID)
         {
             if (!ship.activeInHierarchy)
                 ship.SetActive(true);
@@ -331,7 +317,7 @@ public class GalaxyPlanet : MonoBehaviour
         {
             if (ship.activeInHierarchy)
                 ship.SetActive(false);
-        }
+        }*/
     }
 
     public void ConquerPlanet(int conquerorID)
@@ -355,8 +341,11 @@ public class GalaxyPlanet : MonoBehaviour
         //Updates the color of the planet label.
         nameLabel.color = Empire.empires[conquerorID].LabelColor;
 
-        //Updates the planet's ship's material to match the color of the conquering empire's ships.
-        ship.GetComponent<MeshRenderer>().sharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
+        //Updates the material of the planet ships to match the color of the conquering empire's ships.
+        foreach(PlanetShip planetShip in planetShips)
+        {
+            planetShip.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
+        }
 
         //Sets the planet's owner id as the conqueror's id.
         ownerID = conquerorID;
@@ -392,6 +381,63 @@ public class GalaxyPlanet : MonoBehaviour
             //Progresses the building queue.
             city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerID), city);
         }
+    }
+
+    /// <summary>
+    /// Returns the number of armies that are located on the planet.
+    /// </summary>
+    /// <returns></returns>
+    public int GetArmiesCount()
+    {
+        return armies.Count;
+    }
+
+    /// <summary>
+    /// Returns the army at the specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public GalaxyArmy GetArmyAt(int index)
+    {
+        return armies[index];
+    }
+
+    /// <summary>
+    /// Adds the specified army to the list of armies that are located on the planet and creates the planet ship to represent said army.
+    /// </summary>
+    /// <param name="army"></param>
+    public void AddArmy(GalaxyArmy army)
+    {
+        armies.Add(army);
+
+        GameObject newShip = Instantiate(PlanetShip.planetShipPrefab);
+        newShip.transform.SetParent(PlanetShip.planetShipParent);
+        newShip.transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z + 10);
+
+        PlanetShip newShipScript = newShip.GetComponent<PlanetShip>();
+        newShipScript.attachedPlanetID = planetID;
+        newShipScript.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerID].empireCulture];
+        newShipScript.tooltip.Text = army.Name;
+
+        planetShips.Add(newShipScript);
+    }
+
+    /// <summary>
+    /// Removes the army at the specified index from the list of armies that are located on the planet.
+    /// </summary>
+    /// <param name="index"></param>
+    public void RemoveArmyAt(int index)
+    {
+        armies.RemoveAt(index);
+    }
+
+    /// <summary>
+    /// Removes the specified army from the list of armies located on the planet.
+    /// </summary>
+    /// <param name="army"></param>
+    public void RemoveArmy(GalaxyArmy army)
+    {
+        armies.Remove(army);
     }
 }
 

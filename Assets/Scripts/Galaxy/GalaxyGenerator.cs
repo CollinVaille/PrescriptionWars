@@ -70,7 +70,7 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField]
     private GameObject planetPrefab = null;
     [SerializeField]
-    private GameObject shipPrefab = null;
+    private GameObject planetShipPrefab = null;
     [SerializeField]
     private GameObject galaxyConfirmationPopupPrefab = null;
     [SerializeField]
@@ -93,7 +93,7 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField]
     private Transform planetParent = null;
     [SerializeField]
-    private Transform shipParent = null;
+    private Transform planetShipParent = null;
     [SerializeField]
     private Transform galaxyConfirmationPopupParent = null;
 
@@ -103,8 +103,6 @@ public class GalaxyGenerator : MonoBehaviour
     private HyperspaceLanesManager hyperspaceLanesManager = null;
     [SerializeField]
     private PlanetManagementMenu planetManagementMenu = null;
-    [SerializeField]
-    private ArmyManagementMenu armyManagementMenu = null;
 
     //Non-inspector variables.
 
@@ -179,11 +177,14 @@ public class GalaxyGenerator : MonoBehaviour
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
         GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
         PillViewsManager.pillViewPrefab = pillViewPrefab;
+        PlanetShip.planetShipPrefab = planetShipPrefab;
+
+        //Parents.
+        PlanetShip.planetShipParent = planetShipParent;
 
         //Manager objects.
         HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu;
-        ArmyManagementMenu.InitializeFromGalaxyGenerator(armyManagementMenu);
     }
 
     // Update is called once per frame
@@ -371,7 +372,6 @@ public class GalaxyGenerator : MonoBehaviour
                     planet.OwnerID = empireID;
                     planet.Culture = Empire.empires[empireID].empireCulture;
                     planet.IsCapital = true;
-                    planet.GenerateShip(shipParent, shipPrefab);
                     sourcePlanet = planets[y];
                     break;
                 }
@@ -401,7 +401,6 @@ public class GalaxyGenerator : MonoBehaviour
                 planet.OwnerID = empireID;
                 planet.Culture = Empire.empires[empireID].empireCulture;
                 planet.IsCapital = false;
-                planet.GenerateShip(shipParent, shipPrefab);
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -448,7 +447,6 @@ public class GalaxyGenerator : MonoBehaviour
                     planet.OwnerID = iteration;
                     planet.Culture = Empire.empires[iteration].empireCulture;
                     planet.IsCapital = false;
-                    planet.GenerateShip(shipParent, shipPrefab);
                     break;
                 }
             }

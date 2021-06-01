@@ -71,6 +71,15 @@ public class GalaxyArmy
         }
     }
 
+    //Returns the number of squads that the army can contain.
+    public int NumberOfSquadsLimits
+    {
+        get
+        {
+            return 5;
+        }
+    }
+
     //Returns the average experience level of the army.
     public float GetExperienceLevel()
     {
