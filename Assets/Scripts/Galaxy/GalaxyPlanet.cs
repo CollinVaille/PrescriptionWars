@@ -151,6 +151,8 @@ public class GalaxyPlanet : MonoBehaviour
     private void Start()
     {
         AddArmy(new GalaxyArmy("Army of the South", ownerID));
+        AddArmy(new GalaxyArmy("Army of the West", ownerID));
+        AddArmy(new GalaxyArmy("Army of the North", ownerID));
     }
 
     public float creditsPerTurn()
@@ -306,18 +308,6 @@ public class GalaxyPlanet : MonoBehaviour
 
         //Rotates the planet.
         transform.localEulerAngles += rotationSpeed * Time.deltaTime;
-
-        //Updates the ship.
-        /*if(ownerID == GalaxyManager.PlayerID)
-        {
-            if (!ship.activeInHierarchy)
-                ship.SetActive(true);
-        }
-        else
-        {
-            if (ship.activeInHierarchy)
-                ship.SetActive(false);
-        }*/
     }
 
     public void ConquerPlanet(int conquerorID)
@@ -341,10 +331,11 @@ public class GalaxyPlanet : MonoBehaviour
         //Updates the color of the planet label.
         nameLabel.color = Empire.empires[conquerorID].LabelColor;
 
-        //Updates the material of the planet ships to match the color of the conquering empire's ships.
+        //Updates the material of the planet ships to match the color of the conquering empire's ships and enables if the conquering empire is the player and diables them if not.
         foreach(PlanetShip planetShip in planetShips)
         {
             planetShip.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
+            planetShip.gameObject.SetActive(conquerorID == GalaxyManager.PlayerID);
         }
 
         //Sets the planet's owner id as the conqueror's id.
@@ -408,17 +399,28 @@ public class GalaxyPlanet : MonoBehaviour
     /// <param name="army"></param>
     public void AddArmy(GalaxyArmy army)
     {
+        //Adds the specified army to the list of armies located on the planet.
         armies.Add(army);
+        //Creates the planet ship to represent the newly added army.
+        CreateNewPlanetShip();
+    }
 
+    /// <summary>
+    /// This method should be called whenever an army is added to the list of armies located on the planet and will create a new planet ship and put it in the appropriate position.
+    /// </summary>
+    private void CreateNewPlanetShip()
+    {
+        //Creates the planet ship.
         GameObject newShip = Instantiate(PlanetShip.planetShipPrefab);
+        //Sets the parent of the planet ship.
         newShip.transform.SetParent(PlanetShip.planetShipParent);
-        newShip.transform.position = new Vector3(transform.position.x + 10, transform.position.y, transform.position.z + 10);
-
+        //Gets the planet ship script component in order to edit some variables of the planet ship.
         PlanetShip newShipScript = newShip.GetComponent<PlanetShip>();
-        newShipScript.attachedPlanetID = planetID;
+        //Sets the location of the planet ship based off of the planet id and army index.
+        newShipScript.SetLocation(planetID, armies.Count - 1);
+        //Sets the material of the planet ship in order for it to represent the color of the empire that owns the army and the planet.
         newShipScript.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerID].empireCulture];
-        newShipScript.tooltip.Text = army.Name;
-
+        //Adds the newly created planet ship to the list of planet ships that belong to the planet.
         planetShips.Add(newShipScript);
     }
 
@@ -428,7 +430,17 @@ public class GalaxyPlanet : MonoBehaviour
     /// <param name="index"></param>
     public void RemoveArmyAt(int index)
     {
+        //Removes the specified army from the list of armies.
         armies.RemoveAt(index);
+        //Removes the planet ship that represents the specified army from the list of planet ships and destroys it.
+        PlanetShip planetShip = planetShips[index];
+        planetShips.RemoveAt(index);
+        Destroy(planetShip.gameObject);
+        //Updates the position of the planet ships that come after the one that was just removed.
+        for(int planetShipIndex = index; planetShipIndex < planetShips.Count; planetShipIndex++)
+        {
+            planetShips[planetShipIndex].SetLocation(planetShipIndex);
+        }
     }
 
     /// <summary>
@@ -437,9 +449,60 @@ public class GalaxyPlanet : MonoBehaviour
     /// <param name="army"></param>
     public void RemoveArmy(GalaxyArmy army)
     {
-        armies.Remove(army);
+        bool armyIndexFound = false;
+        for(int armyIndex = 0; armyIndex < armies.Count; armyIndex++)
+        {
+            if(!armyIndexFound && armies[armyIndex] == army)
+            {
+                //Removes the specified army from the list of armies.
+                armies.RemoveAt(armyIndex);
+                //Removes the planet ship that represents the specified army from the list of planet ships and destroys it.
+                PlanetShip planetShip = planetShips[armyIndex];
+                planetShips.RemoveAt(armyIndex);
+                Destroy(planetShip.gameObject);
+
+                //Indicates that the specified army's index has been found.
+                armyIndexFound = true;
+                armyIndex--;
+            }
+            else if (armyIndexFound)
+            {
+                planetShips[armyIndex].SetLocation(armyIndex);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Modifies the list of armies and planet ships located on the planet to have one item move from one index to another (Ex: Army at index 1 changed to be located 3).
+    /// </summary>
+    /// <param name="originalIndex"></param>
+    /// <param name="newIndex"></param>
+    public void ChangeArmyIndex(int originalIndex, int newIndex)
+    {
+        //Ensures that valid indexes have been provided.
+        if(originalIndex >= 0 && originalIndex < armies.Count && newIndex >= 0 && newIndex < armies.Count)
+        {
+            //Removes the army at the specified original index from the list of armies and inserts it at the specified new index.
+            GalaxyArmy army = armies[originalIndex];
+            armies.RemoveAt(originalIndex);
+            armies.Insert(newIndex, army);
+            //Removes the planet ship at the specified original index from the list of planet ships and inserts it at the specified new index.
+            PlanetShip planetShip = planetShips[originalIndex];
+            planetShips.RemoveAt(originalIndex);
+            planetShips.Insert(newIndex, planetShip);
+            //Sets the location of all of the planet ships.
+            for(int planetShipIndex = 0; planetShipIndex < planetShips.Count; planetShipIndex++)
+            {
+                planetShips[planetShipIndex].SetLocation(planetShipIndex);
+            }
+        }
     }
 }
+
+
+
+
+
 
 public struct GalaxyBuilding
 {

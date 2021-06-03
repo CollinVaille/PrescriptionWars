@@ -226,7 +226,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         parent = GetCurrentParent();
         parentCanvas = GeneralHelperMethods.GetParentCanvas(parent);
-        sceneCamera = GetCurrentSceneCamera();
+        sceneCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         componentAppliedTo3DObject = gameObject.GetComponent<Renderer>() != null;
     }
 
@@ -311,21 +311,6 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         return currentParent;
-    }
-
-    //Returns the camera of the scene that the tooltip is currently in.
-    private Camera GetCurrentSceneCamera()
-    {
-        switch (SceneManager.GetActiveScene().name)
-        {
-            case "Galaxy":
-                return GalaxyManager.GalaxyCamera;
-            case "Main Menu":
-                return MainMenu.SceneCamera;
-
-            default:
-                return null;
-        }
     }
 
     //Indicates whether the parent transform specified is the topmost parent transform that implements the IGalaxyTooltipHandler interface.
