@@ -85,6 +85,8 @@ public class GalaxyGenerator : MonoBehaviour
     private GameObject backArrowPrefab = null;
     [SerializeField]
     private GameObject pillViewPrefab = null;
+    [SerializeField]
+    private GameObject armyManagementMenuPrefab = null;
 
     [Header("Parents")]
 
@@ -96,6 +98,8 @@ public class GalaxyGenerator : MonoBehaviour
     private Transform planetShipParent = null;
     [SerializeField]
     private Transform galaxyConfirmationPopupParent = null;
+    [SerializeField]
+    private Transform popupsParent = null;
 
     [Header("Manager Objects")]
 
@@ -143,7 +147,7 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.GetComponent<GalaxyPlanet>());
         }
-        GalaxyManager.Initialize(planetScripts, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent);
+        GalaxyManager.Initialize(planetScripts, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent, popupsParent);
 
         //Generates the tech of the game.
         GenerateTech();
@@ -178,6 +182,7 @@ public class GalaxyGenerator : MonoBehaviour
         GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
         PillViewsManager.pillViewPrefab = pillViewPrefab;
         PlanetShip.planetShipPrefab = planetShipPrefab;
+        ArmyManagementMenu.armyManagementMenuPrefab = armyManagementMenuPrefab;
 
         //Parents.
         PlanetShip.planetShipParent = planetShipParent;

@@ -29,6 +29,13 @@ public class GalaxyArmy
 
     //Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
     private int ownerEmpireID;
+    public int OwnerEmpireID
+    {
+        get
+        {
+            return ownerEmpireID;
+        }
+    }
 
     //Indicates the name of the army.
     private string name;

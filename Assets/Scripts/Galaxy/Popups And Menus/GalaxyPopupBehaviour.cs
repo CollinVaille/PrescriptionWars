@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 [System.Serializable]
 
-public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public enum PopupOpeningAnimationType
     {
@@ -49,8 +49,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
 
     //Non-inspector variables.
 
-    //Indicates whether the popup is being moved/dragged.
-    private bool beingMoved = false;
     //Indicates whether the popup should close without playing the closing sound effect.
     private bool closeWithoutSFX = false;
 
@@ -162,54 +160,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
                     transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
             }
         }
-
-        //Deals with the popup being dragged.
-        if (beingMoved)
-        {
-            transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
-
-            //Left barrier.
-            if (transform.localPosition.x < -1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))))
-            {
-                transform.localPosition = new Vector2(-1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))), transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x < Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f));
-            }
-            //Right barrier.
-            if (transform.localPosition.x > screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)))
-            {
-                transform.localPosition = new Vector2(screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)), transform.localPosition.y);
-
-                mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
-
-                if (mouseToMenuDistance.x > Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f)))
-                    mouseToMenuDistance.x = Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f));
-            }
-            //Top barrier.
-            float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : screenBounds.y;
-            if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)))
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)));
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y > Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f));
-            }
-            //Bottom barrier.
-            if (transform.localPosition.y < -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))))
-            {
-                transform.localPosition = new Vector2(transform.localPosition.x, -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))));
-
-                mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
-
-                if (mouseToMenuDistance.y < Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f)))
-                    mouseToMenuDistance.y = Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f));
-            }
-        }
     }
 
     //Indicates whether the popup should close due to the player pressing escape.
@@ -218,27 +168,68 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)
     {
         //Brings the popup to the top of the priority hierarchy.
         transform.SetAsLastSibling();
 
         if (isDraggable)
         {
-            //Tells the update function that the player is dragging the menu.
-            beingMoved = true;
-
             //Tells the update function the set difference between the mouse position and the menu's position.
             mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
             mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
     {
-        //Tells the update function that the player is no longer dragging the menu.
-        beingMoved = false;
+        transform.position = new Vector2(Input.mousePosition.x - mouseToMenuDistance.x, Input.mousePosition.y - mouseToMenuDistance.y);
 
+        //Left barrier.
+        if (transform.localPosition.x < -1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))))
+        {
+            transform.localPosition = new Vector2(-1 * (screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2))), transform.localPosition.y);
+
+            mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+
+            if (mouseToMenuDistance.x < Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f)))
+                mouseToMenuDistance.x = Camera.main.pixelWidth * -1 * (.13545f * (rectTransform.rect.width / 221.16664f));
+        }
+        //Right barrier.
+        if (transform.localPosition.x > screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)))
+        {
+            transform.localPosition = new Vector2(screenBounds.x + ((221.16664f / 2) - (rectTransform.rect.width / 2)), transform.localPosition.y);
+
+            mouseToMenuDistance.x = Input.mousePosition.x - transform.position.x;
+
+            if (mouseToMenuDistance.x > Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f)))
+                mouseToMenuDistance.x = Camera.main.pixelWidth * (.13545f * (rectTransform.rect.width / 221.16664f));
+        }
+        //Top barrier.
+        float topBarrierLimit = isResourceBarTopBarrier ? 67.5f : screenBounds.y;
+        if (transform.localPosition.y > topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)))
+        {
+            transform.localPosition = new Vector2(transform.localPosition.x, topBarrierLimit + ((255.3096f / 2) - (rectTransform.rect.height / 2)));
+
+            mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+
+            if (mouseToMenuDistance.y > Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f)))
+                mouseToMenuDistance.y = Camera.main.pixelHeight * (.2771f * (rectTransform.rect.height / 255.3096f));
+        }
+        //Bottom barrier.
+        if (transform.localPosition.y < -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))))
+        {
+            transform.localPosition = new Vector2(transform.localPosition.x, -1 * (screenBounds.y + ((255.3096f / 2) - (rectTransform.rect.height / 2))));
+
+            mouseToMenuDistance.y = Input.mousePosition.y - transform.position.y;
+
+            if (mouseToMenuDistance.y < Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f)))
+                mouseToMenuDistance.y = Camera.main.pixelHeight * -1 * (.2771f * (rectTransform.rect.height / 255.3096f));
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
         //Resets the vector that says the difference between the mouse position and the menu's position.
         mouseToMenuDistance = Vector2.zero;
     }
@@ -250,7 +241,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IPointerDownHandler, IPointer
         GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame = true;
 
         //Resets whether the popup is being dragged by the player.
-        OnPointerUp(null);
+        OnEndDrag(null);
 
         //Places the popup at the top of the popup parent object's hierarchy (last priority).
         transform.SetSiblingIndex(0);

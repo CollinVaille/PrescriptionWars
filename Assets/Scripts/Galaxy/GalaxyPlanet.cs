@@ -151,7 +151,15 @@ public class GalaxyPlanet : MonoBehaviour
     private void Start()
     {
         AddArmy(new GalaxyArmy("Army of the South", ownerID));
+        armies[0].AddSquad(new GalaxySquad("Delta Squad"));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", null));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", null));
+        armies[0].AddSquad(new GalaxySquad("Echo Squad"));
         AddArmy(new GalaxyArmy("Army of the West", ownerID));
+        armies[1].AddSquad(new GalaxySquad("Delta Squad"));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", null));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", null));
+        armies[1].AddSquad(new GalaxySquad("Echo Squad"));
         AddArmy(new GalaxyArmy("Army of the North", ownerID));
     }
 

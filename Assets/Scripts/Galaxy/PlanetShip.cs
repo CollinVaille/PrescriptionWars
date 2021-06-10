@@ -102,6 +102,7 @@ public class PlanetShip : MonoBehaviour
         if (GalaxyCamera.IsMouseOverUIElement)
             return;
 
+        ArmyManagementMenu.CreateNewArmyManagementMenu(attachedPlanetID);
         //GalaxyManager.planets[attachedPlanetID].ChangeArmyIndex(attachedArmyIndex, 2);
     }
 

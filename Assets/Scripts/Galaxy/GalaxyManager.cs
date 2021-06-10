@@ -141,12 +141,22 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
 
-    public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup)
+    private static Transform popupsParent = null;
+    public static Transform PopupsParent
+    {
+        get
+        {
+            return popupsParent;
+        }
+    }
+
+    public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup, Transform parentOfPopups)
     {
         planets = planetList;
         galaxyCamera = galaxyCam;
         galaxyCanvas = canvasOfGalaxy;
         galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
+        popupsParent = parentOfPopups;
 
         if (NewGameMenu.initialized)
         {
