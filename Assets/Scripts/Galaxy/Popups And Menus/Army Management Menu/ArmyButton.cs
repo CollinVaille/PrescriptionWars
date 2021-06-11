@@ -71,8 +71,6 @@ public class ArmyButton : UnitListButton
     public override void Update()
     {
         base.Update();
-
-        UpdateSpacing();
     }
 
     /// <summary>
@@ -116,7 +114,7 @@ public class ArmyButton : UnitListButton
         }
 
         //Adds the appropriate amount of spacing between the army button and the squad buttons.
-        UpdateSpacing();
+        SpacingUpdateRequiredNextFrame = true;
 
         //Logs that the army button is currently expanded.
         expanded = true;
@@ -148,7 +146,7 @@ public class ArmyButton : UnitListButton
         }
 
         //Updates the amount of spacing between the army button and the buttons that follow.
-        UpdateSpacing();
+        SpacingUpdateRequiredNextFrame = true;
 
         //Logs that the army button is currently collapsed (not expanded).
         expanded = false;

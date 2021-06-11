@@ -65,6 +65,27 @@ public class UnitListButton : MonoBehaviour
     }
 
     /// <summary>
+    /// Indicates whether the spacing between this unit list button and the next needs to be updated the next frame.
+    /// </summary>
+    private bool spacingUpdateRequiredNextFrame = false;
+    /// <summary>
+    /// Indicates the amount of updates that the button has gone through since it was told that a spacing update was required the next frame.
+    /// </summary>
+    private int updatesSinceSpacingUpdateRequiredNextFrameSet = 0;
+    /// <summary>
+    /// Indicates whether the spacing between this unit list button and the next needs to be updated the next frame.
+    /// </summary>
+    public bool SpacingUpdateRequiredNextFrame
+    {
+        set
+        {
+            spacingUpdateRequiredNextFrame = value;
+
+            updatesSinceSpacingUpdateRequiredNextFrameSet = 0;
+        }
+    }
+
+    /// <summary>
     /// Provides the initial values of important unit list button variables.
     /// </summary>
     /// <param name="armyManagementMenu"></param>
@@ -87,7 +108,14 @@ public class UnitListButton : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        
+        //Updates the spacing between this unit list button and the next unit list button.
+        if (spacingUpdateRequiredNextFrame)
+        {
+            if (updatesSinceSpacingUpdateRequiredNextFrameSet >= 1)
+                UpdateSpacing();
+            else
+                updatesSinceSpacingUpdateRequiredNextFrameSet++;
+        }
     }
 
     /// <summary>
@@ -112,7 +140,7 @@ public class UnitListButton : MonoBehaviour
     /// <summary>
     /// This method should be called in order to update the spacing between the unit list buttons, which is done by determining the height of each unit list button rect transform.
     /// </summary>
-    public virtual void UpdateSpacing()
+    private void UpdateSpacing()
     {
         RectTransform rectTransform = (RectTransform)transform;
         if (transform.GetSiblingIndex() + 1 < transform.parent.childCount && transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>().TypeOfButton != TypeOfButton)
@@ -122,7 +150,7 @@ public class UnitListButton : MonoBehaviour
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, InitialHeight + ArmyManagementMenu.SpacingBetweenUnitListButtonTypes);
             }
         }
-        else if (!Mathf.Approximately(rectTransform.sizeDelta.y, InitialHeight))
+        else
         {
             rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, InitialHeight);
         }
@@ -131,5 +159,8 @@ public class UnitListButton : MonoBehaviour
         float verticalLayoutGroupSpacing = ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing;
         ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing + 1;
         ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing;
+
+        //Logs that the spacing has been updated.
+        spacingUpdateRequiredNextFrame = false;
     }
 }

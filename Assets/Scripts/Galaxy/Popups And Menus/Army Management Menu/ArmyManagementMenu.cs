@@ -42,6 +42,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             return squadButtonPrefab;
         }
     }
+    [SerializeField] private GameObject pillButtonPrefab = null;
+    public GameObject PillButtonPrefab
+    {
+        get
+        {
+            return pillButtonPrefab;
+        }
+    }
 
     [Header("Options")]
 
@@ -94,10 +102,21 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     public static GameObject armyManagementMenuPrefab = null;
 
     /// <summary>
+    /// List that contains all open army management menus.
+    /// </summary>
+    private static List<ArmyManagementMenu> armyManagementMenus = new List<ArmyManagementMenu>();
+
+    /// <summary>
     /// Instantiates a new army management menu from the army management menu prefab and adjusts its values based on the given specifications.
     /// </summary>
     public static void CreateNewArmyManagementMenu(int planetSelectedID)
     {
+        //Ensures that there won't be two army management menus open for the same planet.
+        foreach(ArmyManagementMenu armyManagementMenuInList in armyManagementMenus)
+        {
+            if (armyManagementMenuInList.PlanetSelectedID == planetSelectedID)
+                return;
+        }
         //Instantiates a new army management menu from the army management menu prefab.
         GameObject armyManagementMenu = Instantiate(armyManagementMenuPrefab);
         //Sets the parent of the army management menu.
@@ -106,6 +125,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         ArmyManagementMenu armyManagementMenuScript = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         //Sets the planet selected on the army management menu.
         armyManagementMenuScript.PlanetSelectedID = planetSelectedID;
+        //Adds the newly created army management menu to the list of army management menus.
+        armyManagementMenus.Add(armyManagementMenuScript);
     }
 
     // Start is called before the first frame update
@@ -158,5 +179,16 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             //Assigns the appropriate army to the army button.
             armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(armyIndex));
         }
+    }
+
+    /// <summary>
+    /// This method is called in order to close the army management menu and also removes the army management menu from the list of army management menus.
+    /// </summary>
+    public override void Close()
+    {
+        base.Close();
+
+        //Removes the army management menu from the list of army management menus.
+        armyManagementMenus.Remove(this);
     }
 }

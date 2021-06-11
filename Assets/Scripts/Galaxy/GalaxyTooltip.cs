@@ -227,7 +227,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         parent = GetCurrentParent();
         parentCanvas = GeneralHelperMethods.GetParentCanvas(parent);
         sceneCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        componentAppliedTo3DObject = gameObject.GetComponent<Renderer>() != null;
+        componentAppliedTo3DObject = gameObject.GetComponent<Collider>() != null;
     }
 
     // Update is called once per frame
