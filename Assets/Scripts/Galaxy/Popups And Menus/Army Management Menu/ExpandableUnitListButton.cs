@@ -44,10 +44,38 @@ public class ExpandableUnitListButton : UnitListButton
         }
     }
 
-    new public virtual void OnClick()
+    /// <summary>
+    /// Returns a list that contains all of the unit list buttons that are a child to this unit list button.
+    /// This list cannot be edited directly and adding or removing elements from this list will do nothing.
+    /// </summary>
+    protected List<UnitListButton> ChildButtons
     {
-        base.OnClick();
+        get
+        {
+            //Gathers all of the child buttons of the unit list button into a list.
+            List<UnitListButton> childButtons = new List<UnitListButton>();
+            for (int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)
+            {
+                //Gets the unit list button component from the gameobject at the specified sibling index.
+                UnitListButton possibleChildUnitListButton = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                //Breaks out of the for loop if the type of button of the possible child button is not a child button type of this unit list button.
+                if ((int)possibleChildUnitListButton.TypeOfButton <= (int)TypeOfButton)
+                    break;
+                //Adds the child unit list button to the list of child unit list buttons of this unit list button.
+                childButtons.Add(possibleChildUnitListButton);
+            }
 
+            //Returns the list that contains all of the child unit list buttons of this unit list button.
+            return childButtons;
+        }
+    }
+
+    /// <summary>
+    /// This method is called through the on click method whenever it is detetcted that the expandable unit list button was clicked while not being dragged.
+    /// This method expands or collapses the expandable unit list button and selects it to show up in the unit inspector.
+    /// </summary>
+    new public virtual void OnClickWithoutDrag()
+    {
         if (!expanded)
         {
             if(TypeOfButton == ButtonType.Army)
@@ -65,6 +93,19 @@ public class ExpandableUnitListButton : UnitListButton
         {
             Collapse();
         }
+    }
+
+    /// <summary>
+    /// This method is called through the starting of a drag on a expandable unit list button and saves the initial y position of the actual button component and collapses the expandable unit list button if it is expanded.
+    /// </summary>
+    new public virtual void OnBeginDrag()
+    {
+        //Saves the initial y position of the actual button component.
+        base.OnBeginDrag();
+
+        //Collapses the expandable unit list button if it is expanded.
+        if (expanded)
+            Collapse();
     }
 
     /// <summary>
@@ -115,24 +156,10 @@ public class ExpandableUnitListButton : UnitListButton
     /// </summary>
     public virtual void Collapse()
     {
-        //Gathers a list of all of the unit list buttons to destroy.
-        List<UnitListButton> unitListButtonsToDestroy = new List<UnitListButton>();
-        for (int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)
-        {
-            UnitListButton unitListButton = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-            if ((int)unitListButton.TypeOfButton > (int)TypeOfButton)
-            {
-                unitListButtonsToDestroy.Add(unitListButton);
-            }
-            else
-            {
-                break;
-            }
-        }
         //Destroys all of the unit list buttons that are a result of the expandable unit list button being expanded.
-        foreach (UnitListButton unitListButtonToDestroy in unitListButtonsToDestroy)
+        foreach (UnitListButton childUnitListButton in ChildButtons)
         {
-            Destroy(unitListButtonToDestroy.gameObject);
+            ArmyManagementMenu.UnitListButtonDestroyer.AddUnitListButtonToDestroy(childUnitListButton);
         }
 
         //Updates the amount of spacing between the squad button and the buttons that follow.

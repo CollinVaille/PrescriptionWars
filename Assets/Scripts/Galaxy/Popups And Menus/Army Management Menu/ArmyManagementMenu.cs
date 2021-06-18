@@ -20,6 +20,15 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
     }
 
+    [SerializeField] private UnitListButtonDestroyer unitListButtonDestroyer = null;
+    public UnitListButtonDestroyer UnitListButtonDestroyer
+    {
+        get
+        {
+            return unitListButtonDestroyer;
+        }
+    }
+
     [Header("Parents")]
 
     [SerializeField] private Transform unitListButtonParent = null;

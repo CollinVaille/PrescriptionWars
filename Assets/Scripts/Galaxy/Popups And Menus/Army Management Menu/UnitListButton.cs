@@ -55,6 +55,9 @@ public class UnitListButton : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Indicates the height of the button when it was created.
+    /// </summary>
     private float initialHeight = 0;
     public float InitialHeight
     {
@@ -84,6 +87,26 @@ public class UnitListButton : MonoBehaviour
             updatesSinceSpacingUpdateRequiredNextFrameSet = 0;
         }
     }
+
+    /// <summary>
+    /// Indicates whether the unit list button is currently being dragged.
+    /// </summary>
+    protected bool BeingDragged
+    {
+        get
+        {
+            return beingDragged;
+        }
+    }
+    /// <summary>
+    /// Indicates whether the unit list button is currently being dragged.
+    /// </summary>
+    private bool beingDragged = false;
+
+    /// <summary>
+    /// Indicates the y position of the actual button component when the button component was just beginning to be dragged.
+    /// </summary>
+    private float beginDragYPosition = 0;
 
     /// <summary>
     /// Provides the initial values of important unit list button variables.
@@ -134,7 +157,50 @@ public class UnitListButton : MonoBehaviour
     /// <param name="eventData"></param>
     public virtual void OnClick()
     {
+        if (!beingDragged)
+            OnClickWithoutDrag();
+    }
 
+    /// <summary>
+    /// This method is called through the on click method whenever it is detetcted that the unit list button was clicked while not being dragged.
+    /// </summary>
+    public virtual void OnClickWithoutDrag()
+    {
+        //Triggers the OnClickWithoutDrag() method in the expandable unit list button script if it exists.
+        ExpandableUnitListButton expandableUnitListButtonComponent = gameObject.GetComponent<ExpandableUnitListButton>();
+        if (expandableUnitListButtonComponent != null)
+            expandableUnitListButtonComponent.OnClickWithoutDrag();
+    }
+
+    /// <summary>
+    /// This method is called through the starting of a drag on a unit list button and saves the initial y position of the actual button component and logs that the unit list button is being dragged.
+    /// </summary>
+    public virtual void OnBeginDrag()
+    {
+        //Saves the initial y position of the actual button component before it begins to be dragged.
+        beginDragYPosition = button.transform.position.y;
+        //Logs that the unit list button is being dragged.
+        beingDragged = true;
+    }
+
+    /// <summary>
+    /// This method is called through the dragging a unit list button and changes the y position of the button to match the y position of the mouse.
+    /// </summary>
+    public virtual void OnDrag()
+    {
+        //Changes the y position of the actual button component to match the y position of the mouse.
+        button.transform.position = new Vector2(button.transform.position.x, Input.mousePosition.y);
+    }
+
+    /// <summary>
+    /// This method is called through the ending of a drag on a unit list button and determines the new position of the unit list button and logs that the unit list button is no longer being dragged.
+    /// </summary>
+    public virtual void OnEndDrag()
+    {
+        //Reverts the position of the actual button component to its position when it was just beginning to be dragged.
+        button.transform.position = new Vector2(button.transform.position.x, beginDragYPosition);
+        //Logs that the unit list button is no longer being dragged.
+        beingDragged = false;
     }
 
     /// <summary>
