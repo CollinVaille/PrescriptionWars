@@ -180,7 +180,7 @@ public class EmpireNameGenerator
                 adjective = prefix ? "Ancient" : "of Ancient Times";
                 break;
             case 6:
-                adjective = prefix ? "Official" : "of Due Justice";
+                adjective = prefix ? "Necessary and Proper" : "of Due Justice";
                 break;
             case 7:
                 adjective = prefix ? "World Domination-Focused" : "of World Domination";

@@ -272,7 +272,9 @@ public class CityGenerator : MonoBehaviour
                     cityName = part1[Random.Range(0, part1.Length)] + part2[Random.Range(0, part2.Length)];
                 }
             }
-            else if(biome == Planet.Biome.Hell || biome == Planet.Biome.Spirit)
+            else if(biome == Planet.Biome.Hell)
+                cityName = GeneralHelperMethods.GetLineFromFile("Location Names/Hellish City Names");
+            else if(biome == Planet.Biome.Spirit)
             {
                 string[] part1 = new string[] { "Staavan", "Volks", "Korvan", "Weyro", "Teyro", "Vail", "Rhen",
                     "Bhor", "Vel", "Galto", "Vogh", "Mons", "Forel" };
