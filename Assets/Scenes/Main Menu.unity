@@ -11083,6 +11083,7 @@ GameObject:
   - component: {fileID: 1068848729}
   - component: {fileID: 1068848728}
   - component: {fileID: 1068848732}
+  - component: {fileID: 1068848733}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -11190,11 +11191,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36ddc8639e406148b67c1ce4a81ae1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flagSymbolsDataTextAsset: {fileID: 4900000, guid: dd26e29b72b5c9643b39c51e2e6bdd4f,
-    type: 3}
   tooltipsParent: {fileID: 593016152}
   popupScreenBounds: {x: 491, y: 211}
   sfxSource: {fileID: 1055968302}
+--- !u!114 &1068848733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068848727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5538c4689ef92d4c8dd4d7f6dd6d98d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textAsset: {fileID: 4900000, guid: dd26e29b72b5c9643b39c51e2e6bdd4f, type: 3}
 --- !u!1 &1080109618
 GameObject:
   m_ObjectHideFlags: 0

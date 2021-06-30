@@ -9,11 +9,20 @@ public class UnitListButton : MonoBehaviour
     [Header("Base Components")]
 
     [SerializeField] private Button button = null;
-    public Button Button
+    protected Button Button
     {
         get
         {
             return button;
+        }
+    }
+
+    [SerializeField] private Image leftImage = null;
+    protected Image LeftImage
+    {
+        get
+        {
+            return leftImage;
         }
     }
 

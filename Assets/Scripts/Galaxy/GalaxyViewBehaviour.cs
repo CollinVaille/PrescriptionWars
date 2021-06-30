@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GalaxyViewBehaviour : FlagDataLoader, IGalaxyTooltipHandler, IGalaxyPopupBehaviourHandler
+public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyPopupBehaviourHandler
 {
     [Header("Galaxy View Galaxy Tooltip Handler")]
 
@@ -63,9 +63,6 @@ public class GalaxyViewBehaviour : FlagDataLoader, IGalaxyTooltipHandler, IGalax
 
     public virtual void Awake()
     {
-        //Calls the awake method of the flag data loader that the view behaviour is inheriting from.
-        OnFlagDataLoaderAwake();
-
         //Makes sure that the audio settings have been loaded in.
         if (!AudioSettings.Loaded)
             AudioSettings.LoadSettings();

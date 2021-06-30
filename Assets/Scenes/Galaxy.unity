@@ -4913,6 +4913,7 @@ GameObject:
   - component: {fileID: 644450515}
   - component: {fileID: 644450517}
   - component: {fileID: 644450516}
+  - component: {fileID: 644450518}
   m_Layer: 0
   m_Name: Galaxy View
   m_TagString: Untagged
@@ -4950,8 +4951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062aa6279fbf59c4d9c6289517a018da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flagSymbolsDataTextAsset: {fileID: 4900000, guid: dd26e29b72b5c9643b39c51e2e6bdd4f,
-    type: 3}
   tooltipsParent: {fileID: 1097173312}
   popupScreenBounds: {x: 291, y: 99}
   sfxSource: {fileID: 1492085428}
@@ -5221,6 +5220,19 @@ MonoBehaviour:
   popupsParent: {fileID: 1879303694}
   hyperspaceLanesManager: {fileID: 291867262}
   planetManagementMenu: {fileID: 325615308}
+--- !u!114 &644450518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644450514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5538c4689ef92d4c8dd4d7f6dd6d98d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textAsset: {fileID: 4900000, guid: dd26e29b72b5c9643b39c51e2e6bdd4f, type: 3}
 --- !u!1 &671157015
 GameObject:
   m_ObjectHideFlags: 0
@@ -8604,7 +8616,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b0d3f9485df654d861994fae66cb93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flagSymbolsDataTextAsset: {fileID: 0}
   tooltipsParent: {fileID: 1603826844}
   popupScreenBounds: {x: 291, y: 99}
   sfxSource: {fileID: 1492085428}
