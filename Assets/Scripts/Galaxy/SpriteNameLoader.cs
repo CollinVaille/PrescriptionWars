@@ -110,7 +110,7 @@ abstract public class SpriteNameLoader : MonoBehaviour
 
 #region Editor
 #if UNITY_EDITOR
-public class SpriteNameLoaderBuildProcessorBehaviour
+abstract public class SpriteNameLoaderBuildProcessor
 {
     //----------------------
     //Overridable variables.

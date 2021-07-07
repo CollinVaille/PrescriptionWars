@@ -4,27 +4,23 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UnitListButton : MonoBehaviour
+abstract public class UnitListButton : MonoBehaviour
 {
     [Header("Base Components")]
 
     [SerializeField] private Button button = null;
-    protected Button Button
-    {
-        get
-        {
-            return button;
-        }
-    }
+    protected Button Button { get => button; }
 
     [SerializeField] private Image leftImage = null;
-    protected Image LeftImage
-    {
-        get
-        {
-            return leftImage;
-        }
-    }
+    protected Image LeftImage { get => leftImage; }
+
+    [SerializeField] private Text nameText = null;
+    protected Text NameText { get => nameText; }
+
+    /*[Header("Base Tooltips")]
+
+    [SerializeField] private GalaxyTooltip leftImageTooltip = null;
+    protected GalaxyTooltip LeftImageTooltip { get => leftImageTooltip; }*/
 
     [Header("Base Logic Options")]
 
@@ -186,6 +182,8 @@ public class UnitListButton : MonoBehaviour
     /// </summary>
     public virtual void OnBeginDrag()
     {
+        //Sets the parent of the button component to the parent of buttons that are being dragged in order to ensure that the button is on top of all of the other buttons that are not being dragged.
+        button.transform.SetParent(ArmyManagementMenu.ButtonsBeingDraggedParent);
         //Saves the initial y position of the actual button component before it begins to be dragged.
         beginDragYPosition = button.transform.position.y;
         //Logs that the unit list button is being dragged.
@@ -206,11 +204,21 @@ public class UnitListButton : MonoBehaviour
     /// </summary>
     public virtual void OnEndDrag()
     {
+        //Reverts the parent of the button component to be the unit list button again.
+        button.transform.SetParent(transform);
         //Reverts the position of the actual button component to its position when it was just beginning to be dragged.
         button.transform.position = new Vector2(button.transform.position.x, beginDragYPosition);
         //Logs that the unit list button is no longer being dragged.
         beingDragged = false;
     }
+
+    /// <summary>
+    /// This method is called whenever the pointer enters the left image.
+    /// </summary>
+    /*public virtual void OnPointerEnterLeftImage()
+    {
+        leftImageTooltip.InstantaneousPosition = new Vector2(LeftImage.transform.position.x - 22, LeftImage.transform.position.y + 32);
+    }*/
 
     /// <summary>
     /// This method should be called in order to update the spacing between the unit list buttons, which is done by determining the height of each unit list button rect transform.

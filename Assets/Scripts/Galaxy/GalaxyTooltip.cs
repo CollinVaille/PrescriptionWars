@@ -189,6 +189,16 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //The actual game object of the tooltip.
     private GameObject tooltip = null;
+    public Vector2 InstantaneousPosition
+    {
+        set
+        {
+            if (tooltip == null)
+                return;
+
+            tooltip.transform.position = value;
+        }
+    }
 
     //The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
     public static GameObject tooltipPrefab;

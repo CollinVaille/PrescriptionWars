@@ -28,6 +28,12 @@ public class ArmyButton : ExpandableUnitListButton
             assignedArmy = value;
             //Sets the color of the army button to match the empire color of the empire that owns the assigned army.
             Button.image.color = Empire.empires[assignedArmy.OwnerEmpireID].EmpireColor;
+            //Sets the sprite of the left image to the appropriate army icon.
+            LeftImage.sprite = Resources.Load<Sprite>("Army Icons/" + assignedArmy.ArmyIcon.spriteName);
+            //Sets the color of the left image to the appropriate color of the army's icon.
+            LeftImage.color = assignedArmy.ArmyIcon.color;
+            //Sets the text of the name text component to be the name of the army.
+            NameText.text = AssignedArmy.Name;
         }
     }
 

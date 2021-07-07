@@ -7,13 +7,7 @@ public interface IGalaxyTooltipHandler
 {
     Transform TooltipsParent { get; }
 
-    /* Ideal implementation of interface in a class (taken from GalaxyManager script):
+    /* Ideal implementation of interface in a class (taken from UnitListButton script):
     [SerializeField] private Transform tooltipsParent = null;
-    public Transform TooltipsParent
-    {
-        get
-        {
-            return tooltipsParent;
-        }
-    } */
+    public Transform TooltipsParent { get => tooltipsParent; } */
 }

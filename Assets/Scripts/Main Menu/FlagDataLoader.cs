@@ -31,7 +31,7 @@ public class FlagDataLoader : SpriteNameLoader
 
 #region Editor
 #if UNITY_EDITOR
-public class FlagsDataBuildProcessor : SpriteNameLoaderBuildProcessorBehaviour, IPreprocessBuildWithReport
+public class FlagsDataBuildProcessor : SpriteNameLoaderBuildProcessor, IPreprocessBuildWithReport
 {
     protected override string textFilePath => "Assets/Read Only At Runtime Data/FlagSymbolsData.txt";
     protected override SpriteNameLoader spriteLoader => new FlagDataLoader();

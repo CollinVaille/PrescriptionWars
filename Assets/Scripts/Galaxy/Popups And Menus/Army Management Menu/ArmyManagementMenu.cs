@@ -32,33 +32,18 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     [Header("Parents")]
 
     [SerializeField] private Transform unitListButtonParent = null;
-    public Transform UnitListButtonParent
-    {
-        get
-        {
-            return unitListButtonParent;
-        }
-    }
+    public Transform UnitListButtonParent { get => unitListButtonParent; }
+
+    [SerializeField] private Transform buttonsBeingDraggedParent = null;
+    public Transform ButtonsBeingDraggedParent { get => buttonsBeingDraggedParent; }
 
     [Header("Prefabs")]
 
     [SerializeField] private GameObject armyButtonPrefab = null;
     [SerializeField] private GameObject squadButtonPrefab = null;
-    public GameObject SquadButtonPrefab
-    {
-        get
-        {
-            return squadButtonPrefab;
-        }
-    }
+    public GameObject SquadButtonPrefab { get => squadButtonPrefab; }
     [SerializeField] private GameObject pillButtonPrefab = null;
-    public GameObject PillButtonPrefab
-    {
-        get
-        {
-            return pillButtonPrefab;
-        }
-    }
+    public GameObject PillButtonPrefab { get => pillButtonPrefab; }
 
     [Header("Options")]
 

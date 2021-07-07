@@ -7,59 +7,79 @@ public class GalaxySquad
     //Constructor for the class.
     public GalaxySquad(string name)
     {
-        this.name = name;
+        //Sets the name of the squad to the specified name.
+        Name = name;
+
+        //Randomizes the color of the icon that represents the squad.
+        RandomizeIconColor();
+    }
+
+    public GalaxySquad(string name, Color iconColor)
+    {
+        //Sets the name of the squad to the specified name.
+        Name = name;
+        //Sets the color of the icon that represents the squad to the specified color.
+        IconColor = iconColor;
     }
 
     public GalaxySquad(string name, Material pillSkin)
     {
-        this.name = name;
+        //Sets the name of the squad to the specified name.
+        Name = name;
+        //Sets the assigned pill skin of the squad to the specified pill skin.
+        AssignedPillSkin = pillSkin;
+
+        //Randomizes the color of the icon that represents the squad.
+        RandomizeIconColor();
+    }
+
+    public GalaxySquad(string name, Color iconColor, Material pillSkin)
+    {
+        //Sets the name of the squad to the specified name.
+        Name = name;
+        //Sets the color of the icon that represents the squad to the specified color.
+        IconColor = iconColor;
+        //Sets the assigned pill skin of the squad to the specified pill skin.
         AssignedPillSkin = pillSkin;
     }
 
-    //Indicates the name of the squad.
+    /// <summary>
+    /// Indicates the name of the squad.
+    /// </summary>
+    public string Name { get => name; set => name = value; }
     private string name;
-    public string Name
-    {
-        get
-        {
-            return name;
-        }
-        set
-        {
-            name = value;
-        }
-    }
 
-    //The material that will be assigned to all pills of this squad (will usually be null and the material assigned to pills in the army class will be used, should only be used for special squads).
-    public Material AssignedPillSkin { get; }
+    /// <summary>
+    /// Indicates the color of the icon that represents the squad.
+    /// </summary>
+    public Color IconColor { get => iconColor; set => iconColor = value; }
+    private Color iconColor;
 
-    //List of all of the pills in the squad.
+    /// <summary>
+    /// The material that will be assigned to all pills of this squad (will usually be null and the material assigned to pills in the army class will be used, should only be used for special squads).
+    /// </summary>
+    public Material AssignedPillSkin { get => assignedPillSkin; private set => assignedPillSkin = value; }
+    private Material assignedPillSkin = null;
+
+    /// <summary>
+    /// List of all of the pills in the squad.
+    /// </summary>
     private List<GalaxyPill> pills = new List<GalaxyPill>();
 
-    //Returns the length (count) of the list of pills.
-    public int TotalNumberOfPills
-    {
-        get
-        {
-            return pills.Count;
-        }
-    }
+    /// <summary>
+    /// Returns the length (count) of the list of pills.
+    /// </summary>
+    public int TotalNumberOfPills { get => pills.Count; }
 
-    //The army that this squad is assigned to.
+    /// <summary>
+    /// The army that this squad is assigned to.
+    /// </summary>
+    public GalaxyArmy AssignedArmy { get => assignedArmy; set => assignedArmy = value; }
     private GalaxyArmy assignedArmy = null;
-    public GalaxyArmy AssignedArmy
-    {
-        get
-        {
-            return assignedArmy;
-        }
-        set
-        {
-            assignedArmy = value;
-        }
-    }
 
-    //Returns the average experience level (experience casted to an int) of the army.
+    /// <summary>
+    /// Returns the average experience level (experience casted to an int) of the army.
+    /// </summary>
     public float ExperienceLevel
     {
         get
@@ -75,7 +95,11 @@ public class GalaxySquad
         }
     }
 
-    //Returns the total number of pills in the squad of the specified class.
+    /// <summary>
+    /// Returns the total number of pills in the squad of the specified class.
+    /// </summary>
+    /// <param name="classType"></param>
+    /// <returns></returns>
     public int GetNumberOfPillsOfClassType(PillClassType classType)
     {
         int pillsOfClassType = 0;
@@ -91,35 +115,60 @@ public class GalaxySquad
         return pillsOfClassType;
     }
 
-    //Adds the specified squad to the list of squads.
+    /// <summary>
+    /// Adds the specified squad to the list of squads.
+    /// </summary>
+    /// <param name="pill"></param>
     public void AddPill(GalaxyPill pill)
     {
         pills.Add(pill);
         pill.AssignedSquad = this;
     }
 
-    //This method inserts the specified pill at the specified index.
+    /// <summary>
+    /// This method inserts the specified pill at the specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="pill"></param>
     public void InsertPill(int index, GalaxyPill pill)
     {
         pills.Insert(index, pill);
     }
 
-    //Removes the specified squad from the list of squads.
+    /// <summary>
+    /// Removes the specified squad from the list of squads.
+    /// </summary>
+    /// <param name="pill"></param>
     public void RemovePill(GalaxyPill pill)
     {
         pill.AssignedSquad = null;
         pills.Remove(pill);
     }
 
-    //Removes the pill at the specified index from the list of pills in the squad.
+    /// <summary>
+    /// Removes the pill at the specified index from the list of pills in the squad.
+    /// </summary>
+    /// <param name="index"></param>
     public void RemovePillAt(int index)
     {
         pills.RemoveAt(index);
     }
 
-    //Returns the squad at the specified index in the list of squads.
+    /// <summary>
+    /// Returns the squad at the specified index in the list of squads.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public GalaxyPill GetPillAt(int index)
     {
         return pills[index];
+    }
+
+    /// <summary>
+    /// Randomizes the color of the icon that represents the squad.
+    /// </summary>
+    private void RandomizeIconColor()
+    {
+        IconColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1);
     }
 }

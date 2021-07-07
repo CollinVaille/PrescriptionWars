@@ -14,6 +14,8 @@ public class GalaxyArmy
 
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
         assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
+        //Assigns the icon of the army and gives it a random sprite and silver color.
+        armyIcon = new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1));
     }
 
     public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin)
@@ -25,6 +27,34 @@ public class GalaxyArmy
 
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
         assignedPillSkin = pillSkin;
+        //Assigns the icon of the army and gives it a random sprite and silver color.
+        armyIcon = new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1));
+    }
+
+    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon)
+    {
+        //Assigns the name of the army.
+        this.name = name;
+        //Assigns the owner empire id.
+        this.ownerEmpireID = ownerEmpireID;
+
+        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
+        assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
+        //Assigns the icon of the army to the specified value.
+        this.armyIcon = armyIcon;
+    }
+
+    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin, ArmyIcon armyIcon)
+    {
+        //Assigns the name of the army.
+        this.name = name;
+        //Assigns the owner empire id.
+        this.ownerEmpireID = ownerEmpireID;
+
+        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
+        assignedPillSkin = pillSkin;
+        //Assigns the icon of the army to the specified value.
+        this.armyIcon = armyIcon;
     }
 
     //Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
@@ -65,6 +95,10 @@ public class GalaxyArmy
             PillViewsManager.UpdatePillViewsOfArmy(this);
         }
     }
+
+    //The information needed in order to create the icon that represents the army.
+    private ArmyIcon armyIcon = null;
+    public ArmyIcon ArmyIcon { get => armyIcon; }
 
     //List of all of the squads in the army.
     private List<GalaxySquad> squads = new List<GalaxySquad>();
@@ -152,4 +186,22 @@ public class GalaxyArmy
     {
         return squads[index];
     }
+}
+
+public class ArmyIcon
+{
+    public ArmyIcon(string spriteName, Color color)
+    {
+        this.spriteName = spriteName;
+        this.color = color;
+    }
+
+    /// <summary>
+    /// Indicates the name of the png file in the resources folder that is supposed to be loaded in to represent the army icon.
+    /// </summary>
+    public string spriteName;
+    /// <summary>
+    /// Indicates the color of the image compomemt of the army icon.
+    /// </summary>
+    public Color color;
 }

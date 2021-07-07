@@ -28,6 +28,8 @@ public class PillButton : UnitListButton
             assignedPill = value;
             //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
             Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
+            //Sets the text of the name text component to be the name of the pill.
+            NameText.text = AssignedPill.Name;
         }
     }
 
