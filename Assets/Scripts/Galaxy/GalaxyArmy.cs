@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GalaxyArmy
+public class GalaxyArmy: GalaxyGroundUnit
 {
     //Constructor of the galaxy army.
     public GalaxyArmy(string name, int ownerEmpireID)
@@ -57,32 +57,15 @@ public class GalaxyArmy
         this.armyIcon = armyIcon;
     }
 
-    //Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
+    /// <summary>
+    /// Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
+    /// </summary>
+    public int OwnerEmpireID { get => ownerEmpireID; }
     private int ownerEmpireID;
-    public int OwnerEmpireID
-    {
-        get
-        {
-            return ownerEmpireID;
-        }
-    }
 
-    //Indicates the name of the army.
-    private string name;
-    public string Name
-    {
-        get
-        {
-            return name;
-        }
-        set
-        {
-            name = value;
-        }
-    }
-
-    //The material that will be applied to all pills in the army that are not part of a special squad.
-    private Material assignedPillSkin = null;
+    /// <summary>
+    /// The material that will be applied to all pills in the army that are not part of a special squad.
+    /// </summary>
     public Material AssignedPillSkin
     {
         get
@@ -95,51 +78,77 @@ public class GalaxyArmy
             PillViewsManager.UpdatePillViewsOfArmy(this);
         }
     }
+    private Material assignedPillSkin = null;
 
-    //The information needed in order to create the icon that represents the army.
-    private ArmyIcon armyIcon = null;
+    /// <summary>
+    /// The information needed in order to create the icon that represents the army.
+    /// </summary>
     public ArmyIcon ArmyIcon { get => armyIcon; }
+    private ArmyIcon armyIcon = null;
 
-    //List of all of the squads in the army.
+    /// <summary>
+    /// List of all of the squads in the army.
+    /// </summary>
     private List<GalaxySquad> squads = new List<GalaxySquad>();
 
-    //Returns the number of squads in the list of squads (count).
-    public int TotalNumberOfSquads
+    /// <summary>
+    /// Returns the total number of squads in the list of squads (count).
+    /// </summary>
+    public int SquadsCount { get => squads.Count; }
+
+    /// <summary>
+    /// Returns the number of squads that the army can contain.
+    /// </summary>
+    public int NumberOfSquadsLimits { get => 5; }
+
+    /// <summary>
+    /// Returns the exact amount of experience that the average pill in the army has.
+    /// </summary>
+    public override float Experience
     {
         get
         {
-            return squads.Count;
-        }
-    }
+            float totalExperience = 0.0f;
+            int totalPills = 0;
 
-    //Returns the number of squads that the army can contain.
-    public int NumberOfSquadsLimits
-    {
-        get
-        {
-            return 5;
-        }
-    }
-
-    //Returns the average experience level of the army.
-    public float GetExperienceLevel()
-    {
-        float totalExperience = 0.0f;
-        int totalPills = 0;
-
-        foreach (GalaxySquad squad in squads)
-        {
-            for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
+            foreach (GalaxySquad squad in squads)
             {
-                totalExperience += squad.GetPillAt(pillIndex).ExperienceLevel;
-                totalPills++;
+                for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
+                {
+                    totalExperience += squad.GetPillAt(pillIndex).Experience;
+                    totalPills++;
+                }
             }
-        }
 
-        return totalExperience / totalPills;
+            return totalPills <= 0 ? 0 : totalExperience / totalPills;
+        }
+    }
+    /// <summary>
+    /// Returns the average experience level of the pills in the army.
+    /// </summary>
+    public override int ExperienceLevel
+    {
+        get
+        {
+            int totalExperienceLevel = 0;
+            int totalPills = 0;
+
+            foreach (GalaxySquad squad in squads)
+            {
+                for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
+                {
+                    totalExperienceLevel += squad.GetPillAt(pillIndex).ExperienceLevel;
+                    totalPills++;
+                }
+            }
+
+            return totalPills <= 0 ? 0 : totalExperienceLevel / totalPills;
+        }
     }
 
-    //Returns the total number of pills in the army.
+    /// <summary>
+    /// Returns the total number of pills in the army (wounded or not).
+    /// </summary>
     public int TotalNumberOfPills
     {
         get
@@ -155,33 +164,50 @@ public class GalaxyArmy
         }
     }
 
-    //Adds the specified squad to the list of squads.
+    /// <summary>
+    /// Adds the specified squad to the list of squads.
+    /// </summary>
+    /// <param name="squad"></param>
     public void AddSquad(GalaxySquad squad)
     {
         squads.Add(squad);
         squad.AssignedArmy = this;
     }
 
-    //This method inserts the specified squad at the specified index.
+    /// <summary>
+    /// Inserts the specified squad at the specified index.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="squad"></param>
     public void InsertSquad(int index, GalaxySquad squad)
     {
         squads.Insert(index, squad);
     }
 
-    //Removes the specified squad from the list of squads.
+    /// <summary>
+    /// Removes the specified squad from the list of squads.
+    /// </summary>
+    /// <param name="squad"></param>
     public void RemoveSquad(GalaxySquad squad)
     {
         squad.AssignedArmy = null;
         squads.Remove(squad);
     }
 
-    //Removes the squad at the specified index from the list of squads in the army.
+    /// <summary>
+    /// Removes the squad at the specified index from the list of squads in the army.
+    /// </summary>
+    /// <param name="index"></param>
     public void RemoveSquadAt(int index)
     {
         squads.RemoveAt(index);
     }
 
-    //Returns the squad at the specified index in the list of squads.
+    /// <summary>
+    /// Returns the squad at the specified index in the list of squads.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public GalaxySquad GetSquadAt(int index)
     {
         return squads[index];

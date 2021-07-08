@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GalaxyPill
+public class GalaxyPill: GalaxyGroundUnit
 {
     //Constructor for the class.
     public GalaxyPill(string name, PillClass pillClass)
@@ -16,92 +16,38 @@ public class GalaxyPill
             pillType = pillClass.initialPillType;
     }
 
-    //Indicates the amount of experience that the pill has.
+    /// <summary>
+    /// Indicates the amount of experience that the pill has.
+    /// </summary>
     private float experience;
-    public float Experience
-    {
-        get
-        {
-            return experience;
-        }
-        set
-        {
-            experience = value;
-        }
-    }
-    public int ExperienceLevel
-    {
-        get
-        {
-            return (int)experience;
-        }
-    }
+    public override float Experience { get => experience; set => experience = value; }
+    public override int ExperienceLevel { get => (int)experience; }
 
-    //Indicates the name of the pill.
-    private string name;
-    public string Name
-    {
-        get
-        {
-            return name;
-        }
-        set
-        {
-            name = value;
-        }
-    }
+    /// <summary>
+    /// The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
+    /// </summary>
+    public PillClass PillClass { get => pillClass; set => pillClass = value; }
+    /// <summary>
+    /// Indicates what type of class the class of the pill is (ex: Assault or Officer).
+    /// </summary>
+    public PillClassType PillClassType { get => pillClass.classType; }
+    private PillClass pillClass = null;
 
-    //The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
-    private PillClass pillClass;
-    public PillClass PillClass
-    {
-        get
-        {
-            return pillClass;
-        }
-        set
-        {
-            pillClass = value;
-        }
-    }
-    //Indicates what type of class the class of the pill is (ex: Assault or Officer).
-    public PillClassType PillClassType
-    {
-        get
-        {
-            return pillClass.classType;
-        }
-    }
-
-    //Indicates what type of pill the pill is (Example: Player or Bot1).
+    /// <summary>
+    /// Indicates what type of pill the pill is (Example: Player or Bot1).
+    /// </summary>
+    public PillType PillType { get => pillType; set => pillType = value; }
     private PillType pillType;
-    public PillType PillType
-    {
-        get
-        {
-            return pillType;
-        }
-        set
-        {
-            pillType = value;
-        }
-    }
 
-    //The squad that this pill is assigned to.
+    /// <summary>
+    /// The squad that this pill is assigned to.
+    /// </summary>
+    public GalaxySquad AssignedSquad { get => assignedSquad; set => assignedSquad = value; }
     private GalaxySquad assignedSquad = null;
-    public GalaxySquad AssignedSquad
-    {
-        get
-        {
-            return assignedSquad;
-        }
-        set
-        {
-            assignedSquad = value;
-        }
-    }
 
-    //Returns the skin material of the pill that is specified either in the squad (checked first) or the army.
+    /// <summary>
+    /// Returns the skin material of the pill that is specified either in the squad (checked first) or the army.
+    /// </summary>
     public Material Skin
     {
         get
@@ -114,12 +60,8 @@ public class GalaxyPill
         }
     }
 
-    //Indicates whether the secondary weapon game object of the pill should be visible in pill views.
-    public bool IsSecondaryVisible
-    {
-        get
-        {
-            return pillType == PillType.Player;
-        }
-    }
+    /// <summary>
+    /// Indicates whether the secondary weapon game object of the pill should be visible in pill views.
+    /// </summary>
+    public bool IsSecondaryVisible { get => pillType == PillType.Player; }
 }

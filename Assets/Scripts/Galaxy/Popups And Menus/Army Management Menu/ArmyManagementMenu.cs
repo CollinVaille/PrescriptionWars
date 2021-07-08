@@ -184,5 +184,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
         //Removes the army management menu from the list of army management menus.
         armyManagementMenus.Remove(this);
+        //Destroys the army management menu.
+        Destroy(gameObject);
     }
 }

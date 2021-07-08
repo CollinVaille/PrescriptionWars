@@ -34,6 +34,9 @@ public class SquadButton : ExpandableUnitListButton
             LeftImage.color = AssignedSquad.IconColor;
             //Sets the text of the name text component to be the name of the squad.
             NameText.text = assignedSquad.Name;
+
+            //Executes the logic in the base class that is necessary when the ground unit's value is set.
+            OnGalaxyGroundUnitValueSet(assignedSquad);
         }
     }
 

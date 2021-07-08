@@ -34,6 +34,9 @@ public class ArmyButton : ExpandableUnitListButton
             LeftImage.color = assignedArmy.ArmyIcon.color;
             //Sets the text of the name text component to be the name of the army.
             NameText.text = AssignedArmy.Name;
+
+            //Executes the logic in the base class that is necessary when the ground unit's value is set.
+            OnGalaxyGroundUnitValueSet(assignedArmy);
         }
     }
 

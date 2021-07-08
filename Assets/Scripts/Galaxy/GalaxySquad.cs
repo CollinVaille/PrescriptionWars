@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GalaxySquad
+public class GalaxySquad: GalaxyGroundUnit
 {
     //Constructor for the class.
     public GalaxySquad(string name)
@@ -44,12 +44,6 @@ public class GalaxySquad
     }
 
     /// <summary>
-    /// Indicates the name of the squad.
-    /// </summary>
-    public string Name { get => name; set => name = value; }
-    private string name;
-
-    /// <summary>
     /// Indicates the color of the icon that represents the squad.
     /// </summary>
     public Color IconColor { get => iconColor; set => iconColor = value; }
@@ -78,9 +72,9 @@ public class GalaxySquad
     private GalaxyArmy assignedArmy = null;
 
     /// <summary>
-    /// Returns the average experience level (experience casted to an int) of the army.
+    /// Returns the exact amount of experience that the average pill in the squad has.
     /// </summary>
-    public float ExperienceLevel
+    public override float Experience
     {
         get
         {
@@ -88,10 +82,27 @@ public class GalaxySquad
 
             foreach (GalaxyPill pill in pills)
             {
-                totalExperience += pill.ExperienceLevel;
+                totalExperience += pill.Experience;
             }
 
-            return totalExperience / pills.Count;
+            return pills.Count <= 0 ? 0 : totalExperience / pills.Count;
+        }
+    }
+    /// <summary>
+    /// Returns the average experience level (experience casted to an int) of pills in the squad.
+    /// </summary>
+    public override int ExperienceLevel
+    {
+        get
+        {
+            int totalExperienceLevel = 0;
+
+            foreach (GalaxyPill pill in pills)
+            {
+                totalExperienceLevel += pill.ExperienceLevel;
+            }
+
+            return pills.Count <= 0 ? 0 : totalExperienceLevel / pills.Count;
         }
     }
 

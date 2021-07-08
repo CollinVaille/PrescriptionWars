@@ -80,7 +80,7 @@ public class ExpandableUnitListButton : UnitListButton
         {
             if(TypeOfButton == ButtonType.Army)
             {
-                if(gameObject.GetComponent<ArmyButton>().AssignedArmy.TotalNumberOfSquads > 0)
+                if(gameObject.GetComponent<ArmyButton>().AssignedArmy.SquadsCount > 0)
                     Expand();
             }
             else if (TypeOfButton == ButtonType.Squad)
@@ -116,7 +116,7 @@ public class ExpandableUnitListButton : UnitListButton
         //Gets the total amount of child buttons that need to be created.
         int childCount = 0;
         if (TypeOfButton == ButtonType.Army)
-            childCount = gameObject.GetComponent<ArmyButton>().AssignedArmy.TotalNumberOfSquads;
+            childCount = gameObject.GetComponent<ArmyButton>().AssignedArmy.SquadsCount;
         else if (TypeOfButton == ButtonType.Squad)
             childCount = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
         //Creates the child unit list buttons.

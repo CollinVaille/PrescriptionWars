@@ -30,6 +30,9 @@ public class PillButton : UnitListButton
             Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
             //Sets the text of the name text component to be the name of the pill.
             NameText.text = AssignedPill.Name;
+
+            //Executes the logic in the base class that is necessary when the ground unit's value is set.
+            OnGalaxyGroundUnitValueSet(assignedPill);
         }
     }
 

@@ -14,8 +14,17 @@ abstract public class UnitListButton : MonoBehaviour
     [SerializeField] private Image leftImage = null;
     protected Image LeftImage { get => leftImage; }
 
+    [SerializeField] private Image experienceLevelIconImage = null;
+    protected Image ExperienceLevelIconImage { get => experienceLevelIconImage; }
+
     [SerializeField] private Text nameText = null;
     protected Text NameText { get => nameText; }
+
+    [SerializeField] private Text experienceLevelText = null;
+    protected Text ExperienceLevelText { get => experienceLevelText; }
+
+    [SerializeField] private GalaxyTooltip experienceLevelTooltip = null;
+    protected GalaxyTooltip ExperienceLevelTooltip { get => experienceLevelTooltip; }
 
     /*[Header("Base Tooltips")]
 
@@ -144,6 +153,8 @@ abstract public class UnitListButton : MonoBehaviour
             else
                 updatesSinceSpacingUpdateRequiredNextFrameSet++;
         }
+
+        ExperienceLevelTooltip.InstantaneousPosition = new Vector2(ExperienceLevelIconImage.transform.position.x - 35, ExperienceLevelIconImage.transform.position.y + 59);
     }
 
     /// <summary>
@@ -245,5 +256,14 @@ abstract public class UnitListButton : MonoBehaviour
 
         //Logs that the spacing has been updated.
         spacingUpdateRequiredNextFrame = false;
+    }
+
+    /// <summary>
+    /// This method should be called whenever the galaxy ground unit (pill, squad, or army) is set.
+    /// </summary>
+    /// <param name="groundUnit"></param>
+    protected void OnGalaxyGroundUnitValueSet(GalaxyGroundUnit groundUnit)
+    {
+        ExperienceLevelText.text = groundUnit.ExperienceLevel.ToString();
     }
 }

@@ -197,6 +197,8 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return;
 
             tooltip.transform.position = value;
+            if (followsMouse)
+                initialLocalPosition = tooltip.transform.localPosition;
         }
     }
 
