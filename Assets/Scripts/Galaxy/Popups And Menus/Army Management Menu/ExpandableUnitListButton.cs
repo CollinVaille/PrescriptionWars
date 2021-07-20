@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ExpandableUnitListButton : UnitListButton
 {
@@ -98,10 +99,10 @@ public class ExpandableUnitListButton : UnitListButton
     /// <summary>
     /// This method is called through the starting of a drag on a expandable unit list button and saves the initial y position of the actual button component and collapses the expandable unit list button if it is expanded.
     /// </summary>
-    new public virtual void OnBeginDrag()
+    new public virtual void OnBeginDrag(PointerEventData pointerEventData)
     {
         //Saves the initial y position of the actual button component.
-        base.OnBeginDrag();
+        base.OnBeginDrag(pointerEventData);
 
         //Collapses the expandable unit list button if it is expanded.
         if (expanded)

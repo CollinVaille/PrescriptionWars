@@ -189,16 +189,15 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //The actual game object of the tooltip.
     private GameObject tooltip = null;
-    public Vector2 InstantaneousPosition
+    public Vector2 Position
     {
         set
         {
-            if (tooltip == null)
+            if (!Open)
                 return;
 
             tooltip.transform.position = value;
-            if (followsMouse)
-                initialLocalPosition = tooltip.transform.localPosition;
+            initialLocalPosition = tooltip.transform.localPosition;
         }
     }
 

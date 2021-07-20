@@ -1,9 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArmyButton : ExpandableUnitListButton
 {
+    [Header("Army Button Components")]
+
+    [SerializeField] private Image squadsCountIconImage = null;
+    [SerializeField] private Text squadsCountText = null;
+    [SerializeField] private GalaxyTooltip squadsCountTooltip = null; 
+
     //------------------------
     //Non-inspector variables.
     //------------------------
@@ -34,6 +41,8 @@ public class ArmyButton : ExpandableUnitListButton
             LeftImage.color = assignedArmy.ArmyIcon.color;
             //Sets the text of the name text component to be the name of the army.
             NameText.text = AssignedArmy.Name;
+            //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
+            squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
 
             //Executes the logic in the base class that is necessary when the ground unit's value is set.
             OnGalaxyGroundUnitValueSet(assignedArmy);
@@ -64,6 +73,10 @@ public class ArmyButton : ExpandableUnitListButton
     public override void Update()
     {
         base.Update();
+
+        //Updates the position of the squads count tooltip if it is open.
+        if(squadsCountTooltip.Open)
+            squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
     }
 
     /// <summary>

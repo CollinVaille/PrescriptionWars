@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-abstract public class UnitListButton : MonoBehaviour
+abstract public class UnitListButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("Base Components")]
 
@@ -118,9 +118,13 @@ abstract public class UnitListButton : MonoBehaviour
     private bool beingDragged = false;
 
     /// <summary>
-    /// Indicates the y position of the actual button component when the button component was just beginning to be dragged.
+    /// Indicates the local y position of the actual button component when the button component was just beginning to be dragged.
     /// </summary>
-    private float beginDragYPosition = 0;
+    private float beginDragLocalYPosition = 0;
+    /// <summary>
+    /// Indicates the Y offset from the mouse to the button when the button is being dragged.
+    /// </summary>
+    private float dragYOffsetFromMouse = 0;
 
     /// <summary>
     /// Provides the initial values of important unit list button variables.
@@ -154,7 +158,9 @@ abstract public class UnitListButton : MonoBehaviour
                 updatesSinceSpacingUpdateRequiredNextFrameSet++;
         }
 
-        ExperienceLevelTooltip.InstantaneousPosition = new Vector2(ExperienceLevelIconImage.transform.position.x - 35, ExperienceLevelIconImage.transform.position.y + 59);
+        //Updates the position of the experience level tooltip if it is open.
+        if(ExperienceLevelTooltip.Open)
+            ExperienceLevelTooltip.Position = new Vector2(ExperienceLevelIconImage.transform.position.x - 35, ExperienceLevelIconImage.transform.position.y + 59);
     }
 
     /// <summary>
@@ -191,12 +197,17 @@ abstract public class UnitListButton : MonoBehaviour
     /// <summary>
     /// This method is called through the starting of a drag on a unit list button and saves the initial y position of the actual button component and logs that the unit list button is being dragged.
     /// </summary>
-    public virtual void OnBeginDrag()
+    public virtual void OnBeginDrag(PointerEventData pointerEventData)
     {
+        //Ignores any begin drag event if it is not done by the left mouse button.
+        if (pointerEventData.button != PointerEventData.InputButton.Left)
+            return;
+        //Saves the initial local y position of the actual button component before it begins to be dragged.
+        beginDragLocalYPosition = button.transform.localPosition.y;
         //Sets the parent of the button component to the parent of buttons that are being dragged in order to ensure that the button is on top of all of the other buttons that are not being dragged.
         button.transform.SetParent(ArmyManagementMenu.ButtonsBeingDraggedParent);
-        //Saves the initial y position of the actual button component before it begins to be dragged.
-        beginDragYPosition = button.transform.position.y;
+        //Saves the y offset of the button from the mouse's position.
+        dragYOffsetFromMouse = button.transform.position.y - Input.mousePosition.y;
         //Logs that the unit list button is being dragged.
         beingDragged = true;
     }
@@ -204,21 +215,27 @@ abstract public class UnitListButton : MonoBehaviour
     /// <summary>
     /// This method is called through the dragging a unit list button and changes the y position of the button to match the y position of the mouse.
     /// </summary>
-    public virtual void OnDrag()
+    public virtual void OnDrag(PointerEventData pointerEventData)
     {
+        //Ignores any drag event if it is not done by the left mouse button.
+        if (pointerEventData.button != PointerEventData.InputButton.Left)
+            return;
         //Changes the y position of the actual button component to match the y position of the mouse.
-        button.transform.position = new Vector2(button.transform.position.x, Input.mousePosition.y);
+        button.transform.position = new Vector2(button.transform.position.x, Input.mousePosition.y + dragYOffsetFromMouse);
     }
 
     /// <summary>
     /// This method is called through the ending of a drag on a unit list button and determines the new position of the unit list button and logs that the unit list button is no longer being dragged.
     /// </summary>
-    public virtual void OnEndDrag()
+    public virtual void OnEndDrag(PointerEventData pointerEventData)
     {
+        //Ignores any end drag event if it is not done by the left mouse button.
+        if (pointerEventData.button != PointerEventData.InputButton.Left)
+            return;
         //Reverts the parent of the button component to be the unit list button again.
         button.transform.SetParent(transform);
-        //Reverts the position of the actual button component to its position when it was just beginning to be dragged.
-        button.transform.position = new Vector2(button.transform.position.x, beginDragYPosition);
+        //Reverts the position of the actual button component to its local position when it was just beginning to be dragged.
+        button.transform.localPosition = new Vector2(button.transform.localPosition.x, beginDragLocalYPosition);
         //Logs that the unit list button is no longer being dragged.
         beingDragged = false;
     }
