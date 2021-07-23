@@ -199,11 +199,19 @@ abstract public class UnitListButton : MonoBehaviour, IBeginDragHandler, IDragHa
     /// </summary>
     public virtual void OnBeginDrag(PointerEventData pointerEventData)
     {
+        //Executes the logic in the expandable unit list button class for when it is beginning to be dragged.
+        ExpandableUnitListButton expandableUnitListButton = gameObject.GetComponent<ExpandableUnitListButton>();
+        if (expandableUnitListButton != null && !expandableUnitListButton.ExecutingBeginDragLogic)
+        {
+            expandableUnitListButton.OnBeginDrag(pointerEventData);
+            return;
+        }
+
         //Ignores any begin drag event if it is not done by the left mouse button.
         if (pointerEventData.button != PointerEventData.InputButton.Left)
             return;
         //Saves the initial local y position of the actual button component before it begins to be dragged.
-        beginDragLocalYPosition = button.transform.localPosition.y;
+        beginDragLocalYPosition = (gameObject.GetComponent<ExpandableUnitListButton>() != null && gameObject.GetComponent<ExpandableUnitListButton>().Expanded) ? button.transform.localPosition.y - (ArmyManagementMenu.SpacingBetweenUnitListButtonTypes / 2) : button.transform.localPosition.y;
         //Sets the parent of the button component to the parent of buttons that are being dragged in order to ensure that the button is on top of all of the other buttons that are not being dragged.
         button.transform.SetParent(ArmyManagementMenu.ButtonsBeingDraggedParent);
         //Saves the y offset of the button from the mouse's position.

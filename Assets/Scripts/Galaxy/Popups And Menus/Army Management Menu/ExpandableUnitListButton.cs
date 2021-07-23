@@ -13,13 +13,13 @@ public class ExpandableUnitListButton : UnitListButton
     #endif
     #endregion
     [SerializeField] private protected bool expanded = false;
-    public bool Expanded
-    {
-        get
-        {
-            return expanded;
-        }
-    }
+    public bool Expanded { get => expanded; }
+
+    /// <summary>
+    /// Indicates if the expandable unit list button is currently running the logic for beginning to be dragged.
+    /// </summary>
+    public bool ExecutingBeginDragLogic { get => executingBeginDragLogic; }
+    [SerializeField] private bool executingBeginDragLogic = false;
 
     //------------------------
     //Non-inspector variables.
@@ -101,12 +101,22 @@ public class ExpandableUnitListButton : UnitListButton
     /// </summary>
     new public virtual void OnBeginDrag(PointerEventData pointerEventData)
     {
+        //Ignores any begin drag event if it is not done by the left mouse button.
+        if (pointerEventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        //Indicates that the expandable unit list button is beginning to be dragged.
+        executingBeginDragLogic = true;
+
         //Saves the initial y position of the actual button component.
         base.OnBeginDrag(pointerEventData);
 
         //Collapses the expandable unit list button if it is expanded.
         if (expanded)
             Collapse();
+
+        //Indicates that the expandable unit list button is no longer beginning to be dragged.
+        executingBeginDragLogic = false;
     }
 
     /// <summary>

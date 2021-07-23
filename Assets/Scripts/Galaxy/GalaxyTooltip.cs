@@ -24,18 +24,21 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //[Header("Logic Options")]
 
-    //Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).
-    //[Tooltip("Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).")]
+    /// <summary>
+    /// Indicates how the tooltip will close (see the enum definition above to get more details on the closing types).
+    /// </summary>
     [SerializeField, HideInInspector]
     private TooltipClosingType closingType = TooltipClosingType.Destroy;
 
-    //Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
-    //[SerializeField, Tooltip("Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.")]
+    /// <summary>
+    /// Indicates the inital position that the tooltip will spawn at when it is created, but if the tooltip's position is supposed to update to the mouse's position every update then it will indicate the offset between the mouse and the tooltip.
+    /// </summary>
     [SerializeField, HideInInspector]
     private Vector2 initialLocalPosition = new Vector2(5, -15);
 
-    //Indicates the amount of space between the text of the tooltip and the edge of the tooltip.
-    //[SerializeField, Tooltip("Indicates the amount of space between the text of the tooltip and the edge of the tooltip.")]
+    /// <summary>
+    /// Indicates the amount of space between the text of the tooltip and the edge of the tooltip.
+    /// </summary>
     [SerializeField, HideInInspector]
     private Vector2 edgeBuffer = new Vector2(5, 3);
     public Vector2 EdgeBuffer
@@ -52,17 +55,32 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    //Indicates whether the tooltip will have its location set to the mouse's location every update.
-    //[Tooltip("Indicates whether the tooltip will have its location set to the mouse's location every update.")]
+    /// <summary>
+    /// Indicates the amount of delay in seconds between the pointer entering the trigger zone and the tooltip opening.
+    /// </summary>
+    [SerializeField, HideInInspector]
+    private float openDelay = 0;
+    public float OpenDelay
+    {
+        get
+        {
+            return openDelay;
+        }
+        set
+        {
+            openDelay = value;
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether the tooltip will have its location set to the mouse's location every update.
+    /// </summary>
     [HideInInspector]
     public bool followsMouse = true;
 
-    [Header("Text Content")]
-
-    //The text that the tooltip displays to the user.
-    //[SerializeField, TextArea, Tooltip("The text that the tooltip displays to the user.")]
-    [SerializeField, HideInInspector]
-    private string text = "";
+    /// <summary>
+    /// The text that the tooltip displays to the user.
+    /// </summary>
     public string Text
     {
         get
@@ -76,13 +94,14 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 UpdateTooltipText();
         }
     }
+    [Header("Text Content"), SerializeField, HideInInspector]
+    private string text = "";
 
-    //The font that the text of the tooltip will be.
-    //[SerializeField, Tooltip("The font that the text of the tooltip will be.")]
     [SerializeField, HideInInspector]
     private DefaultOrCustomOption fontOption = DefaultOrCustomOption.Default;
-    [SerializeField, HideInInspector]
-    private Font font = null;
+    /// <summary>
+    /// The font that the text of the tooltip will be.
+    /// </summary>
     public Font Font
     {
         get
@@ -98,13 +117,14 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 UpdateTooltipText();
         }
     }
+    [SerializeField, HideInInspector]
+    private Font font = null;
 
-    //Indicates the size of the font of the tooltip text.
-    //[SerializeField, Tooltip("Indicates the size of the font of the tooltip text.")]
     [SerializeField, HideInInspector]
     private DefaultOrCustomOption fontSizeOption = DefaultOrCustomOption.Default;
-    [SerializeField, HideInInspector]
-    private int fontSize = 0;
+    /// <summary>
+    /// Indicates the size of the font of the tooltip text.
+    /// </summary>
     public int FontSize
     {
         get
@@ -120,18 +140,20 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 UpdateTooltipText();
         }
     }
+    [SerializeField, HideInInspector]
+    private int fontSize = 0;
 
     //[Header("Text Shadow")]
 
-    //Indicates whether the shadow component of the tooltip's text is enabled.
-    //[Tooltip("Indicates whether the shadow component of the tooltip's text is enabled.")]
+    /// <summary>
+    /// Indicates whether the shadow component of the tooltip's text is enabled.
+    /// </summary>
     [SerializeField, HideInInspector]
     private bool textShadowEnabled = false;
 
-    //Indicates the effect distance of the shadow component of the tooltip's text.
-    //[SerializeField, Tooltip("Indicates the effect distance of the shadow component of the tooltip's text."), ConditionalField("textShadowEnabled", true, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
-    [SerializeField, HideInInspector]
-    private Vector2 textShadowEffectDistance = new Vector2(1, -1);
+    /// <summary>
+    /// Indicates the effect distance of the shadow component of the tooltip's text.
+    /// </summary>
     public Vector2 TextShadowEffectDistance
     {
         get
@@ -145,6 +167,8 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 UpdateTooltipText();
         }
     }
+    [SerializeField, HideInInspector]
+    private Vector2 textShadowEffectDistance = new Vector2(1, -1);
 
     public enum GalaxyTooltipColorOption
     {
@@ -156,30 +180,30 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     //[Header("Coloring Options")]
 
-    //Indicates the color of the text of the tooltip.
-    //[SerializeField, LabelOverride("Text Color"), Tooltip("Indicates the color of the text of the tooltip.")]
+    /// <summary>
+    /// Indicates the color of the text of the tooltip.
+    /// </summary>
     [SerializeField, HideInInspector]
     private GalaxyTooltipColorOption textColorOption = GalaxyTooltipColorOption.Default;
 
-    //[SerializeField, ConditionalField("textColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
     [SerializeField, HideInInspector]
     private Color textCustomColor = Color.white;
 
-    //Indicates the color of the shadow component of the tooltip's text.
-    //[LabelOverride("Text Shadow Color"), Tooltip("Indicates the color of the shadow component of the tooltip's text.")]
+    /// <summary>
+    /// Indicates the color of the shadow component of the tooltip's text.
+    /// </summary>
     [SerializeField, HideInInspector]
     private GalaxyTooltipColorOption textShadowColorOption = GalaxyTooltipColorOption.Default;
 
-    //[SerializeField, ConditionalField("textShadowColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
     [SerializeField, HideInInspector]
     private Color textShadowCustomColor = Color.white;
 
-    //Indicates the background color of the tooltip.
-    //[LabelOverride("Background Color"), Tooltip("Indicates the background color of the tooltip.")]
+    /// <summary>
+    /// Indicates the background color of the tooltip.
+    /// </summary>
     [SerializeField, HideInInspector]
     private GalaxyTooltipColorOption backgroundColorOption = GalaxyTooltipColorOption.Default;
 
-    //[SerializeField, ConditionalField("backgroundColorOption", GalaxyTooltipColorOption.CustomColor, ConditionalFieldComparisonType.Equals, ConditionalFieldDisablingType.Disappear)]
     [SerializeField, HideInInspector]
     private Color backgroundCustomColor = Color.white;
 
@@ -187,7 +211,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //Non-inspector variables.
     //---------------------------------------------------------------------------------------
 
-    //The actual game object of the tooltip.
+    /// <summary>
+    /// The actual game object of the tooltip.
+    /// </summary>
     private GameObject tooltip = null;
     public Vector2 Position
     {
@@ -201,14 +227,19 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    //The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
+    /// <summary>
+    /// The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
+    /// </summary>
     public static GameObject tooltipPrefab;
 
-    //The canvas that the tooltip is under (set in the start method of the tooltip).
+    /// <summary>
+    /// The canvas that the tooltip is under (set in the start method of the tooltip).
+    /// </summary>
     private Canvas parentCanvas = null;
 
-    //The parent transform of the tooltip (set in the start method of the tooltip).
-    private Transform parent = null;
+    /// <summary>
+    /// The parent transform of the tooltip (set in the start method of the tooltip).
+    /// </summary>
     public Transform Parent
     {
         get
@@ -222,15 +253,48 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 tooltip.transform.SetParent(parent);
         }
     }
+    private Transform parent = null;
 
-    //The camera that this tooltip will be viewed by.
+    /// <summary>
+    /// The camera that this tooltip will be viewed by.
+    /// </summary>
     private Camera sceneCamera = null;
 
-    //Indicates whether the tooltip is open or not.
+    /// <summary>
+    /// Indicates whether the tooltip is open or not.
+    /// </summary>
     public bool Open { get; private set; } = false;
 
-    //Indicates whether the tooltip component has been applied to a 3D object.
+    /// <summary>
+    /// Indicates whether the tooltip component has been applied to a 3D object.
+    /// </summary>
     private bool componentAppliedTo3DObject = false;
+
+    /// <summary>
+    /// Indicates whether the pointer is in the trigger zone for the tooltip opening.
+    /// </summary>
+    public bool PointerInTriggerZone
+    {
+        get
+        {
+            return pointerInTriggerZone;
+        }
+        private set
+        {
+            pointerInTriggerZone = value;
+            pointerInTriggerZoneDeltaTime = 0;
+            if (pointerInTriggerZone && pointerInTriggerZoneDeltaTime >= OpenDelay)
+                OpenTooltip();
+            else if (!pointerInTriggerZone)
+                CloseTooltip();
+        }
+    }
+    private bool pointerInTriggerZone = false;
+
+    /// <summary>
+    /// Indicates the amount of time in seconds that the pointer has been in the trigger zone to open the tooltip.
+    /// </summary>
+    private float pointerInTriggerZoneDeltaTime = 0;
 
     // Start is called before the first frame update
     private void Start()
@@ -244,6 +308,13 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // Update is called once per frame
     private void Update()
     {
+        if (pointerInTriggerZone)
+        {
+            pointerInTriggerZoneDeltaTime += Time.deltaTime;
+            if (!Open && pointerInTriggerZoneDeltaTime >= OpenDelay)
+                OpenTooltip();
+        }
+
         //Updates the position of the tooltip to the position of the player's mouse if the tooltip is open.
         if (Open)
         {
@@ -345,35 +416,65 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         return true;
     }
 
-    //Opens the tooltip whenever the mouse/pointer enters the trigger zone (2D).
+    /// <summary>
+    /// Opens the tooltip whenever the mouse/pointer enters the trigger zone (2D).
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        OpenTooltip();
+        OnPointerEnterTriggerZone();
     }
 
-    //Opens the tooltip whenever the mouse/pointer enters the trigger zone (3D).
-    public void OnMouseEnter()
+    /// <summary>
+    /// Opens the tooltip whenever the mouse/pointer enters the trigger zone (3D).
+    /// </summary>
+    private void OnMouseEnter()
     {
         //Ensures that the mouse is not over a 2D ui element.
         if (GalaxyCamera.IsMouseOverUIElement)
             return;
 
-        OpenTooltip();
+        OnPointerEnterTriggerZone();
     }
 
-    //Closes the tooltip whenever the mouse/pointer exits the trigger zone (2D).
+    /// <summary>
+    /// This method is called whenever the pointer enters the trigger zone for the tooltip to open whether or not the component is applied to a 2D or 3D object.
+    /// </summary>
+    private void OnPointerEnterTriggerZone()
+    {
+        //Logs that the pointer is in the trigger zone for the tooltip to open.
+        PointerInTriggerZone = true;
+    }
+
+    /// <summary>
+    /// Closes the tooltip whenever the mouse/pointer exits the trigger zone (2D).
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData)
     {
-        CloseTooltip();
+        OnPointerExitTriggerZone();
     }
 
-    //Closes the tooltip whenever the mouse/pointer exits the trigger zone (3D).
+    /// <summary>
+    /// Closes the tooltip whenever the mouse/pointer exits the trigger zone (3D).
+    /// </summary>
     private void OnMouseExit()
     {
-        CloseTooltip();
+        OnPointerExitTriggerZone();
     }
 
-    //Instantiates the tooltip game object from the tooltip prefab, sets the parent of the tooltip, resets essential transfrom components, and updates the text of the tooltip.
+    /// <summary>
+    /// This method is called whenever the pointer exits the trigger zone for the tooltip to open whether or not the component is applied to a 2D or 3D object.
+    /// </summary>
+    private void OnPointerExitTriggerZone()
+    {
+        //Logs that the pointer is no longer in the trigger zone for the tooltip to open.
+        PointerInTriggerZone = false;
+    }
+
+    /// <summary>
+    /// Instantiates the tooltip game object from the tooltip prefab, sets the parent of the tooltip, resets essential transfrom components, and updates the text of the tooltip.
+    /// </summary>
     private void CreateTooltip()
     {
         //Instantiates the tooltip game object from the tooltip prefab.
@@ -392,7 +493,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         UpdateTooltipText();
     }
 
-    //Opens the tooltip.
+    /// <summary>
+    /// Opens the tooltip.
+    /// </summary>
     private void OpenTooltip()
     {
         //Activates the tooltip's game object if it is not destroyed every time the tooltip closes.
@@ -410,7 +513,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Open = true;
     }
 
-    //Closes the tooltip.
+    /// <summary>
+    /// Closes the tooltip.
+    /// </summary>
     public void CloseTooltip()
     {
         //Deactivates the tooltip's game object if it is not destroyed every time the tooltip closes.
@@ -427,7 +532,9 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Open = false;
     }
 
-    //Updates the text element of the tooltip and makes sure that the width of the background image adjusts to match the width of the text.
+    /// <summary>
+    /// Updates the text element of the tooltip and makes sure that the width of the background image adjusts to match the width of the text.
+    /// </summary>
     private void UpdateTooltipText()
     {
         Text textElementOfTooltip = tooltip.transform.GetChild(1).GetComponent<Text>();
@@ -455,7 +562,11 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         tooltip.transform.GetChild(1).localPosition = new Vector2(tooltipPrefab.transform.GetChild(1).localPosition.x + (edgeBuffer.x / 2), tooltip.transform.GetChild(1).localPosition.y);
     }
 
-    //Should be called in order to set the background color of the tooltip through code.
+    /// <summary>
+    /// Should be called in order to set the background color of the tooltip through code.
+    /// </summary>
+    /// <param name="colorOption"></param>
+    /// <param name="customColor"></param>
     public void SetBackgroundColor(GalaxyTooltipColorOption colorOption, Color customColor)
     {
         backgroundColorOption = colorOption;
@@ -464,7 +575,11 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             tooltip.transform.GetChild(0).GetComponent<Image>().color = GetColorFromColorOption(backgroundColorOption, "Background");
     }
 
-    //Should be called in order to set the color of the text of the tooltip through code.
+    /// <summary>
+    /// Should be called in order to set the color of the text of the tooltip through code.
+    /// </summary>
+    /// <param name="colorOption"></param>
+    /// <param name="customColor"></param>
     public void SetTextColor(GalaxyTooltipColorOption colorOption, Color customColor)
     {
         textColorOption = colorOption;
@@ -473,7 +588,10 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             UpdateTooltipText();
     }
 
-    //Should be called in order to set if the shadow component of the tooltip's text is enabled or not through code.
+    /// <summary>
+    /// Should be called in order to set if the shadow component of the tooltip's text is enabled or not through code.
+    /// </summary>
+    /// <param name="isTextShadowEnabled"></param>
     public void SetTextShadowEnabled(bool isTextShadowEnabled)
     {
         textShadowEnabled = isTextShadowEnabled;
@@ -489,7 +607,12 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             UpdateTooltipText();
     }
 
-    //Returns the appropriate color depending on the color identifier and what component of the tooltip the color corresponds to.
+    /// <summary>
+    /// Returns the appropriate color depending on the color identifier and what component of the tooltip the color corresponds to.
+    /// </summary>
+    /// <param name="colorOption"></param>
+    /// <param name="componentOfTooltip"></param>
+    /// <returns></returns>
     private Color GetColorFromColorOption(GalaxyTooltipColorOption colorOption, string componentOfTooltip)
     {
         switch (colorOption)
@@ -533,13 +656,26 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    //Closes the tooltip if the trigger zone is deactivated/disabled.
+    /// <summary>
+    /// Closes the tooltip if the trigger zone is deactivated/disabled.
+    /// </summary>
     private void OnDisable()
     {
-        CloseTooltip();
+        PointerInTriggerZone = false;
     }
 
+
+
+
+
+    //-------------------------------------------------------------------
     //Custom Inspector.
+    //-------------------------------------------------------------------
+
+
+
+
+
     #region Editor
     #if UNITY_EDITOR
     [CustomEditor(typeof(GalaxyTooltip)), CanEditMultipleObjects]
@@ -551,6 +687,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         private SerializedProperty propClosingType; //Enum.
         private SerializedProperty propInitialLocalPosition;    //Vector2.
         private SerializedProperty propEdgeBuffer;  //Vector2.
+        private SerializedProperty propOpenDelay;   //Float.
         private SerializedProperty propFollowsMouse;    //Bool.
         private SerializedProperty propText;    //String.
         private SerializedProperty propFontOption;  //Enum.
@@ -588,6 +725,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             propClosingType = serializedObject.FindProperty("closingType");
             propInitialLocalPosition = serializedObject.FindProperty("initialLocalPosition");
             propEdgeBuffer = serializedObject.FindProperty("edgeBuffer");
+            propOpenDelay = serializedObject.FindProperty("openDelay");
             propFollowsMouse = serializedObject.FindProperty("followsMouse");
             propText = serializedObject.FindProperty("text");
             propFontOption = serializedObject.FindProperty("fontOption");
@@ -631,6 +769,10 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             //Edge Buffer Vector2.
 
             propEdgeBuffer.vector2Value = EditorGUILayout.Vector2Field("Edge Buffer", galaxyTooltip.edgeBuffer);
+
+            //Open Delay Float.
+
+            propOpenDelay.floatValue = EditorGUILayout.FloatField("Open Delay", galaxyTooltip.openDelay);
 
             //Follows Mouse Bool.
 
