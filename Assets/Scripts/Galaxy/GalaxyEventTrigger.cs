@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class GalaxyEventTrigger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, ISelectHandler, IDeselectHandler
+public class GalaxyEventTrigger : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler, ISelectHandler, IDeselectHandler
 {
     [SerializeField] private GameObject targetObject = null;
 
@@ -38,20 +38,6 @@ public class GalaxyEventTrigger : MonoBehaviour, IBeginDragHandler, IDragHandler
         IEndDragHandler targetObjectEndDragHandler = targetObject.GetComponent<IEndDragHandler>();
         if (targetObjectEndDragHandler != null)
             targetObjectEndDragHandler.OnEndDrag(pointerEventData);
-    }
-
-    public void OnPointerEnter(PointerEventData pointerEventData)
-    {
-        IPointerEnterHandler targetObjectPointerEnterHandler = targetObject.GetComponent<IPointerEnterHandler>();
-        if (targetObjectPointerEnterHandler != null)
-            targetObjectPointerEnterHandler.OnPointerEnter(pointerEventData);
-    }
-
-    public void OnPointerExit(PointerEventData pointerEventData)
-    {
-        IPointerExitHandler targetObjectPointerExitHandler = targetObject.GetComponent<IPointerExitHandler>();
-        if (targetObjectPointerExitHandler != null)
-            targetObjectPointerExitHandler.OnPointerExit(pointerEventData);
     }
 
     public void OnPointerClick(PointerEventData pointerEventData)

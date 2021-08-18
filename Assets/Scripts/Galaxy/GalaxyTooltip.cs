@@ -207,6 +207,11 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField, HideInInspector]
     private Color backgroundCustomColor = Color.white;
 
+    //[Header("Optional Components")]
+
+    [SerializeField, HideInInspector]
+    private GalaxyTooltipEventsHandler eventsHandler = null;
+
     //---------------------------------------------------------------------------------------
     //Non-inspector variables.
     //---------------------------------------------------------------------------------------
@@ -511,6 +516,10 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         //Indicates that the tooltip is open.
         Open = true;
+
+        //Triggers the OnTooltipOpen() method if an events handler was specified in the inspector.
+        if (eventsHandler != null)
+            eventsHandler.OnTooltipOpen(this);
     }
 
     /// <summary>
@@ -530,6 +539,10 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         //Indicates that the tooltip is closed.
         Open = false;
+
+        //Triggers the OnTooltipClose() method if an events handler was specified in the inspector.
+        if (eventsHandler != null)
+            eventsHandler.OnTooltipClose(this);
     }
 
     /// <summary>
@@ -702,6 +715,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         private SerializedProperty propTextShadowCustomColor;   //Color.
         private SerializedProperty propBackgroundColorOption;   //Enum.
         private SerializedProperty propBackgroundCustomColor;   //Color.
+        private SerializedProperty propEventsHandler;   //IGalaxyEventsHandler
 
         private AnimBool showFontExtraField = new AnimBool(true);
         private AnimBool showFontSizeExtraField = new AnimBool(true);
@@ -740,6 +754,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             propTextShadowCustomColor = serializedObject.FindProperty("textShadowCustomColor");
             propBackgroundColorOption = serializedObject.FindProperty("backgroundColorOption");
             propBackgroundCustomColor = serializedObject.FindProperty("backgroundCustomColor");
+            propEventsHandler = serializedObject.FindProperty("eventsHandler");
         }
 
         public override void OnInspectorGUI()
@@ -772,7 +787,8 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             //Open Delay Float.
 
-            propOpenDelay.floatValue = EditorGUILayout.FloatField("Open Delay", galaxyTooltip.openDelay);
+            propOpenDelay.floatValue = EditorGUILayout.Slider("Open Delay", galaxyTooltip.openDelay, 0, 2);
+            //propOpenDelay.floatValue = EditorGUILayout.FloatField("Open Delay", galaxyTooltip.openDelay);
 
             //Follows Mouse Bool.
 
@@ -891,6 +907,17 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFadeGroup();
+
+            //---------------------------------------------
+            //Optional Components Section.
+            //---------------------------------------------
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Optional Components", EditorStyles.boldLabel);
+
+            //Events Handler IGalaxyTooltipEventsHandler
+
+            propEventsHandler.objectReferenceValue = (GalaxyTooltipEventsHandler)EditorGUILayout.ObjectField("Events Handler", galaxyTooltip.eventsHandler, typeof(GalaxyTooltipEventsHandler), true);
 
             EditorGUILayout.EndVertical();
 

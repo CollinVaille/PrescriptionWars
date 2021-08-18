@@ -5,6 +5,20 @@ using UnityEngine.EventSystems;
 
 public class ExpandableUnitListButton : UnitListButton
 {
+    [Header("Expandable Button SFX Options")]
+
+    [SerializeField, Tooltip("The sound effect that should be played whenever the expandable unit list button expands to reveal its child buttons.")] private AudioClip expandSFX = null;
+    /// <summary>
+    /// The sound effect that should be played whenever the expandable unit list button expands to reveal its child buttons.
+    /// </summary>
+    protected AudioClip ExpandSFX { get => expandSFX; }
+
+    [SerializeField, Tooltip("The sound effect that should be played whenever the expandable unit list button collapses and hides its child buttons.")] private AudioClip collapseSFX = null;
+    /// <summary>
+    /// The sound effect that should be played whenever the expandable unit list button collapses and hides its child buttons.
+    /// </summary>
+    protected AudioClip CollapseSFX { get => collapseSFX; }
+
     [Header("Expandable Button Additional Information")]
 
     #region Editor
@@ -12,14 +26,11 @@ public class ExpandableUnitListButton : UnitListButton
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private protected bool expanded = false;
-    public bool Expanded { get => expanded; }
-
+    [SerializeField, Tooltip("Indicates whether the expandable unit list button is expanded and showing its child buttons or collapsed and not showing its child buttons.")] private protected bool expanded = false;
     /// <summary>
-    /// Indicates if the expandable unit list button is currently running the logic for beginning to be dragged.
+    /// Indicates whether the expandable unit list button is expanded or not.
     /// </summary>
-    public bool ExecutingBeginDragLogic { get => executingBeginDragLogic; }
-    [SerializeField] private bool executingBeginDragLogic = false;
+    public bool Expanded { get => expanded; }
 
     //------------------------
     //Non-inspector variables.
@@ -75,7 +86,7 @@ public class ExpandableUnitListButton : UnitListButton
     /// This method is called through the on click method whenever it is detetcted that the expandable unit list button was clicked while not being dragged.
     /// This method expands or collapses the expandable unit list button and selects it to show up in the unit inspector.
     /// </summary>
-    new public virtual void OnClickWithoutDrag()
+    public override void OnClickWithoutDrag()
     {
         if (!expanded)
         {
@@ -99,14 +110,11 @@ public class ExpandableUnitListButton : UnitListButton
     /// <summary>
     /// This method is called through the starting of a drag on a expandable unit list button and saves the initial y position of the actual button component and collapses the expandable unit list button if it is expanded.
     /// </summary>
-    new public virtual void OnBeginDrag(PointerEventData pointerEventData)
+    public override void OnBeginDrag(PointerEventData pointerEventData)
     {
         //Ignores any begin drag event if it is not done by the left mouse button.
         if (pointerEventData.button != PointerEventData.InputButton.Left)
             return;
-
-        //Indicates that the expandable unit list button is beginning to be dragged.
-        executingBeginDragLogic = true;
 
         //Saves the initial y position of the actual button component.
         base.OnBeginDrag(pointerEventData);
@@ -114,9 +122,6 @@ public class ExpandableUnitListButton : UnitListButton
         //Collapses the expandable unit list button if it is expanded.
         if (expanded)
             Collapse();
-
-        //Indicates that the expandable unit list button is no longer beginning to be dragged.
-        executingBeginDragLogic = false;
     }
 
     /// <summary>
@@ -160,6 +165,9 @@ public class ExpandableUnitListButton : UnitListButton
 
         //Logs that the expandable unit list button button is currently expanded.
         expanded = true;
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(ExpandSFX);
     }
 
     /// <summary>
@@ -178,5 +186,8 @@ public class ExpandableUnitListButton : UnitListButton
 
         //Logs that the squad button is currently collapsed (not expanded).
         expanded = false;
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(CollapseSFX);
     }
 }

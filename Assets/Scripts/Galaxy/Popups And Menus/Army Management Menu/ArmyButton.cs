@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ArmyButton : ExpandableUnitListButton
@@ -73,10 +74,6 @@ public class ArmyButton : ExpandableUnitListButton
     public override void Update()
     {
         base.Update();
-
-        //Updates the position of the squads count tooltip if it is open.
-        if(squadsCountTooltip.Open)
-            squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
     }
 
     /// <summary>
@@ -85,5 +82,23 @@ public class ArmyButton : ExpandableUnitListButton
     public override void OnClick()
     {
         base.OnClick();
+    }
+
+    public override void OnTooltipOpen(GalaxyTooltip tooltip)
+    {
+        base.OnTooltipOpen(tooltip);
+
+        //Sets the position of the squads count tooltip if it is open.
+        if(tooltip == squadsCountTooltip)
+            squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
+    }
+
+    public override void OnDrag(PointerEventData pointerEventData)
+    {
+        base.OnDrag(pointerEventData);
+
+        //Updates the position of the squads count tooltip if it is open.
+        if (squadsCountTooltip.Open)
+            squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
     }
 }

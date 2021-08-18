@@ -135,8 +135,10 @@ MonoBehaviour:
   experienceLevelText: {fileID: 8789671107955667002}
   experienceLevelTooltip: {fileID: 3079547024861308346}
   buttonType: 1
+  pointerEnterSFX: {fileID: 8300000, guid: d080f4bbd51020b48887b33a0c88efa4, type: 3}
+  expandSFX: {fileID: 8300000, guid: bb999d4ee2d18124fabff0c584b7a145, type: 3}
+  collapseSFX: {fileID: 8300000, guid: c8bfb01d7ff6b204a81b1d35b6b9e703, type: 3}
   expanded: 0
-  executingBeginDragLogic: 0
 --- !u!1 &5008786523333824919
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,6 +471,7 @@ MonoBehaviour:
   textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: -1617538377717911250}
 --- !u!1 &6989261399425110329
 GameObject:
   m_ObjectHideFlags: 0
