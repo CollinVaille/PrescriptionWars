@@ -30,7 +30,7 @@ public class Pill : MonoBehaviour, Damageable
         //Set references
         rBody = GetComponent<Rigidbody>();
         mainAudioSource = GetComponent<AudioSource>();
-        voice = Voice.GetVoice("Carmine");
+        voice = Voice.GetVoice(Voice.GetVoiceNames()[Random.Range(0, Voice.GetVoiceNames().Length)]);
 
         //Set status variables
         maxHealth = health;

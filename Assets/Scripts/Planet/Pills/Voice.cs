@@ -5,7 +5,7 @@ using UnityEngine;
 public class Voice
 {
     //Static voice management---------------------------------------------------------------------------
-    private static string[] voiceNames = new string[] { "Carmine" };
+    private static string[] voiceNames = new string[] { "Carmine", "Hero Jack" };
 
     private static List<Voice> voices;
 
@@ -36,6 +36,8 @@ public class Voice
             return newVoice;
         }
     }
+
+    public static string[] GetVoiceNames() { return voiceNames; }
 
     public static implicit operator bool(Voice voice) { return voice != null; }
 
