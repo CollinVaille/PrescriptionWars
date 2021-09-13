@@ -117,8 +117,6 @@ public class Machete : Item
         //---------------------------------------------------------------------------------------------------------------------------------------------
         //CONCLUSION
 
-        Debug.Log("done");
-
         //Stop sounds and clean up sfx source
         God.god.UnmanageAudioSource(sfxSource);
         sfxSource.Stop();
@@ -129,8 +127,6 @@ public class Machete : Item
             thrower.Equip(this, false);
         else //Falls to ground
         {
-            Debug.Log("fell to ground");
-
             AudioSource.PlayClipAtPoint(doink, transform.position);
 
             //Can now grab it off ground
