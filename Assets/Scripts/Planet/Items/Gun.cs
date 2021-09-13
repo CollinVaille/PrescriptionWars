@@ -107,9 +107,9 @@ public class Gun : Item
             if (holderIsPlayer)
             {
                 if (hitPill)
-                    holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitMarker);
+                    Player.player.PlayHitMarkerSound(false);
                 else if (hit.collider.CompareTag("Gear"))
-                    holder.GetAudioSource().PlayOneShot(holder.GetComponent<Player>().hitArmorMarker);
+                    Player.player.PlayHitMarkerSound(true);
             }
 
             //Play ricochet sound effect if bullet hit nearby player

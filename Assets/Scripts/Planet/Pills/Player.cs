@@ -1292,6 +1292,14 @@ public class Player : Pill
         }
     }
 
+    public void PlayHitMarkerSound(bool hitArmor)
+    {
+        if (hitArmor)
+            GetAudioSource().PlayOneShot(hitArmorMarker);
+        else
+            GetAudioSource().PlayOneShot(hitMarker);
+    }
+
     public Camera GetCamera () { return cameraTransform.GetComponent<Camera>(); }
 
     public void ApplyDisplaySettings ()
