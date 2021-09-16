@@ -85,15 +85,20 @@ public class Machete : Item
 
         //Flying back
         Vector3 newRotation = transform.localEulerAngles;
+        int hitsOnWayBack = 0;
         for (float t = 0.0f; (t < 3.0f || rBody.velocity.magnitude > 1) && t < 30.0f; t += stepIncrement)
         {
             if (collidedWith != null)
             {
                 ProcessBoomerangHit(sfxSource, thrower, rBody);
 
-                //Stop with forward motion since we hit something
+                //We are done processing collision...
                 collidedWith = null;
-                break;
+                hitsOnWayBack++;
+
+                //Determine what to do now (running "break" will end return flight, whereas not doing a "break" will continue the flight)
+                if (hitsOnWayBack > 2 || CloseToThrower(thrower.transform))
+                    break;
             }
 
             //Look back at thrower on local y and z axes. Keep x axis unaffected so it can keep spinning
@@ -123,7 +128,7 @@ public class Machete : Item
         sfxSource.clip = null;
         Destroy(sfxSource);
 
-        if (!thrower.GetItemInHand() && Vector3.Distance(transform.position, thrower.transform.position) < 3) //Back in hand
+        if (!thrower.GetItemInHand() && CloseToThrower(thrower.transform)) //Back in hand
             thrower.Equip(this, false);
         else //Falls to ground
         {
@@ -149,6 +154,10 @@ public class Machete : Item
 
     private void ProcessBoomerangHit(AudioSource sfxSource, Pill thrower, Rigidbody rBody)
     {
+        //Removing a cool feature
+        if (thrower == collidedWith.GetComponent<Pill>())
+            return;
+
         //Apply damage and sound effects
         Damageable damageable = God.GetDamageable(collidedWith.transform);
         if (damageable != null)
@@ -169,4 +178,6 @@ public class Machete : Item
         //Bounce boomerang out and up upon impact
         rBody.AddExplosionForce(10.0f, collidedWith.transform.position, 10000.0f);
     }
+
+    private bool CloseToThrower(Transform thrower) { return Vector3.Distance(transform.position, thrower.position) < 3; }
 }

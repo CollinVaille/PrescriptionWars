@@ -352,7 +352,7 @@ public class PlanetGenerator : MonoBehaviour
                 planet.LoadGroundFootsteps("Snow");
             }
 
-            terrainCustomization.cliffTexture = planet.LoadTexture("Dead Sea");
+            terrainCustomization.cliffTexture = planet.LoadTexture("Dead Sea", "Blue Quartz");
             terrainCustomization.seabedTexture = planet.LoadTexture("Magnified Frost");
 
             terrainCustomization.cliffMetallic = 1;
