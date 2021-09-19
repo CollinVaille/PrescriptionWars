@@ -178,7 +178,7 @@ public class Planet : MonoBehaviour
         oceanTransform.GetComponent<Collider>().isTrigger = false;
 
         //Set sound
-        oceanTransform.tag = "Untagged";
+        oceanTransform.tag = "Ice";
 
         //Set visuals
         Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);

@@ -86,6 +86,19 @@ public class Shatterable : MonoBehaviour, Damageable
             }
         }
 
+        //If there's a larger body this shatterable is a part of that would be comprised if this was shattered, then report "Hull Compromised" to it so it can handle its own damage
+        //For instance if this was a glass case for a stasis pod, then shatter the case and report "Hull Compromised" to the stasis pod so it can handle the cascading destruction, i.e....
+        //...water spilling out, rest of parts falling to ground, destruction of stasis pod object
+        Damageable compromisedOnShatter = God.GetDamageable(transform.parent);
+        if (compromisedOnShatter != null)
+        {
+            //So the parent object doesn't try to mess with this object which is about to be destroyed
+            if (transform.parent)
+                transform.parent = null;
+
+            compromisedOnShatter.Damage(1, 1, transform.position, DamageType.HullCompromised, -9000);
+        }
+
         Destroy(gameObject);
     }
 

@@ -213,12 +213,12 @@ public class God : MonoBehaviour
 
     public static Damageable GetDamageable(Transform t)
     {
-        if (t.GetComponent<Damageable>() != null)
-            return t.GetComponent<Damageable>();
-        else if (t.parent)
-            return GetDamageable(t.parent);
-        else
+        if (!t)
             return null;
+        else if (t.GetComponent<Damageable>() != null)
+            return t.GetComponent<Damageable>();
+        else
+            return GetDamageable(t.parent);
     }
 
     public static string SpaceOutString(string toSpaceOut)

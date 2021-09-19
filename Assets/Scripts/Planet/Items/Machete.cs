@@ -63,7 +63,7 @@ public class Machete : Item
         {
             if(collidedWith != null)
             {
-                ProcessBoomerangHit(sfxSource, thrower, rBody);
+                ApplyBoomerangHitDamageAndSound(sfxSource, thrower, rBody);
 
                 //Stop with forward motion since we hit something
                 collidedWith = null;
@@ -90,7 +90,11 @@ public class Machete : Item
         {
             if (collidedWith != null)
             {
-                ProcessBoomerangHit(sfxSource, thrower, rBody);
+                ApplyBoomerangHitDamageAndSound(sfxSource, thrower, rBody);
+
+                //Impact slows down movement and rotation
+                translationSpeed *= 0.75f;
+                rotationSpeed *= 0.75f;
 
                 //We are done processing collision...
                 collidedWith = null;
@@ -152,7 +156,7 @@ public class Machete : Item
             collidedWith = collision.collider;
     }
 
-    private void ProcessBoomerangHit(AudioSource sfxSource, Pill thrower, Rigidbody rBody)
+    private void ApplyBoomerangHitDamageAndSound(AudioSource sfxSource, Pill thrower, Rigidbody rBody)
     {
         //Removing a cool feature
         if (thrower == collidedWith.GetComponent<Pill>())
@@ -180,4 +184,7 @@ public class Machete : Item
     }
 
     private bool CloseToThrower(Transform thrower) { return Vector3.Distance(transform.position, thrower.position) < 3; }
+
+    public override Vector3 GetPlaceInItemRack() { return new Vector3(0.025f, 0, 0); }
+    public override Vector3 GetRotationInItemRack() { return new Vector3(-103, -90, 180); }
 }

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StasisPod : Interactable
+public class StasisPod : Interactable, Damageable
 {
     public bool on = false;
     public Transform subject, fluid;
     public float emptyHeight, fullHeight, fullScale;
+    public DynamicWater fillOnDestroy;
 
     private int stasisCode = 0;
     private AudioSource sfxSource;
@@ -190,5 +191,50 @@ public class StasisPod : Interactable
 
         //And make sure it's grounded
         SetSubjectScale(subject.localScale);
+    }
+
+    public void Damage(float damage, float knockback, Vector3 from, DamageType damageType, int team)
+    {
+        if (damageType == DamageType.HullCompromised)
+            DestroyPod(100, from);
+    }
+
+    private void DestroyPod(float explosionForce, Vector3 from)
+    {
+        //Release subject
+        subject.parent = null;
+        Rigidbody subjectRigidbody = subject.gameObject.AddComponent<Rigidbody>();
+        subjectRigidbody.AddExplosionForce(explosionForce, from, 1000);
+        subject.gameObject.AddComponent<Corpse>();
+
+        //Release fluid
+        float fluidVolume = fluid.lossyScale.magnitude;
+        fluid.parent = null;
+        Destroy(fluid.gameObject);
+        if (fillOnDestroy)
+            fillOnDestroy.AddWaterGradually(fluidVolume * 25.0f);
+
+        //Determine what to do with remaining parts
+        while(transform.childCount > 0)
+        {
+            Transform child = transform.GetChild(0);
+            child.parent = null;
+
+            //Leave essential parts untouched, save that they are now unassociated with the parent since the parent will be deleted
+            if (child.CompareTag("Essential"))
+                continue;
+
+            //Destroy insignificant parts
+            if (!child.GetComponent<Collider>() || !child.GetComponent<MeshRenderer>())
+                Destroy(child.gameObject);
+
+            //Blow major parts off as debris
+            Rigidbody rBody = child.gameObject.AddComponent<Rigidbody>();
+            rBody.AddExplosionForce(explosionForce, from, 1000);
+        }
+
+        //Destroy stasis pod parent object
+        God.god.UnmanageAudioSource(sfxSource);
+        Destroy(gameObject);
     }
 }

@@ -16,7 +16,10 @@ public class PlanetLever : Interactable
         FlipLever(interacting);
 
         foreach (Interactable effector in effectors)
-            effector.Interact(interacting, up);
+        {
+            if(effector)
+                effector.Interact(interacting, up);
+        }
     }
 
     private void FlipLever(Pill interacting)

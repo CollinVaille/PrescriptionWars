@@ -8,21 +8,7 @@ public class Army : MonoBehaviour
 
     private static List<Army> armies;
 
-    public static Army GetArmy(int team)
-    {
-        Army army = null;
-
-        for (int x = 0; x < armies.Count; x++)
-        {
-            if (armies[x].team == team)
-            {
-                army = armies[x];
-                break;
-            }
-        }
-
-        return army;
-    }
+    public static Army GetArmy(int team) { return armies.Find(army => army.team == team); }
 
     //ARMY INSTANCE-------------------------------------------------------------------------------------
 
