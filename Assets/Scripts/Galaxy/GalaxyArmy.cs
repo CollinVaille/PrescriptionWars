@@ -181,7 +181,11 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// <param name="squad"></param>
     public void InsertSquad(int index, GalaxySquad squad)
     {
-        squads.Insert(index, squad);
+        if (index < squads.Count)
+            squads.Insert(index, squad);
+        else
+            squads.Add(squad);
+        squad.AssignedArmy = this;
     }
 
     /// <summary>

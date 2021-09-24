@@ -101,4 +101,12 @@ public class ArmyButton : ExpandableUnitListButton
         if (squadsCountTooltip.Open)
             squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
     }
+
+    protected override void OnButtonMoveUpdate()
+    {
+        base.OnButtonMoveUpdate();
+
+        //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
+        squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
+    }
 }

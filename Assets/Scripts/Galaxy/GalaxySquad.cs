@@ -143,7 +143,11 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="pill"></param>
     public void InsertPill(int index, GalaxyPill pill)
     {
-        pills.Insert(index, pill);
+        if (index < pills.Count)
+            pills.Insert(index, pill);
+        else
+            pills.Add(pill);
+        pill.AssignedSquad = this;
     }
 
     /// <summary>

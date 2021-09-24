@@ -75,4 +75,12 @@ public class SquadButton : ExpandableUnitListButton
     {
         base.OnClick();
     }
+
+    protected override void OnButtonMoveUpdate()
+    {
+        base.OnButtonMoveUpdate();
+
+        //Sets the sprite of the left image to show the icon of the army that the squad is assigned to.
+        LeftImage.sprite = Resources.Load<Sprite>("Army Icons/" + AssignedSquad.AssignedArmy.ArmyIcon.spriteName);
+    }
 }

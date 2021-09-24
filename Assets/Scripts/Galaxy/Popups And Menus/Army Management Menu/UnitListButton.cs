@@ -125,6 +125,24 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// Indicates whether the unit list button is currently being dragged.
     /// </summary>
     private bool beingDragged = false;
+    /// <summary>
+    /// Indicates whether or not the latest button move was successful or not.
+    /// </summary>
+    protected bool LatestButtonMoveSuccessful
+    {
+        get
+        {
+            return latestButtonMoveSuccessful;
+        }
+        private set
+        {
+            latestButtonMoveSuccessful = value;
+        }
+    }
+    /// <summary>
+    /// Indicates whether or not the latest button move was successful or not.
+    /// </summary>
+    private bool latestButtonMoveSuccessful = false;
 
     /// <summary>
     /// Indicates the local y position of the actual button component when the button component was just beginning to be dragged.
@@ -138,6 +156,24 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// Indicates the Y offset from the mouse to the button when the button is being dragged.
     /// </summary>
     private float dragYOffsetFromMouse = 0;
+
+    /// <summary>
+    /// Indicates the ground unit that this unit list button is assigned to.
+    /// </summary>
+    private GalaxyGroundUnit AssignedGroundUnit
+    {
+        get
+        {
+            if (TypeOfButton == ButtonType.Army)
+                return gameObject.GetComponent<ArmyButton>().AssignedArmy;
+            else if (TypeOfButton == ButtonType.Squad)
+                return gameObject.GetComponent<SquadButton>().AssignedSquad;
+            else if (TypeOfButton == ButtonType.Pill)
+                return gameObject.GetComponent<PillButton>().AssignedPill;
+            else
+                return null;
+        }
+    }
 
     /// <summary>
     /// Provides the initial values of important unit list button variables.
@@ -267,14 +303,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         if (pointerEventData.button != PointerEventData.InputButton.Left)
             return;
         //Executes logic based on whether or not the move of the unit was successful.
-        if (ButtonMoveSuccessful())
-        {
-            Debug.Log("Move Successful");
-        }
-        else
-        {
-            Debug.Log("Move Not Successful");
-        }
+        ExecuteButtonMove();
         //Reverts the parent of the button component to be the unit list button again.
         button.transform.SetParent(transform);
         //Reverts the position of the actual button component to its local position when it was just beginning to be dragged.
@@ -284,134 +313,196 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     }
 
     /// <summary>
-    /// Trys to move the unit list button to its new position and returns a bool on whether or not a move actually occured.
+    /// Trys to move the unit list button to its new position and modifies a bool on whether or not a move actually occured.
     /// </summary>
     /// <returns></returns>
-    private bool ButtonMoveSuccessful()
+    private void ExecuteButtonMove()
     {
-        int newButtonSiblingIndex = 0;
-        while (true)
+        //Button move unsuccesful if the button that is being moved is the only button in the unit list.
+        if(transform.parent.childCount <= 1)
         {
-            //Checks if the button's position is on top of the unit list, if so then it continues on into the if statement.
-            if (button.transform.localPosition.y >= 120 + ((RectTransform)button.transform).sizeDelta.y)
-            {
-                //Checks if the button's type is largest unit type possible (Army), if so then it continues into the if statement.
-                if (TypeOfButton == 0)
-                {
-                    //Indicates that the button should be moved to the very first position in the unit list.
-                    newButtonSiblingIndex = 0;
-                    //Breaks out of the while loop that determines the new sibling index of the button.
-                    break;
-                }
-                //If the button's type is not the largest unit type possible (Army), then it will not be moved anywhere.
-                return false;
-            }
-
-            //Checks if the button's position is below the unit list, if so then it continues on into the if statement.
-            if (button.transform.localPosition.y <= -106 - ((RectTransform)button.transform).sizeDelta.y)
-            {
-                //Checks if the button's type is largest unit type possible (Army), if so then it continues into the if statement.
-                if (TypeOfButton == 0)
-                {
-                    //Indicates that the button should be moved to the very last position in the unit list.
-                    newButtonSiblingIndex = transform.parent.childCount - 1;
-                    //Breaks out of the while loop that determines the new sibling index of the button.
-                    break;
-                }
-                //If the button's type is not the largest unit type possible (Army), then it will not be moved anywhere.
-                return false;
-            }
-
-            //Will be assigned to the unit list button that is above the location that this unit list button was dragged to.
-            UnitListButton buttonAboveDragLocation = null;
-            //Indicates whether the exterior while loop should be broken out of once the for loop has finished.
-            bool breakOutOfExteriorWhileLoop = false;
-            for(int siblingIndex = 0; siblingIndex < transform.parent.childCount; siblingIndex++)
-            {
-                //Skips checking the sibling index if it is the same sibling index as this unit list button.
-                if (siblingIndex == transform.GetSiblingIndex())
-                    continue;
-
-                //Gets the unit list button component of the button at the specified sibling index.
-                UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-                //Checks if the position this button was dragged to is above the position of the button at the specified sibling index.
-                if (button.transform.position.y > buttonAtSiblingIndex.button.transform.position.y)
-                {
-                    //Account for sibling index possibly being 0.
-                    if(siblingIndex == 0)
-                    {
-                        //Button move unsuccessful if the player dragged it to the top of the unit list but it is not an army button.
-                        if (TypeOfButton != 0)
-                            return false;
-
-                        //Button moves to the top of the list if it is an army button.
-                        newButtonSiblingIndex = 0;
-                        breakOutOfExteriorWhileLoop = true;
-                        break;
-                    }
-
-                    //Button move unsuccessful if its new sibling index is the same sibling index as before.
-                    if (siblingIndex - 1 == transform.GetSiblingIndex())
-                        return false;
-
-                    //Executes the regular checking logic.
-                    buttonAboveDragLocation = transform.parent.GetChild(siblingIndex - 1).GetComponent<UnitListButton>();
-                    //Continues on into the if statement if the button above is a smaller unit list button type (Ex: button above type = squad, button type = army).
-                    if(buttonAboveDragLocation.TypeOfButton > TypeOfButton)
-                    {
-                        //Button move unsuccessful if the button below the drag location is not the same or a bigger unit list button type.
-                        if (transform.parent.GetChild(buttonAboveDragLocation.transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>().TypeOfButton > TypeOfButton)
-                            return false;
-
-                        //Button moves to the sibling index after the button above where it was dragged.
-                        newButtonSiblingIndex = buttonAboveDragLocation.transform.GetSiblingIndex() + 1;
-                        //Breaks out of the exterior while loop after this for loop in order to avoid reaching unnecessary logic.
-                        breakOutOfExteriorWhileLoop = true;
-                    }
-                    //Continues on into the if statement if the button above is the same unit list button type (Ex: button above type = squad, button type = squad).
-                    else if (buttonAboveDragLocation.TypeOfButton == TypeOfButton)
-                    {
-                        //Button moves to the sibling index after the button above where it was dragged.
-                        newButtonSiblingIndex = buttonAboveDragLocation.transform.GetSiblingIndex() + 1;
-                        //Breaks out of the exterior while loop after this for loop in order to avoid reaching unnecessary logic.
-                        breakOutOfExteriorWhileLoop = true;
-                    }
-                    //Continues on into the if statement if the button above is a bigger unit list button type (Ex: button above type = squad, button type = pill).
-                    else if (buttonAboveDragLocation.TypeOfButton < TypeOfButton)
-                    {
-                        //Button move unsuccessful if the button above's type is not the parent type of this button's type (Successful Ex: button above type = army, button type = squad; Unsuccessful Ex: button above type = army, button type = pill).
-                        if (buttonAboveDragLocation.TypeOfButton < TypeOfButton - 1)
-                            return false;
-
-                        //Button moves to the sibling index after the button above where it was dragged.
-                        newButtonSiblingIndex = buttonAboveDragLocation.transform.GetSiblingIndex() + 1;
-                        //Breaks out of the exterior while loop after this for loop in order to avoid reaching unnecessary logic.
-                        breakOutOfExteriorWhileLoop = true;
-                    }
-
-                    //Corrects the new sibling index of the button in order to account for the button still being in the unit list.
-                    if (transform.GetSiblingIndex() < newButtonSiblingIndex)
-                        newButtonSiblingIndex--;
-                }
-            }
-            //Breaks out of the exterior while loop if instructed to do so by logic side of the for loop above.
-            if (breakOutOfExteriorWhileLoop)
-                break;
-
-            //Accounts for none of the buttons being below the dragged button's position here.
-            UnitListButton buttonAtLastSiblingIndex = transform.parent.GetChild(transform.parent.childCount - 1).GetComponent<UnitListButton>();
-            if (TypeOfButton == 0 || TypeOfButton == buttonAtLastSiblingIndex.TypeOfButton || TypeOfButton - 1 == buttonAtLastSiblingIndex.TypeOfButton)
-            {
-                //Button moves to the last position possible in the unit list.
-                newButtonSiblingIndex = transform.parent.childCount - 1;
-                break;
-            }
-
-            break;
+            LatestButtonMoveSuccessful = false;
+            return;
         }
 
-        Debug.Log("Moved to " + newButtonSiblingIndex);
-        return true;
+        //Finds the unit list button above the current position where this unit list button has been dragged to.
+        UnitListButton buttonAbove = FindButtonAbove();
+        //Finds the unit list button below the current position where this unit list button has been dragged to.
+        UnitListButton buttonBelow = FindButtonBelow();
+        //Finds the new sibling index this unit list button would be at if the move was successful.
+        int newSiblingIndex = buttonAbove == null ? 0 : buttonAbove.transform.GetSiblingIndex() + 1;
+        //Executes unit list button movement logic based on what type of button this unit list button that was being dragged is.
+        switch (TypeOfButton)
+        {
+            case ButtonType.Army:
+                //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
+                if (newSiblingIndex != transform.GetSiblingIndex() && (buttonAbove == null || buttonBelow == null || buttonBelow.TypeOfButton == ButtonType.Army))
+                {
+                    LatestButtonMoveSuccessful = true;
+                    break;
+                }
+                //This unit list button was dragged to an invalid location in the unit list.
+                else
+                {
+                    LatestButtonMoveSuccessful = false;
+                    return;
+                }
+            case ButtonType.Squad:
+                //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
+                if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Army) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Squad) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Army && buttonAbove != null)))
+                {
+                    LatestButtonMoveSuccessful = true;
+                    break;
+                }
+                //This unit list button was dragged to an invalid location in the unit list.
+                else
+                {
+                    LatestButtonMoveSuccessful = false;
+                    return;
+                }
+            case ButtonType.Pill:
+                //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
+                if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Squad) || (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Pill)))
+                {
+                    LatestButtonMoveSuccessful = true;
+                    break;
+                }
+                //This unit list button was dragged to an invalid location in the unit list.
+                else
+                {
+                    LatestButtonMoveSuccessful = false;
+                    return;
+                }
+
+            //If there is no logic implemented for a type of unit list button to move then all moves with that button will be unsuccessful.
+            default:
+                Debug.Log("Button move logic for button type " + TypeOfButton.ToString() + " does not exist.");
+                LatestButtonMoveSuccessful = false;
+                return;
+        }
+
+        //Executes logic for when the button should be moved successfully.
+
+        //Decreases the new sibling index for this unit list button if it's original sibling index is less than the new one.
+        if (transform.GetSiblingIndex() < newSiblingIndex)
+            newSiblingIndex--;
+
+        //Updates the spacing on the unit list button that used to be above this unit list button.
+        if (transform.GetSiblingIndex() > 0)
+            transform.parent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+        //Updates the spacing on the unit list button that used to be below this unit list button.
+        if (transform.GetSiblingIndex() < transform.parent.childCount - 1)
+            transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+        //Updates the spacing on the unit list buttons near the new sibling index for this unit list button.
+        if(newSiblingIndex - 1 >= 0)
+            transform.parent.GetChild(newSiblingIndex - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+        transform.parent.GetChild(newSiblingIndex).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+        if (newSiblingIndex + 1 < transform.parent.childCount)
+            transform.parent.GetChild(newSiblingIndex + 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+
+        //Stores the original sibling index of this unit list button.
+        int originalSiblingIndex = transform.GetSiblingIndex();
+        //Moves this unit list button to its new sibling index.
+        transform.SetSiblingIndex(newSiblingIndex);
+
+        //Updates the spacing on this unit list button after it has been moved.
+        SpacingUpdateRequiredNextFrame = true;
+
+        //Saves the moving of the unit list button based on the unit list button type.
+        switch (TypeOfButton)
+        {
+            case ButtonType.Army:
+                ArmyManagementMenu.PlanetSelected.ChangeArmyIndex(originalSiblingIndex, newSiblingIndex);
+                break;
+            case ButtonType.Squad:
+                GalaxySquad squad = gameObject.GetComponent<SquadButton>().AssignedSquad;
+                //Stores the original parent army button.
+                ArmyButton originalParentArmyButton = null;
+                for(int siblingIdex = 0; siblingIdex < transform.parent.childCount; siblingIdex++)
+                {
+                    if (transform.parent.GetChild(siblingIdex).GetComponent<UnitListButton>().TypeOfButton == ButtonType.Army && transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>().AssignedArmy == squad.AssignedArmy)
+                        originalParentArmyButton = transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>();
+                }
+                //Removes the squad from its current army.
+                squad.AssignedArmy.RemoveSquad(squad);
+                //Finds the new army the squad will be assigned to.
+                GalaxyArmy newArmyAssigned = null;
+                ArmyButton parentArmyButton = null;
+                for(int siblingIndex = newSiblingIndex; siblingIndex >= 0; siblingIndex--)
+                {
+                    UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                    if (buttonAtSiblingIndex.TypeOfButton == ButtonType.Army)
+                    {
+                        parentArmyButton = buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>();
+                        newArmyAssigned = parentArmyButton.AssignedArmy;
+                    }
+                }
+                //Assigns the squad to its new army.
+                newArmyAssigned.InsertSquad(newSiblingIndex, squad);
+                //Updates the information displayed on the new parent army button.
+                parentArmyButton.OnButtonMoveUpdate();
+                //Updates the information displayed on the original parent army button.
+                originalParentArmyButton.OnButtonMoveUpdate();
+                break;
+            case ButtonType.Pill:
+                GalaxyPill pill = gameObject.GetComponent<PillButton>().AssignedPill;
+                pill.AssignedSquad.RemovePill(pill);
+                pill.AssignedSquad.InsertPill(newSiblingIndex, pill);
+                //---------------------------------------------------------------------------------------------------------------------
+                //Still need to do this part!
+                //---------------------------------------------------------------------------------------------------------------------
+                break;
+
+            default:
+                Debug.Log("Save logic does not exist for unit list button type: " + TypeOfButton.ToString());
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Finds the unit list button right above the position of this unit list button and returns it.
+    /// </summary>
+    /// <returns></returns>
+    private UnitListButton FindButtonAbove()
+    {
+        //Loops through every unit list button in the unit list backwards in order to ensure that the first unit list button above this unit list button is the one returned.
+        for(int siblingIndex = transform.parent.childCount - 1; siblingIndex >= 0; siblingIndex--)
+        {
+            //Ignores this sibling index if the unit list button at this sibling index is this unit list button.
+            if(siblingIndex == transform.GetSiblingIndex())
+                continue;
+
+            //Returns the button at the sibling index if its position is above this unit list button's position.
+            UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+            if (buttonAtSiblingIndex.button.transform.position.y >= button.transform.position.y)
+                return buttonAtSiblingIndex;
+        }
+
+        //Returns null, as no unit list button was found to be above this unit list button.
+        return null;
+    }
+
+    /// <summary>
+    /// Finds the unit list button right below the position this unit list button was dragged to and returns it.
+    /// </summary>
+    /// <returns></returns>
+    private UnitListButton FindButtonBelow()
+    {
+        //Loops through every unit list button in the unit list in sequential or forwards order to ensure that the first unit list button found below this unit list button is indeed the one right below it and not further below it.
+        for(int siblingIndex = 0; siblingIndex < transform.parent.childCount; siblingIndex++)
+        {
+            //Ignores this sibling index if the unit list button at this sibling index is this unit list button.
+            if (siblingIndex == transform.GetSiblingIndex())
+                continue;
+
+            //Returns the button at the sibling index if its position is below this unit list button's position.
+            UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+            if (buttonAtSiblingIndex.button.transform.position.y < button.transform.position.y)
+                return buttonAtSiblingIndex;
+        }
+
+        //Returns null, as no unit list button was found to be below the position this unit list button was dragged to.
+        return null;
     }
 
     /// <summary>
@@ -466,5 +557,16 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     protected void OnGalaxyGroundUnitValueSet(GalaxyGroundUnit groundUnit)
     {
         ExperienceLevelText.text = groundUnit.ExperienceLevel.ToString();
+    }
+
+    /// <summary>
+    /// This method should be called in order to update the text on the button to accurately reflect information on the assigned ground unit.
+    /// </summary>
+    protected virtual void OnButtonMoveUpdate()
+    {
+        //Updates the name text of the button to reflect the name of the ground unit.
+        NameText.text = AssignedGroundUnit.Name;
+        //Updates the experience level text of the button to reflect the experience level of the ground unit. 
+        ExperienceLevelText.text = AssignedGroundUnit.ExperienceLevel.ToString();
     }
 }

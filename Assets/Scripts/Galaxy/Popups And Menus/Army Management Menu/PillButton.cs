@@ -12,13 +12,13 @@ public class PillButton : UnitListButton
     /// <summary>
     /// Indicates the pill that the pill button is supposed to represent.
     /// </summary>
-    private GalaxyPill AssignedPill
+    public GalaxyPill AssignedPill
     {
         get
         {
             return assignedPill;
         }
-        set
+        private set
         {
             //Does not continue any further with setting the value of the assigned pill if the button already has an assigned pill.
             if (assignedPill != null)
@@ -62,5 +62,13 @@ public class PillButton : UnitListButton
     public override void Update()
     {
         base.Update();
+    }
+
+    protected override void OnButtonMoveUpdate()
+    {
+        base.OnButtonMoveUpdate();
+
+        //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
+        Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
     }
 }
