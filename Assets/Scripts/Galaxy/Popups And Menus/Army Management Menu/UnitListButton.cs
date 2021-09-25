@@ -351,6 +351,8 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Army) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Squad) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Army && buttonAbove != null)))
                 {
+                    if (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Army && !buttonAbove.gameObject.GetComponent<ArmyButton>().Expanded)
+                        buttonAbove.gameObject.GetComponent<ArmyButton>().Expand();
                     LatestButtonMoveSuccessful = true;
                     break;
                 }
@@ -364,6 +366,8 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Squad) || (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Pill)))
                 {
+                    if (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Squad && !buttonAbove.gameObject.GetComponent<SquadButton>().Expanded)
+                        buttonAbove.gameObject.GetComponent<SquadButton>().Expand();
                     LatestButtonMoveSuccessful = true;
                     break;
                 }
@@ -412,7 +416,35 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         switch (TypeOfButton)
         {
             case ButtonType.Army:
-                ArmyManagementMenu.PlanetSelected.ChangeArmyIndex(originalSiblingIndex, newSiblingIndex);
+                //Finds the original index the army was at in the list of armies on the planet.
+                int originalArmyIndex = 0;
+                for(int armyIndex = 0; armyIndex < ArmyManagementMenu.PlanetSelected.GetArmiesCount(); armyIndex++)
+                {
+                    if(ArmyManagementMenu.PlanetSelected.GetArmyAt(armyIndex) == gameObject.GetComponent<ArmyButton>().AssignedArmy)
+                    {
+                        originalArmyIndex = armyIndex;
+                        break;
+                    }
+                }
+                //Finds the new army index.
+                int newArmyIndex = 0;
+                for(int siblingIndex = 0; siblingIndex <= newSiblingIndex; siblingIndex++)
+                {
+                    UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                    if(buttonAtSiblingIndex.TypeOfButton == ButtonType.Army)
+                    {
+                        if(buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == gameObject.GetComponent<ArmyButton>().AssignedArmy)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            newArmyIndex++;
+                        }
+                    }
+                }
+                //Changes the index that the army is placed at in the list of armies on the planet.
+                ArmyManagementMenu.PlanetSelected.ChangeArmyIndex(originalArmyIndex, newArmyIndex);
                 break;
             case ButtonType.Squad:
                 GalaxySquad squad = gameObject.GetComponent<SquadButton>().AssignedSquad;
@@ -421,7 +453,10 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 for(int siblingIdex = 0; siblingIdex < transform.parent.childCount; siblingIdex++)
                 {
                     if (transform.parent.GetChild(siblingIdex).GetComponent<UnitListButton>().TypeOfButton == ButtonType.Army && transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>().AssignedArmy == squad.AssignedArmy)
+                    {
                         originalParentArmyButton = transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>();
+                        break;
+                    }
                 }
                 //Removes the squad from its current army.
                 squad.AssignedArmy.RemoveSquad(squad);
@@ -435,10 +470,11 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                     {
                         parentArmyButton = buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>();
                         newArmyAssigned = parentArmyButton.AssignedArmy;
+                        break;
                     }
                 }
                 //Assigns the squad to its new army.
-                newArmyAssigned.InsertSquad(newSiblingIndex, squad);
+                newArmyAssigned.InsertSquad(newSiblingIndex - parentArmyButton.transform.GetSiblingIndex() - 1, squad);
                 //Updates the information displayed on the new parent army button.
                 parentArmyButton.OnButtonMoveUpdate();
                 //Updates the information displayed on the original parent army button.
@@ -446,11 +482,45 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 break;
             case ButtonType.Pill:
                 GalaxyPill pill = gameObject.GetComponent<PillButton>().AssignedPill;
+                //Stores the original parent buttons.
+                List<UnitListButton> originalParentButtons = new List<UnitListButton>();
+                for (int siblingIndex = 0; siblingIndex < transform.parent.childCount; siblingIndex++)
+                {
+                    UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                    if ((buttonAtSiblingIndex.TypeOfButton == ButtonType.Army && buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == pill.AssignedSquad.AssignedArmy) || (buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == pill.AssignedSquad))
+                    {
+                        originalParentButtons.Add(buttonAtSiblingIndex);
+                        if (originalParentButtons.Count >= 2)
+                            break;
+                    }
+                }
+                //Removes the pill from its current squad.
                 pill.AssignedSquad.RemovePill(pill);
-                pill.AssignedSquad.InsertPill(newSiblingIndex, pill);
-                //---------------------------------------------------------------------------------------------------------------------
-                //Still need to do this part!
-                //---------------------------------------------------------------------------------------------------------------------
+                //Finds the new squad the pill will be assigned to and the new parent buttons of this button (squad parent at index 0 and army parent at index 1).
+                GalaxySquad newSquadAssigned = null;
+                List<UnitListButton> newParentButtons = new List<UnitListButton>();
+                for(int siblingIndex = newSiblingIndex; siblingIndex >= 0; siblingIndex--)
+                {
+                    UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                    if(buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && newParentButtons.Count == 0)
+                    {
+                        newParentButtons.Add(buttonAtSiblingIndex);
+                        newSquadAssigned = buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad;
+                    }
+                    else if (buttonAtSiblingIndex.TypeOfButton == ButtonType.Army)
+                    {
+                        newParentButtons.Add(buttonAtSiblingIndex);
+                        break;
+                    }
+                }
+                //Assigns the pill to its new squad.
+                newSquadAssigned.InsertPill(newSiblingIndex - newParentButtons[0].transform.GetSiblingIndex() - 1, pill);
+                //Updates the information displayed on the new parent buttons.
+                foreach (UnitListButton newParentButton in newParentButtons)
+                    newParentButton.OnButtonMoveUpdate();
+                //Updates the information displayed on the original parent buttons.
+                foreach (UnitListButton originalParentButton in originalParentButtons)
+                    originalParentButton.OnButtonMoveUpdate();
                 break;
 
             default:
