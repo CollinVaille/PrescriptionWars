@@ -144,7 +144,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     /// </summary>
     public void ExpandAll()
     {
-
+        //Calls the expand all function on all of the army buttons.
+        foreach(UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
+            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().ExpandAll();
     }
 
     /// <summary>
@@ -152,7 +154,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     /// </summary>
     public void CollapseAll()
     {
-
+        //Calls the collapse function on all of the army buttons.
+        foreach (UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
+            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().Collapse();
     }
 
     /// <summary>
@@ -186,5 +190,20 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         armyManagementMenus.Remove(this);
         //Destroys the army management menu.
         Destroy(gameObject);
+    }
+
+    private List<UnitListButton> GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType buttonType)
+    {
+        //Creates the list store of the appropriate unit list buttons in.
+        List<UnitListButton> buttonsOfButtonType = new List<UnitListButton>();
+        //Finds all unit list buttons of the specified button type and adds them to the list.
+        for (int siblingIndex = 0; siblingIndex < unitListButtonParent.childCount; siblingIndex++)
+        {
+            UnitListButton unitListButton = UnitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+            if (unitListButton.TypeOfButton == buttonType)
+                buttonsOfButtonType.Add(unitListButton);
+        }
+        //Returns the list of buttons of the specified button type.
+        return buttonsOfButtonType;
     }
 }

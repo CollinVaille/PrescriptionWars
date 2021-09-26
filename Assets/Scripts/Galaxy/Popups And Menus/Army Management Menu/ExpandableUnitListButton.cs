@@ -127,47 +127,86 @@ public class ExpandableUnitListButton : UnitListButton
     /// <summary>
     /// This method should be called in order to expand the unit list button and reveal the appropriate child buttons.
     /// </summary>
-    public virtual void Expand()
+    public virtual void Expand(bool playSFX = true)
     {
+        //Returns if the button has already been expanded.
+        if (Expanded)
+            return;
+
         //Gets the total amount of child buttons that need to be created.
         int childCount = 0;
         if (TypeOfButton == ButtonType.Army)
             childCount = gameObject.GetComponent<ArmyButton>().AssignedArmy.SquadsCount;
         else if (TypeOfButton == ButtonType.Squad)
             childCount = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
-        //Creates the child unit list buttons.
-        for (int childIndex = 0; childIndex < childCount; childIndex++)
+        //Ensures that the button actually has child buttons to display before going through the rest of the expanding logic.
+        if(childCount > 0)
         {
-            //Instantiates a new unit list button from the child unit list button prefab.
-            GameObject childButton = Instantiate(ChildPrefab);
-            //Sets the parent of the child unit list button.
-            childButton.transform.SetParent(ArmyManagementMenu.UnitListButtonParent);
-            //Sets the sibling index of the child unit button.
-            childButton.transform.SetSiblingIndex(transform.GetSiblingIndex() + (childIndex + 1));
-            //Resets the scale of the child unit list button to 1 in order to avoid any unity shenanigans.
-            childButton.transform.localScale = Vector3.one;
-            //Initializes some script values in the new child unit list button.
-            switch (TypeOfButton)
+            //Creates the child unit list buttons.
+            for (int childIndex = 0; childIndex < childCount; childIndex++)
             {
-                case ButtonType.Army:
-                    SquadButton squadButtonScript = childButton.GetComponent<SquadButton>();
-                    squadButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<ArmyButton>().AssignedArmy.GetSquadAt(childIndex));
-                    break;
-                case ButtonType.Squad:
-                    PillButton pillButtonScript = childButton.GetComponent<PillButton>();
-                    pillButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<SquadButton>().AssignedSquad.GetPillAt(childIndex));
-                    break;
+                //Instantiates a new unit list button from the child unit list button prefab.
+                GameObject childButton = Instantiate(ChildPrefab);
+                //Sets the parent of the child unit list button.
+                childButton.transform.SetParent(ArmyManagementMenu.UnitListButtonParent);
+                //Sets the sibling index of the child unit button.
+                childButton.transform.SetSiblingIndex(transform.GetSiblingIndex() + (childIndex + 1));
+                //Resets the scale of the child unit list button to 1 in order to avoid any unity shenanigans.
+                childButton.transform.localScale = Vector3.one;
+                //Initializes some script values in the new child unit list button.
+                switch (TypeOfButton)
+                {
+                    case ButtonType.Army:
+                        SquadButton squadButtonScript = childButton.GetComponent<SquadButton>();
+                        squadButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<ArmyButton>().AssignedArmy.GetSquadAt(childIndex));
+                        break;
+                    case ButtonType.Squad:
+                        PillButton pillButtonScript = childButton.GetComponent<PillButton>();
+                        pillButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<SquadButton>().AssignedSquad.GetPillAt(childIndex));
+                        break;
+                }
             }
+
+            //Adds the appropriate amount of spacing between the expandable unit list button and the child unit list buttons.
+            SpacingUpdateRequiredNextFrame = true;
+
+            //Logs that the expandable unit list button button is currently expanded.
+            expanded = true;
+
+            //Plays the appropriate sound effect.
+            if(playSFX)
+                AudioManager.PlaySFX(ExpandSFX);
         }
+    }
 
-        //Adds the appropriate amount of spacing between the expandable unit list button and the child unit list buttons.
-        SpacingUpdateRequiredNextFrame = true;
-
-        //Logs that the expandable unit list button button is currently expanded.
-        expanded = true;
-
-        //Plays the appropriate sound effect.
-        AudioManager.PlaySFX(ExpandSFX);
+    /// <summary>
+    /// This method should be called in order to expand this button and all applicable child buttons.
+    /// </summary>
+    public virtual void ExpandAll()
+    {
+        //Expands this button without playing the expanding sound effect.
+        Expand(false);
+        //Finds the number of child buttons this button has.
+        int numberOfChildButtons = 0;
+        if (TypeOfButton == ButtonType.Army)
+            numberOfChildButtons = gameObject.GetComponent<ArmyButton>().AssignedArmy.SquadsCount;
+        else if (TypeOfButton == ButtonType.Squad)
+            numberOfChildButtons = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
+        else
+            Debug.Log("Expand all logic not implemented for unit list button type: " + TypeOfButton.ToString());
+        //Finds each expandable child button of this expandable unit list button.
+        List<ExpandableUnitListButton> expandableChildButtons = new List<ExpandableUnitListButton>();
+        for(int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex <= transform.GetSiblingIndex() + numberOfChildButtons; siblingIndex++)
+        {
+            ExpandableUnitListButton expandableChildButton = transform.parent.GetChild(siblingIndex).GetComponent<ExpandableUnitListButton>();
+            if (expandableChildButton != null)
+                expandableChildButtons.Add(expandableChildButton);
+        }
+        //Loops through each expandable child button and calls its expand all function.
+        foreach(ExpandableUnitListButton expandableChildButton in expandableChildButtons)
+        {
+            expandableChildButton.ExpandAll();
+        }
     }
 
     /// <summary>
@@ -175,6 +214,10 @@ public class ExpandableUnitListButton : UnitListButton
     /// </summary>
     public virtual void Collapse()
     {
+        //Returns if the button is already collapsed.
+        if (!Expanded)
+            return;
+
         //Destroys all of the unit list buttons that are a result of the expandable unit list button being expanded.
         foreach (UnitListButton childUnitListButton in ChildButtons)
         {
