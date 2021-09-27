@@ -276,7 +276,7 @@ public class NewGameMenu : GalaxyMenuBehaviour
 
         empireFlagBackgroundImage.color = empireFlag.backgroundColor;
         empireFlagSymbolImage.color = empireFlag.symbolColor;
-        //empireFlagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
+        //empireFlagSymbolImage.sprite = Resources.Load<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
 
         StartCoroutine(UpdateFlagSymbolImageSprite());
     }
@@ -290,7 +290,7 @@ public class NewGameMenu : GalaxyMenuBehaviour
         }
 
         //Puts in the resource request for the flag image sprite.
-        ResourceRequest flagSymbolImageSpriteResourceRequest = Resources.LoadAsync<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
+        ResourceRequest flagSymbolImageSpriteResourceRequest = Resources.LoadAsync<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[empireFlag.symbolSelected]);
 
         //Waits until the resource request has been completed and the flag image sprite has been loaded.
         yield return new WaitUntil(() => flagSymbolImageSpriteResourceRequest.isDone);

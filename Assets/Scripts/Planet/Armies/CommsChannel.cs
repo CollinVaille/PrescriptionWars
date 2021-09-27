@@ -42,13 +42,13 @@ public class CommsChannel : MonoBehaviour
 
         commonAudioInitialized = true;
 
-        startSound = Resources.Load<AudioClip>("Radio/Common/Start Sound");
-        endSound = Resources.Load<AudioClip>("Radio/Common/End Sound");
-        thisIs = Resources.Load<AudioClip>("Radio/Common/This Is");
-        squad = Resources.Load<AudioClip>("Radio/Common/Squad");
+        startSound = Resources.Load<AudioClip>("Planet/Radio/Common/Start Sound");
+        endSound = Resources.Load<AudioClip>("Planet/Radio/Common/End Sound");
+        thisIs = Resources.Load<AudioClip>("Planet/Radio/Common/This Is");
+        squad = Resources.Load<AudioClip>("Planet/Radio/Common/Squad");
 
         reportingIn = new List<AudioClip>();
-        God.InitializeAudioList(reportingIn, "Radio/Common/Reporting In ");
+        God.InitializeAudioList(reportingIn, "Planet/Radio/Common/Reporting In ");
     }
 
     public void AddChannelReceiver(AudioSource newReceiver) { channelReceivers.Add(newReceiver); }

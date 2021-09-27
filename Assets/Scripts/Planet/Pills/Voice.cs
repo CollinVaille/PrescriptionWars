@@ -42,7 +42,7 @@ public class Voice
     public static implicit operator bool(Voice voice) { return voice != null; }
 
     //Voice instance------------------------------------------------------------------------------------
-    private string voiceName;
+    private string voiceName, voicePath;
     private AudioClip[] oofs, copies, eagerBanter, idleBanter; //Common/generic dialogue lists
     public AudioClip holdPosition, follow, formSquare, formLine, roam; //Commands
     private AudioClip[] thankYous; //Rare dialogue lists
@@ -51,8 +51,7 @@ public class Voice
     public Voice(string voiceName)
     {
         this.voiceName = voiceName;
-
-        string voicePath = "Voices/" + voiceName;
+        voicePath = "Planet/Voices/" + voiceName;
 
         //Common audio with alternate versions
         oofs = Resources.LoadAll<AudioClip>(voicePath + "/Oofs");
@@ -81,7 +80,7 @@ public class Voice
     public AudioClip GetThanks()
     {
         if(thankYous == null)
-            thankYous = Resources.LoadAll<AudioClip>("Voices/" + voiceName + "/Thank Yous");
+            thankYous = Resources.LoadAll<AudioClip>(voicePath + "/Thank Yous");
 
         return thankYous[Random.Range(0, thankYous.Length)];
     }
@@ -89,7 +88,7 @@ public class Voice
     public AudioClip GetImGood()
     {
         if (imGood == null)
-            imGood = Resources.Load<AudioClip>("Voices/" + voiceName + "/Misc/Im Good");
+            imGood = Resources.Load<AudioClip>(voicePath + "/Misc/Im Good");
 
         return imGood;
     }

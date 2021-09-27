@@ -24,7 +24,7 @@ public class FlagDataLoader : SpriteNameLoader
     #if UNITY_EDITOR
     private static bool flagSymbolNamesSaved = false;
     protected override bool SpriteNamesSaved { get => flagSymbolNamesSaved; set => flagSymbolNamesSaved = value; }
-    protected override string pathFromResourcesFolder => "Flag Symbols";
+    protected override string pathFromResourcesFolder => "General/Flag Symbols";
     #endif
     #endregion
 }

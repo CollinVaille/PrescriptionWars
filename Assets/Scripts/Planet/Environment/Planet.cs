@@ -46,6 +46,7 @@ public class Planet : MonoBehaviour
 
     //Special effects
     public GameObject firePrefab;
+    public ReflectionProbe skyboxReflectionProbe;
 
     //START UP STUFF------------------------------------------------------------------------------------------------
 
@@ -86,7 +87,7 @@ public class Planet : MonoBehaviour
         {
             string skyboxName = skyboxNames[Random.Range(0, skyboxNames.Length)];
 
-            this.daySkybox = Resources.Load<Material>("Planet/Skyboxes/" + skyboxName);
+            this.daySkybox = Resources.Load<Material>("Planet/Environment/Skyboxes/" + skyboxName);
 
             //Set water cubemap based on daytime skybox
             string cubemapName;
@@ -110,29 +111,29 @@ public class Planet : MonoBehaviour
             LoadWaterCubemap(cubemapName);
         }
         else
-            nightSkybox = Resources.Load<Material>("Planet/Skyboxes/" + skyboxNames[Random.Range(0, skyboxNames.Length)]);
+            nightSkybox = Resources.Load<Material>("Planet/Environment/Skyboxes/" + skyboxNames[Random.Range(0, skyboxNames.Length)]);
     }
 
     public AudioClip LoadAmbience (params string[] clipNames)
     {
-        return Resources.Load<AudioClip>("Planet/Ambience/" + clipNames[Random.Range(0, clipNames.Length)]);
+        return Resources.Load<AudioClip>("Planet/Environment/Ambience/" + clipNames[Random.Range(0, clipNames.Length)]);
     }
 
     public Texture2D LoadTexture (params string[] textureNames)
     {
-        return Resources.Load<Texture2D>("Planet/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
+        return Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
     }
 
     public void LoadGroundFootsteps (string stepType)
     {
-        groundWalking = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + stepType + " Walking");
-        groundRunning = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + stepType + " Running");
+        groundWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Walking");
+        groundRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Running");
     }
 
     public void LoadSeabedFootsteps (string stepType)
     {
-        seabedWalking = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + stepType + " Walking");
-        seabedRunning = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + stepType + " Running");
+        seabedWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Walking");
+        seabedRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Running");
     }
 
     public void SetUnderwaterColor (Color underwaterColor)
@@ -142,7 +143,7 @@ public class Planet : MonoBehaviour
 
     private void LoadWaterCubemap (string mapName)
     {
-        oceanTransform.GetComponent<Renderer>().sharedMaterial.SetTexture("_Cube", Resources.Load<Cubemap>("Planet/Cubemaps/" + mapName));
+        oceanTransform.GetComponent<Renderer>().sharedMaterial.SetTexture("_Cube", Resources.Load<Cubemap>("Planet/Environment/Cubemaps/" + mapName));
     }
 
     public void SetOcean (int height, OceanType oceanType, string iceTexture = "")
@@ -167,9 +168,9 @@ public class Planet : MonoBehaviour
                 FreezeOcean(iceTexture);
         }
         else if(oceanType == OceanType.Lava)
-            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Ocean/Lava");
+            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Lava");
         else if (oceanType == OceanType.Glowing)
-            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Ocean/Glowing Water");
+            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Glowing Water");
     }
 
     private void FreezeOcean (params string[] textureNames)
@@ -181,7 +182,7 @@ public class Planet : MonoBehaviour
         oceanTransform.tag = "Ice";
 
         //Set visuals
-        Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
+        Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
         ice.SetTexture("_MainTex", iceTexture);
         oceanTransform.GetComponent<Renderer>().sharedMaterial = ice;
 
@@ -208,8 +209,12 @@ public class Planet : MonoBehaviour
         RenderSettings.skybox.SetTexture("_UpTex2", nightSkybox.GetTexture("_UpTex"));
         RenderSettings.skybox.SetTexture("_DownTex2", nightSkybox.GetTexture("_DownTex"));
 
-        //Update shiny materials to reflect new skybox
-        DynamicGI.UpdateEnvironment();
+        //Update reflective materials to reflect new skybox
+        if (skyboxReflectionProbe)
+            skyboxReflectionProbe.RenderProbe();
+        else
+            Debug.LogWarning("Skybox reflection probe not set. Reflective materials will not look right.");
+        //DynamicGI.UpdateEnvironment();
     }
 
     //CITY MANAGEMENT FUNCTIONS------------------------------------------------------------------------------------
@@ -584,7 +589,7 @@ public class PlanetJSON
         planet.biomeSubType = biomeSubType;
 
         //Sun
-        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Lens Flares/" + sunFlare);
+        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Environment/Lens Flares/" + sunFlare);
         planet.sun.GetComponent<Light>().color = sunColor;
         planet.sun.GetComponent<Light>().intensity = sunIntensity;
 
@@ -594,12 +599,12 @@ public class PlanetJSON
 
         //Audio
         planet.GetComponent<AudioReverbZone>().reverbPreset = reverb;
-        planet.dayAmbience = Resources.Load<AudioClip>("Planet/Ambience/" + dayAmbience);
-        planet.nightAmbience = Resources.Load<AudioClip>("Planet/Ambience/" + nightAmbience);
-        planet.groundWalking = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + groundWalking);
-        planet.groundRunning = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + groundRunning);
-        planet.seabedWalking = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + seabedWalking);
-        planet.seabedRunning = Resources.Load<AudioClip>("Planet/Terrain Footsteps/" + seabedRunning);
+        planet.dayAmbience = Resources.Load<AudioClip>("Planet/Environment/Ambience/" + dayAmbience);
+        planet.nightAmbience = Resources.Load<AudioClip>("Planet/Environment/Ambience/" + nightAmbience);
+        planet.groundWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + groundWalking);
+        planet.groundRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + groundRunning);
+        planet.seabedWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + seabedWalking);
+        planet.seabedRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + seabedRunning);
 
         //Fog
         RenderSettings.fog = fog;

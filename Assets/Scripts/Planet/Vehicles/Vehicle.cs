@@ -21,13 +21,13 @@ public class Vehicle : MonoBehaviour
         speedometerReading = 0;
 
         lightHits = new List<AudioClip>();
-        God.InitializeAudioList(lightHits, "Vehicles/Damage SFX/Light Hit ");
+        God.InitializeAudioList(lightHits, "Planet/Vehicles/Damage SFX/Light Hit ");
 
         mediumHits = new List<AudioClip>();
-        God.InitializeAudioList(mediumHits, "Vehicles/Damage SFX/Medium Hit ");
+        God.InitializeAudioList(mediumHits, "Planet/Vehicles/Damage SFX/Medium Hit ");
 
         hardHits = new List<AudioClip>();
-        God.InitializeAudioList(hardHits, "Vehicles/Damage SFX/Hard Hit ");
+        God.InitializeAudioList(hardHits, "Planet/Vehicles/Damage SFX/Hard Hit ");
 
         setUp = true;
     }

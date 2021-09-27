@@ -219,15 +219,14 @@ public class PlanetGenerator : MonoBehaviour
             //Reverb
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Mountains;
 
-            //Footsteps
-            planet.LoadGroundFootsteps("Swamp");
-            planet.seabedWalking = planet.groundWalking;
-            planet.seabedRunning = planet.groundRunning;
-
             //Water
             planet.SetUnderwaterColor(new Color(0 / 255.0f, 70 / 255.0f, 115 / 255.0f, 0.5f));
             if (Random.Range(0, 2) == 0)
                 planet.SetOcean(Random.Range(1, 7), Planet.OceanType.Normal);
+
+            //Footsteps
+            planet.LoadGroundFootsteps("Sand");
+            planet.LoadSeabedFootsteps(planet.hasOcean ? "Swamp" : "Sand"); //Make sand near water sound wet
 
             FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
@@ -506,7 +505,7 @@ public class PlanetGenerator : MonoBehaviour
     private void ApplySunType(Planet planet, SunType sunType)
     {
         //Lens flare for sun
-        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Lens Flares/" + sunType.flareName);
+        planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Environment/Lens Flares/" + sunType.flareName);
 
         //Sunlight color
         planet.sun.GetComponent<Light>().color = sunType.sunlightColor;

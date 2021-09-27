@@ -43,7 +43,7 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         set
         {
             symbolSelected = value;
-            flagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
+            flagSymbolImage.sprite = Resources.Load<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
         }
     }
 
@@ -99,7 +99,7 @@ public class FlagCreationMenu : GalaxyMenuBehaviour
         base.Start();
 
         //Don't Remove
-        flagSymbolImage.sprite = Resources.Load<Sprite>("Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
+        flagSymbolImage.sprite = Resources.Load<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[SymbolSelected]);
     }
 
     // Update is called once per frame

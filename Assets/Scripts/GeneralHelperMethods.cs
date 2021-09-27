@@ -34,7 +34,7 @@ public class GeneralHelperMethods
         string[] delimiters = new string[] { "\r\n" };
 
         //Read in lines from text file
-        TextAsset textFile = Resources.Load<TextAsset>("Text/" + resourcePath);
+        TextAsset textFile = Resources.Load<TextAsset>("General/Text/" + resourcePath);
         lines = textFile.text.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
 
         //Cache lines

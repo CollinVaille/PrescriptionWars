@@ -47,10 +47,10 @@ public class Army : MonoBehaviour
         //plasmaColor *= 1.25f; //Brighter
         //plasmaColor.a = 0.5f; //Halfway transparent
 
-        plasma1 = Resources.Load<Material>("Projectiles/Materials/" + culture.ToString() + " Plasma 1");
+        plasma1 = Resources.Load<Material>("Planet/Projectiles/Materials/" + culture.ToString() + " Plasma 1");
         //plasma1.SetColor("_TintColor", plasmaColor);
 
-        plasma2 = Resources.Load<Material>("Projectiles/Materials/" + culture.ToString() + " Plasma 2");
+        plasma2 = Resources.Load<Material>("Planet/Projectiles/Materials/" + culture.ToString() + " Plasma 2");
         //plasma2.SetColor("_TintColor", plasmaColor);
     }
 

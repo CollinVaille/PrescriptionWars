@@ -577,7 +577,7 @@ public class PlanetTerrain : MonoBehaviour
         {
             TreePrototype newPrototype = new TreePrototype();
 
-            newPrototype.prefab = Resources.Load<GameObject>("Planet/Trees/" + treeNames[x]);
+            newPrototype.prefab = Resources.Load<GameObject>("Planet/Environment/Trees/" + treeNames[x]);
             newPrototype.bendFactor = 0;
 
             treePrototypes[x] = newPrototype;
@@ -811,9 +811,9 @@ public class PlanetTerrainJSON
         customization.treeNames = treeNames;
 
         //Customization: Layers
-        customization.groundTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + groundTexture);
-        customization.cliffTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + cliffTexture);
-        customization.seabedTexture = Resources.Load<Texture2D>("Planet/Terrain Textures/" + seabedTexture);
+        customization.groundTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + groundTexture);
+        customization.cliffTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + cliffTexture);
+        customization.seabedTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + seabedTexture);
         customization.groundMetallic = groundMetallic;
         customization.groundSmoothness = groundSmoothness;
         customization.cliffMetallic = cliffMetallic;

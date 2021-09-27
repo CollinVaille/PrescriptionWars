@@ -322,7 +322,7 @@ public class PlanetPauseMenu : MonoBehaviour
 
             if (generateNew)
             {
-                newLoadingScreen = Resources.Load<Sprite>("Loading Screens/Loading Screen " + Random.Range(1, loadingScreens + 1));
+                newLoadingScreen = Resources.Load<Sprite>("General/Loading Screens/Loading Screen " + Random.Range(1, loadingScreens + 1));
                 loadingScreenArtwork = newLoadingScreen;
 
                 newTrivia = GetRandomTrivia();

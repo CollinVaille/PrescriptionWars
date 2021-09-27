@@ -31,7 +31,7 @@ public class Projectile : MonoBehaviour
 
         //Sad day: either list doesn't exist or is empty
         //So return newly created projectile
-        projectile = Instantiate(Resources.Load<GameObject>("Projectiles/" + projectileName)).GetComponent<Projectile>();
+        projectile = Instantiate(Resources.Load<GameObject>("Planet/Projectiles/" + projectileName)).GetComponent<Projectile>();
         projectile.InitialSetUp(); //One-time initialization on creation
         return projectile;
     }

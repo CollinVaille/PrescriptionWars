@@ -20,7 +20,7 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(buildings, Random.Range(5, 10));
         city.buildingPrefabs = new GameObject[buildings.Count];
         for (int x = 0; x < buildings.Count; x++)
-            city.buildingPrefabs[x] = Resources.Load<GameObject>("City/Buildings/" + buildings[x]);
+            city.buildingPrefabs[x] = Resources.Load<GameObject>("Planet/City/Buildings/" + buildings[x]);
 
         //Wall materials
         List<string> wallMats;
@@ -32,7 +32,7 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(wallMats, Random.Range(3, 6));
         city.wallMaterials = new Material[wallMats.Count];
         for (int x = 0; x < wallMats.Count; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("City/Building Materials/" + wallMats[x]);
+            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + wallMats[x]);
 
         //Floor materials
         List<string> floorMats;
@@ -44,28 +44,28 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(floorMats, Random.Range(2, 5));
         city.floorMaterials = new Material[floorMats.Count];
         for (int x = 0; x < floorMats.Count; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("City/Building Materials/" + floorMats[x]);
+            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + floorMats[x]);
 
         //Customize walls
         if (Random.Range(0, 90) < city.radius && cityType.wallSections.Length > 0)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
-            city.wallSectionPrefab = Resources.Load<GameObject>("City/Wall Sections/" + wall);
+            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + wall);
 
             //Horizontal Gate
             string gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.horGatePrefab = Resources.Load<GameObject>("City/Gates/" + gate);
+            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + gate);
 
             //Vertical gate
             gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.verGatePrefab = Resources.Load<GameObject>("City/Gates/" + gate);
+            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + gate);
 
             //Fence posts
             if (cityType.fencePostChance >= Random.Range(0, 1.0f))
             {
                 string fencePost = cityType.fencePosts[Random.Range(0, cityType.fencePosts.Length)];
-                city.fencePostPrefab = Resources.Load<GameObject>("City/Fence Posts/" + fencePost);
+                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + fencePost);
             }
         }
     }

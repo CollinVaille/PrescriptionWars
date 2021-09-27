@@ -20,7 +20,7 @@ public class ArmyIconNamesLoader : SpriteNameLoader
     #if UNITY_EDITOR
     private static bool armyIconNamesSaved = false;
     protected override bool SpriteNamesSaved { get => armyIconNamesSaved; set => armyIconNamesSaved = value; }
-    protected override string pathFromResourcesFolder => "Army Icons";
+    protected override string pathFromResourcesFolder => "Galaxy/Army Icons";
     #endif
     #endregion
 }

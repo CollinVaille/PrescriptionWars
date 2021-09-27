@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
+    private static string resourcePathPrefix = "Planet/";
+
     public PossibleResource[] possibleResources;
     public bool makeResourceChild = false;
 
@@ -21,7 +23,7 @@ public class ResourceSpawner : MonoBehaviour
             return;
 
         //Spawn resource
-        Transform resourceInstance = Instantiate(Resources.Load<GameObject>(resourceName)).transform;
+        Transform resourceInstance = Instantiate(Resources.Load<GameObject>(resourcePathPrefix + resourceName)).transform;
 
         //Get rid of (Clone) part of name
         resourceInstance.name = resourceInstance.name.Substring(0, resourceInstance.name.Length - 7);

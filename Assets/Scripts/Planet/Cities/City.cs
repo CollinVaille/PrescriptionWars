@@ -722,15 +722,15 @@ public class CityJSON
 
         city.buildingPrefabs = new GameObject[buildingPrefabs.Count];
         for (int x = 0; x < buildingPrefabs.Count; x++)
-            city.buildingPrefabs[x] = Resources.Load<GameObject>("City/Buildings/" + buildingPrefabs[x]);
+            city.buildingPrefabs[x] = Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]);
 
         city.wallMaterials = new Material[wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("City/Building Materials/" + wallMaterials[x]);
+            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + wallMaterials[x]);
 
         city.floorMaterials = new Material[floorMaterials.Length];
         for (int x = 0; x < floorMaterials.Length; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("City/Building Materials/" + floorMaterials[x]);
+            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + floorMaterials[x]);
 
         city.buildings = new List<Building>(buildings.Count);
         for (int x = 0; x < buildings.Count; x++)
@@ -743,11 +743,11 @@ public class CityJSON
 
         if (walls)
         {
-            city.wallSectionPrefab = Resources.Load<GameObject>("City/Wall Sections/" + wallSection);
-            city.horGatePrefab = Resources.Load<GameObject>("City/Gates/" + horGate);
-            city.verGatePrefab = Resources.Load<GameObject>("City/Gates/" + verGate);
+            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + wallSection);
+            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + horGate);
+            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + verGate);
             if (!fencePost.Equals(""))
-                city.fencePostPrefab = Resources.Load<GameObject>("City/Fence Posts/" + fencePost);
+                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + fencePost);
 
             city.PrepareWalls(wallMaterialIndex);
 

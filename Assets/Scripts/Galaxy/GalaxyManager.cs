@@ -188,7 +188,7 @@ public class GalaxyManager : GalaxyViewBehaviour
     {
         for (int cultureIndex = 0; cultureIndex < Enum.GetNames(typeof(Empire.Culture)).Length; cultureIndex++)
         {
-            pillMaterials.Add((Empire.Culture)cultureIndex, Resources.LoadAll<Material>("Pill Skins/" + GeneralHelperMethods.GetEnumText(((Empire.Culture)cultureIndex).ToString())));
+            pillMaterials.Add((Empire.Culture)cultureIndex, Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(((Empire.Culture)cultureIndex).ToString())));
         }
     }
 

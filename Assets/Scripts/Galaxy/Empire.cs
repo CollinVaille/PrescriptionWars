@@ -16,7 +16,7 @@ public class Empire
     //This method is called right after the galaxy has finished generating (at the end of the start method in the galaxy generator class).
     public void OnGalaxyGenerationCompletion()
     {
-        pillSkins = Resources.LoadAll<Material>("Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString()));
+        pillSkins = Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString()));
     }
 
     //Contains all of the possible pill skins that pills that belong to this empire can be.

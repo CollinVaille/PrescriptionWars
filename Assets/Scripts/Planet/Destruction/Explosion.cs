@@ -31,7 +31,7 @@ public class Explosion : MonoBehaviour
 
         //Sad day: either list doesn't exist or is empty
         //So return newly created explosion
-        explosion = Instantiate(Resources.Load<GameObject>("Explosions/" + explosionName)).GetComponent<Explosion>();
+        explosion = Instantiate(Resources.Load<GameObject>("Planet/Explosions/" + explosionName)).GetComponent<Explosion>();
         explosion.InitialSetUp(); //One-time initialization on creation
         return explosion;
     }
