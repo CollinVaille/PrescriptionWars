@@ -160,7 +160,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// <summary>
     /// Indicates the ground unit that this unit list button is assigned to.
     /// </summary>
-    private GalaxyGroundUnit AssignedGroundUnit
+    public GalaxyGroundUnit AssignedGroundUnit
     {
         get
         {
@@ -253,10 +253,13 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// </summary>
     public virtual void OnClickWithoutDrag()
     {
+        //Sets the unit list button as the one selected and displayed in the unit inspector.
+        ArmyManagementMenu.UnitListButtonSelected = this;
+        
         //Triggers the OnClickWithoutDrag() method in the expandable unit list button script if it exists.
-        ExpandableUnitListButton expandableUnitListButtonComponent = gameObject.GetComponent<ExpandableUnitListButton>();
-        if (expandableUnitListButtonComponent != null)
-            expandableUnitListButtonComponent.OnClickWithoutDrag();
+        //ExpandableUnitListButton expandableUnitListButtonComponent = gameObject.GetComponent<ExpandableUnitListButton>();
+        //if (expandableUnitListButtonComponent != null)
+        //    expandableUnitListButtonComponent.OnClickWithoutDrag();
     }
 
     /// <summary>
@@ -352,7 +355,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Army) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Squad) || (buttonBelow != null && buttonBelow.TypeOfButton == ButtonType.Army && buttonAbove != null)))
                 {
                     if (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Army && !buttonAbove.gameObject.GetComponent<ArmyButton>().Expanded)
-                        buttonAbove.gameObject.GetComponent<ArmyButton>().Expand();
+                        buttonAbove.gameObject.GetComponent<ArmyButton>().ForceExpand(false);
                     LatestButtonMoveSuccessful = true;
                     break;
                 }
@@ -367,7 +370,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Squad) || (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Pill)))
                 {
                     if (buttonAbove != null && buttonAbove.TypeOfButton == ButtonType.Squad && !buttonAbove.gameObject.GetComponent<SquadButton>().Expanded)
-                        buttonAbove.gameObject.GetComponent<SquadButton>().Expand();
+                        buttonAbove.gameObject.GetComponent<SquadButton>().ForceExpand(false);
                     LatestButtonMoveSuccessful = true;
                     break;
                 }

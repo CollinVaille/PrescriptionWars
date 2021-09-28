@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class ArmyManagementMenu : GalaxyPopupBehaviour
 {
     [Header("Text Components")]
 
     [SerializeField] private Text titleText = null;
+    [SerializeField] private Text unitInspectorGroundUnitNameText;
 
     [Header("Other Components")]
 
@@ -37,6 +39,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private Transform buttonsBeingDraggedParent = null;
     public Transform ButtonsBeingDraggedParent { get => buttonsBeingDraggedParent; }
 
+    [SerializeField] private Transform unitInspectorBaseParent = null;
+    [SerializeField] private Transform unitInspectorArmyParent = null;
+    [SerializeField] private Transform unitInspectorSquadParent = null;
+    [SerializeField] private Transform unitInspectorPillParent = null;
+
     [Header("Prefabs")]
 
     [SerializeField] private GameObject armyButtonPrefab = null;
@@ -45,7 +52,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     [SerializeField] private GameObject pillButtonPrefab = null;
     public GameObject PillButtonPrefab { get => pillButtonPrefab; }
 
-    [Header("Options")]
+    [Header("SFX Options")]
+
+    [SerializeField] private AudioClip expandAllSFX = null;
+    [SerializeField] private AudioClip collapseAllSFX = null;
+
+    [Header("Logic Options")]
 
     [SerializeField, Tooltip("Specifies the amount of spacing between different unit list button types in the unit list (Ex: spacing between an army button and a squad button).") ] private float spacingBetweenUnitListButtonTypes = 0;
     public float SpacingBetweenUnitListButtonTypes
@@ -87,6 +99,70 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         get
         {
             return GalaxyManager.planets[planetSelectedID];
+        }
+    }
+
+    private UnitListButton unitListButtonSelected = null;
+    /// <summary>
+    /// Indicates which button in the unit list is currently selected and being displayed in the unit inspector.
+    /// </summary>
+    public UnitListButton UnitListButtonSelected
+    {
+        private get
+        {
+            return unitListButtonSelected;
+        }
+        set
+        {
+            //Returns if the unit list button provided is already the one selected.
+            if (unitListButtonSelected == value)
+                return;
+            //Sets the specified unit list button as the selected unit list button.
+            unitListButtonSelected = value;
+            //Adjusts the unit inspector to match the unit list button selected.
+            if(unitListButtonSelected == null)
+            {
+                //Deactivates the unit inspector effectively because no unit list button is selected.
+                unitInspectorBaseParent.gameObject.SetActive(false);
+                unitInspectorArmyParent.gameObject.SetActive(false);
+                unitInspectorSquadParent.gameObject.SetActive(false);
+                unitInspectorPillParent.gameObject.SetActive(false);
+                return;
+            }
+            switch (unitListButtonSelected.TypeOfButton)
+            {
+                //Activates the base and army components of the unit inspector if the unit list button selected is an army button.
+                case UnitListButton.ButtonType.Army:
+                    unitInspectorBaseParent.gameObject.SetActive(true);
+                    unitInspectorArmyParent.gameObject.SetActive(true);
+                    unitInspectorSquadParent.gameObject.SetActive(false);
+                    unitInspectorPillParent.gameObject.SetActive(false);
+                    break;
+                //Activates the base and squad components of the unit inspector if the unit list button selected is a squad button.
+                case UnitListButton.ButtonType.Squad:
+                    unitInspectorBaseParent.gameObject.SetActive(true);
+                    unitInspectorArmyParent.gameObject.SetActive(false);
+                    unitInspectorSquadParent.gameObject.SetActive(true);
+                    unitInspectorPillParent.gameObject.SetActive(false);
+                    break;
+                //Activates the base and pill components of the unit inspector if the unit list button selected is a pill button.
+                case UnitListButton.ButtonType.Pill:
+                    unitInspectorBaseParent.gameObject.SetActive(true);
+                    unitInspectorArmyParent.gameObject.SetActive(false);
+                    unitInspectorSquadParent.gameObject.SetActive(false);
+                    unitInspectorPillParent.gameObject.SetActive(true);
+                    break;
+
+                //Deactivates the unit inspector effectively if the button type of the unit list button selected is an unknown type.
+                default:
+                    unitInspectorBaseParent.gameObject.SetActive(false);
+                    unitInspectorArmyParent.gameObject.SetActive(false);
+                    unitInspectorSquadParent.gameObject.SetActive(false);
+                    unitInspectorPillParent.gameObject.SetActive(false);
+                    break;
+            }
+            //Sets the name of the ground unit in the unit inspector.
+            unitInspectorGroundUnitNameText.text = unitListButtonSelected.AssignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : unitListButtonSelected.AssignedGroundUnit.Name;
         }
     }
 
@@ -147,6 +223,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         //Calls the expand all function on all of the army buttons.
         foreach(UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
             armyButton.gameObject.GetComponent<ExpandableUnitListButton>().ExpandAll();
+
+        //Plays the expand all sound effect.
+        AudioManager.PlaySFX(expandAllSFX);
     }
 
     /// <summary>
@@ -156,7 +235,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     {
         //Calls the collapse function on all of the army buttons.
         foreach (UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
-            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().Collapse();
+            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().Collapse(false);
+
+        //Plays the collapse all sound effect.
+        AudioManager.PlaySFX(collapseAllSFX);
     }
 
     /// <summary>
@@ -205,5 +287,13 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
         //Returns the list of buttons of the specified button type.
         return buttonsOfButtonType;
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the background of the unit list is clicked on.
+    /// </summary>
+    public void OnClickUnitListBackground()
+    {
+        UnitListButtonSelected = null;
     }
 }

@@ -88,6 +88,8 @@ public class ExpandableUnitListButton : UnitListButton
     /// </summary>
     public override void OnClickWithoutDrag()
     {
+        base.OnClickWithoutDrag();
+
         if (!expanded)
         {
             if(TypeOfButton == ButtonType.Army)
@@ -140,7 +142,7 @@ public class ExpandableUnitListButton : UnitListButton
         else if (TypeOfButton == ButtonType.Squad)
             childCount = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
         //Ensures that the button actually has child buttons to display before going through the rest of the expanding logic.
-        if(childCount > 0)
+        if (childCount > 0)
         {
             //Creates the child unit list buttons.
             for (int childIndex = 0; childIndex < childCount; childIndex++)
@@ -180,6 +182,19 @@ public class ExpandableUnitListButton : UnitListButton
     }
 
     /// <summary>
+    /// This method should be called in order to expand the unit list button and force log that it is expanded.
+    /// </summary>
+    /// <param name="playSFX"></param>
+    public virtual void ForceExpand(bool playSFX = true)
+    {
+        //Expands to reveal the child buttons of this expandable unit list button.
+        Expand();
+
+        //Force logs that this expandable unit list button is expanded.
+        expanded = true;
+    }
+
+    /// <summary>
     /// This method should be called in order to expand this button and all applicable child buttons.
     /// </summary>
     public virtual void ExpandAll()
@@ -212,7 +227,7 @@ public class ExpandableUnitListButton : UnitListButton
     /// <summary>
     /// This method should be called in order to collapse the unit list button and destroy the child buttons.
     /// </summary>
-    public virtual void Collapse()
+    public virtual void Collapse(bool playSFX = true)
     {
         //Returns if the button is already collapsed.
         if (!Expanded)
@@ -231,6 +246,7 @@ public class ExpandableUnitListButton : UnitListButton
         expanded = false;
 
         //Plays the appropriate sound effect.
-        AudioManager.PlaySFX(CollapseSFX);
+        if(playSFX)
+            AudioManager.PlaySFX(CollapseSFX);
     }
 }
