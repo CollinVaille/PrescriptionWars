@@ -155,6 +155,14 @@ public class GeneralHelperMethods
 
         return currentParentCanvas;
     }
+
+    /// <summary>
+    /// This method should be called in order to reset the texture of the cursor texture.
+    /// </summary>
+    public static void ResetCursorTexture()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+    }
 }
 #region Editor
 #if UNITY_EDITOR

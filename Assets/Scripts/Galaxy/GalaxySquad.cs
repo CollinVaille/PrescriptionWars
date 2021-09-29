@@ -107,6 +107,22 @@ public class GalaxySquad: GalaxyGroundUnit
     }
 
     /// <summary>
+    /// Returns the pill that is the leader of the squad.
+    /// </summary>
+    public GalaxyPill SquadLeader
+    {
+        get
+        {
+            //There is no squad leader if there are no pills in the squad.
+            if (TotalNumberOfPills == 0)
+                return null;
+
+            //Returns the first pill in the list of pills as the squad leader.
+            return GetPillAt(0);
+        }
+    }
+
+    /// <summary>
     /// Returns the total number of pills in the squad of the specified class.
     /// </summary>
     /// <param name="classType"></param>

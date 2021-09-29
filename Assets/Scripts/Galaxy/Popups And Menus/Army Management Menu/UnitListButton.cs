@@ -255,11 +255,6 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     {
         //Sets the unit list button as the one selected and displayed in the unit inspector.
         ArmyManagementMenu.UnitListButtonSelected = this;
-        
-        //Triggers the OnClickWithoutDrag() method in the expandable unit list button script if it exists.
-        //ExpandableUnitListButton expandableUnitListButtonComponent = gameObject.GetComponent<ExpandableUnitListButton>();
-        //if (expandableUnitListButtonComponent != null)
-        //    expandableUnitListButtonComponent.OnClickWithoutDrag();
     }
 
     /// <summary>
@@ -280,6 +275,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         dragYOffsetFromMouse = button.transform.position.y - Input.mousePosition.y;
         //Logs that the unit list button is being dragged.
         beingDragged = true;
+
+        //Sets the unit list button as the one selected and displayed in the unit inspector.
+        ArmyManagementMenu.UnitListButtonSelected = this;
     }
 
     /// <summary>
@@ -313,6 +311,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         button.transform.localPosition = new Vector2(button.transform.localPosition.x, beginDragLocalYPosition);
         //Logs that the unit list button is no longer being dragged.
         beingDragged = false;
+        //Informs the army manaagement menu that the latest unit list button move was successful.
+        if (LatestButtonMoveSuccessful)
+            ArmyManagementMenu.OnUnitListButtonMove();
     }
 
     /// <summary>

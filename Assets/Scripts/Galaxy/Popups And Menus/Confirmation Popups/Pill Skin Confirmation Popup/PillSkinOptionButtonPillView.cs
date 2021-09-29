@@ -31,7 +31,7 @@ public class PillSkinOptionButtonPillView : MonoBehaviour, IPointerEnterHandler,
     //This method is called whenever the pointer exits the pill skin option button pill view.
     public void OnPointerExit(PointerEventData eventData)
     {
-        ResetMouseCursor();
+        GeneralHelperMethods.ResetCursorTexture();
     }
 
     //This method is called whenever the pointer begins to drag on the pill skin option button pill view.
@@ -47,21 +47,15 @@ public class PillSkinOptionButtonPillView : MonoBehaviour, IPointerEnterHandler,
         pillSkinOptionButton.PillView.PillRotation = initialPillRotationOnPillViewDrag - ((Input.mousePosition.x - initialMouseXOnPillViewDrag) * pillSkinOptionButton.PillViewRotationSpeed);
     }
 
-    //This method should be called in order to reset the mouse cursor to the regular texture.
-    private void ResetMouseCursor()
-    {
-        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-    }
-
     //This method is called whenever the pill view raw image game object is disabled and resets the mouse cursor.
     private void OnDisable()
     {
-        ResetMouseCursor();
+        GeneralHelperMethods.ResetCursorTexture();
     }
 
     //This method is called whenever the pill view raw image game object is destroyed and resets the mouse cursor.
     private void OnDestroy()
     {
-        ResetMouseCursor();
+        GeneralHelperMethods.ResetCursorTexture();
     }
 }

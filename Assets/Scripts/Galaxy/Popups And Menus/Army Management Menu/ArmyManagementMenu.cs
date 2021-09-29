@@ -9,6 +9,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     [Header("Text Components")]
 
     [SerializeField] private Text titleText = null;
+    [SerializeField] private Text unitInspectorGroundUnitTypeText;
     [SerializeField] private Text unitInspectorGroundUnitNameText;
 
     [Header("Other Components")]
@@ -28,6 +29,15 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         get
         {
             return unitListButtonDestroyer;
+        }
+    }
+
+    [SerializeField] private RawImage unitListInspectorPillViewRawImage = null;
+    private RawImage UnitListInspectorPillViewRawImage
+    {
+        get
+        {
+            return unitListInspectorPillViewRawImage;
         }
     }
 
@@ -68,6 +78,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
     }
 
+    [SerializeField, Tooltip("The speed at which the pill in the unit inspector pill view rotates when the player is dragged on the unit inspector pill view.")] private float pillViewRotationSpeed = 2.5f;
+    [SerializeField, Tooltip("The texture that the cursor will be whenever the mouse is over the unit inspector pill view.")] private Texture2D mouseOverPillViewCursor = null;
+
     //Non-inspector variables.
 
     private int planetSelectedID = -1;
@@ -102,6 +115,31 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
         }
     }
 
+    /// <summary>
+    /// The pill view that is displayed by the pill view raw image in the unit inspector.
+    /// </summary>
+    private PillView unitInspectorPillView = null;
+    /// <summary>
+    /// Indicates the x position of the mouse when the unit inspector pill view is just starting to be dragged.
+    /// </summary>
+    private float initialMouseXOnUnitInspectorPillViewDrag;
+    /// <summary>
+    /// Indicates the rotation of the pill in the unit inspector pill view when the unit inspector pill view is just starting to be dragged.
+    /// </summary>
+    private float initialPillRotationOnUnitInspectorPillViewDrag;
+    /// <summary>
+    /// Indicates whether the texture of the cursor is not the default texture.
+    /// </summary>
+    private bool cursorTextureChanged = false;
+    /// <summary>
+    /// Indicates whether the pointer is over the unit inspector pill view.
+    /// </summary>
+    private bool pointerOverUnitInspectorPillView = false;
+    /// <summary>
+    /// Indicates whether the unit inspector pill view is being dragged.
+    /// </summary>
+    private bool unitInspectorPillViewBeingDragged = false;
+
     private UnitListButton unitListButtonSelected = null;
     /// <summary>
     /// Indicates which button in the unit list is currently selected and being displayed in the unit inspector.
@@ -127,6 +165,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                 unitInspectorArmyParent.gameObject.SetActive(false);
                 unitInspectorSquadParent.gameObject.SetActive(false);
                 unitInspectorPillParent.gameObject.SetActive(false);
+                if (unitInspectorPillView != null)
+                {
+                    unitInspectorPillView.Delete();
+                    UnitListInspectorPillViewRawImage.texture = null;
+                }
+    
                 return;
             }
             switch (unitListButtonSelected.TypeOfButton)
@@ -137,6 +181,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     unitInspectorArmyParent.gameObject.SetActive(true);
                     unitInspectorSquadParent.gameObject.SetActive(false);
                     unitInspectorPillParent.gameObject.SetActive(false);
+                    if (unitInspectorPillView != null)
+                    {
+                        unitInspectorPillView.Delete();
+                        UnitListInspectorPillViewRawImage.texture = null;
+                    }
                     break;
                 //Activates the base and squad components of the unit inspector if the unit list button selected is a squad button.
                 case UnitListButton.ButtonType.Squad:
@@ -144,6 +193,26 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     unitInspectorArmyParent.gameObject.SetActive(false);
                     unitInspectorSquadParent.gameObject.SetActive(true);
                     unitInspectorPillParent.gameObject.SetActive(false);
+                    //Gets the leader of the squad (could be null if there are no pills in the squad).
+                    GalaxyPill squadLeader = unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.SquadLeader;
+                    //Deletes/clears the pill view if the squad has no leader.
+                    if (squadLeader == null)
+                    {
+                        if(unitInspectorPillView != null)
+                        {
+                            unitInspectorPillView.Delete();
+                            UnitListInspectorPillViewRawImage.texture = null;
+                        }
+                    }
+                    //Displays the squad leader in the unit inspector pill view.
+                    else
+                    {
+                        if (unitInspectorPillView == null)
+                            unitInspectorPillView = PillViewsManager.GetNewPillView(squadLeader);
+                        else
+                            unitInspectorPillView.DisplayedPill = squadLeader;
+                        UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                    }
                     break;
                 //Activates the base and pill components of the unit inspector if the unit list button selected is a pill button.
                 case UnitListButton.ButtonType.Pill:
@@ -151,6 +220,12 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     unitInspectorArmyParent.gameObject.SetActive(false);
                     unitInspectorSquadParent.gameObject.SetActive(false);
                     unitInspectorPillParent.gameObject.SetActive(true);
+                    //Displays the pill in the unit inspector pill view.
+                    if (unitInspectorPillView == null)
+                        unitInspectorPillView = PillViewsManager.GetNewPillView(unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill);
+                    else
+                        unitInspectorPillView.DisplayedPill = unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
+                    UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
                     break;
 
                 //Deactivates the unit inspector effectively if the button type of the unit list button selected is an unknown type.
@@ -161,6 +236,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
                     unitInspectorPillParent.gameObject.SetActive(false);
                     break;
             }
+            //Sets the type of the ground unit in the unit inspector.
+            unitInspectorGroundUnitTypeText.text = unitListButtonSelected.TypeOfButton.ToString();
             //Sets the name of the ground unit in the unit inspector.
             unitInspectorGroundUnitNameText.text = unitListButtonSelected.AssignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : unitListButtonSelected.AssignedGroundUnit.Name;
         }
@@ -295,5 +372,119 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
     public void OnClickUnitListBackground()
     {
         UnitListButtonSelected = null;
+    }
+
+    /// <summary>
+    /// This method is called whenever a unit list button in the unit list is moved.
+    /// </summary>
+    public void OnUnitListButtonMove()
+    {
+        //Updates the pill view to match the correct visual representation of the pill after the selected unit list button was moved.
+        if (unitInspectorPillView != null)
+            unitInspectorPillView.UpdatePillView();
+    }
+
+    /// <summary>
+    /// This method should be called whenever the player starts dragging on the unit inspector pill view through an event trigger and begins the pill rotation logic.
+    /// </summary>
+    public void OnBeginDragUnitInspectorPillView()
+    {
+        if(unitInspectorPillView != null)
+        {
+            initialMouseXOnUnitInspectorPillViewDrag = Input.mousePosition.x;
+            initialPillRotationOnUnitInspectorPillViewDrag = unitInspectorPillView.PillRotation;
+            //Logs that the unit inspector pill view is being dragged.
+            unitInspectorPillViewBeingDragged = true;
+        }
+    }
+
+    /// <summary>
+    /// This method should be called whenever the player is dragging on the unit list inspector pill view through an event trigger and executes pill rotation logic.
+    /// </summary>
+    public void OnDragUnitInspectorPillView()
+    {
+        if(unitInspectorPillView != null)
+        {
+            unitInspectorPillView.PillRotation = initialPillRotationOnUnitInspectorPillViewDrag - ((Input.mousePosition.x - initialMouseXOnUnitInspectorPillViewDrag) * pillViewRotationSpeed);
+        }
+    }
+
+    /// <summary>
+    /// This method should be called whenever the player stops dragging on the unit inspector pill view through an event trigger and ensures the cursor texture is reset.
+    /// </summary>
+    public void OnEndDragUnitInspectorPillView()
+    {
+        if(unitInspectorPillView != null)
+        {
+            //Logs that the unit inspector pill view is no longer being dragged.
+            unitInspectorPillViewBeingDragged = false;
+            //Resets the texture of the cursor if the pointer is not over the unit inspector pill view.
+            if (!pointerOverUnitInspectorPillView)
+            {
+                //Resets the cursor texture.
+                GeneralHelperMethods.ResetCursorTexture();
+                //Logs that the cursor texture has been reset.
+                cursorTextureChanged = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// This method should be called whenever the pointer enters the unit inspector pill view through an event trigger and changes the cursor texture.
+    /// </summary>
+    public void OnPointerEnterUnitInspectorPillView()
+    {
+        //Changes the cursor texture.
+        Cursor.SetCursor(mouseOverPillViewCursor, new Vector2(0, 10), CursorMode.Auto);
+        //Logs that the cursor texture was changed.
+        cursorTextureChanged = true;
+        //Logs that the cursor is now over the unit inspector pill view.
+        pointerOverUnitInspectorPillView = true;
+    }
+
+    /// <summary>
+    /// This method should be called whenever the pointer exits the unit inspector pill view through an event trigger and resets the cursor texture.
+    /// </summary>
+    public void OnPointerExitUnitInspectorPillView()
+    {
+        //Resets the texture of the cursor if the pill unit inspector pill view is not being dragged.
+        if (!unitInspectorPillViewBeingDragged)
+        {
+            //Resets the cursor texture.
+            GeneralHelperMethods.ResetCursorTexture();
+            //Logs that the cursor texture has been reset.
+            cursorTextureChanged = false;
+        }
+
+        //Logs that the cursor is now no longer over the unit inspector pill view.
+        pointerOverUnitInspectorPillView = false;
+    }
+
+    private void OnDisable()
+    {
+        //Ensures that the cursor texture is the default cursor texture.
+        if (cursorTextureChanged)
+        {
+            //Resets the cursor texture.
+            GeneralHelperMethods.ResetCursorTexture();
+            //Logs that the cursor texture has been reset.
+            cursorTextureChanged = false;
+        }
+        //Logs that the cursor is now no longer over the unit inspector pill view.
+        pointerOverUnitInspectorPillView = false;
+        //Logs that the unit inspector pill view is no longer being dragged.
+        unitInspectorPillViewBeingDragged = false;
+    }
+
+    private void OnDestroy()
+    {
+        //Ensures that the cursor texture is the default cursor texture.
+        if (cursorTextureChanged)
+        {
+            //Resets the cursor texture.
+            GeneralHelperMethods.ResetCursorTexture();
+            //Logs that the cursor texture has been reset.
+            cursorTextureChanged = false;
+        }
     }
 }

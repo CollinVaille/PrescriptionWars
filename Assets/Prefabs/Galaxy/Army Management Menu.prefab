@@ -27,9 +27,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 6367388351488763533}
+  - {fileID: 10087644711770483}
   - {fileID: 8710223926247319362}
   - {fileID: 2728815580956575946}
-  - {fileID: 6367388351488763533}
   m_Father: {fileID: 3924420936484112609}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -49,6 +50,7 @@ GameObject:
   - component: {fileID: 6367388351488763533}
   - component: {fileID: 4815484106834157130}
   - component: {fileID: 3280184994136527660}
+  - component: {fileID: 694533011143385771}
   m_Layer: 5
   m_Name: Pill View Raw Image
   m_TagString: Untagged
@@ -68,11 +70,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3941560885718646838}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 137, y: 0}
+  m_AnchoredPosition: {x: 137, y: 10}
   m_SizeDelta: {x: 105, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4815484106834157130
@@ -110,6 +112,99 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &694533011143385771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500383044370246443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 13
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3924420937026756880}
+          m_TargetAssemblyTypeName: ArmyManagementMenu, Assembly-CSharp
+          m_MethodName: OnBeginDragUnitInspectorPillView
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 5
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3924420937026756880}
+          m_TargetAssemblyTypeName: ArmyManagementMenu, Assembly-CSharp
+          m_MethodName: OnDragUnitInspectorPillView
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3924420937026756880}
+          m_TargetAssemblyTypeName: ArmyManagementMenu, Assembly-CSharp
+          m_MethodName: OnEndDragUnitInspectorPillView
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3924420937026756880}
+          m_TargetAssemblyTypeName: ArmyManagementMenu, Assembly-CSharp
+          m_MethodName: OnPointerEnterUnitInspectorPillView
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3924420937026756880}
+          m_TargetAssemblyTypeName: ArmyManagementMenu, Assembly-CSharp
+          m_MethodName: OnPointerExitUnitInspectorPillView
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2895560845062144004
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,7 +217,7 @@ GameObject:
   - component: {fileID: 5666200539402125102}
   - component: {fileID: 6258816548157819795}
   m_Layer: 0
-  m_Name: Ground Unit Name
+  m_Name: Ground Unit Name Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,12 +235,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3941560885718646838}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 137, y: 100}
-  m_SizeDelta: {x: 105, y: 45}
+  m_AnchoredPosition: {x: 137, y: 78}
+  m_SizeDelta: {x: 105, y: 22.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5666200539402125102
 CanvasRenderer:
@@ -182,7 +277,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 6
     m_MaxSize: 14
-    m_Alignment: 7
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -500,7 +595,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -666,7 +761,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: -0.000022888184}
   m_SizeDelta: {x: 0, y: 240}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3924420936383068959
@@ -1144,9 +1239,11 @@ MonoBehaviour:
   imagesWithEmpireLabelColor:
   - {fileID: 3924420936542059433}
   titleText: {fileID: 3924420937322423486}
+  unitInspectorGroundUnitTypeText: {fileID: 2388993602855099792}
   unitInspectorGroundUnitNameText: {fileID: 6258816548157819795}
   unitListVerticalLayoutGroup: {fileID: 3924420936383068959}
   unitListButtonDestroyer: {fileID: 5187804965532837936}
+  unitListInspectorPillViewRawImage: {fileID: 3280184994136527660}
   unitListButtonParent: {fileID: 3924420936383068956}
   buttonsBeingDraggedParent: {fileID: 5227774641074824994}
   unitInspectorBaseParent: {fileID: 3941560885718646838}
@@ -1162,6 +1259,9 @@ MonoBehaviour:
   expandAllSFX: {fileID: 8300000, guid: bb999d4ee2d18124fabff0c584b7a145, type: 3}
   collapseAllSFX: {fileID: 8300000, guid: c8bfb01d7ff6b204a81b1d35b6b9e703, type: 3}
   spacingBetweenUnitListButtonTypes: 3
+  pillViewRotationSpeed: 2.5
+  mouseOverPillViewCursor: {fileID: 2800000, guid: bb660b349b2e21440bf5f8a5e63253be,
+    type: 3}
 --- !u!1 &3924420937122188586
 GameObject:
   m_ObjectHideFlags: 0
@@ -1600,7 +1700,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3924420937518502347
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1858,6 +1958,85 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &5615341995660670249
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 10087644711770483}
+  - component: {fileID: 8068718418103074509}
+  - component: {fileID: 2388993602855099792}
+  m_Layer: 0
+  m_Name: Selected Unit Type Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &10087644711770483
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5615341995660670249}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3941560885718646838}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 137, y: 104}
+  m_SizeDelta: {x: 105, y: 22.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8068718418103074509
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5615341995660670249}
+  m_CullTransparentMesh: 1
+--- !u!114 &2388993602855099792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5615341995660670249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 4f8838302d191d54184e1ac1762483de, type: 3}
+    m_FontSize: 12
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 6
+    m_MaxSize: 14
+    m_Alignment: 7
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Ground Unit Type
 --- !u!1 &6029791679132612220
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,11 +2067,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3941560885718646838}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 137, y: 75}
+  m_AnchoredPosition: {x: 137, y: 90}
   m_SizeDelta: {x: 105, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &253936497664332348

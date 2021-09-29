@@ -41,14 +41,17 @@ public class PillView : MonoBehaviour
             {
                 //Sets the skin of the pill.
                 pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.Skin;
-                //Sets the head gear of the pill.
-                SetHeadGear(displayedPill.PillClass.headGear);
-                //Sets the body gear of the pill.
-                SetBodyGear(displayedPill.PillClass.bodyGear);
-                //Sets the primary of the pill.
-                SetPrimary(displayedPill.PillClass.primary);
-                //Sets the secondary of the pill.
-                SetSecondary(displayedPill.PillClass.secondary);
+                if (displayedPill.PillClass != null)
+                {
+                    //Sets the head gear of the pill.
+                    SetHeadGear(displayedPill.PillClass.headGear);
+                    //Sets the body gear of the pill.
+                    SetBodyGear(displayedPill.PillClass.bodyGear);
+                    //Sets the primary of the pill.
+                    SetPrimary(displayedPill.PillClass.primary);
+                    //Sets the secondary of the pill.
+                    SetSecondary(displayedPill.PillClass.secondary);
+                }
             }
         }
     }
@@ -99,6 +102,14 @@ public class PillView : MonoBehaviour
             renderTexture.name = "PillView" + newPillViewIndex;
             pillViewCamera.targetTexture = renderTexture;
         }
+    }
+
+    /// <summary>
+    /// This method should be called in order to update the appearance of the pill in the pill view.
+    /// </summary>
+    public void UpdatePillView()
+    {
+        DisplayedPill = DisplayedPill;
     }
 
     //This method should be called to delete the pill view.
