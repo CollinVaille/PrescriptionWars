@@ -113,14 +113,19 @@ public class GalaxySquad: GalaxyGroundUnit
     {
         get
         {
-            //There is no squad leader if there are no pills in the squad.
-            if (TotalNumberOfPills == 0)
-                return null;
-
-            //Returns the first pill in the list of pills as the squad leader.
-            return GetPillAt(0);
+            return squadLeader;
+        }
+        set
+        {
+            squadLeader = value;
+            string debugString = squadLeader == null ? "Null" : squadLeader.Name;
+            Debug.Log(debugString);
         }
     }
+    /// <summary>
+    /// The pill that is the leader of the squad (will be null if no pills are in the squad).
+    /// </summary>
+    private GalaxyPill squadLeader = null;
 
     /// <summary>
     /// Returns the total number of pills in the squad of the specified class.
@@ -150,6 +155,10 @@ public class GalaxySquad: GalaxyGroundUnit
     {
         pills.Add(pill);
         pill.AssignedSquad = this;
+
+        //Makes the pill that is being added to the squad the squad leader if there were no pills in the squad before.
+        if (SquadLeader == null)
+            SquadLeader = pill;
     }
 
     /// <summary>
@@ -160,10 +169,12 @@ public class GalaxySquad: GalaxyGroundUnit
     public void InsertPill(int index, GalaxyPill pill)
     {
         if (index < pills.Count)
+        {
             pills.Insert(index, pill);
+            pill.AssignedSquad = this;
+        }
         else
-            pills.Add(pill);
-        pill.AssignedSquad = this;
+            AddPill(pill);
     }
 
     /// <summary>
@@ -174,6 +185,9 @@ public class GalaxySquad: GalaxyGroundUnit
     {
         pill.AssignedSquad = null;
         pills.Remove(pill);
+        //Assigns the squad a new squad leader if the pill that is being removed from the squad was the squad leader.
+        if (pill != null && pill == SquadLeader)
+            SquadLeader = TotalNumberOfPills > 0 ? GetPillAt(0) : null;
     }
 
     /// <summary>
@@ -182,7 +196,12 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="index"></param>
     public void RemovePillAt(int index)
     {
+        GalaxyPill pill = GetPillAt(index);
+        pill.AssignedSquad = null;
         pills.RemoveAt(index);
+        //Assigns the squad a new squad leader if the pill that is being removed from the squad was the squad leader.
+        if (pill != null && pill == SquadLeader)
+            SquadLeader = TotalNumberOfPills > 0 ? GetPillAt(0) : null;
     }
 
     /// <summary>
