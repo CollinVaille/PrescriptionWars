@@ -16,11 +16,17 @@ public class CityGenerator : MonoBehaviour
         CityType cityType = SelectCityType();
 
         //Buildings
-        List<string> buildings = new List<string>(cityType.buildings);
-        TrimToRandomSubset(buildings, Random.Range(5, 10));
-        city.buildingPrefabs = new GameObject[buildings.Count];
-        for (int x = 0; x < buildings.Count; x++)
-            city.buildingPrefabs[x] = Resources.Load<GameObject>("Planet/City/Buildings/" + buildings[x]);
+        List<string> genericBuildings = new List<string>(cityType.buildings);
+        TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
+        city.buildingPrefabs = new List<GameObject>();
+        for (int x = 0; x < genericBuildings.Count; x++)
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + genericBuildings[x]));
+
+        //Special buildings
+        AddSpecialBuilding(cityType.prescriptor, city);
+        AddSpecialBuilding(cityType.depot, city);
+        AddSpecialBuilding(cityType.researchFacility, city);
+        AddSpecialBuilding(cityType.tradePost, city);
 
         //Wall materials
         List<string> wallMats;
@@ -147,6 +153,12 @@ public class CityGenerator : MonoBehaviour
         }
 
         return toReturn;
+    }
+
+    private void AddSpecialBuilding(string resourcePath, City city)
+    {
+        if(resourcePath != null && !resourcePath.Equals(""))
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + resourcePath));
     }
 
     //Not guaranteed to be unique
@@ -314,6 +326,7 @@ public class CityType
 
     //Buildings
     public string[] buildings;
+    public string prescriptor, depot, researchFacility, tradePost;
 
     //Walls
     public string[] wallSections;

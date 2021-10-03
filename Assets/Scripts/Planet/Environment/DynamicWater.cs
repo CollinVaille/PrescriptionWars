@@ -11,8 +11,6 @@ public class DynamicWater : Water
     
     public void AddWaterGradually(float cubicMetersToAdd)
     {
-        Debug.Log("Adding " + cubicMetersToAdd + " cubic meters of water");
-
         if (currentlyFilling)
             cubicMetersLeftToAdd += cubicMetersToAdd;
         else

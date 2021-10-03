@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class City : MonoBehaviour
 {
+    private enum AreaReservationType { Open, ReservedByRoad, ReservedByBuilding }
+
     //General
     [HideInInspector] public int radius = 100;
     public GameObject mapMarkerPrefab;
 
     //Building construction
-    public GameObject[] buildingPrefabs;
+    public List<GameObject> buildingPrefabs;
     private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
     private int totalSpawnChance = 0;
 
@@ -30,7 +32,7 @@ public class City : MonoBehaviour
 
     //Area system (how city is subdivided and organized)
     private int areaSize = 5;
-    private bool[,] areaTaken;
+    private AreaReservationType[,] areaTaken;
 
     //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     private List<int> horizontalRoads, verticalRoads;
@@ -41,6 +43,17 @@ public class City : MonoBehaviour
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
         mapMarker.InitializeMarker(transform);
+    }
+
+    private void InitializeAreaReservationSystem()
+    {
+        //Initialize 2D array and set all values to OPEN
+        areaTaken = new AreaReservationType[radius * 2 / areaSize, radius * 2 / areaSize];
+        for(int x = 0; x < areaTaken.GetLength(0); x++)
+        {
+            for (int y = 0; y < areaTaken.GetLength(1); y++)
+                areaTaken[x, y] = AreaReservationType.Open;
+        }
     }
 
     public void ReserveTerrainLocation()
@@ -62,26 +75,26 @@ public class City : MonoBehaviour
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
         radius = Random.Range(70, 110);
-        areaTaken = new bool[radius * 2 / areaSize, radius * 2 / areaSize];
+        InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
         //Determine city type, which determines whether we have walls, fence posts...
         //what buildings and building materials are used etc...
         CityGenerator.generator.CustomizeCity(this);
 
-        //Generate roads, buildings, etc...
+        //Generate roads
         GenerateRoads();
 
         for (int x = 0; x < Random.Range(0, radius / 40); x++)
             ReserveSector();
 
+        //Generate buildings
         buildings = new List<Building>();
-
         LoadBuildingPrototypes();
+        GenerateSpecialBuildings();
+        GenerateGenericBuildings();
 
-        for (int x = 0; x < 400; x++)
-            GenerateBuilding();
-
+        //Generate walls
         if (wallSectionPrefab)
             GenerateWalls();
 
@@ -98,14 +111,15 @@ public class City : MonoBehaviour
 
     private void LoadBuildingPrototypes()
     {
-        buildingPrototypes = new Building[buildingPrefabs.Length];
+        buildingPrototypes = new Building[buildingPrefabs.Count];
 
-        for (int x = 0; x < buildingPrefabs.Length; x++)
+        for (int x = 0; x < buildingPrefabs.Count; x++)
         {
             buildingPrototypes[x] = Instantiate(buildingPrefabs[x]).GetComponent<Building>();
             buildingPrototypes[x].gameObject.SetActive(false);
 
-            totalSpawnChance += buildingPrototypes[x].spawnChance;
+            if(!buildingPrototypes[x].CompareTag("Special Building"))
+                totalSpawnChance += buildingPrototypes[x].spawnChance;
         }
     }
 
@@ -147,7 +161,7 @@ public class City : MonoBehaviour
                 for (int z = startCoord; z < startCoord + areasWide; z++)
                 {
                     if (z < areaTaken.GetLength(1))
-                        areaTaken[x, z] = true;
+                        areaTaken[x, z] = AreaReservationType.ReservedByRoad;
                 }
             }
         }
@@ -161,16 +175,42 @@ public class City : MonoBehaviour
                 for (int x = startCoord; x < startCoord + areasWide; x++)
                 {
                     if (x < areaTaken.GetLength(0))
-                        areaTaken[x, z] = true;
+                        areaTaken[x, z] = AreaReservationType.ReservedByRoad;
                 }
             }
         }
     }
 
-    private void GenerateBuilding()
+    private void GenerateSpecialBuildings()
     {
-        //Select which model to make
-        int buildingIndex = SelectBuildingPrototype();
+        for(int x = 0; x < buildingPrototypes.Length; x++)
+        {
+            //For each special building that is supposed to be included in the city
+            if(buildingPrototypes[x].CompareTag("Special Building"))
+            {
+                //Keep trying to generate it until we succeed or hit 50 attempts
+                for(int attempt = 1; attempt <= 50; attempt++)
+                {
+                    if (GenerateBuilding(x, true))
+                        break;
+                }
+            }
+        }
+    }
+
+    private void GenerateGenericBuildings()
+    {
+        for (int x = 0; x < 400; x++)
+            GenerateBuilding();
+    }
+
+    //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected. Specify aggressive placement to ignore roads during placement.
+    //Returns whether building was successfully generated.
+    private bool GenerateBuilding(int buildingIndex = -1, bool aggressiveBuildingPlacement = false)
+    {
+        //If the choice has not been already made, then randomly pick a model
+        if(buildingIndex == -1)
+            buildingIndex = SelectGenericBuildingPrototype();
 
         //Find place that can fit model...
 
@@ -184,7 +224,7 @@ public class City : MonoBehaviour
             newX = Random.Range(0, areaTaken.GetLength(0));
             newZ = Random.Range(0, areaTaken.GetLength(1));
 
-            if (SafeToGenerate(newX, newZ, areaLength))
+            if (SafeToGenerate(newX, newZ, areaLength, aggressiveBuildingPlacement))
             {
                 foundPlace = true;
                 break;
@@ -195,7 +235,7 @@ public class City : MonoBehaviour
         if (foundPlace)
         {
             //Reserve area for building
-            ReserveAreas(newX, newZ, areaLength);
+            ReserveAreas(newX, newZ, areaLength, AreaReservationType.ReservedByBuilding);
 
             //Create it
             Transform newBuilding = InstantiateNewBuilding(buildingIndex);
@@ -223,23 +263,29 @@ public class City : MonoBehaviour
                 floorMaterials[Random.Range(0, floorMaterials.Length)]);
         }
         //Otherwise, we fucking give up
+
+        return foundPlace;
     }
 
-    private int SelectBuildingPrototype()
+    private int SelectGenericBuildingPrototype()
     {
         for (int attempt = 1; attempt <= 50; attempt++)
         {
             for (int x = 0; x < buildingPrototypes.Length; x++)
             {
+                //The end of the prototypes array is where the special buildings are. Since this function is to pick generic models, we stop once we hit the special section
+                if (buildingPrototypes[x].CompareTag("Special Building"))
+                    break;
+
                 if (Random.Range(0, totalSpawnChance) < buildingPrototypes[x].spawnChance)
                     return x;
             }
         }
 
-        return buildingPrototypes.Length - 1;
+        return 0;
     }
 
-    private bool SafeToGenerate(int startX, int startZ, int areasLong)
+    private bool SafeToGenerate(int startX, int startZ, int areasLong, bool overrideRoads)
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
@@ -257,7 +303,7 @@ public class City : MonoBehaviour
                 //Debug.Log("X: " + x + ", Z: " + z + ", Width: " + areaTaken.GetLength(0) + ", Depth: " + areaTaken.GetLength(1));
 
                 //Occupation check
-                if (areaTaken[x, z])
+                if (areaTaken[x, z] == AreaReservationType.ReservedByBuilding || (!overrideRoads && areaTaken[x, z] == AreaReservationType.ReservedByRoad))
                     return false;
             }
         }
@@ -265,12 +311,12 @@ public class City : MonoBehaviour
         return true;
     }
 
-    private void ReserveAreas(int startX, int startZ, int areasLong)
+    private void ReserveAreas(int startX, int startZ, int areasLong, AreaReservationType reservationType)
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
             for (int z = startZ; z < startZ + areasLong; z++)
-                areaTaken[x, z] = true;
+                areaTaken[x, z] = reservationType;
         }
     }
 
@@ -376,17 +422,17 @@ public class City : MonoBehaviour
             horizontalEndArea = verticalRoads[verticalStartRoad + 1];
             verticalEndArea = horizontalRoads[horizontalStartRoad + 1];
         }
-        while (attempt <= 50 && areaTaken[horizontalStartArea, verticalStartArea]);
+        while (attempt <= 50 && areaTaken[horizontalStartArea, verticalStartArea] != AreaReservationType.Open);
 
         //Give up
-        if (areaTaken[horizontalStartArea, verticalStartArea])
+        if (areaTaken[horizontalStartArea, verticalStartArea] != AreaReservationType.Open)
             return Vector3.zero;
 
         //Reserve areas within sector
         for (int x = horizontalStartArea; x < horizontalEndArea; x++)
         {
             for (int z = verticalStartArea; z < verticalEndArea; z++)
-                areaTaken[x, z] = true;
+                areaTaken[x, z] = AreaReservationType.ReservedByBuilding;
         }
 
         //Return center of sector
@@ -655,7 +701,7 @@ public class CityJSON
 
         radius = city.radius;
 
-        buildingPrefabs = new List<string>(city.buildingPrefabs.Length);
+        buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
         foreach (GameObject buildingPrefab in city.buildingPrefabs)
             buildingPrefabs.Add(buildingPrefab.name);
 
@@ -720,9 +766,9 @@ public class CityJSON
 
         city.ReserveTerrainLocation();
 
-        city.buildingPrefabs = new GameObject[buildingPrefabs.Count];
+        city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < buildingPrefabs.Count; x++)
-            city.buildingPrefabs[x] = Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]);
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]));
 
         city.wallMaterials = new Material[wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)

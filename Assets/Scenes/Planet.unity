@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.38149974, g: 0.46815968, b: 0.6131704, a: 1}
+  m_IndirectSpecularColor: {r: 0.60540617, g: 0.5490479, b: 0.6446497, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12764,8 +12764,10 @@ MonoBehaviour:
     - Slum/Swamp Ass Hovel
     - Slum/Dome Hut
     - Slum/Water Tower
-    - Slum/Depot
-    - Slum/Research Facility
+    prescriptor: Slum/Prescriptor
+    depot: Slum/Depot
+    researchFacility: Slum/Research Facility
+    tradePost: 
     wallSections:
     - Slum/Wall Slab
     - Slum/Half Slab Half Bars
