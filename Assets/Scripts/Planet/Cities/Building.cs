@@ -91,10 +91,23 @@ public class Building : MonoBehaviour
         newScale.x = -newScale.x;
         transform.localScale = newScale;
         */
-        
-        //Flip each child individually
-        foreach(Transform child in transform)
+
+        //Math for this is beyond my comprehension. Recursively performs flipping throughout child hierarchy
+        FlipBuildingSection(transform);
+    }
+
+    private void FlipBuildingSection(Transform t)
+    {
+        foreach (Transform child in t)
         {
+            //Flip door
+            Door door = child.GetComponent<Door>();
+            if (door && door.doorMotion == Door.DoorMotion.SlideX)
+            {
+                door.closePosition = -door.closePosition;
+                door.openPosition = -door.openPosition;
+            }
+
             //Flip position
             Vector3 childPosition = child.localPosition;
             childPosition.x = -childPosition.x;
@@ -103,15 +116,12 @@ public class Building : MonoBehaviour
             //Flip rotation
             Vector3 childRotation = child.localEulerAngles;
             childRotation.y = -childRotation.y;
+            childRotation.z = -childRotation.z;
             child.localEulerAngles = childRotation;
 
-            //Flip door
-            Door door = child.GetComponent<Door>();
-            if (door && door.doorMotion == Door.DoorMotion.SlideX)
-            {
-                door.closePosition = -door.closePosition;
-                door.openPosition = -door.openPosition;
-            }
+            //Recurse to child
+            if (child.childCount > 0)
+                FlipBuildingSection(child);
         }
     }
 
