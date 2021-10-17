@@ -259,7 +259,7 @@ public class PlanetGenerator : MonoBehaviour
             GenerateSun(planet, Random.Range(1.0f, 1.05f));
 
             //Reverb
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Mountains;
+            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Arena;
 
             //Dirty brown water
             planet.SetUnderwaterColor(new Color(70 / 255.0f, 55 / 255.0f, 55 / 255.0f, 0.5f));
@@ -272,22 +272,31 @@ public class PlanetGenerator : MonoBehaviour
             //Terrain heightmap
             terrainCustomization.lowBoundaries = false;
             terrainCustomization.horizonHeightIsCeiling = true;
-            terrainCustomization.noiseGroundScale = Random.Range(10, 20);
+            terrainCustomization.noiseGroundScale = Random.Range(7, 17);
             terrainCustomization.amplitudeGroundScale = 10;
             terrainCustomization.amplitudePower = 3;
-            terrainCustomization.noiseStrength = Random.Range(1.0f, 2.0f);
+            terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
 
             //Footsteps
             planet.LoadGroundFootsteps("Rock");
             planet.seabedWalking = planet.groundWalking;
             planet.seabedRunning = planet.groundRunning;
 
+            //Ominous, luminating, arid fog
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Exponential;
+            RenderSettings.fogDensity = Random.Range(0.001f, 0.002f);
+            RenderSettings.fogColor = SunType.GetColorRGB(91, 47, 33);
+
             //Day skybox & ambience
             planet.LoadSkybox(true, "Brown Cloud");
             planet.dayAmbience = planet.LoadAmbience("Night Of The Cacti");
 
             //Night skybox & ambience
-            planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy", "Galaxy Field 1", "Galaxy Field 2");
+            if(Random.Range(0, 2) == 0)
+                planet.LoadSkybox(false, "Deep Dusk");
+            else
+                planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy", "Galaxy Field 1", "Galaxy Field 2");
             planet.nightAmbience = planet.LoadAmbience("Night Of The Cacti");
         }
         else if (planet.biome == Planet.Biome.Swamp) //Swamp
