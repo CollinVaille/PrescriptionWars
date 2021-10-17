@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Planet : MonoBehaviour
 {
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
-    public enum Biome { Unknown, Frozen, Temperate, Desert, Swamp, Hell, Spirit }
+    public enum Biome { Unknown, Frozen, Temperate, SandyDesert, RockyDesert, Swamp, Hell, Spirit }
     public enum BiomeSubType { Default, Forest }
     public enum OceanType { Normal, Frozen, Lava, Glowing }
 

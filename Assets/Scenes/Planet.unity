@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.60540617, g: 0.5490479, b: 0.6446497, a: 1}
+  m_IndirectSpecularColor: {r: 0.6376656, g: 0.5408322, b: 0.41427392, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8084,7 +8084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 3
+  biome: 4
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -12743,15 +12743,20 @@ MonoBehaviour:
     floorMaterials:
     - Village/Wood Floor
     - Desert/Slate Tile Floor
-  - name: Desert
+  - name: SandyDesert
     wallMaterials:
-    - Desert/Sand Wall
-    - Desert/Sand Wall 2
-    - Desert/Cobblestone Wall
+    - Sandy Desert/Sand Wall
+    - Sandy Desert/Sand Wall 2
+    - Sandy Desert/Cobblestone Wall
     floorMaterials:
-    - Desert/Sand Wall
-    - Desert/Sand Wall 2
-    - Desert/Slate Tile Floor
+    - Sandy Desert/Sand Wall
+    - Sandy Desert/Sand Wall 2
+    - Sandy Desert/Slate Tile Floor
+  - name: RockyDesert
+    wallMaterials:
+    - Shiny Metal/Metal Wall Panel
+    floorMaterials:
+    - Shiny Metal/Fabric SciFi 7
   cityTypes:
   - name: Slum
     spawnChance: 1

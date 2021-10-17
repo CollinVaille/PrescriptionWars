@@ -49,7 +49,7 @@ public class PlanetGenerator : MonoBehaviour
         {
             case 0: planet.biome = Planet.Biome.Frozen; break;
             case 1: planet.biome = Planet.Biome.Temperate; break;
-            case 2: planet.biome = Planet.Biome.Desert; break;
+            case 2: planet.biome = Planet.Biome.SandyDesert; break;
             case 3: planet.biome = Planet.Biome.Swamp; break;
             case 4: planet.biome = Planet.Biome.Hell; break;
             default: planet.biome = Planet.Biome.Spirit; break;
@@ -196,7 +196,7 @@ public class PlanetGenerator : MonoBehaviour
 
             FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
-        else if (planet.biome == Planet.Biome.Desert) //Desert
+        else if (planet.biome == Planet.Biome.SandyDesert) //Sandy desert
         {
             //Sun
             if (Random.Range(0, 3) == 0)
@@ -209,26 +209,86 @@ public class PlanetGenerator : MonoBehaviour
             terrainCustomization.cliffTexture = planet.LoadTexture("Rocks Arid 0038", "Age of the Canyon");
             terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
 
-            //Terrain heightmap
-            terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
-            terrainCustomization.noiseGroundScale = Random.Range(30, 50);
-            terrainCustomization.amplitudeGroundScale = Random.Range(7, 10);
-            terrainCustomization.amplitudePower = Random.Range(3, 5);
-            terrainCustomization.noiseStrength = Random.Range(0.4f, 0.75f);
+            //Terrain heightmap & Water
+            if(Random.Range(0, 2) == 0) //Desert canyon
+            {
+                terrainCustomization.lowBoundaries = false;
+                terrainCustomization.horizonHeightIsCeiling = true;
+                terrainCustomization.noiseGroundScale = Random.Range(3, 7);
+                terrainCustomization.amplitudeGroundScale = 10;
+                terrainCustomization.amplitudePower = 1;
+                terrainCustomization.noiseStrength = Random.Range(0.75f, 1.75f);
+            }
+            else if(Random.Range(0, 2) == 0) //Large rolling dunes, i.e. "a sea of sand"
+            {
+                terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
+                terrainCustomization.noiseGroundScale = Random.Range(5, 9);
+                terrainCustomization.amplitudeGroundScale = Random.Range(5, 15);
+                terrainCustomization.amplitudePower = 1;
+                terrainCustomization.noiseStrength = Random.Range(0.2f, 0.35f);
+            }
+            else //Mountainous desert with room for good variety
+            {
+                terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
+                terrainCustomization.noiseGroundScale = Random.Range(30, 50);
+                terrainCustomization.amplitudeGroundScale = Random.Range(7, 10);
+                terrainCustomization.amplitudePower = Random.Range(3, 5);
+                terrainCustomization.noiseStrength = Random.Range(0.4f, 0.75f);
+
+                if (Random.Range(0, 2) == 0)
+                    planet.SetOcean(Random.Range(1, 7), Planet.OceanType.Normal);
+            }
 
             //Reverb
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Mountains;
 
             //Water
             planet.SetUnderwaterColor(new Color(0 / 255.0f, 70 / 255.0f, 115 / 255.0f, 0.5f));
-            if (Random.Range(0, 2) == 0)
-                planet.SetOcean(Random.Range(1, 7), Planet.OceanType.Normal);
 
             //Footsteps
             planet.LoadGroundFootsteps("Sand");
             planet.LoadSeabedFootsteps(planet.hasOcean ? "Swamp" : "Sand"); //Make sand near water sound wet
 
             FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
+        }
+        else if (planet.biome == Planet.Biome.RockyDesert) //Rocky desert
+        {
+            //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            //Sun
+            GenerateSun(planet, Random.Range(1.0f, 1.05f));
+
+            //Reverb
+            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Mountains;
+
+            //Dirty brown water
+            planet.SetUnderwaterColor(new Color(70 / 255.0f, 55 / 255.0f, 55 / 255.0f, 0.5f));
+
+            //Terrain textures
+            terrainCustomization.groundTexture = planet.LoadTexture("Red Desert");
+            terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
+            terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
+
+            //Terrain heightmap
+            terrainCustomization.lowBoundaries = false;
+            terrainCustomization.horizonHeightIsCeiling = true;
+            terrainCustomization.noiseGroundScale = Random.Range(10, 20);
+            terrainCustomization.amplitudeGroundScale = 10;
+            terrainCustomization.amplitudePower = 3;
+            terrainCustomization.noiseStrength = Random.Range(1.0f, 2.0f);
+
+            //Footsteps
+            planet.LoadGroundFootsteps("Rock");
+            planet.seabedWalking = planet.groundWalking;
+            planet.seabedRunning = planet.groundRunning;
+
+            //Day skybox & ambience
+            planet.LoadSkybox(true, "Brown Cloud");
+            planet.dayAmbience = planet.LoadAmbience("Night Of The Cacti");
+
+            //Night skybox & ambience
+            planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy", "Galaxy Field 1", "Galaxy Field 2");
+            planet.nightAmbience = planet.LoadAmbience("Night Of The Cacti");
         }
         else if (planet.biome == Planet.Biome.Swamp) //Swamp
         {
@@ -512,164 +572,5 @@ public class PlanetGenerator : MonoBehaviour
 
         //Sunlight intensity
         planet.sun.GetComponent<Light>().intensity = sunType.intensity;
-    }
-}
-
-class SunType
-{
-    public string flareName;
-    public Color sunlightColor;
-    public float intensity; //Measure of coldness (1 = normal temp, 0.5 = frigid, 1.5 = blazing)
-
-    //Below are a bunch of helper functions...
-
-    //Converts 0-255 (human readable) to 0-1 (unity format)
-    public static Color GetColorRGB(int r, int g, int b)
-    {
-        return new Color(r / 255.0f, g / 255.0f, b / 255.0f);
-    }
-
-    //Converts 0-360/0-100/0-100 (human readable) to 0-1 (unity format)
-    public static Color GetColorHSV(int h, int s, int v)
-    {
-        return Color.HSVToRGB(h / 360.0f, s / 100.0f, v / 100.0f);
-    }
-
-    //NEW SUN SYSTEM------------------------------------------------------------
-
-    public SunType(float intensity) { CreateSunType(intensity, Color.white); }
-
-    public SunType(float intensity, Color sunColor) { CreateSunType(intensity, sunColor); }
-
-    private void CreateSunType(float intensity, Color sunColor)
-    {
-        //Remember intensity
-        this.intensity = intensity;
-
-        //Determine sunlight color
-        sunlightColor = Color.white;
-        if (intensity > 1)
-        {
-            sunlightColor.b = 2 - intensity;
-            sunlightColor.g = 2 - intensity;
-        }
-        else if (intensity < 1)
-        {
-            sunlightColor.r = intensity;
-            sunlightColor.g = Random.Range(intensity, 1.0f);
-        }
-
-        //Warm temperate suns most likely have full green value, meaning yellowish hue
-        if (intensity > 1.0f && intensity < 1.15f && Random.Range(0, 4) != 0)
-            sunlightColor.g = 1;
-
-        //Determine flare name
-        DetermineFlareName();
-    }
-
-    private void DetermineFlareName()
-    {
-        bool makeAnotherSelection = true;
-        for(int attempt = 1; makeAnotherSelection && attempt <= 500; attempt++)
-        {
-            //Assume we don't need to pick another color afterwards until proven otherwise
-            makeAnotherSelection = false;
-
-            int picker = Random.Range(0, 16);
-
-            switch (picker)
-            {
-                case 0:
-                    flareName = "6 Blade Aperture";
-                    break;
-                case 1:
-                    flareName = "35mm Lens";
-                    //sunlightColor = GetColorRGB(203, 237, 255);
-
-                    //Must be some shade of blue
-                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.85f)
-                        makeAnotherSelection = true;
-
-                    break;
-                case 2:
-                    flareName = "85mm Lens";
-                    break;
-                case 3:
-                    flareName = "Cheap Plastic Lens";
-                    //sunlightColor = GetColorRGB(255, 255, 255);
-
-                    //Must be white
-                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
-                        makeAnotherSelection = true;
-
-                    break;
-                case 4:
-                    flareName = "Cold Clear Sun";
-                    //sunlightColor = GetColorRGB(255, 255, 255);
-
-                    //Must be white
-                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
-                        makeAnotherSelection = true;
-
-                    break;
-                case 5:
-                    flareName = "Concert";
-                    break;
-                case 6:
-                    flareName = "Digicam Lens";
-                    //sunlightColor = GetColorRGB(255, 252, 223);
-
-                    //Must be white
-                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
-                        makeAnotherSelection = true;
-
-                    break;
-                case 7:
-                    flareName = "Digital Camera";
-                    break;
-                case 8:
-                    flareName = "Halogen Bulb";
-                    //sunlightColor = GetColorRGB(105, 184, 255);
-
-                    //Must be deep blue
-                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.5f)
-                        makeAnotherSelection = true;
-
-                    break;
-                case 9:
-                    flareName = "Laser";
-                    break;
-                case 10:
-                    flareName = "Subtle1";
-                    break;
-                case 11:
-                    flareName = "Subtle2";
-                    break;
-                case 12:
-                    flareName = "Subtle3";
-                    break;
-                case 13:
-                    flareName = "Subtle4";
-                    break;
-                case 14:
-                    flareName = "Sun (from space)";
-                    //sunlightColor = GetColorRGB(255, 255, 255);
-
-                    //Must be white
-                    if (sunlightColor.r < 0.85f || sunlightColor.b < 0.85f || sunlightColor.g < 0.85f)
-                        makeAnotherSelection = true;
-
-                    break;
-                default:
-                    flareName = "Welding";
-                    //sunlightColor = GetColorRGB(114, 218, 255);
-
-                    //Must be deep blue
-                    if (sunlightColor.b < 1 || sunlightColor.g < sunlightColor.r || intensity > 0.5f)
-                        makeAnotherSelection = true;
-
-                    break;
-            }
-        }
     }
 }

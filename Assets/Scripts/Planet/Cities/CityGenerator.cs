@@ -219,7 +219,7 @@ public class CityGenerator : MonoBehaviour
             {
                 stationSuffixes.Add(" Ruins");
             }
-            else if(biome == Planet.Biome.Desert)
+            else if(biome == Planet.Biome.SandyDesert)
             {
                 stationSuffixes.Add(" Spaceport");
                 stationSuffixes.Add(" Cosmodrome");

@@ -513,6 +513,9 @@ public class City : MonoBehaviour
         cityWallMaterial.mainTexture = referenceMaterial.mainTexture;
         cityWallMaterial.SetTexture("_BumpMap", referenceMaterial.GetTexture("_BumpMap"));
 
+        //Set metallic and smoothness properties of walls using reference material
+        SetMetallicAndSmoothnessOfMaterial(cityWallMaterial, referenceMaterial);
+
         //Scale wall texture
         Vector2 wallTextureScale = referenceMaterial.mainTextureScale;
         wallTextureScale.x *= 3.0f;
@@ -690,6 +693,25 @@ public class City : MonoBehaviour
     }
 
     public static City GetCity(Transform t) { return t.root.GetComponent<City>(); }
+
+    //Set material to updates' metallic and smoothness properties to equal that of reference material
+    private void SetMetallicAndSmoothnessOfMaterial(Material materialToUpdate, Material referenceMaterial)
+    {
+        float metallic = referenceMaterial.GetFloat("_Metallic");
+        float smoothness = referenceMaterial.GetFloat("_Glossiness");
+
+        //if (metallic > 0 || smoothness > 0)
+        //    materialToUpdate.EnableKeyword("_METALLICGLOSSMAP");
+
+        materialToUpdate.SetFloat("_Metallic", metallic);
+        materialToUpdate.SetFloat("_Glossiness", smoothness);
+
+       // if (metallic == 0 && smoothness == 0)
+       //     materialToUpdate.DisableKeyword("_METALLICGLOSSMAP");
+
+        //materialToUpdate.
+        //DynamicGI.UpdateEnvironment();
+    }
 }
 
 [System.Serializable]
