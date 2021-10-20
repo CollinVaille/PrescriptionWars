@@ -108,4 +108,6 @@ public class Lamp : Interactable
             yield return new WaitForSeconds(Random.Range(0.15f, 0.25f));
         }
     }
+
+    protected override string GetInteractionVerb() { return on ? "Flick Off" : "Flick On"; }
 }

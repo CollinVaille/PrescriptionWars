@@ -143,7 +143,7 @@ public class PlanetTerrain : MonoBehaviour
 
         terrainData.SetHeights(0, 0, heights);
 
-        Debug.Log("NGS: " + noiseGroundScale + ", AGS: " + amplitudeGroundScale + ", AP: " + amplitudePower + ", NS: " + noiseStrength);
+        //Debug.Log("NGS: " + noiseGroundScale + ", AGS: " + amplitudeGroundScale + ", AP: " + amplitudePower + ", NS: " + noiseStrength);
     }
 
     //Returns 0 if point not within boundary width

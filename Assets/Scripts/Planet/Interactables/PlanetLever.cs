@@ -38,4 +38,6 @@ public class PlanetLever : Interactable
         localEulerAngles.x = -localEulerAngles.x;
         transform.localEulerAngles = localEulerAngles;
     }
+
+    protected override string GetInteractionVerb() { return up ? "Pull Down" : "Pull Up"; }
 }

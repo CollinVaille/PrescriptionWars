@@ -32,7 +32,7 @@ public class Player : Pill
     private POV pov, povBefore3rdPerson;
     private Dir thirdPersonHorCamPos;
     private Item sidearm = null;
-    private bool soaring = false, continuousPrimaryAction = false, sprinting = false;
+    private bool soaring = false, continuousPrimaryAction = false, sprinting = false, planetHasLowBoundaries;
     private int indoorZoneCount = 0;
 
     //Coroutine keys
@@ -73,6 +73,7 @@ public class Player : Pill
         //Initialize other player settings
         mainAudioSource.spatialBlend = 0;
         feet.clip = walking;
+        planetHasLowBoundaries = Planet.planet.GetComponent<PlanetTerrain>().customization.lowBoundaries;
 
         ApplyDisplaySettings();
 
@@ -231,13 +232,15 @@ public class Player : Pill
     private void ItemInputUpdate ()
     {
         //Manage adding/removing items from hand
-        if (Input.GetButtonDown("Equip")) //Hand/ground swapping
+        if (Input.GetButtonDown("Equip")) //Hand-to-(ground or item rack) swapping
         {
-            if (interactOption && interactOption.GetComponent<Item>()) //Pick up interact option
+            if (interactOption && interactOption.GetComponent<Item>()) //Pick up item from ground
             {
                 Equip(interactOption.GetComponent<Item>());
                 EraseInteractOption(); //"Used up" the option
             }
+            else if(interactOption && interactOption.GetComponent<ItemRackSlot>()) //Pick up item from item rack
+                interactOption.GetComponent<Interactable>().Interact(GetPill());
             else //Just unequip current item
                 Equip(null);
         }
@@ -429,7 +432,8 @@ public class Player : Pill
             {
                 //Found an interactable object so add/display it as the option
                 interactOption = hit.collider.gameObject;
-                interactText.text = interactOption.name;
+                Interactable interactable = interactOption.GetComponent<Interactable>();
+                interactText.text = interactable ? interactable.GetInteractionDescription() : "GRAB " + interactOption.name;
             }
             else if(interactOption) //Didn't find anything so erase any previous interact option
             {
@@ -942,6 +946,21 @@ public class Player : Pill
                                 currentFootIndex = SetFootstepsMaterial(-2);
                         }
                     }
+                    else if(WalkingOnHorizon(raycastHit.transform)) //Walking on horizon
+                    {
+                        if(planetHasLowBoundaries)
+                        {
+                            //Seabed
+                            if (currentFootIndex != -2)
+                                currentFootIndex = SetFootstepsMaterial(-2);
+                        }
+                        else
+                        {
+                            //Ground
+                            if (currentFootIndex != -1)
+                                currentFootIndex = SetFootstepsMaterial(-1);
+                        }
+                    }
                     else //Walking on something else
                     {
                         foundMaterial = false;
@@ -1290,6 +1309,16 @@ public class Player : Pill
             moveSpeed *= 0.75f;
             feet.clip = walking;
         }
+    }
+
+    private bool WalkingOnHorizon (Transform ground)
+    {
+        if (!ground)
+            return false;
+        else if (ground.name.Equals("Planet Horizon"))
+            return true;
+        else
+            return WalkingOnHorizon(ground.parent);
     }
 
     public void PlayHitMarkerSound(bool hitArmor)

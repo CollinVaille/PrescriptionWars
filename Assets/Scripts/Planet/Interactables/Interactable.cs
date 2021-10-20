@@ -9,4 +9,11 @@ public class Interactable : MonoBehaviour
     public virtual void Interact (Pill interacting, bool turnOn) { }
 
     public virtual void ReleaseControl (bool voluntary) { }
+
+    public string GetInteractionDescription()
+    {
+        return GetInteractionVerb().ToUpper() + " " + gameObject.name;
+    }
+
+    protected virtual string GetInteractionVerb() { return "Interact"; }
 }

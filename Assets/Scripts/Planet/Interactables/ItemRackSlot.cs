@@ -81,4 +81,6 @@ public class ItemRackSlot : Interactable
         //Then perform rest of normal rack placement work...
         StowItem(toStow);
     }
+
+    protected override string GetInteractionVerb() { return stowedItem ? "Retrieve" : "Stow"; }
 }

@@ -74,8 +74,7 @@ public class UselessMachine : Interactable
 
         while(latchSet)
         {
-            bool attackThisTime = DetermineResponse(
-            out float openMult, out float resetDelay, out float closeDelay, out float closeMult);
+            bool attackThisTime = DetermineResponse(out float openMult, out float resetDelay, out float closeDelay, out float closeMult);
 
             sfxSource.pitch = openMult;
             sfxSource.PlayOneShot(openLid);
@@ -192,6 +191,10 @@ public class UselessMachine : Interactable
 
     //Returns whether to reset latch during response
     //Delays are in seconds, 1.0f is normal speed for multipliers, 2.0f is twice as fast, etc.
+    //Reset delay = How long to wait to push back the latch after peeking head up
+    //Close delay = How long to wait to retreat back into box after pushing back latch
+    //Open mult = How quickly head peeks out and latch is pushed back
+    //Close mult = How quickly heads retreats back in box and arm is retracted after pushing back latch
     private bool DetermineResponse(out float openMult, out float resetDelay, out float closeDelay, out float closeMult)
     {
         if(aggrevation < Random.Range(7.5f, 10.0f)) //Normal
@@ -219,4 +222,6 @@ public class UselessMachine : Interactable
             return Random.Range(0, 2) == 0;
         }
     }
+
+    protected override string GetInteractionVerb() { return "Activate"; }
 }

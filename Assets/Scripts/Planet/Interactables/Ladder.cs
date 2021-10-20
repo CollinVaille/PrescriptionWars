@@ -140,4 +140,6 @@ public class Ladder : Interactable
         //Rung sounds alternate
         lastRungWas1 = !lastRungWas1;
     }
+
+    protected override string GetInteractionVerb() { return occupant == Player.player ? "Let Go" : "Climb"; }
 }

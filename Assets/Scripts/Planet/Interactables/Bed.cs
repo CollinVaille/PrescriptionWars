@@ -51,4 +51,6 @@ public class Bed : Interactable
         if (pill && !collision.gameObject.GetComponent<Player>())
             GoToBed(pill);
     }
+
+    protected override string GetInteractionVerb() { return "Sleep"; }
 }

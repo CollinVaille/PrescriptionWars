@@ -278,7 +278,7 @@ public class PlanetGenerator : MonoBehaviour
             terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
 
             //Footsteps
-            planet.LoadGroundFootsteps("Rock");
+            planet.LoadGroundFootsteps("Martian Dirt");
             planet.seabedWalking = planet.groundWalking;
             planet.seabedRunning = planet.groundRunning;
 

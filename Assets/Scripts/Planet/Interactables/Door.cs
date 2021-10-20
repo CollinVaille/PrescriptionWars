@@ -278,4 +278,12 @@ public class Door : Interactable
             }
         }
     }
+
+    protected override string GetInteractionVerb()
+    {
+        if (transitioning)
+            return "";
+        else
+            return open ? "Close" : "Open";
+    }
 }
