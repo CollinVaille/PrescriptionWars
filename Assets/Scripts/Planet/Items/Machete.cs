@@ -4,9 +4,17 @@ using UnityEngine;
 
 public class Machete : Item
 {
-    public AudioClip boomerang, doink;
+    public AudioClip boomerang, doink, heavySwoosh;
     private bool inFlight = false;
     private Collider collidedWith = null;
+
+    public override void PrimaryAction()
+    {
+        if (!holder)
+            return;
+
+        StartCoroutine(ExpensiveStab(0.6f, new Vector3(0, 0, Random.Range(30, 90)), heavySwoosh));
+    }
 
     //Throw bommerang
     public override void SecondaryAction()
@@ -184,6 +192,82 @@ public class Machete : Item
     }
 
     private bool CloseToThrower(Transform thrower) { return Vector3.Distance(transform.position, thrower.position) < 3; }
+
+    public override void OnMeleeKill(Pill pill)
+    {
+        if (!executing && stabbing && holder && holder.StabbingWithIntentToExecute(0))
+            StartCoroutine(PerformStabbingExecution(pill, DavyJonesLocker.GetResident(pill)));
+    }
+
+    private IEnumerator PerformStabbingExecution(Pill victimPill, Corpse victimCorpse)
+    {
+        //Set status as executing
+        executing = true;
+
+        //Prepare corpse for execution
+        victimCorpse.beingExecuted = true;
+        Destroy(victimCorpse.GetComponent<Rigidbody>());
+        victimCorpse.transform.parent = transform;
+
+        //Modify local position of corpse
+        Vector3 localCorpsePosition = victimCorpse.transform.localPosition;
+        localCorpsePosition.x = 0;
+        localCorpsePosition.z = Mathf.Min(1.0f, localCorpsePosition.z);
+        victimCorpse.transform.localPosition = localCorpsePosition;
+
+        //Add a bit of drama
+        AudioSource screamer = victimCorpse.gameObject.AddComponent<AudioSource>();
+        screamer.spatialBlend = 1.0f;
+        screamer.volume = 1.0f;
+        screamer.clip = victimPill.voice.GetOof();
+        screamer.Play();
+        God.god.ManageAudioSource(screamer);
+
+        //Execution loop
+        float executionDuration = 0.0f;
+        while(holder && holder.StabbingWithIntentToExecute(executionDuration) && victimCorpse)
+        {
+            //Make sure there's always noise
+            if(!screamer.isPlaying && Time.timeScale > 0)
+            {
+                screamer.Stop();
+                screamer.clip = victimPill.voice.GetOof();
+                screamer.Play();
+            }
+
+            //Slide corpse down blade the higher it is hoisted in the air
+            float slideVector = (holder.transform.position.y - victimCorpse.transform.position.y) * Time.deltaTime;
+            localCorpsePosition.z = Mathf.Clamp(localCorpsePosition.z + slideVector, 0.5f, 1.0f);
+            victimCorpse.transform.localPosition = localCorpsePosition;
+
+            //Wait a frame
+            yield return null;
+            executionDuration += Time.deltaTime;
+        }
+
+        //Restore corpse to what it was like before
+        victimCorpse.transform.parent = null;
+        Rigidbody rBody = victimCorpse.gameObject.AddComponent<Rigidbody>();
+        victimCorpse.beingExecuted = false;
+
+        //Final farewell
+        if(executionDuration > 0.5f)
+        {
+            rBody.AddExplosionForce(GetExecutionReleaseForce(executionDuration), transform.position, 10.0f);
+
+            screamer.Stop();
+            screamer.clip = victimPill.voice.GetDramaticDeath();
+            screamer.Play();
+        }
+
+        //Remove execution status
+        executing = false;
+    }
+
+    private float GetExecutionReleaseForce(float executionDuration)
+    {
+        return Mathf.Max(200.0f, executionDuration * 75.0f) * Random.Range(1.0f, 1.35f);
+    }
 
     public override Vector3 GetPlaceInItemRack() { return new Vector3(0.025f, 0, 0); }
     public override Vector3 GetRotationInItemRack() { return new Vector3(-103, -90, 180); }

@@ -45,7 +45,7 @@ public class Voice
     private string voiceName, voicePath;
     private AudioClip[] oofs, copies, eagerBanter, idleBanter; //Common/generic dialogue lists
     public AudioClip holdPosition, follow, formSquare, formLine, roam; //Commands
-    private AudioClip[] thankYous; //Rare dialogue lists
+    private AudioClip[] thankYous, dramaticDeaths; //Rare dialogue lists
     private AudioClip imGood; //Rare dialogue
 
     public Voice(string voiceName)
@@ -83,6 +83,14 @@ public class Voice
             thankYous = Resources.LoadAll<AudioClip>(voicePath + "/Thank Yous");
 
         return thankYous[Random.Range(0, thankYous.Length)];
+    }
+
+    public AudioClip GetDramaticDeath()
+    {
+        if (dramaticDeaths == null)
+            dramaticDeaths = Resources.LoadAll<AudioClip>(voicePath + "/Dramatic Deaths");
+
+        return dramaticDeaths[Random.Range(0, dramaticDeaths.Length)];
     }
 
     public AudioClip GetImGood()

@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class Corpse : MonoBehaviour
 {
-    void Start ()
+    private Pill soulOfCorpse;
+    public bool beingExecuted = false;
+
+    public void BootUpCorpse (Pill soulOfCorpse)
     {
+        this.soulOfCorpse = soulOfCorpse;
+        DavyJonesLocker.CheckIn(soulOfCorpse, this);
+
         StartCoroutine(FindNiceRestingPlace());
     }
 
     private IEnumerator FindNiceRestingPlace ()
     {
-        //Initial roll time
-        yield return new WaitForSeconds(Random.Range(5.0f, 7.0f));
+        //Initial roll time (stalled in the event of an execution)
+        int gradePeriodTicks = Random.Range(10, 14);
+        for(int x = 0; x < gradePeriodTicks; x++)
+        {
+            yield return new WaitForSeconds(0.5f);
 
-        //Wait until we have a good resting place
-        while (!IsGrounded())
+            if(beingExecuted)
+                yield return new WaitWhile(() => beingExecuted);
+        }
+
+        //Wait until we have a good resting place (executions can also stall this phase)
+        while (!IsGrounded() || beingExecuted)
             yield return new WaitForSeconds(0.5f);
 
         //Now, stick pill in final resting place (no more rolling around)...
@@ -23,9 +36,16 @@ public class Corpse : MonoBehaviour
         //Push down into ground
         transform.Translate(Vector3.down * 0.6f, Space.World);
 
-        //Get rid of rolling stuff
+        //Finalize
+        DavyJonesLocker.CheckOut(soulOfCorpse, this);
         Destroy(GetComponent<Rigidbody>());
         Destroy(GetComponent<Collider>());
+        AudioSource sfxSource = GetComponent<AudioSource>();
+        if (sfxSource)
+        {
+            sfxSource.Stop();
+            God.god.UnmanageAudioSource(sfxSource);
+        }
         Destroy(this);
     }
 

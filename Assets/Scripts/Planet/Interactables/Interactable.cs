@@ -12,7 +12,7 @@ public class Interactable : MonoBehaviour
 
     public string GetInteractionDescription()
     {
-        return GetInteractionVerb().ToUpper() + " " + gameObject.name;
+        return GetInteractionVerb() + " " + gameObject.name;
     }
 
     protected virtual string GetInteractionVerb() { return "Interact"; }

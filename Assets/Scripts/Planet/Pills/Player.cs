@@ -258,7 +258,7 @@ public class Player : Pill
 
         //Item actions
         if (Input.GetButtonDown("Stab"))
-            StartCoroutine(holding.ExpensiveStab());
+            StartCoroutine(holding.ExpensiveStab(0.35f, Vector3.zero, holding.swoosh));
         else if (Input.GetButtonDown("Tertiary Action"))
             holding.TertiaryAction();
         else if (Input.GetButtonDown("Secondary Action"))
@@ -433,7 +433,7 @@ public class Player : Pill
                 //Found an interactable object so add/display it as the option
                 interactOption = hit.collider.gameObject;
                 Interactable interactable = interactOption.GetComponent<Interactable>();
-                interactText.text = interactable ? interactable.GetInteractionDescription() : "GRAB " + interactOption.name;
+                interactText.text = interactable ? interactable.GetInteractionDescription() : "Grab " + interactOption.name;
             }
             else if(interactOption) //Didn't find anything so erase any previous interact option
             {
@@ -1321,7 +1321,9 @@ public class Player : Pill
             return WalkingOnHorizon(ground.parent);
     }
 
-    public void PlayHitMarkerSound(bool hitArmor)
+    public override bool StabbingWithIntentToExecute (float durationIntoExecution) { return durationIntoExecution < 5 && Input.GetButton("Primary Action"); }
+
+    public void PlayHitMarkerSound (bool hitArmor)
     {
         if (hitArmor)
             GetAudioSource().PlayOneShot(hitArmorMarker);

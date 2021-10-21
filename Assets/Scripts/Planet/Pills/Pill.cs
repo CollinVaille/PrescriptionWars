@@ -103,6 +103,11 @@ public class Pill : MonoBehaviour, Damageable
 
     protected void OnCollisionEnter (Collision collision)
     {
+        //This check is needed... pills often stab each other to death at the same time and when that happens this function can be called on a disabled gameobject.
+        //If allowed to continue when disabled, you get warnings about playing audio from disabled audio source.
+        if (!gameObject.activeInHierarchy)
+            return;
+
         int layerHit = collision.GetContact(0).thisCollider.gameObject.layer;
 
         //Pointy (layer 8) and blunt (layer 9) objects can damage pills upon contact
@@ -123,9 +128,11 @@ public class Pill : MonoBehaviour, Damageable
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
 
-                        //Play stab sound effect (often times pills stab each other to death at same time)
-                        if (gameObject.activeInHierarchy) //... so this surpresses the warning for playing from disabled source
-                            mainAudioSource.PlayOneShot(holding.stab);
+                        if (hitPill.IsDead())
+                            holding.OnMeleeKill(hitPill);
+
+
+                        mainAudioSource.PlayOneShot(holding.stab);
                     }
                 }
                 else if (layerHit == 8) //Pointy objects (layer 8) can scrape when not stabbing (but not blunt objects)
@@ -153,6 +160,8 @@ public class Pill : MonoBehaviour, Damageable
             }
         }
     }
+
+    public virtual bool StabbingWithIntentToExecute(float durationIntoExecution) { return false; }
 
     public bool IsDead () { return dead; }
 

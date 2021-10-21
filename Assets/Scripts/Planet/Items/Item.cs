@@ -10,7 +10,7 @@ public class Item : MonoBehaviour
 
     //Status variables
     protected Pill holder = null;
-    protected bool stabbing = false, holderIsPlayer = false;
+    protected bool stabbing = false, holderIsPlayer = false, executing = false;
 
     public IEnumerator CheapStab ()
     {
@@ -38,28 +38,33 @@ public class Item : MonoBehaviour
         }
     }
 
-    public IEnumerator ExpensiveStab ()
+    public IEnumerator ExpensiveStab (float reach, Vector3 rotation, AudioClip swingSound)
     {
         if (stabbing || !holder || holder.performingAction)
             yield break;
 
-        holder.GetAudioSource().PlayOneShot(swoosh);
+        holder.GetAudioSource().PlayOneShot(swingSound);
 
         stabbing = true;
         holder.performingAction = true;
 
         Vector3 itemPosition = transform.localPosition;
         float retractedZ = itemPosition.z;
-        float protractedZ = retractedZ + 0.35f;
+        float protractedZ = retractedZ + reach;
+
+        Vector3 itemRotation = transform.localEulerAngles;
 
         //Protract
         float duration = 0.1f;
-        for (float t = 0; t < duration && holder; t += Time.deltaTime)
+        for (float t = 0; t < duration && holder && !executing; t += Time.deltaTime)
         {
             //Slide item forward
             itemPosition = transform.localPosition;
             itemPosition.z = Mathf.Lerp(retractedZ, protractedZ, t / duration);
             transform.localPosition = itemPosition;
+
+            //Rotate item
+            transform.localEulerAngles = Vector3.Lerp(Vector3.zero, rotation, t / duration);
 
             //Wait a frame
             yield return null;
@@ -71,6 +76,13 @@ public class Item : MonoBehaviour
             itemPosition = transform.localPosition;
             itemPosition.z = protractedZ;
             transform.localPosition = itemPosition;
+
+            //Finalize rotation
+            transform.localEulerAngles = rotation;
+
+            //Keep item protracted while executing
+            if (executing)
+                yield return new WaitWhile(() => executing && holder);
         }
 
         //Retract
@@ -82,16 +94,30 @@ public class Item : MonoBehaviour
             itemPosition.z = Mathf.Lerp(protractedZ, retractedZ, t / duration);
             transform.localPosition = itemPosition;
 
+            //Rotate item
+            transform.localEulerAngles = Vector3.Lerp(rotation, Vector3.zero, t / duration);
+
             //Wait a frame
             yield return null;
+
+            //Keep item stable while executing
+            if (executing)
+                yield return new WaitWhile(() => executing && holder);
         }
 
-        if(holder)
+        //Keep item stable while executing
+        if (executing)
+            yield return new WaitWhile(() => executing && holder);
+
+        if (holder)
         {
             //Finalize retraction
             itemPosition = transform.localPosition;
             itemPosition.z = retractedZ;
             transform.localPosition = itemPosition;
+
+            //Finalize rotation
+            transform.localEulerAngles = Vector3.zero;
 
             stabbing = false;
             holder.performingAction = false;
@@ -107,7 +133,7 @@ public class Item : MonoBehaviour
             return;
 
         //Default primary action is stab
-        StartCoroutine(ExpensiveStab());
+        StartCoroutine(ExpensiveStab(0.35f, Vector3.zero, swoosh));
     }
 
     public virtual void SecondaryAction () { /* There is no default secondary action */ }
@@ -143,6 +169,8 @@ public class Item : MonoBehaviour
     {
         return name;
     }
+
+    public virtual void OnMeleeKill(Pill pill) { }
 
     public bool BeingHeld () { return holder; }
 

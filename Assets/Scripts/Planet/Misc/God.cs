@@ -55,6 +55,7 @@ public class God : MonoBehaviour
         Voice.InitialSetUp();
         Projectile.SetUpPooling();
         Explosion.SetUpPooling();
+        DavyJonesLocker.PrepareTheLockerForSouls();
     }
 
     //Delayed Initialization

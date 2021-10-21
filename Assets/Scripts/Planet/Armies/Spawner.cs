@@ -260,5 +260,8 @@ public class Spawner : MonoBehaviour
         //Make corpse dummy look like us!
         newCorpse.GetComponent<MeshRenderer>().sharedMaterial = fromPill.GetComponent<MeshRenderer>().sharedMaterial;
         newCorpse.GetComponent<Rigidbody>().velocity = fromPill.GetComponent<Rigidbody>().velocity;
+
+        //Start logic for handling corpse
+        newCorpse.GetComponent<Corpse>().BootUpCorpse(fromPill.GetComponent<Pill>());
     }
 }
