@@ -1321,7 +1321,7 @@ public class Player : Pill
             return WalkingOnHorizon(ground.parent);
     }
 
-    public override bool StabbingWithIntentToExecute (float durationIntoExecution) { return durationIntoExecution < 5 && Input.GetButton("Primary Action"); }
+    public override bool StabbingWithIntentToExecute (float durationIntoExecution) { return durationIntoExecution < 5 && (Input.GetButton("Primary Action") || PlanetPauseMenu.pauseMenu.IsPaused()); }
 
     public void PlayHitMarkerSound (bool hitArmor)
     {

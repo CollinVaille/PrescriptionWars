@@ -931,4 +931,6 @@ public class PlanetPauseMenu : MonoBehaviour
         //Set currently selected option in each dropdown to reflect chosen command
         Player.player.RestoreOrderButtons(dropdowns[0], dropdowns[1], dropdowns[2]);
     }
+
+    public bool IsPaused() { return paused; }
 }

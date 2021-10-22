@@ -265,7 +265,7 @@ public class PlanetGenerator : MonoBehaviour
             planet.SetUnderwaterColor(new Color(70 / 255.0f, 55 / 255.0f, 55 / 255.0f, 0.5f));
 
             //Terrain textures
-            terrainCustomization.groundTexture = planet.LoadTexture("Red Desert");
+            terrainCustomization.groundTexture = planet.LoadTexture("Red Desert", "Mars");
             terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
             terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
 

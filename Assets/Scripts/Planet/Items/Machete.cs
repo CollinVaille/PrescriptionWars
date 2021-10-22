@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Machete : Item
 {
-    public AudioClip boomerang, doink, heavySwoosh;
+    public AudioClip boomerang, doink, heavySwoosh, finishingMove;
     private bool inFlight = false;
     private Collider collidedWith = null;
 
@@ -210,10 +210,11 @@ public class Machete : Item
         victimCorpse.transform.parent = transform;
 
         //Modify local position of corpse
-        Vector3 localCorpsePosition = victimCorpse.transform.localPosition;
-        localCorpsePosition.x = 0;
-        localCorpsePosition.z = Mathf.Min(1.0f, localCorpsePosition.z);
-        victimCorpse.transform.localPosition = localCorpsePosition;
+        Vector3 originalCorpsePosition = victimCorpse.transform.localPosition;
+        Vector3 corpsePosition = originalCorpsePosition;
+        corpsePosition.x = 0;
+        corpsePosition.z = Mathf.Min(1.0f, corpsePosition.z);
+        victimCorpse.transform.localPosition = corpsePosition;
 
         //Add a bit of drama
         AudioSource screamer = victimCorpse.gameObject.AddComponent<AudioSource>();
@@ -225,20 +226,34 @@ public class Machete : Item
 
         //Execution loop
         float executionDuration = 0.0f;
+        float timeSinceLastYelp = 0.0f;
         while(holder && holder.StabbingWithIntentToExecute(executionDuration) && victimCorpse)
         {
-            //Make sure there's always noise
-            if(!screamer.isPlaying && Time.timeScale > 0)
+            if(!PlanetPauseMenu.pauseMenu.IsPaused())
             {
-                screamer.Stop();
-                screamer.clip = victimPill.voice.GetOof();
-                screamer.Play();
-            }
+                //Make sure there's always noise
+                if (timeSinceLastYelp > 1.0f)
+                {
+                    timeSinceLastYelp = 0;
 
-            //Slide corpse down blade the higher it is hoisted in the air
-            float slideVector = (holder.transform.position.y - victimCorpse.transform.position.y) * Time.deltaTime;
-            localCorpsePosition.z = Mathf.Clamp(localCorpsePosition.z + slideVector, 0.5f, 1.0f);
-            victimCorpse.transform.localPosition = localCorpsePosition;
+                    screamer.Stop();
+                    screamer.clip = victimPill.voice.GetDramaticDeath();
+                    screamer.Play();
+                }
+                else
+                    timeSinceLastYelp += Time.deltaTime;
+
+                //Slide corpse down blade the higher it is hoisted in the air
+                float slideVector = (holder.transform.position.y - victimCorpse.transform.position.y) * Time.deltaTime * 2;
+                corpsePosition.z = Mathf.Clamp(corpsePosition.z + slideVector, 0.5f, 1.0f);
+
+                //Vibrate corpse on blade for extra drama
+                corpsePosition.y = Mathf.Clamp(originalCorpsePosition.y + Random.Range(-5.0f, 5.0f) * Time.deltaTime, originalCorpsePosition.y - 0.15f, originalCorpsePosition.y + 0.15f);
+                corpsePosition.x = Mathf.Clamp(originalCorpsePosition.x + Random.Range(-5.0f, 5.0f) * Time.deltaTime, originalCorpsePosition.x - 0.15f, originalCorpsePosition.x + 0.15f);
+
+                //Apply translations
+                victimCorpse.transform.localPosition = corpsePosition;
+            }
 
             //Wait a frame
             yield return null;
@@ -250,14 +265,39 @@ public class Machete : Item
         Rigidbody rBody = victimCorpse.gameObject.AddComponent<Rigidbody>();
         victimCorpse.beingExecuted = false;
 
-        //Final farewell
+        //Fling corpse away
         if(executionDuration > 0.5f)
         {
+            //Throw corpse
             rBody.AddExplosionForce(GetExecutionReleaseForce(executionDuration), transform.position, 10.0f);
 
+            //Corpse wailing
             screamer.Stop();
             screamer.clip = victimPill.voice.GetDramaticDeath();
             screamer.Play();
+
+            //Make it look like we twisted the machete to fling the corpse off
+            if (holder)
+            {
+                //Twist sword side ways
+                Vector3 itemRotation = transform.localEulerAngles;
+                float beforeRotation = itemRotation.z;
+                itemRotation.z = 120;
+                transform.localEulerAngles = itemRotation;
+
+                //Sound of final sword twist
+                holder.GetAudioSource().PlayOneShot(finishingMove);
+
+                //Wait a moment for visual to be noticable
+                yield return new WaitForSeconds(0.5f);
+
+                if (holder)
+                {
+                    //Return sword to original position
+                    itemRotation.z = beforeRotation;
+                    transform.localEulerAngles = itemRotation;
+                }
+            }
         }
 
         //Remove execution status
@@ -266,7 +306,7 @@ public class Machete : Item
 
     private float GetExecutionReleaseForce(float executionDuration)
     {
-        return Mathf.Max(200.0f, executionDuration * 75.0f) * Random.Range(1.0f, 1.35f);
+        return Mathf.Max(1.0f, executionDuration) * Random.Range(0.75f, 1.0f) * meleeKnockback;
     }
 
     public override Vector3 GetPlaceInItemRack() { return new Vector3(0.025f, 0, 0); }
