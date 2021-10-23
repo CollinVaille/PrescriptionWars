@@ -119,7 +119,6 @@ public class GalaxySquad: GalaxyGroundUnit
         {
             squadLeader = value;
             string debugString = squadLeader == null ? "Null" : squadLeader.Name;
-            Debug.Log(debugString);
         }
     }
     /// <summary>

@@ -480,9 +480,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 //Assigns the squad to its new army.
                 newArmyAssigned.InsertSquad(newSiblingIndex - parentArmyButton.transform.GetSiblingIndex() - 1, squad);
                 //Updates the information displayed on the new parent army button.
-                parentArmyButton.OnButtonMoveUpdate();
+                parentArmyButton.UpdateInfo();
                 //Updates the information displayed on the original parent army button.
-                originalParentArmyButton.OnButtonMoveUpdate();
+                originalParentArmyButton.UpdateInfo();
                 break;
             case ButtonType.Pill:
                 GalaxyPill pill = gameObject.GetComponent<PillButton>().AssignedPill;
@@ -521,10 +521,10 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 newSquadAssigned.InsertPill(newSiblingIndex - newParentButtons[0].transform.GetSiblingIndex() - 1, pill);
                 //Updates the information displayed on the new parent buttons.
                 foreach (UnitListButton newParentButton in newParentButtons)
-                    newParentButton.OnButtonMoveUpdate();
+                    newParentButton.UpdateInfo();
                 //Updates the information displayed on the original parent buttons.
                 foreach (UnitListButton originalParentButton in originalParentButtons)
-                    originalParentButton.OnButtonMoveUpdate();
+                    originalParentButton.UpdateInfo();
                 break;
 
             default:
@@ -625,18 +625,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     }
 
     /// <summary>
-    /// This method should be called whenever the galaxy ground unit (pill, squad, or army) is set.
-    /// </summary>
-    /// <param name="groundUnit"></param>
-    protected void OnGalaxyGroundUnitValueSet(GalaxyGroundUnit groundUnit)
-    {
-        ExperienceLevelText.text = groundUnit.ExperienceLevel.ToString();
-    }
-
-    /// <summary>
     /// This method should be called in order to update the text on the button to accurately reflect information on the assigned ground unit.
     /// </summary>
-    protected virtual void OnButtonMoveUpdate()
+    public virtual void UpdateInfo()
     {
         //Updates the name text of the button to reflect the name of the ground unit.
         NameText.text = AssignedGroundUnit.Name;

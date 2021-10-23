@@ -34,19 +34,9 @@ public class ArmyButton : ExpandableUnitListButton
 
             //Sets the reference to the assigned army.
             assignedArmy = value;
-            //Sets the color of the army button to match the empire color of the empire that owns the assigned army.
-            Button.image.color = Empire.empires[assignedArmy.OwnerEmpireID].EmpireColor;
-            //Sets the sprite of the left image to the appropriate army icon.
-            LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + assignedArmy.ArmyIcon.spriteName);
-            //Sets the color of the left image to the appropriate color of the army's icon.
-            LeftImage.color = assignedArmy.ArmyIcon.color;
-            //Sets the text of the name text component to be the name of the army.
-            NameText.text = AssignedArmy.Name;
-            //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
-            squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
 
-            //Executes the logic in the base class that is necessary when the ground unit's value is set.
-            OnGalaxyGroundUnitValueSet(assignedArmy);
+            //Updates the button's displayed info.
+            UpdateInfo();
         }
     }
 
@@ -102,10 +92,16 @@ public class ArmyButton : ExpandableUnitListButton
             squadsCountTooltip.Position = new Vector2(squadsCountIconImage.transform.position.x - 35, squadsCountIconImage.transform.position.y + 59);
     }
 
-    protected override void OnButtonMoveUpdate()
+    public override void UpdateInfo()
     {
-        base.OnButtonMoveUpdate();
+        base.UpdateInfo();
 
+        //Sets the color of the army button to match the empire color of the empire that owns the assigned army.
+        Button.image.color = Empire.empires[assignedArmy.OwnerEmpireID].EmpireColor;
+        //Sets the sprite of the left image to the appropriate army icon.
+        LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + assignedArmy.ArmyIcon.spriteName);
+        //Sets the color of the left image to the appropriate color of the army's icon.
+        LeftImage.color = assignedArmy.ArmyIcon.color;
         //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
         squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
     }

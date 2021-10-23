@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ArmyManagementMenu : GalaxyPopupBehaviour
+public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
 {
     [Header("Text Components")]
 
@@ -80,6 +80,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
 
     [SerializeField, Tooltip("The speed at which the pill in the unit inspector pill view rotates when the player is dragged on the unit inspector pill view.")] private float pillViewRotationSpeed = 2.5f;
     [SerializeField, Tooltip("The texture that the cursor will be whenever the mouse is over the unit inspector pill view.")] private Texture2D mouseOverPillViewCursor = null;
+
+    [Header("Galaxy Tooltips")]
+
+    [SerializeField] private Transform tooltipsParent = null;
+    public Transform TooltipsParent { get => tooltipsParent; }
 
     //Non-inspector variables.
 
@@ -486,5 +491,50 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour
             //Logs that the cursor texture has been reset.
             cursorTextureChanged = false;
         }
+    }
+
+    /// <summary>
+    /// This method should be called using an event trigger whenever the rename button in the base section of the unit inspector is clicked.
+    /// </summary>
+    public void OnClickRenameButton()
+    {
+        StartCoroutine(ConfirmRenamingActionCoroutine());
+    }
+
+    /// <summary>
+    /// This method should be called on the click of the rename button in the unit inspector and confirms that the player wants to rename the selected ground unit.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmRenamingActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyInputFieldConfirmationPopup confirmationPopupScript = Instantiate(GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab).GetComponent<GalaxyInputFieldConfirmationPopup>();
+        string topText = "Rename " + UnitListButtonSelected.TypeOfButton.ToString();
+        confirmationPopupScript.CreateConfirmationPopup(topText);
+        confirmationPopupScript.SetPlaceHolderText(UnitListButtonSelected.AssignedGroundUnit.Name);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirmed their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+            RenameSelectedGroundUnit(confirmationPopupScript.GetInputFieldText());
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called in order to rename the selected ground unit and update the selected unit list button's text.
+    /// </summary>
+    /// <param name="newName"></param>
+    private void RenameSelectedGroundUnit(string newName)
+    {
+        //Sets the selected ground unit's name.
+        UnitListButtonSelected.AssignedGroundUnit.Name = newName;
+        //Updates the selected unit list button to accurately reflect the new name of the ground unit.
+        UnitListButtonSelected.UpdateInfo();
+        //Updates the unit inspector to accurately reflect the new name of the ground unit.
+        unitInspectorGroundUnitNameText.text = UnitListButtonSelected.AssignedGroundUnit.Name;
     }
 }
