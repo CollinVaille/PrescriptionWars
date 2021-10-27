@@ -5,11 +5,13 @@ using UnityEngine;
 public class Shatterable : MonoBehaviour, Damageable
 {
     public AudioClip dent, shatter;
-    public GameObject dentPrefab, shardPrefab;
+    public Material dentMaterial;
+    public GameObject shardPrefab;
 
     private AudioSource sfxSource = null;
     private Renderer dentRenderer;
 
+    [Tooltip("Shards created = rows (X) * columns (Y).")] public Vector2Int fractures = Vector2Int.one * 3;
     public float health = 350;
     private float maxHealth;
     private bool pristine = true, shattered = false;
@@ -36,13 +38,22 @@ public class Shatterable : MonoBehaviour, Damageable
 
     private void CreateDent(float damage)
     {
-        pristine = false; 
+        pristine = false;
 
-        Transform newDent = Instantiate(dentPrefab, transform).transform;
+        //Create dent
+        Transform newDent = (new GameObject()).transform;
+        newDent.name = name + " Dent";
+
+        //Set transform of dent
+        newDent.parent = transform;
         newDent.localPosition = Vector3.zero;
         newDent.localEulerAngles = Vector3.zero;
         newDent.localScale = Vector3.one * 1.01f;
-        dentRenderer = newDent.GetComponent<Renderer>();
+
+        //Set mesh and renderer of dent
+        newDent.gameObject.AddComponent<MeshFilter>().sharedMesh = transform.GetComponent<MeshFilter>().sharedMesh;
+        dentRenderer = newDent.gameObject.AddComponent<MeshRenderer>();
+        dentRenderer.material = dentMaterial;
 
         UpdateDent(damage);
     }
@@ -62,7 +73,8 @@ public class Shatterable : MonoBehaviour, Damageable
 
         PlaySound(shatter, 1.0f, true);
 
-        int columns = 3, rows = 3;
+        int rows = Mathf.Max(fractures.x, 1);
+        int columns = Mathf.Max(fractures.y, 1);
 
         Vector3 shardScale = new Vector3(1.0f / columns, 1.0f / rows, 0.25f);
         float startX = -0.5f + shardScale.x / 2.0f;
@@ -74,10 +86,23 @@ public class Shatterable : MonoBehaviour, Damageable
             {
                 Transform shard = Instantiate(shardPrefab, transform).transform;
 
-                shard.localPosition = new Vector3(startX + (x * 1.0f) / columns, startY + (y * 1.0f) / rows, 0.0f);
+                //Calculate position
+                float xPos = startX + (x * 1.0f) / columns;
+                float yPos = startY + (y * 1.0f) / rows;
+
+                //Apply position and rotation
+                if(transform.localScale.x > transform.localScale.z) //Normal case where x-axis is used as width
+                {
+                    shard.localPosition = new Vector3(xPos, yPos, 0.0f);
+                    shard.localEulerAngles = Vector3.zero;
+                }
+                else //Case where z-axis is used as width
+                {
+                    shard.localPosition = new Vector3(0.0f, yPos, xPos);
+                    shard.localEulerAngles = new Vector3(0.0f, 90.0f, 0.0f);
+                }   
 
                 shard.localScale = shardScale;
-                shard.localEulerAngles = Vector3.zero;
                 shard.transform.parent = null;
 
                 shard.GetComponent<Renderer>().sharedMaterial = GetComponent<Renderer>().sharedMaterial;

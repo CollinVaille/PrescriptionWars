@@ -13,7 +13,7 @@ public class Machete : Item
         if (!holder)
             return;
 
-        StartCoroutine(ExpensiveStab(0.6f, new Vector3(0, 0, Random.Range(30, 90)), heavySwoosh));
+        StartCoroutine(ExpensiveStab(0.6f, new Vector3(0, 0, Random.Range(60, 90)), heavySwoosh));
     }
 
     //Throw bommerang
