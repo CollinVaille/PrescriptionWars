@@ -41,7 +41,7 @@ public class ShieldArray : Interactable
         while(shieldsLeftToProcess.Count != 0)
         {
             //Pop next shield off
-            Transform nextShield = shieldsLeftToProcess[Random.Range(0, shieldsLeftToProcess.Count)];
+            Transform nextShield = shieldsLeftToProcess[tryingToTurnThemOn ? 0 : shieldsLeftToProcess.Count - 1];
             shieldsLeftToProcess.Remove(nextShield);
 
             //Process it
