@@ -135,4 +135,8 @@ public class ShieldArray : Interactable
 
         shieldSoundSources.Clear();
     }
+
+    public override bool OverrideTriggerDescription() { return true; }
+
+    protected override string GetInteractionVerb() { return shouldBeOn ? "Deactive" : "Active"; }
 }

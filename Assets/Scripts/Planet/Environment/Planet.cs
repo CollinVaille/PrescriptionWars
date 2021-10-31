@@ -209,12 +209,7 @@ public class Planet : MonoBehaviour
         RenderSettings.skybox.SetTexture("_UpTex2", nightSkybox.GetTexture("_UpTex"));
         RenderSettings.skybox.SetTexture("_DownTex2", nightSkybox.GetTexture("_DownTex"));
 
-        //Update reflective materials to reflect new skybox
-        if (skyboxReflectionProbe)
-            skyboxReflectionProbe.RenderProbe();
-        else
-            Debug.LogWarning("Skybox reflection probe not set. Reflective materials will not look right.");
-        //DynamicGI.UpdateEnvironment();
+        UpdateSkyboxReflectiveProbe();
     }
 
     //CITY MANAGEMENT FUNCTIONS------------------------------------------------------------------------------------
@@ -516,6 +511,17 @@ public class Planet : MonoBehaviour
     private void UpdateAmbientVolume (float internalAmbientVolume)
     {
         ambientAudioSource.volume = internalAmbientVolume * ambientVolume;
+    }
+
+    public void UpdateSkyboxReflectiveProbe()
+    {
+        //Update reflective materials to reflect new skybox
+        if (skyboxReflectionProbe)
+            skyboxReflectionProbe.RenderProbe();
+        else
+            Debug.LogWarning("Skybox reflection probe not set. Reflective materials will not look right.");
+
+        //DynamicGI.UpdateEnvironment();
     }
 
     //SAVE FUNCTIONS-----------------------------------------------------------------------------------------------

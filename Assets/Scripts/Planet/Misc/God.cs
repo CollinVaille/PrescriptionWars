@@ -62,6 +62,7 @@ public class God : MonoBehaviour
     private void Start()
     {
         StartCoroutine(ManageProjectiles());
+        StartCoroutine(PerformUpdatesPeriodically());
     }
 
     //COORDINATION WITH PAUSE MENU--------------------------------------------------------------------
@@ -90,7 +91,7 @@ public class God : MonoBehaviour
         }
 
         //Perform computationally intensive updates on pause to avoid lag spikes in game
-        StartCoroutine(PerformUpdates());
+        StartCoroutine(PerformUpdatesOnPause());
     }
 
     public void OnResume()
@@ -171,7 +172,7 @@ public class God : MonoBehaviour
 
     //Performs computationally intensive operations, might cause lag if not called at right time
     //Updates all nav meshes that need updating
-    private IEnumerator PerformUpdates()
+    private IEnumerator PerformUpdatesOnPause()
     {
         while (citiesToUpdate.Count > 0)
         {
@@ -189,6 +190,18 @@ public class God : MonoBehaviour
                 yield return null;
 
             //Debug.Log(nextCity.name + "'s nav mesh successfully updated.");
+        }
+    }
+
+    private IEnumerator PerformUpdatesPeriodically()
+    {
+        while(true)
+        {
+            if(Planet.planet)
+                Planet.planet.UpdateSkyboxReflectiveProbe();
+
+            //Random significant stutter of time
+            yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
         }
     }
 

@@ -241,7 +241,7 @@ public class Player : Pill
             }
             else if(interactOption && interactOption.GetComponent<ItemRackSlot>()) //Pick up item from item rack
                 interactOption.GetComponent<Interactable>().Interact(GetPill());
-            else //Just unequip current item
+            else if(!controlOverride) //Just unequip current item (but not when we're in some special control state because often times its an acident then)
                 Equip(null);
         }
         else if(Input.GetButtonDown("Interact")) //Button used for general interaction with the world

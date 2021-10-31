@@ -10,7 +10,9 @@ public class Interactable : MonoBehaviour
 
     public virtual void ReleaseControl (bool voluntary) { }
 
-    public string GetInteractionDescription()
+    public virtual bool OverrideTriggerDescription() { return false; }
+
+    public virtual string GetInteractionDescription()
     {
         return GetInteractionVerb() + " " + gameObject.name;
     }

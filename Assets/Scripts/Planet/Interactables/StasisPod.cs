@@ -237,4 +237,8 @@ public class StasisPod : Interactable, Damageable
         God.god.UnmanageAudioSource(sfxSource);
         Destroy(gameObject);
     }
+
+    public override bool OverrideTriggerDescription() { return true; }
+
+    public override string GetInteractionDescription() { return on ? "Reveal Subject" : "Immerse Subject"; }
 }
