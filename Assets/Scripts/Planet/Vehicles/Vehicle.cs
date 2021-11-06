@@ -303,7 +303,10 @@ public class Vehicle : MonoBehaviour
         if (passengerCollider)
         {
             foreach (Collider vehicleCollider in vehicleColliders)
-                Physics.IgnoreCollision(passengerCollider, vehicleCollider, ignoreCollision);
+            {
+                if(vehicleCollider)
+                    Physics.IgnoreCollision(passengerCollider, vehicleCollider, ignoreCollision);
+            }
         }
 
         foreach (Transform child in passengerTransform)
