@@ -54,7 +54,7 @@ public class Vehicle : MonoBehaviour
     public int[] gears;
     public AudioClip gearShift, gearStuck, slowDown;
     private int gearNumber = 0;
-    protected int maxSpeed = 0, currentSpeed = 0;
+    protected int absoluteMaxSpeed = 1, currentMaxSpeed = 0, currentSpeed = 0;
 
     //Traction
     private bool tractionControl = false;
@@ -83,7 +83,8 @@ public class Vehicle : MonoBehaviour
         God.god.ManageAudioSource(engineAudio);
 
         //Initialize gear system
-        maxSpeed = gears[gearNumber];
+        absoluteMaxSpeed = gears[gears.Length - 1];
+        RefreshGear(false, true);
 
         //Initialize vehicle colliders list
         vehicleColliders = new List<Collider>();
@@ -125,21 +126,6 @@ public class Vehicle : MonoBehaviour
 
         //Update engine pitch
         engineAudio.pitch = Mathf.Max(1, currentSpeed / 25.0f);
-
-        //Update movement
-        if (currentSpeed > maxSpeed) //Slow down if going over speed limit
-            rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime,  ForceMode.VelocityChange);
-        else //Under speed limit; normal control
-        {
-            if (gasPedal > 0)
-                rBody.AddForce(transform.forward * Time.fixedDeltaTime * thrustPower);
-            else if (gasPedal < 0)
-                rBody.AddForce(-transform.forward * Time.fixedDeltaTime * brakePower);
-
-            //Stabilize vehicle to zero mph if operator doesn't resist
-            if (currentSpeed < 3)
-                rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime / 5.0f, ForceMode.VelocityChange);
-        }
 
         //Update traction
         UpdateTraction();
@@ -272,18 +258,27 @@ public class Vehicle : MonoBehaviour
             {
                 gearNumber = gears.Length - 1;
                 generalAudio.PlayOneShot(gearStuck);
+                return;
             }
         }
         else if(--gearNumber < 0)
         {
             gearNumber = 0;
             generalAudio.PlayOneShot(gearStuck);
+            return;
         }
 
-        //Update effects
-        maxSpeed = gears[gearNumber];
+        RefreshGear(updateIndicator, false);
+    }
 
-        generalAudio.PlayOneShot(gearShift);
+    protected virtual void RefreshGear(bool updateIndicator, bool onStart)
+    {
+        //Update effects
+        currentMaxSpeed = gears[gearNumber];
+
+        if(!onStart)
+            generalAudio.PlayOneShot(gearShift);
+
         if (updateIndicator)
             UpdateGearIndicator();
     }
@@ -387,5 +382,15 @@ public class Vehicle : MonoBehaviour
         //So if knob on wing is being repaired and wing is parent of knob, wing gets repaired too
         if (part.parent)
             FixPart(part.parent, repairPoints);
+    }
+
+    protected bool MovingBackward() { return transform.InverseTransformDirection(rBody.velocity).z < -0.1f; }
+
+    protected void UpdateExhaust()
+    {
+        bool backwardThrusting = MovingBackward();
+
+        foreach (Engine engine in engines)
+            engine.UpdateExhaustStream(backwardThrusting, currentSpeed, absoluteMaxSpeed);
     }
 }

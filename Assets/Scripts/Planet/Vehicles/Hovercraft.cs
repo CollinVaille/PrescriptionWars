@@ -21,6 +21,9 @@ public class Hovercraft : Vehicle
         if (!on)
             return;
 
+
+        UpdateMovement();
+
         UpdateRotation();
 
         UpdateFans();
@@ -39,6 +42,24 @@ public class Hovercraft : Vehicle
 
         foreach (Engine engine in engines)
             engine.SetPower(turnOn);
+    }
+
+    private void UpdateMovement()
+    {
+        //Update movement
+        if (currentSpeed > currentMaxSpeed) //Slow down if going over speed limit
+            rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        else //Under speed limit; normal control
+        {
+            if (gasPedal > 0)
+                rBody.AddForce(transform.forward * Time.fixedDeltaTime * thrustPower);
+            else if (gasPedal < 0)
+                rBody.AddForce(-transform.forward * Time.fixedDeltaTime * brakePower);
+
+            //Stabilize vehicle to zero mph if operator doesn't resist
+            if (currentSpeed < 3)
+                rBody.AddForce(-rBody.velocity * Time.fixedDeltaTime / 5.0f, ForceMode.VelocityChange);
+        }
     }
 
     private void UpdateRotation()
@@ -94,14 +115,6 @@ public class Hovercraft : Vehicle
         //Apply hover force (but only if needed)
         if(rBody.velocity.y < 10)
             rBody.AddForce(Time.fixedDeltaTime * power * Vector3.up / distanceToGround, ForceMode.Force);
-    }
-
-    private void UpdateExhaust()
-    {
-        bool backwardThrusting = transform.InverseTransformDirection(rBody.velocity).z < -0.1f;
-
-        foreach (Engine engine in engines)
-            engine.UpdateExhaustStream(backwardThrusting, currentSpeed);
     }
 
     //Casts ray downwards, detecting anything that should be "hovered over" (including water!)

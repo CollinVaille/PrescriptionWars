@@ -5,6 +5,7 @@ using UnityEngine;
 public class Engine : VehiclePart
 {
     public ParticleSystem exhaustCloud, exhaustStream;
+    public ExhaustManager exhaustManager;
 
     public Vector3 center = Vector3.zero;
 
@@ -66,25 +67,12 @@ public class Engine : VehiclePart
         }
     }
 
-    public void UpdateExhaustStream(bool backwardThrusting, int currentSpeed)
+    public void UpdateExhaustStream(bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed)
     {
-        if (!working)
+        if (!working || exhaustManager == null)
             return;
 
-        //Change size of exhaust based on speed
-        ParticleSystem.MainModule mainMod = exhaustStream.main;
-        mainMod.startSizeY = 0.5f + currentSpeed / 60.0f;
-
-        //Change speed of exhaust simulation (also based on speed of vehicle)
-        mainMod.simulationSpeed = 1.0f + currentSpeed / 3.0f;
-
-        //Update whether exhaust is pointing forward/backward
-        Vector3 exhaustRotation = exhaustStream.transform.localEulerAngles;
-        if (backwardThrusting)
-            exhaustRotation.y = 0;
-        else
-            exhaustRotation.y = 180;
-        exhaustStream.transform.localEulerAngles = exhaustRotation;
+        exhaustManager.UpdateExhaustStream(exhaustStream, backwardThrusting, currentSpeed, absoluteMaxSpeed);
     }
 
     private void UpdateEngineFire()

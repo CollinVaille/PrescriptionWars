@@ -209,6 +209,7 @@ MonoBehaviour:
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
   exhaustCloud: {fileID: 4264657143761105392}
   exhaustStream: {fileID: 4264657143761089540}
+  exhaustManager: {fileID: 2411122447660944722}
   center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &1943689229526989017
 GameObject:
@@ -5264,6 +5265,7 @@ GameObject:
   - component: {fileID: 3046276885877308491}
   - component: {fileID: 3046276885877308493}
   - component: {fileID: 3046276885877308492}
+  - component: {fileID: 2411122447660944722}
   m_Layer: 0
   m_Name: Economy Commuter Hovercraft
   m_TagString: Untagged
@@ -5534,6 +5536,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2411122447660944722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276885877308488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 492d0e65724d6d8489b0da779a0a16ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startSizeYRange: {x: 0.5, y: 1.5}
+  simSpeedRange: {x: 1, y: 21}
 --- !u!1 &3046276885888151194
 GameObject:
   m_ObjectHideFlags: 0
@@ -21062,6 +21078,7 @@ MonoBehaviour:
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
   exhaustCloud: {fileID: 2524869268136125488}
   exhaustStream: {fileID: 3541150385028437883}
+  exhaustManager: {fileID: 2411122447660944722}
   center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &6951626651757188405
 GameObject:
