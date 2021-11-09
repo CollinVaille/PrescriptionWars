@@ -32,6 +32,14 @@ public class CustomKinematicBody : MonoBehaviour
             globalVelocity += transform.TransformVector(force) / rBody.mass;
     }
 
+    public void AddRotation(Vector3 rotation, Space space)
+    {
+        if (space == Space.World)
+            rBody.MoveRotation(Quaternion.Euler(rotation + transform.eulerAngles));
+        else
+            rBody.MoveRotation(Quaternion.Euler(transform.TransformDirection(rotation + transform.localEulerAngles)));
+    }
+
     private void ApplyAirResistance()
     {
         Vector3 airResistanceVector = rBody.velocity.normalized * airResistance * Time.fixedDeltaTime;

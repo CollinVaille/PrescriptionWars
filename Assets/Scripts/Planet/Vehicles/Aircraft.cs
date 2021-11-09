@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Aircraft : Vehicle
 {
+    //Customization
+    public Transform physicalSteeringWheel;
+
+    //References
     private CustomKinematicBody customBody;
 
     protected override void Start()
@@ -20,12 +24,12 @@ public class Aircraft : Vehicle
         if (!on)
             return;
 
-        UpdateMovement();
-
+        UpdateTranslation();
+        UpdateRotation();
         UpdateExhaust();
     }
 
-    private void UpdateMovement()
+    private void UpdateTranslation()
     {
         //Move position based on speed
         if (gasPedal > 0.01f) //Forward (thrust)
@@ -40,6 +44,12 @@ public class Aircraft : Vehicle
         }
         else if(!MovingBackward() && rBody.velocity.magnitude < currentMaxSpeed) //Cruise control
             customBody.AddForce(Vector3.forward * rBody.mass * Time.fixedDeltaTime * customBody.airResistance, Space.Self);
+    }
+
+    private void UpdateRotation()
+    {
+        physicalSteeringWheel.localEulerAngles = Vector3.up * 90 * steeringWheel;
+        customBody.AddRotation(Vector3.up * turnStrength * steeringWheel * Time.fixedDeltaTime, Space.Self);
     }
 
     protected override void RefreshGear(bool updateIndicator, bool onStart)
