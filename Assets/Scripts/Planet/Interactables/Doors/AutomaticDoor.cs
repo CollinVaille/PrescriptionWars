@@ -36,7 +36,7 @@ public class AutomaticDoor : Door
 
             if (transitioning)
                 continue;
-
+            
             if (open)
             {
                 //If there is no one there, close door
@@ -62,7 +62,7 @@ public class AutomaticDoor : Door
 
     private bool DoorShouldBeOpen(bool updateDetectedArray)
     {
-        if (triggerZones != null)
+        if (triggerZones != null && triggerZones.Length > 0)
         {
             foreach(AutomaticDoorTriggerZone triggerZone in triggerZones)
             {

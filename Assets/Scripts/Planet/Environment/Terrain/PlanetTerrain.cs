@@ -282,12 +282,14 @@ public class PlanetTerrain : MonoBehaviour
 
     private void SetHorizons ()
     {
-        //Set ground texture
-        horizonMaterial.SetTexture("_MainTex", customization.groundTexture);
-
-        //Set height
+        //Set height and texture
         if (customization.lowBoundaries)
+        {
+            horizonMaterial.SetTexture("_MainTex", customization.seabedTexture);
             horizonTransform.Translate(Vector3.down * 128);
+        }
+        else
+            horizonMaterial.SetTexture("_MainTex", customization.groundTexture);
 
         //Move to squeeze around small terrain
         if (customization.smallTerrain)

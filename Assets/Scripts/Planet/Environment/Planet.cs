@@ -8,7 +8,7 @@ public class Planet : MonoBehaviour
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
     public enum Biome { Unknown, Frozen, Temperate, SandyDesert, RockyDesert, Swamp, Hell, Spirit }
     public enum BiomeSubType { Default, Forest }
-    public enum OceanType { Normal, Frozen, Lava, Glowing }
+    public enum OceanType { Normal, Frozen, Lava, Glowing, Murky }
 
     public static Planet planet;
     public static bool newPlanet = true;
@@ -105,6 +105,11 @@ public class Planet : MonoBehaviour
                     cubemapName = "Epic_BlueSunset_EquiRect_flat"; break;
                 case "Epic_GloriousPink":
                     cubemapName = "Epic_GloriousPink_EquiRect"; break;
+                case "AllSky_Space_AnotherPlanet":
+                    cubemapName = "AllSky_Space_AnotherPlanet Equirect"; break;
+                case "Deep Dusk":
+                case "Brown Cloud":
+                    cubemapName = "Deep Dusk Equirect"; break;
                 default:
                     cubemapName = "Sky_Day_BlueSky_Equirect"; break;
             }
@@ -171,6 +176,8 @@ public class Planet : MonoBehaviour
             oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Lava");
         else if (oceanType == OceanType.Glowing)
             oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Glowing Water");
+        else if(oceanType == OceanType.Murky)
+            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Murky Water");
     }
 
     private void FreezeOcean (params string[] textureNames)

@@ -252,53 +252,7 @@ public class PlanetGenerator : MonoBehaviour
             FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
         else if (planet.biome == Planet.Biome.RockyDesert) //Rocky desert
-        {
-            //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-            //Sun
-            GenerateSun(planet, Random.Range(1.0f, 1.05f));
-
-            //Reverb
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Arena;
-
-            //Dirty brown water
-            planet.SetUnderwaterColor(new Color(70 / 255.0f, 55 / 255.0f, 55 / 255.0f, 0.5f));
-
-            //Terrain textures
-            terrainCustomization.groundTexture = planet.LoadTexture("Red Desert", "Mars");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
-            terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
-
-            //Terrain heightmap
-            terrainCustomization.lowBoundaries = false;
-            terrainCustomization.horizonHeightIsCeiling = true;
-            terrainCustomization.noiseGroundScale = Random.Range(7, 17);
-            terrainCustomization.amplitudeGroundScale = 10;
-            terrainCustomization.amplitudePower = 3;
-            terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
-
-            //Footsteps
-            planet.LoadGroundFootsteps("Martian Dirt");
-            planet.seabedWalking = planet.groundWalking;
-            planet.seabedRunning = planet.groundRunning;
-
-            //Ominous, luminating, arid fog
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Exponential;
-            RenderSettings.fogDensity = Random.Range(0.001f, 0.002f);
-            RenderSettings.fogColor = SunType.GetColorRGB(91, 47, 33);
-
-            //Day skybox & ambience
-            planet.LoadSkybox(true, "Brown Cloud");
-            planet.dayAmbience = planet.LoadAmbience("Night Of The Cacti");
-
-            //Night skybox & ambience
-            if(Random.Range(0, 2) == 0)
-                planet.LoadSkybox(false, "Deep Dusk");
-            else
-                planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy", "Galaxy Field 1", "Galaxy Field 2");
-            planet.nightAmbience = planet.LoadAmbience("Night Of The Cacti");
-        }
+            RockyDesertBiome.GenerateBiome(planet, this, out terrainCustomization);
         else if (planet.biome == Planet.Biome.Swamp) //Swamp
         {
             GenerateSun(planet, Random.Range(1.0f, 1.2f), SunType.GetColorRGB(185, 145, 0));
@@ -557,14 +511,14 @@ public class PlanetGenerator : MonoBehaviour
 
     //SUN GENERATION----------------------------------------------------------------------------------------
 
-    private void GenerateSun(Planet planet, float intensity)
+    public void GenerateSun(Planet planet, float intensity)
     {
         SunType sunType = new SunType(intensity);
 
         ApplySunType(planet, sunType);
     }
 
-    private void GenerateSun(Planet planet, float intensity, Color sunColor)
+    public void GenerateSun(Planet planet, float intensity, Color sunColor)
     {
         SunType sunType = new SunType(intensity, sunColor);
 
