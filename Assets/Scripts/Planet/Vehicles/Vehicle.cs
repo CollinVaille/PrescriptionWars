@@ -37,7 +37,7 @@ public class Vehicle : MonoBehaviour
     public AudioClip powerOn, powerOff;
 
     //References
-    protected AudioSource generalAudio, engineAudio;
+    protected AudioSource generalAudio;
     protected Rigidbody rBody;
     private List<Collider> vehicleColliders;
     private List<Transform> parts;
@@ -76,11 +76,7 @@ public class Vehicle : MonoBehaviour
 
         //Get references
         generalAudio = GetComponent<AudioSource>();
-        engineAudio = GetComponents<AudioSource>()[1];
         rBody = GetComponent<Rigidbody>();
-
-        //Make engine noise stop on pause
-        God.god.ManageAudioSource(engineAudio);
 
         //Initialize gear system
         absoluteMaxSpeed = gears[gears.Length - 1];
@@ -124,9 +120,6 @@ public class Vehicle : MonoBehaviour
             generalAudio.PlayOneShot(slowDown, (currentSpeed - newSpeed) / 50.0f);
         currentSpeed = newSpeed;
 
-        //Update engine pitch
-        engineAudio.pitch = Mathf.Max(1, currentSpeed / 25.0f);
-
         //Update traction
         UpdateTraction();
     }
@@ -137,18 +130,10 @@ public class Vehicle : MonoBehaviour
             return;
 
         if(turnOn) //Turn on
-        {
             generalAudio.PlayOneShot(powerOn);
-
-            engineAudio.Play();
-        }
         else //Turn off
         {
             generalAudio.PlayOneShot(powerOff);
-
-            engineAudio.pitch = 1.0f;
-            engineAudio.Pause();
-
             gasPedal = 0.0f;
         }
 
@@ -157,6 +142,10 @@ public class Vehicle : MonoBehaviour
 
     protected void OnCollisionEnter(Collision collision)
     {
+        //Don't apply damage and sound effects to janky collisions with passengers and whatnot
+        if (ShouldIgnoreCollision(collision))
+            return;
+
         //Prevent redundant damage calls on single impact
         if (Time.timeSinceLevelLoad < lastImpactTime + 0.5f)
             return;
@@ -180,6 +169,11 @@ public class Vehicle : MonoBehaviour
 
             DamageParts(collision.GetContact(0).point, impactSpeed / 10.0f, impactSpeed, true);
         }
+    }
+
+    private bool ShouldIgnoreCollision(Collision collision)
+    {
+        return collision.transform.GetComponentInParent<Pill>();
     }
 
     public void DamageParts(Vector3 contactPoint, float radius, float impactSpeed, bool recursive)
@@ -342,12 +336,16 @@ public class Vehicle : MonoBehaviour
         if(onStartUp)
         {
             thrustPerEngine = thrustPower / engines.Count;
-            brakingPerEngine = brakePower / engines.Count;
+
+            if(engine.supportReverseThrusting)
+                brakingPerEngine = brakePower / engines.Count;
         }
         else
         {
             thrustPower += thrustPerEngine;
-            brakePower += brakingPerEngine;
+
+            if (engine.supportReverseThrusting)
+                brakePower += brakingPerEngine;
         }
     }
 
@@ -356,7 +354,9 @@ public class Vehicle : MonoBehaviour
         engines.Remove(engine);
 
         thrustPower -= thrustPerEngine;
-        brakePower -= brakingPerEngine;
+
+        if (engine.supportReverseThrusting)
+            brakePower -= brakingPerEngine;
     }
 
     public bool PoweredOn () { return on; }
@@ -386,11 +386,11 @@ public class Vehicle : MonoBehaviour
 
     protected bool MovingBackward() { return transform.InverseTransformDirection(rBody.velocity).z < -0.1f; }
 
-    protected void UpdateExhaust()
+    protected void UpdateEngineEffects()
     {
         bool backwardThrusting = MovingBackward();
 
         foreach (Engine engine in engines)
-            engine.UpdateExhaustStream(backwardThrusting, currentSpeed, absoluteMaxSpeed);
+            engine.UpdateEngineEffects(backwardThrusting, currentSpeed, absoluteMaxSpeed);
     }
 }

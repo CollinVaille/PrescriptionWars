@@ -38,7 +38,10 @@ public class Compass : VehiclePart
     private void PointToTarget()
     {
         //Point towards target
-        rotatingPiece.LookAt(pointsTo);
+        if (pointsTo)
+            rotatingPiece.LookAt(pointsTo);
+        else
+            rotatingPiece.LookAt(Vector3.zero);
 
         //Correct local x and z axis to be unchanged (only want local y axis to change)
         Vector3 armRotation = rotatingPiece.localEulerAngles;
@@ -58,10 +61,10 @@ public class Compass : VehiclePart
         if (completedOffProcedure)
             return;
 
-        if (timeSinceOn == 0.0f)
+        if (timeSinceOn <= 0.0f)
             startRotation = rotatingPiece.localRotation;
-        else
-            timeSinceOn += Time.fixedDeltaTime;
+        
+        timeSinceOn += Time.fixedDeltaTime;
 
         if (timeSinceOn >= 1.0f)
         {

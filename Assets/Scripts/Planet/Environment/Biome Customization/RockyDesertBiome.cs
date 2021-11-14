@@ -81,9 +81,9 @@ public class RockyDesertBiome
         terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(1.5f, 3.0f);
 
         //Terrain textures
-        terrainCustomization.groundTexture = planet.LoadTexture("Red Desert", "Mars");
+        terrainCustomization.groundTexture = planet.LoadTexture("Soil Beach 0079", "Soil Beach 0052", "Sahara");
         terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano", "Cliffs 0120");
-        terrainCustomization.seabedTexture = planet.LoadTexture("Soil Beach 0079", "Soil Beach 0052", "Sahara", "Carburetor Resin");
+        terrainCustomization.seabedTexture = planet.LoadTexture("Soil Beach 0079", "Soil Beach 0052");
 
         //Terrain heightmap
         terrainCustomization.lowBoundaries = true;
@@ -93,7 +93,7 @@ public class RockyDesertBiome
         terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
 
         //Footsteps
-        planet.LoadGroundFootsteps("Martian Dirt");
+        planet.LoadGroundFootsteps("Sand");
         planet.LoadSeabedFootsteps("Swamp");
 
         //Ominous, luminating, arid fog

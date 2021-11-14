@@ -21,12 +21,22 @@ public class Aircraft : Vehicle
     {
         base.FixedUpdate();
 
+        //Call this even when off so that we can properly deactivate engine effects
+        UpdateEngineEffects();
+
         if (!on)
             return;
 
         UpdateTranslation();
         UpdateRotation();
-        UpdateExhaust();
+    }
+
+    public override void SetPower(bool turnOn)
+    {
+        base.SetPower(turnOn);
+
+        foreach (Engine engine in engines)
+            engine.SetPower(turnOn);
     }
 
     private void UpdateTranslation()

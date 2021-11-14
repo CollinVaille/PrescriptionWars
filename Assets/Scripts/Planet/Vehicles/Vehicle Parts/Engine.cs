@@ -6,14 +6,20 @@ public class Engine : VehiclePart
 {
     public ParticleSystem exhaustCloud, exhaustStream;
     public ExhaustManager exhaustManager;
+    public bool supportReverseThrusting = true;
 
     public Vector3 center = Vector3.zero;
 
     private Fire engineFire = null;
+    private AudioSource engineAudio;
 
     protected override void Start()
     {
         base.Start();
+
+        engineAudio = GetComponent<AudioSource>();
+        if (engineAudio)
+            God.god.ManageAudioSource(engineAudio);
 
         belongsTo.AddEngine(this, true);
     }
@@ -67,12 +73,56 @@ public class Engine : VehiclePart
         }
     }
 
-    public void UpdateExhaustStream(bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed)
+    public void UpdateEngineEffects(bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed)
     {
-        if (!working || exhaustManager == null)
+        bool shouldBeOn = belongsTo.PoweredOn() && working && (!backwardThrusting || supportReverseThrusting);
+
+        UpdateEngineAudio(shouldBeOn, 1.0f + currentSpeed / absoluteMaxSpeed);
+        UpdateEngineExhaust(shouldBeOn, backwardThrusting, currentSpeed, absoluteMaxSpeed);
+    }
+
+    private void UpdateEngineAudio(bool shouldBeOn, float pitch)
+    {
+        if (!engineAudio)
             return;
 
-        exhaustManager.UpdateExhaustStream(exhaustStream, backwardThrusting, currentSpeed, absoluteMaxSpeed);
+        if (shouldBeOn)
+        {
+            if (!engineAudio.isPlaying)
+                engineAudio.Play();
+
+            engineAudio.pitch = pitch;
+        }
+        else
+        {
+            if (engineAudio.isPlaying)
+                engineAudio.Stop();
+        }
+    }
+
+    private void UpdateEngineExhaust(bool shouldBeOn, bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed)
+    {
+        if (exhaustManager == null)
+            return;
+
+        if(shouldBeOn)
+        {
+            if (!exhaustCloud.isPlaying)
+                exhaustCloud.Play();
+
+            if (!exhaustStream.isPlaying)
+                exhaustStream.Play();
+
+            exhaustManager.UpdateExhaustStream(exhaustStream, backwardThrusting, currentSpeed, absoluteMaxSpeed);
+        }
+        else
+        {
+            if (exhaustCloud.isPlaying)
+                exhaustCloud.Stop();
+
+            if (exhaustStream.isPlaying)
+                exhaustStream.Stop();
+        }
     }
 
     private void UpdateEngineFire()

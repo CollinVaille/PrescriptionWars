@@ -14,9 +14,22 @@ public class Hovercraft : Vehicle
 
     private float distanceToGround = 0;
 
+    private AudioSource engineAudio;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        engineAudio = GetComponents<AudioSource>()[1];
+        God.god.ManageAudioSource(engineAudio);
+    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+
+        //Call this even when off so that we can properly deactivate engine effects
+        UpdateEngineEffects();
 
         if (!on)
             return;
@@ -28,7 +41,8 @@ public class Hovercraft : Vehicle
 
         UpdateFans();
 
-        UpdateExhaust();
+        //Update engine pitch
+        engineAudio.pitch = Mathf.Max(1, currentSpeed / 25.0f);
     }
 
     public override void SetPower(bool turnOn)
@@ -36,9 +50,16 @@ public class Hovercraft : Vehicle
         base.SetPower(turnOn);
 
         if(turnOn)
+        {
             hoverCloud.Play();
+            engineAudio.Play();
+        }
         else
+        {
             hoverCloud.Stop();
+            engineAudio.pitch = 1.0f;
+            engineAudio.Pause();
+        }
 
         foreach (Engine engine in engines)
             engine.SetPower(turnOn);

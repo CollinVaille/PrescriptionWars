@@ -75,7 +75,7 @@ public class Projectile : MonoBehaviour
     private Rigidbody rBody;
     private AudioSource sfxSource;
 
-    private float distanceCovered = 0.0f;
+    private float distanceCovered = 0.0f, actualLaunchSpeed = 0.0f;
 
     private void InitialSetUp()
     {
@@ -113,8 +113,10 @@ public class Projectile : MonoBehaviour
             sfxSource.Play();
 
         //Raahhhhhhhh
+        float transitiveVelocity = transform.InverseTransformVector(launcher.GetRootGlobalVelocity()).z;
+        actualLaunchSpeed = transitiveVelocity <= 0 ? launchSpeed : launchSpeed + transitiveVelocity;
         if (rBody)
-            rBody.AddRelativeForce(Vector3.forward * launchSpeed, ForceMode.VelocityChange);
+            rBody.AddRelativeForce(Vector3.forward * actualLaunchSpeed, ForceMode.VelocityChange);
         else
             God.god.ManageProjectile(this);
     }
@@ -122,7 +124,7 @@ public class Projectile : MonoBehaviour
     //Used to update the collision detection, movement, etc...
     public void UpdateLaunchedProjectile(float stepTime)
     {
-        float stepDistance = launchSpeed * stepTime;
+        float stepDistance = actualLaunchSpeed * stepTime;
 
         //Check for collision
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, stepDistance, ~0, QueryTriggerInteraction.Ignore))
@@ -132,7 +134,8 @@ public class Projectile : MonoBehaviour
         transform.Rotate(Vector3.forward * stepTime * 720, Space.Self);
 
         //Move forward
-        transform.Translate(Vector3.forward * stepDistance, Space.Self);
+        if(!rBody)
+            transform.Translate(Vector3.forward * stepDistance, Space.Self);
 
         //Time to put to pasture?
         distanceCovered += stepDistance;
