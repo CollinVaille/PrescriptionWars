@@ -26,7 +26,7 @@ public class God : MonoBehaviour
     public GameObject corpsePrefab;
 
     //City management
-    private List<City> citiesToUpdate;
+    private List<INavZoneUpdater> navZonesToUpdate;
 
     //Camera management
     private Camera currentCamera;
@@ -44,7 +44,7 @@ public class God : MonoBehaviour
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
         managedProjectiles = new List<Projectile>();
-        citiesToUpdate = new List<City>();
+        navZonesToUpdate = new List<INavZoneUpdater>();
 
         //Initialize settings
         AudioSettings.LoadSettings();
@@ -164,32 +164,28 @@ public class God : MonoBehaviour
     //PERIODIC UPDATES--------------------------------------------------------------------------------
 
     //Indicates city's nav mesh needs to be updated
-    public void PaintCityDirty(City city)
+    public void PaintNavMeshDirty(INavZoneUpdater navZoneUpdater)
     {
-        if (!citiesToUpdate.Contains(city))
-            citiesToUpdate.Add(city);
+        if (!navZonesToUpdate.Contains(navZoneUpdater))
+            navZonesToUpdate.Add(navZoneUpdater);
     }
 
     //Performs computationally intensive operations, might cause lag if not called at right time
     //Updates all nav meshes that need updating
     private IEnumerator PerformUpdatesOnPause()
     {
-        while (citiesToUpdate.Count > 0)
+        while (navZonesToUpdate.Count > 0)
         {
-            //Get next city to update
-            City nextCity = citiesToUpdate[0];
-            citiesToUpdate.Remove(nextCity);
-
-            //Debug.Log("Updating " + nextCity.name + "'s nav mesh...");
+            //Get next nav mesh to update
+            INavZoneUpdater nextNavMesh = navZonesToUpdate[0];
+            navZonesToUpdate.Remove(nextNavMesh);
 
             //Start update
-            AsyncOperation navMeshUpdate = nextCity.UpdateNavMesh();
+            AsyncOperation navMeshUpdate = nextNavMesh.UpdateNavMesh();
 
             //Wait until it's done updating
             while (!navMeshUpdate.isDone)
                 yield return null;
-
-            //Debug.Log(nextCity.name + "'s nav mesh successfully updated.");
         }
     }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class City : MonoBehaviour
+public class City : MonoBehaviour, INavZoneUpdater
 {
     private enum AreaReservationType { Open, ReservedByRoad, ReservedByBuilding }
 
@@ -691,8 +691,6 @@ public class City : MonoBehaviour
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
     }
-
-    public static City GetCity(Transform t) { return t.root.GetComponent<City>(); }
 
     //Set material to updates' metallic and smoothness properties to equal that of reference material
     private void SetMetallicAndSmoothnessOfMaterial(Material materialToUpdate, Material referenceMaterial)

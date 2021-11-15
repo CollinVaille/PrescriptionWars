@@ -113,7 +113,7 @@ public class Explosion : MonoBehaviour
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, currentRange);
 
-        City cityWithAlteredNavMesh = null;
+        INavZoneUpdater alteredNavMesh = null;
 
         foreach (Collider hit in hits)
         {
@@ -138,15 +138,15 @@ public class Explosion : MonoBehaviour
                     rBody.AddExplosionForce(actualDamage * 10, transform.position, currentRange);
                 else
                 {
-                    City damagedCity = DamageStructure(hit, actualDamage);
-                    if (damagedCity)
-                        cityWithAlteredNavMesh = damagedCity;
+                    INavZoneUpdater damagedNavMesh = DamageStructure(hit, actualDamage);
+                    if (damagedNavMesh != null)
+                        alteredNavMesh = damagedNavMesh;
                 }
             }
         }
 
-        if (cityWithAlteredNavMesh)
-            God.god.PaintCityDirty(cityWithAlteredNavMesh);
+        if (alteredNavMesh != null)
+            God.god.PaintNavMeshDirty(alteredNavMesh);
     }
 
     private bool DirectLineToTarget(Collider target)
@@ -164,8 +164,8 @@ public class Explosion : MonoBehaviour
             && !t.name.Equals("Floor");
     }
 
-    //Returns city that needs nav mesh updated as result of structure change, or null if N/A
-    private City DamageStructure(Collider victim, float actualDamage)
+    //Returns nav mesh that needs to be updated as result of structure change, or null if N/A
+    private INavZoneUpdater DamageStructure(Collider victim, float actualDamage)
     {
         if (!CanDamageStructure(victim.transform))
             return null;
@@ -185,8 +185,7 @@ public class Explosion : MonoBehaviour
         rotation *= blastEffect * 10;
         t.Rotate(rotation);
 
-        //Vain attempt to get rotation based on angle of impact, taking blast strength and different forward axes...
-        //into account
+        //Vain attempt to get rotation based on angle of impact, taking blast strength and different forward axes into account
         /*
         Vector3 originalPos = t.position;
         Vector3 originalRot = t.eulerAngles;
@@ -194,7 +193,7 @@ public class Explosion : MonoBehaviour
         t.LookAt(originalPos);
         t.Rotate(-originalRot); */
 
-        return City.GetCity(t);
+        return t.GetComponentInParent<INavZoneUpdater>();
     }
 
     //Called to deactive the explosion and either... destroy it OR put it back in reserve pool
