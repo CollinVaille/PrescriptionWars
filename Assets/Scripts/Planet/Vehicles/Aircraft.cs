@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Aircraft : Vehicle, INavZoneUpdater
+public class Aircraft : Vehicle
 {
     //Customization
     public Transform physicalSteeringWheel;
@@ -18,7 +18,6 @@ public class Aircraft : Vehicle, INavZoneUpdater
         base.Start();
 
         //Everything else
-        //GenerateNavMesh();
     }
 
     protected override void FixedUpdate()
@@ -74,15 +73,5 @@ public class Aircraft : Vehicle, INavZoneUpdater
             customBody.airResistance = (brakePower / rBody.mass) * 2.0f;
         else
             customBody.airResistance = 4.0f;
-    }
-
-    public void GenerateNavMesh()
-    {
-        transform.Find("Navigation Zone").GetComponent<NavigationZone>().BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), -1, true);
-    }
-
-    public AsyncOperation UpdateNavMesh()
-    {
-        return transform.Find("Navigation Zone").GetComponent<NavigationZone>().BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), -1, false);
     }
 }

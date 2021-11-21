@@ -850,4 +850,11 @@ public class Bot1 : Pill
         if(!dead)
             CarryOutOrders();
     }
+
+    protected override void RefreshVehicleZoneEffects()
+    {
+        base.RefreshVehicleZoneEffects();
+
+        agent.enabled = !vehicleZone;
+    }
 }

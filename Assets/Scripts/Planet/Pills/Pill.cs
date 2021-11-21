@@ -12,6 +12,7 @@ public class Pill : MonoBehaviour, Damageable
     protected AudioSource mainAudioSource;
     protected Spawner spawner;
     protected Collider navigationZone;
+    protected VehicleZone vehicleZone;
     public Squad squad;
     protected Item holding = null;
     public Voice voice = null;
@@ -342,7 +343,11 @@ public class Pill : MonoBehaviour, Damageable
 
     public virtual void OverrideControl (Interactable overrider) { controlOverride = true; }
 
-    public virtual void ReleaseOverride () { controlOverride = false; }
+    public virtual void ReleaseOverride ()
+    {
+        controlOverride = false;
+        RefreshVehicleZoneEffects();
+    }
 
     private void SnapToGround ()
     {
@@ -419,6 +424,42 @@ public class Pill : MonoBehaviour, Damageable
             return rootRBody.velocity;
         else
             return Vector3.zero;
+    }
+
+    public void ChangeVehicleZone(VehicleZone theZone, bool entering)
+    {
+        if(entering)
+        {
+            if (!vehicleZone)
+            {
+                vehicleZone = theZone;
+                RefreshVehicleZoneEffects();
+            }
+        }
+        else if (vehicleZone == theZone)
+        {
+            vehicleZone = null;
+            RefreshVehicleZoneEffects();
+        }
+    }
+
+    protected virtual void RefreshVehicleZoneEffects()
+    {
+        if (controlOverride)
+            return;
+        if(GetComponent<Player>())
+            Debug.Log(transform.parent);
+
+        if(!transform.parent)
+        {
+            if (vehicleZone)
+                transform.parent = vehicleZone.transform;
+        }
+        else
+        {
+            if (!vehicleZone)
+                transform.parent = null;
+        }
     }
 
     public string GetInfoDump()
