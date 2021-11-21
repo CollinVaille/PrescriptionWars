@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.35440052, g: 0.31531042, b: 0.2909908, a: 1}
+  m_IndirectSpecularColor: {r: 0.27113846, g: 0.25734058, b: 0.27422488, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5049,6 +5049,7 @@ GameObject:
   - component: {fileID: 644450516}
   - component: {fileID: 644450518}
   - component: {fileID: 644450519}
+  - component: {fileID: 644450520}
   m_Layer: 0
   m_Name: Galaxy View
   m_TagString: Untagged
@@ -5381,6 +5382,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textAsset: {fileID: 4900000, guid: cc77ed7e64945ff498565ec8020cc308, type: 3}
+--- !u!114 &644450520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644450514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b87581af6efa3e9489327cf86db65a25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  galaxyBiomes:
+  - biome: 0
+    planetMaterialNames: []
+    cloudColors: []
+    ringColorCombos: []
 --- !u!1 &671157015
 GameObject:
   m_ObjectHideFlags: 0
