@@ -43,8 +43,8 @@ public class HyperspaceLanesManager : MonoBehaviour
         if (goodLine)
         {
             //Adds the connected planet to the list of neighbors for both planets.
-            planet1.GetComponent<GalaxyPlanet>().NeighborPlanets.Add(planet2.GetComponent<GalaxyPlanet>().PlanetID);
-            planet2.GetComponent<GalaxyPlanet>().NeighborPlanets.Add(planet1.GetComponent<GalaxyPlanet>().PlanetID);
+            planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().NeighborPlanets.Add(planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().PlanetID);
+            planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().NeighborPlanets.Add(planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().PlanetID);
 
             //Create the hyperspace lane.
             GameObject line = Instantiate(linePrefab);

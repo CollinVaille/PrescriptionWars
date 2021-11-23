@@ -202,8 +202,8 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
                 infoCultureText.text = "Culture: " + planetSelectedScript.Culture;
                 infoCitiesText.text = "Cities: " + planetSelectedScript.cities.Count;
                 infoCapitalText.text = "Capital: " + planetSelectedScript.IsCapital;
-                infoIncomeText.text = "Income: " + planetSelectedScript.creditsPerTurn();
-                infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn();
+                infoIncomeText.text = "Income: " + planetSelectedScript.CreditsPerTurn;
+                infoPrescriptionText.text = "Prescription: " + planetSelectedScript.PrescriptionsPerTurn;
 
                 if(tabs[2].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != 105)
                 {

@@ -19,17 +19,7 @@ public class GalaxyPlanet : MonoBehaviour
     #endif
     #endregion
     [SerializeField] private Planet.Biome biome = Planet.Biome.Unknown;
-    public Planet.Biome Biome
-    {
-        get
-        {
-            return biome;
-        }
-        set
-        {
-            biome = value;
-        }
-    }
+    public Planet.Biome Biome { get => biome; }
 
     //Planet culture
     #region Editor
@@ -55,7 +45,7 @@ public class GalaxyPlanet : MonoBehaviour
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private Vector3 rotationSpeed = Vector3.zero;
+    public float rotationSpeed;
 
     #region Editor
     #if UNITY_EDITOR
@@ -110,13 +100,14 @@ public class GalaxyPlanet : MonoBehaviour
         }
     }
 
-    public List<int> NeighborPlanets
-    {
-        get
-        {
-            return neighborPlanets;
-        }
-    }
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField] private string materialName;
+
+    public List<int> NeighborPlanets { get => neighborPlanets; }
 
     //Non-inspector variables.
 
@@ -148,6 +139,12 @@ public class GalaxyPlanet : MonoBehaviour
     private int currentFontSize = 10, fontScale = 10000;
     private static Transform mainCamTransform = null;
 
+    //Rings
+    public GameObject Rings { get => transform.parent.GetChild(transform.GetSiblingIndex() + 1).gameObject; }
+
+    //Atmosphere
+    public GameObject Atmosphere { get => transform.parent.GetChild(transform.GetSiblingIndex() + 2).gameObject; }
+
     private void Start()
     {
         AddArmy(new GalaxyArmy("Army of the South", ownerID));
@@ -163,60 +160,74 @@ public class GalaxyPlanet : MonoBehaviour
         AddArmy(new GalaxyArmy("Army of the North", ownerID));
     }
 
-    public float creditsPerTurn()
+    public float CreditsPerTurn
     {
-        float credits = 0.0f;
-
-        foreach(GalaxyCity galaxyCity in cities)
+        get
         {
-            credits += galaxyCity.GetCreditsPerTurn(ownerID);
-        }
+            float credits = 0.0f;
 
-        return credits;
+            foreach (GalaxyCity galaxyCity in cities)
+            {
+                credits += galaxyCity.GetCreditsPerTurn(ownerID);
+            }
+
+            return credits;
+        }
     }
 
-    public float prescriptionsPerTurn()
+    public float PrescriptionsPerTurn
     {
-        float prescriptions = 0.0f;
-
-        foreach(GalaxyCity galaxyCity in cities)
+        get
         {
-            prescriptions += galaxyCity.GetPrescriptionsPerTurn(ownerID);
-        }
+            float prescriptions = 0.0f;
 
-        return prescriptions;
+            foreach (GalaxyCity galaxyCity in cities)
+            {
+                prescriptions += galaxyCity.GetPrescriptionsPerTurn(ownerID);
+            }
+
+            return prescriptions;
+        }
     }
 
-    public float sciencePerTurn()
+    public float SciencePerTurn
     {
-        float science = 0.0f;
-
-        foreach(GalaxyCity galaxyCity in cities)
+        get
         {
-            science += galaxyCity.GetSciencePerTurn(ownerID);
-        }
+            float science = 0.0f;
 
-        return science;
+            foreach (GalaxyCity galaxyCity in cities)
+            {
+                science += galaxyCity.GetSciencePerTurn(ownerID);
+            }
+
+            return science;
+        }
     }
 
-    public float productionPerTurn()
+    public float ProductionPerTurn
     {
-        float production = 0.0f;
-
-        foreach(GalaxyCity galaxyCity in cities)
+        get
         {
-            production += galaxyCity.GetProductionPerTurn(ownerID);
-        }
+            float production = 0.0f;
 
-        return production;
+            foreach (GalaxyCity galaxyCity in cities)
+            {
+                production += galaxyCity.GetProductionPerTurn(ownerID);
+            }
+
+            return production;
+        }
     }
 
-    public void InitializePlanet (string planetName)
+    public void InitializePlanet (string planetName, int planetID, Planet.Biome biome)
     {
+        //Sets the name of the planet.
         AddNameLabel(planetName);
-
-        //Amount the planet will rotate.
-        rotationSpeed = new Vector3(0, 0, UnityEngine.Random.Range(5, 21));
+        //Sets the planet's ID.
+        this.planetID = planetID;
+        //Sets the planet's biome.
+        this.biome = biome;
     }
 
     public void GenerateCities(bool isCapital)
@@ -274,7 +285,7 @@ public class GalaxyPlanet : MonoBehaviour
         nameLabel.gameObject.layer = 5;
 
         //Set gameobject name
-        name = planetName;
+        transform.parent.name = planetName;
 
         //Set text
         nameLabel.text = planetName;
@@ -315,7 +326,7 @@ public class GalaxyPlanet : MonoBehaviour
         }
 
         //Rotates the planet.
-        transform.localEulerAngles += rotationSpeed * Time.deltaTime;
+        transform.localEulerAngles += new Vector3(0, 0, rotationSpeed * Time.deltaTime);
     }
 
     public void ConquerPlanet(int conquerorID)
@@ -504,6 +515,17 @@ public class GalaxyPlanet : MonoBehaviour
                 planetShips[planetShipIndex].SetLocation(planetShipIndex);
             }
         }
+    }
+
+    /// <summary>
+    /// Changes the planet's material and updates the string that indicates what the name is of the applied material.
+    /// </summary>
+    /// <param name="materialName"></param>
+    public void ChangeMaterial(string materialName)
+    {
+        GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + materialName);
+        Atmosphere.GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + materialName + " Atmosphere");
+        this.materialName = materialName;
     }
 }
 

@@ -5329,7 +5329,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: ec880dcad11aaf44691b0c67fbab845c, type: 2}
   - {fileID: 2100000, guid: 11246b68c6b503f4783a8eb241403a4f, type: 2}
   - {fileID: 2100000, guid: 8e706ed4166fa4f4cba16068e126d714, type: 2}
-  planetPrefab: {fileID: 4495200285863478047, guid: bcdb2a27a1d37e540a013c1a2a2a73c4,
+  planetPrefab: {fileID: 1186292218765209902, guid: 76664220f7fd7e64e8866fe7034bd57f,
     type: 3}
   planetShipPrefab: {fileID: 186009165389922367, guid: caacb6fada3bfa042b3f3c74d439f4db,
     type: 3}
@@ -5395,10 +5395,160 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   galaxyBiomes:
-  - biome: 0
-    planetMaterialNames: []
-    cloudColors: []
-    ringColorCombos: []
+  - biome: 1
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 2
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 3
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 4
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 5
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 6
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - biome: 7
+    planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.2, y: 0.3}
+    planetarySpinSpeedRange: {x: 5, y: 21}
+    cloudSpeedRange: {x: 15, y: 40}
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColors:
+    - {r: 1, g: 1, b: 1, a: 0.5882353}
+    - {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 0.5882353}
+    - {r: 0.46855342, g: 1, b: 0.88807106, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
 --- !u!1 &671157015
 GameObject:
   m_ObjectHideFlags: 0
