@@ -46,8 +46,10 @@ public class GalaxyBiomeGenerator : MonoBehaviour
             galaxyPlanet.rotationSpeed = galaxyBiome.RandomPlanetarySpinSpeed;
             //Randomizes the speed of the planet's clouds.
             galaxyPlanet.GetComponent<Renderer>().material.SetFloat("_CloudSpeed", galaxyBiome.RandomCloudSpeed);
-            //Randomizes the color of the planet's clouds.
-            galaxyPlanet.GetComponent<Renderer>().material.SetColor("_ColorA", galaxyBiome.RandomCloudColor);
+            //Randomizes the color of the planet's clouds and cloud shadow.
+            DualColorSet randomCloudColorCombo = galaxyBiome.RandomCloudColorCombo;
+            galaxyPlanet.GetComponent<Renderer>().material.SetColor("_ColorA", randomCloudColorCombo[0]);
+            galaxyPlanet.GetComponent<Renderer>().material.SetColor("_ShadowColorA", randomCloudColorCombo[1]);
             //Randomizes the color of the planet's cities.
             galaxyPlanet.GetComponent<Renderer>().material.SetColor("_Citiescolor", galaxyBiome.RandomCityColor);
             //Randomizes the color of the planet's rings.
@@ -79,7 +81,7 @@ public class GalaxyBiomeGenerator : MonoBehaviour
     [SerializeField, Tooltip("The minimum (x) and maximum (y) speeds that a planet of this biome can have clouds moving.")] private Vector2 cloudSpeedRange = new Vector2(15, 40);
     [SerializeField] private List<string> planetMaterialNames = new List<string>();
     private List<string> planetMaterialNamesUsed = new List<string>();
-    [SerializeField] private List<Color> cloudColors = new List<Color>();
+    [SerializeField, Tooltip("The first color in each set is the color of the clouds and the second color in each set is the color of their shadow.")] private List<DualColorSet> cloudColorCombos = new List<DualColorSet>();
     [SerializeField] private List<Color> cityColors = new List<Color>();
     [SerializeField] private List<DualColorSet> ringColorCombos = new List<DualColorSet>();
 
@@ -110,7 +112,7 @@ public class GalaxyBiomeGenerator : MonoBehaviour
     public float RandomPlanetarySize { get => Random.Range(planetarySizeRange.x, planetarySizeRange.y); }
     public float RandomPlanetarySpinSpeed { get => Random.Range(planetarySpinSpeedRange.x, planetarySpinSpeedRange.y); }
     public float RandomCloudSpeed { get => Random.Range(cloudSpeedRange.x, cloudSpeedRange.y); }
-    public Color RandomCloudColor { get => cloudColors[Random.Range(0, cloudColors.Count)]; }
+    public DualColorSet RandomCloudColorCombo { get => cloudColorCombos[Random.Range(0, cloudColorCombos.Count)]; }
     public Color RandomCityColor { get => cityColors[Random.Range(0, cityColors.Count)]; }
     public DualColorSet RandomRingColorCombo { get => ringColorCombos[Random.Range(0, ringColorCombos.Count)]; }
 }
