@@ -349,13 +349,13 @@ public class Pill : MonoBehaviour, Damageable
         RefreshVehicleZoneEffects();
     }
 
-    private void SnapToGround ()
+    public void SnapToGround ()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 10))
         {
-            Vector3 adjustedSpawn = hit.point;
-            adjustedSpawn.y += transform.GetComponent<Collider>().bounds.size.y / 2.0f;
-            transform.position = adjustedSpawn;
+            Vector3 adjustedPosition = hit.point;
+            adjustedPosition.y += transform.GetComponent<Collider>().bounds.size.y / 2.0f;
+            transform.position = adjustedPosition;
         }
     }
 

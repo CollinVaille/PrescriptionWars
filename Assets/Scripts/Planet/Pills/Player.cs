@@ -1189,8 +1189,10 @@ public class Player : Pill
         {
             if (overrider is Seat)
                 StartCoroutine(PlayerSitOverride((Seat)overrider));
-            else if(overrider is Ladder)
+            else if (overrider is Ladder)
                 StartCoroutine(PlayerLadderOverride(overrider));
+            else if (overrider is Turret)
+                StartCoroutine(PlayerTurretOverride((Turret)overrider));
             else
                 StartCoroutine(PlayerSleepOverride(overrider));
 
@@ -1290,6 +1292,39 @@ public class Player : Pill
         }
 
         seat.ReleaseControl(!dead);
+    }
+
+    private IEnumerator PlayerTurretOverride(Turret turret)
+    {
+        //Wait an initial frame to avoid redundant logic checks
+        yield return null;
+
+        while (!dead && controlOverride && !Input.GetButtonDown("Interact"))
+        {
+            //Pause
+            if (Time.timeScale == 0)
+            {
+                yield return null;
+                continue;
+            }
+
+            //Update inputs
+            POVInputUpdate();
+            SquadInputUpdate();
+
+            //Update turret inputs
+            if(pov != POV.ThirdPerson360)
+            {
+                turret.RotateTurret(Vector3.up, Input.GetAxis("Mouse X") * rotationSpeed * Time.deltaTime);
+                turret.RotateTurret(Vector3.right, -Input.GetAxis("Mouse Y") * rotationSpeed * Time.deltaTime);
+            }
+            turret.SetTriggerPressed(Input.GetButton("Primary Action"));
+
+            //Wait a frame
+            yield return null;
+        }
+
+        turret.ReleaseControl(!dead);
     }
 
     private void SetSprinting (bool sprinting)
