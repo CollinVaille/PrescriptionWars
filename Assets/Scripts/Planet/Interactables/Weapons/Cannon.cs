@@ -101,7 +101,7 @@ public class Cannon : Interactable
             return "Fire " + name + " (Firing)";
         else if (currentState == FiringState.Resetting)
             return "Fire " + name + " (Cooling Down)";
-        if (shells == 0)
+        else if (shells == 0)
             return "Fire " + name + " (Empty)";
         else if (shells == 1)
             return "Fire " + name + " (" + shells + " Shell)";

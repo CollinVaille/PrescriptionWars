@@ -13273,7 +13273,7 @@ Transform:
   m_LocalScale: {x: 0.35, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2095347780765745242
 MeshFilter:
@@ -13532,7 +13532,6 @@ Transform:
   m_Children:
   - {fileID: 4085215215298156746}
   - {fileID: 6965887000492203941}
-  - {fileID: 6485858846636659709}
   - {fileID: 5565814624256996757}
   - {fileID: 624460648967619040}
   - {fileID: 7996963462680355867}
@@ -13811,8 +13810,12 @@ MonoBehaviour:
   sfxSource: {fileID: 459753482746898080}
   barrel: {fileID: 6553424781323335921}
   magazine: {fileID: 8104466124996110954}
+  emissionPoint: {fileID: 4180837101387292825}
   magazinePositions: {x: 0.2, y: -0.2}
   shotDelay: 0.1
+  shotLifetime: 0
+  damage: 20
+  range: 300
   rotaryVelocity: 1200
   spinUp: {fileID: 8300000, guid: 09b12586bac35bc42923622865694097, type: 3}
   cooldown: {fileID: 8300000, guid: 686063d261538344c810e0130cd90b63, type: 3}
@@ -15762,7 +15765,7 @@ GameObject:
   - component: {fileID: 335178366951013050}
   - component: {fileID: 3379552769437499191}
   m_Layer: 0
-  m_Name: Plate (2)
+  m_Name: Focus Plate 2
   m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21868,7 +21871,7 @@ GameObject:
   - component: {fileID: 5106238820372590455}
   - component: {fileID: 2450658366147977853}
   m_Layer: 0
-  m_Name: Plate
+  m_Name: Emission Plate
   m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23169,7 +23172,7 @@ Transform:
   m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!33 &3791709195172056242
 MeshFilter:
@@ -24433,7 +24436,7 @@ Transform:
   m_LocalScale: {x: 0.349, y: 0.075, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1776931102604712935
 MeshFilter:
@@ -26121,7 +26124,7 @@ GameObject:
   - component: {fileID: 6728048524367659780}
   - component: {fileID: 1042005713651393584}
   m_Layer: 0
-  m_Name: Plate (1)
+  m_Name: Focus Plate 1
   m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43168,7 +43171,7 @@ GameObject:
   - component: {fileID: 12226916079631775}
   - component: {fileID: 1727046017935805545}
   m_Layer: 0
-  m_Name: Plate (3)
+  m_Name: Focus Plate 3
   m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43388,7 +43391,7 @@ Transform:
   m_LocalScale: {x: 0.34999996, y: 0.05, z: 0.34999996}
   m_Children: []
   m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5763859468250577988
 MeshFilter:
@@ -43472,6 +43475,7 @@ Transform:
   - {fileID: 5001883173322240323}
   - {fileID: 4936887614985007045}
   - {fileID: 3485469082985062120}
+  - {fileID: 6485858846636659709}
   m_Father: {fileID: 161788835697121281}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -45369,7 +45373,7 @@ Transform:
   m_LocalScale: {x: 0.75, y: 0.05, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1136327463088412429
 MeshFilter:
@@ -45804,12 +45808,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8688409362488778054}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.03, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.16999865, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
-  m_Father: {fileID: 4060779007166835923}
-  m_RootOrder: 2
+  m_Father: {fileID: 3769126622628338304}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &763502764826314176
 MeshFilter:
@@ -48076,15 +48080,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04ee91fdf5b133c4f85b50598586f93d, type: 3}
---- !u!4 &402516510749007368 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
-    type: 3}
-  m_PrefabInstance: {fileID: 152207452892428771}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1071247645724165298 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
+    type: 3}
+  m_PrefabInstance: {fileID: 152207452892428771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &402516510749007368 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
     type: 3}
   m_PrefabInstance: {fileID: 152207452892428771}
   m_PrefabAsset: {fileID: 0}
@@ -49334,15 +49338,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04ee91fdf5b133c4f85b50598586f93d, type: 3}
---- !u!4 &2510251025085725990 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
-    type: 3}
-  m_PrefabInstance: {fileID: 2692182243559217869}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2998804360692705180 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2692182243559217869}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2510251025085725990 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
     type: 3}
   m_PrefabInstance: {fileID: 2692182243559217869}
   m_PrefabAsset: {fileID: 0}

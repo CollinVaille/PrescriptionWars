@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour, ManagedVolatileObject
 {
     //STATIC POOLING OF PROJECTILES----------------------------------------------------------------
 
@@ -118,11 +118,11 @@ public class Projectile : MonoBehaviour
         if (rBody)
             rBody.AddRelativeForce(Vector3.forward * actualLaunchSpeed, ForceMode.VelocityChange);
         else
-            God.god.ManageProjectile(this);
+            God.god.ManageVolatileObject(this);
     }
 
     //Used to update the collision detection, movement, etc...
-    public void UpdateLaunchedProjectile(float stepTime)
+    public void UpdateActiveStatus(float stepTime)
     {
         float stepDistance = actualLaunchSpeed * stepTime;
 
@@ -177,7 +177,7 @@ public class Projectile : MonoBehaviour
         if (rBody)
             rBody.velocity = Vector3.zero;
         else
-            God.god.UnmanageProjectile(this);
+            God.god.UnmanageVolatileObject(this);
 
         //Hide
         gameObject.SetActive(false);

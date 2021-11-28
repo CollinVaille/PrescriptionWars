@@ -19,8 +19,8 @@ public class God : MonoBehaviour
     private List<AudioSource> managedAudioSources;
     private List<bool> wasPlaying;
 
-    //Projectile management
-    private List<Projectile> managedProjectiles;
+    //Fasting moving, high volume object management
+    private List<ManagedVolatileObject> managedVolatileObjects;
 
     //Corpse management
     public GameObject corpsePrefab;
@@ -43,7 +43,7 @@ public class God : MonoBehaviour
         //Variable initialization
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
-        managedProjectiles = new List<Projectile>();
+        managedVolatileObjects = new List<ManagedVolatileObject>();
         navZonesToUpdate = new List<INavZoneUpdater>();
 
         //Initialize settings
@@ -54,6 +54,7 @@ public class God : MonoBehaviour
         Vehicle.setUp = false;
         Voice.InitialSetUp();
         Projectile.SetUpPooling();
+        DeathRay.SetUpPooling();
         Explosion.SetUpPooling();
         DavyJonesLocker.PrepareTheLockerForSouls();
     }
@@ -61,7 +62,7 @@ public class God : MonoBehaviour
     //Delayed Initialization
     private void Start()
     {
-        StartCoroutine(ManageProjectiles());
+        StartCoroutine(ManageProjectilesAndDeathRays());
         StartCoroutine(PerformUpdatesPeriodically());
     }
 
@@ -129,7 +130,7 @@ public class God : MonoBehaviour
         wasPlaying.RemoveAt(parallelIndex);
     }
 
-    private IEnumerator ManageProjectiles()
+    private IEnumerator ManageProjectilesAndDeathRays()
     {
         float stepTime = 0.033f;
 
@@ -142,14 +143,14 @@ public class God : MonoBehaviour
 
             actualStepTime = Time.timeSinceLevelLoad - lastTime;
 
-            for (int x = 0; x < managedProjectiles.Count; x++)
+            for (int x = 0; x < managedVolatileObjects.Count; x++)
             {
                 //Update projectile
-                Projectile original = managedProjectiles[x];
-                original.UpdateLaunchedProjectile(actualStepTime);
+                ManagedVolatileObject original = managedVolatileObjects[x];
+                original.UpdateActiveStatus(actualStepTime);
 
                 //If projectile was removed from list during update, adjust accordingly
-                if (x == managedProjectiles.Count || original != managedProjectiles[x])
+                if (x == managedVolatileObjects.Count || original != managedVolatileObjects[x])
                     x--;
             }
 
@@ -157,9 +158,9 @@ public class God : MonoBehaviour
         }
     }
 
-    public void ManageProjectile(Projectile projectile) { managedProjectiles.Add(projectile); }
+    public void ManageVolatileObject(ManagedVolatileObject volatileObjectToManage) { managedVolatileObjects.Add(volatileObjectToManage); }
 
-    public void UnmanageProjectile(Projectile projectile) { managedProjectiles.Remove(projectile); }
+    public void UnmanageVolatileObject(ManagedVolatileObject volatileObjectToUnmanage) { managedVolatileObjects.Remove(volatileObjectToUnmanage); }
 
     //PERIODIC UPDATES--------------------------------------------------------------------------------
 

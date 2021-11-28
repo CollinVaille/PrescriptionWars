@@ -5,9 +5,11 @@ using UnityEngine;
 public class MinigunTurret : Turret
 {
     //Customization
-    public Transform barrel, magazine;
+    public Transform barrel, magazine, emissionPoint;
     [Tooltip("Local x positions of the magazine. 1st # is start position, 2nd # is end position")] public Vector2 magazinePositions;
     [Tooltip("Time in seconds between shots")] public float shotDelay = 0.1f;
+    [Tooltip("Time from emission to destruction of death ray")] public float shotLifetime = 0.5f;
+    public float damage = 20.0f, range = 300.0f;
     [Tooltip("Degrees per second the barrel rotates when firing")] public float rotaryVelocity = 90.0f;
     public AudioClip spinUp, cooldown, firing, dryFire;
     public Light lightFlash;
@@ -92,9 +94,17 @@ public class MinigunTurret : Turret
 
             if (lightFlash)
                 lightFlash.enabled = true;
+
+            EmitDeathRay();
         }
         else
             PlaySound(dryFire, false);
+    }
+
+    private void EmitDeathRay()
+    {
+        DeathRay deathRay = DeathRay.GetDeathRay();
+        deathRay.Emit(emissionPoint.position, swivelingBody.eulerAngles, damage, range, occupant, shotLifetime);
     }
 
     private void SetRounds(int newRounds)
