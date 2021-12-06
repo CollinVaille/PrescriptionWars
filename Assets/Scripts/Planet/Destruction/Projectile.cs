@@ -2,63 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour, ManagedVolatileObject
+public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
 {
-    //STATIC POOLING OF PROJECTILES----------------------------------------------------------------
-
-    private static Dictionary<string, List<Projectile>> pooledProjectiles;
-
-    public static void SetUpPooling ()
-    {
-        pooledProjectiles = new Dictionary<string, List<Projectile>>();
-    }
-
-    //Retrieve projectile from pool if one exists, else return newly created one
-    public static Projectile GetProjectile (string projectileName)
-    {
-        pooledProjectiles.TryGetValue(projectileName, out List<Projectile> projectiles);
-
-        Projectile projectile;
-
-        //Happy day: list exists and is not empty
-        //So return pooled projectile
-        if (projectiles != null && projectiles.Count != 0)
-        {
-            projectile = projectiles[Random.Range(0, projectiles.Count)];
-            projectiles.Remove(projectile);
-            return projectile;
-        }
-
-        //Sad day: either list doesn't exist or is empty
-        //So return newly created projectile
-        projectile = Instantiate(Resources.Load<GameObject>("Planet/Projectiles/" + projectileName)).GetComponent<Projectile>();
-        projectile.InitialSetUp(); //One-time initialization on creation
-        return projectile;
-    }
-
-    //Put projectile in pool unless pool is full, in which case destroy projectile
-    private static void PoolProjectile (Projectile projectile)
-    {
-        pooledProjectiles.TryGetValue(projectile.name, out List<Projectile> projectiles);
-
-        if (projectiles == null) //No such pool, so create pool and add projectile to it
-        {
-            projectiles = new List<Projectile>(); //Create pool
-            projectiles.Add(projectile); //Add projectile to pool
-            pooledProjectiles.Add(projectile.name, projectiles); //Add pool to list of pools
-        }
-        else //Found projectile pool, so see if projectile fits...
-        {
-            if (projectiles.Count > 30) //Too many pooled so just destroy projectile
-                projectile.DestroyProjectile();
-            else //There's still room in pool, so put it in there
-                projectiles.Add(projectile);
-        }
-    }
-
-    //PROJECTILE INSTANCE-------------------------------------------------------------------------- 
-
     public enum ProjectileType { Default, Laser }
+
+    public static PlanetObjectPool projectilePool;
 
     //Launch parameters
     private float damage = 34;
@@ -77,14 +25,11 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject
 
     private float distanceCovered = 0.0f, actualLaunchSpeed = 0.0f;
 
-    private void InitialSetUp()
+    public void OneTimeSetUp()
     {
         //Get references
         rBody = GetComponent<Rigidbody>();
         sfxSource = GetComponent<AudioSource>();
-
-        //Makes pause menu pause/resume audio appropriately
-        God.god.ManageAudioSource(sfxSource);
 
         //Remove (Clone) from end of name (necessary for pooling to work)
         name = name.Substring(0, name.Length - 7);
@@ -110,7 +55,10 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject
 
         //Bwwaaaaahhh
         if (sfxSource)
+        {
+            God.god.ManageAudioSource(sfxSource);
             sfxSource.Play();
+        }
 
         //Raahhhhhhhh
         float transitiveVelocity = transform.InverseTransformVector(launcher.GetRootGlobalVelocity()).z;
@@ -157,7 +105,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject
 
         if(!explosionName.Equals(""))
         {
-            Explosion explosion = Explosion.GetExplosion(explosionName);
+            Explosion explosion = Explosion.explosionPool.GetGameObject(explosionName).GetComponent<Explosion>();
             explosion.transform.position = transform.position;
             explosion.transform.rotation = transform.rotation;
             explosion.Explode(launcher.team);
@@ -169,28 +117,8 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject
     //Called to deactive the projectile and either... destroy it OR put it back in reserve pool
     private void Decommission()
     {
-        //Silence
-        if (sfxSource)
-            sfxSource.Stop();
-
-        //Stop updating
-        if (rBody)
-            rBody.velocity = Vector3.zero;
-        else
-            God.god.UnmanageVolatileObject(this);
-
-        //Hide
-        gameObject.SetActive(false);
-
         //Either pool or destroy
-        PoolProjectile(this);
-    }
-
-    //Call this instead of Object.Destroy to ensure all needed clean up is performed
-    private void DestroyProjectile()
-    {
-        God.god.UnmanageAudioSource(sfxSource);
-        Destroy(gameObject);
+        projectilePool.PoolGameObject(gameObject);
     }
 
     private void Reskin()
@@ -204,5 +132,24 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject
                 transform.Find("Side Face").GetComponent<Renderer>().sharedMaterial = army.plasma2;
             }
         }
+    }
+
+    public void CleanUp()
+    {
+        //Silence
+        if (sfxSource)
+        {
+            sfxSource.Stop();
+            God.god.UnmanageAudioSource(sfxSource);
+        }
+
+        //Stop updating
+        if (rBody)
+            rBody.velocity = Vector3.zero;
+        else
+            God.god.UnmanageVolatileObject(this);
+
+        //Hide
+        gameObject.SetActive(false);
     }
 }

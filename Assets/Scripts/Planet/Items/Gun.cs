@@ -120,7 +120,7 @@ public class Gun : Item
     //Called by Shoot to fire physical projectile
     private void ProjectileShoot ()
     {
-        Projectile projectile = Projectile.GetProjectile(projectileName);
+        Projectile projectile = Projectile.projectilePool.GetGameObject(projectileName).GetComponent<Projectile>();
 
         //Put projectile in launch position
         projectile.transform.rotation = transform.rotation;

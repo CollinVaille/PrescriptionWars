@@ -13,6 +13,7 @@ public class MinigunTurret : Turret
     [Tooltip("Degrees per second the barrel rotates when firing")] public float rotaryVelocity = 90.0f;
     public AudioClip spinUp, cooldown, firing, dryFire;
     public Light lightFlash;
+    public string impactEffect;
 
     //Status variables
     private int firingCode = 0;
@@ -104,7 +105,7 @@ public class MinigunTurret : Turret
     private void EmitDeathRay()
     {
         DeathRay deathRay = DeathRay.GetDeathRay();
-        deathRay.Emit(emissionPoint.position, swivelingBody.eulerAngles, damage, range, occupant, shotLifetime);
+        deathRay.Emit(emissionPoint.position, swivelingBody.eulerAngles, damage, range, occupant, shotLifetime, 0.1f, impactEffect);
     }
 
     private void SetRounds(int newRounds)

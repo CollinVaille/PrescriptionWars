@@ -46,6 +46,9 @@ public abstract class Turret : Interactable
         //Update status
         occupant = interacting;
 
+        //Update physics layer (make it so it can't be interacted with)
+        gameObject.layer = 0;
+
         //Update rigidbody
         Rigidbody occupantRBody = occupant.GetRigidbody();
         occupantsPriorMode = occupantRBody.collisionDetectionMode;
@@ -77,6 +80,9 @@ public abstract class Turret : Interactable
         occupant.ReleaseOverride();
         occupantCode++;
         occupant = null;
+
+        //Update physics layer (make it so it can be interacted with again)
+        gameObject.layer = 10;
     }
 
     public override void ReleaseControl(bool voluntary)

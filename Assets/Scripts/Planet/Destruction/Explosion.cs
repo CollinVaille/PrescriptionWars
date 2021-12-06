@@ -2,61 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour
+public class Explosion : MonoBehaviour, PlanetPooledObject
 {
-    //STATIC POOLING OF EXPLOSIONS----------------------------------------------------------------
-
-    private static Dictionary<string, List<Explosion>> pooledExplosions;
-
-    public static void SetUpPooling()
-    {
-        pooledExplosions = new Dictionary<string, List<Explosion>>();
-    }
-
-    //Retrieve explosion from pool if one exists, else return newly created one
-    public static Explosion GetExplosion(string explosionName)
-    {
-        pooledExplosions.TryGetValue(explosionName, out List<Explosion> explosions);
-
-        Explosion explosion;
-
-        //Happy day: list exists and is not empty
-        //So return pooled explosion
-        if (explosions != null && explosions.Count != 0)
-        {
-            explosion = explosions[Random.Range(0, explosions.Count)];
-            explosions.Remove(explosion);
-            return explosion;
-        }
-
-        //Sad day: either list doesn't exist or is empty
-        //So return newly created explosion
-        explosion = Instantiate(Resources.Load<GameObject>("Planet/Explosions/" + explosionName)).GetComponent<Explosion>();
-        explosion.InitialSetUp(); //One-time initialization on creation
-        return explosion;
-    }
-
-    //Put explosion in pool unless pool is full, in which case destroy explosion
-    private static void PoolExplosion(Explosion explosion)
-    {
-        pooledExplosions.TryGetValue(explosion.name, out List<Explosion> explosions);
-
-        if (explosions == null) //No such pool, so create pool and add explosion to it
-        {
-            explosions = new List<Explosion>(); //Create pool
-            explosions.Add(explosion); //Add explosion to pool
-            pooledExplosions.Add(explosion.name, explosions); //Add pool to list of pools
-        }
-        else //Found explosion pool, so see if explosion fits...
-        {
-            if (explosions.Count > 30) //Too many pooled so just destroy explosion
-                explosion.DestroyExplosion();
-            else //There's still room in pool, so put it in there
-                explosions.Add(explosion);
-        }
-    }
-
-    //EXPLOSION INSTANCE--------------------------------------------------------------------------
+    public static PlanetObjectPool explosionPool;
 
     //Explosion parameters
     private int team = 0;
@@ -69,14 +17,11 @@ public class Explosion : MonoBehaviour
     private AudioSource sfxSource;
     private ParticleSystem visuals;
 
-    private void InitialSetUp()
+    public void OneTimeSetUp()
     {
         //Get references
         sfxSource = GetComponent<AudioSource>();
         visuals = GetComponent<ParticleSystem>();
-
-        //Makes pause menu pause/resume audio appropriately
-        God.god.ManageAudioSource(sfxSource);
 
         //Remove (Clone) from end of name (necessary for pooling to work)
         name = name.Substring(0, name.Length - 7);
@@ -89,6 +34,7 @@ public class Explosion : MonoBehaviour
 
         //Start explosion
         gameObject.SetActive(true);
+        God.god.ManageAudioSource(sfxSource);
         sfxSource.Play();
         visuals.Play(true);
 
@@ -199,22 +145,23 @@ public class Explosion : MonoBehaviour
     //Called to deactive the explosion and either... destroy it OR put it back in reserve pool
     private void Decommission()
     {
+        
+
+        //Either pool or destroy
+        explosionPool.PoolGameObject(gameObject);
+    }
+
+    public void CleanUp()
+    {
         //Silence
         if (sfxSource)
+        {
             sfxSource.Stop();
+            God.god.UnmanageAudioSource(sfxSource);
+        }
 
         //Hide
         visuals.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         gameObject.SetActive(false);
-
-        //Either pool or destroy
-        PoolExplosion(this);
-    }
-
-    //Call this instead of Object.Destroy to ensure all needed clean up is performed
-    private void DestroyExplosion()
-    {
-        God.god.UnmanageAudioSource(sfxSource);
-        Destroy(gameObject);
     }
 }

@@ -76,7 +76,7 @@ public class Cannon : Interactable
 
     private void FireProjectile(Pill interacting)
     {
-        Projectile projectile = Projectile.GetProjectile(projectileName);
+        Projectile projectile = Projectile.projectilePool.GetGameObject(projectileName).GetComponent<Projectile>();
 
         //Put projectile in launch position
         projectile.transform.rotation = transform.rotation;

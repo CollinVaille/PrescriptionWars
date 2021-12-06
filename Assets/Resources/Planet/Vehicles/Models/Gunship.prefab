@@ -13813,7 +13813,7 @@ MonoBehaviour:
   emissionPoint: {fileID: 4180837101387292825}
   magazinePositions: {x: 0.2, y: -0.2}
   shotDelay: 0.1
-  shotLifetime: 0
+  shotLifetime: 0.02
   damage: 20
   range: 300
   rotaryVelocity: 1200
@@ -13822,6 +13822,7 @@ MonoBehaviour:
   firing: {fileID: 8300000, guid: a40069d4406fdc44ea28d97e0a4b50b2, type: 3}
   dryFire: {fileID: 8300000, guid: 45ab9d496bf7bb241bf7cebb9aeb8011, type: 3}
   lightFlash: {fileID: 8139172248364582237}
+  impactEffect: Plasma Impact
 --- !u!135 &4474696221545495288
 SphereCollider:
   m_ObjectHideFlags: 0

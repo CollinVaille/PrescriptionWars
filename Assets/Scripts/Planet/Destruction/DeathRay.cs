@@ -45,43 +45,62 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject
     private float lifetime = 1.0f; //Duration in seconds from emission to destruction/clean up
     private float rollingTime = 0.0f; //Time in seconds since emission
 
-    public void Emit(Vector3 from, Vector3 rotation, float damage, float range, Pill launcher, float lifetime)
+    public void Emit(Vector3 from, Vector3 rotation, float damage, float range, Pill launcher, float lifetime, float diameter, string impactEffect)
     {
-        //Reset state
+        //Update variables
         rollingTime = 0.0f;
-
-        //Save status
         this.lifetime = lifetime;
 
-        //Prepare to turn on
+        //Set visuals
         Reskin(launcher);
-
-        //Set to new positioning and turn on
-        UpdateTransform(from, rotation, range);
         gameObject.SetActive(true);
 
-        CheckForCollision();
+        //Update reach, diameter, rotation and collisions of ray
+        UpdateTransformAndCollisions(from, rotation, range, diameter, launcher, damage, impactEffect);
 
         //God script becomes responsible for regularly updating this object
         God.god.ManageVolatileObject(this);
     }
 
-    private void UpdateTransform(Vector3 from, Vector3 rotation, float range)
+    private void UpdateTransformAndCollisions(Vector3 from, Vector3 rotation, float range, float diameter, Pill launcher, float damage, string impactEffect)
     {
-        //Set rotation
+        //The below steps need to be in order because each one is dependent on the one before...
+
+        //1. Set rotation
         transform.eulerAngles = rotation;
 
-        //Set scale
-        transform.localScale = new Vector3(0.1f, 0.1f, range);
+        //2. Update collisions and get distance to collision point
+        float distanceToCollision = CheckForCollision(from, range, diameter, launcher, damage, impactEffect);
 
-        //Set position
+        //3. Set scale
+        transform.localScale = new Vector3(diameter, diameter, distanceToCollision < 0 ? range : distanceToCollision);
+
+        //4. Set position
         transform.position = from;
-        transform.Translate(Vector3.forward * range / 2.0f, Space.Self);
+        transform.Translate(Vector3.forward * transform.localScale.z / 2.0f, Space.Self);
     }
 
-    private void CheckForCollision()
+    //If there's a collision, returns distance between from and collision point. Else, returns -1
+    private float CheckForCollision(Vector3 from, float range, float diameter, Pill launcher, float damage, string impactEffect)
     {
-        //Physics.Box
+        //Perform collision check
+        if (Physics.SphereCast(from, diameter / 2.0f, transform.forward, out RaycastHit hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        {
+            //Create special effects (noise, visuals, etc.) at impact point
+            if (impactEffect != null && !impactEffect.Equals(""))
+                ImpactEffect.impactEffectPool.GetGameObject(impactEffect).GetComponent<ImpactEffect>().CreateEffect(hit.point);
+
+            //Apply damage to hit object
+            Damageable damageable = hit.collider.GetComponentInParent<Damageable>();
+            if (damageable != null)
+                damageable.Damage(damage, 0.0f, hit.point, DamageType.Projectile, launcher.team);
+
+            //Return distance from point of emission to point of collision
+            return hit.distance;
+        }
+
+        //Returning -1 to indicate there was no collision
+        return -1.0f;
     }
 
     public void UpdateActiveStatus(float stepTime)

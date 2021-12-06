@@ -53,9 +53,8 @@ public class God : MonoBehaviour
         //Call for restart of all static initialization
         Vehicle.setUp = false;
         Voice.InitialSetUp();
-        Projectile.SetUpPooling();
+        PlanetObjectPool.SetUpPooling();
         DeathRay.SetUpPooling();
-        Explosion.SetUpPooling();
         DavyJonesLocker.PrepareTheLockerForSouls();
     }
 
