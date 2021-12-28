@@ -67,4 +67,13 @@ public class PillButton : UnitListButton
         //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
         Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
     }
+
+    public override void DisbandAssignedGroundUnit()
+    {
+        //Removes the pill from its assigned squad.
+        AssignedPill.AssignedSquad.RemovePill(AssignedPill);
+
+        //Executes the base logic for disbanding a ground unit.
+        base.DisbandAssignedGroundUnit();
+    }
 }

@@ -454,7 +454,7 @@ public class GalaxyPlanet : MonoBehaviour
         //Removes the planet ship that represents the specified army from the list of planet ships and destroys it.
         PlanetShip planetShip = planetShips[index];
         planetShips.RemoveAt(index);
-        Destroy(planetShip.gameObject);
+        planetShip.DestroyPlanetShip();
         //Updates the position of the planet ships that come after the one that was just removed.
         for(int planetShipIndex = index; planetShipIndex < planetShips.Count; planetShipIndex++)
         {
@@ -478,7 +478,7 @@ public class GalaxyPlanet : MonoBehaviour
                 //Removes the planet ship that represents the specified army from the list of planet ships and destroys it.
                 PlanetShip planetShip = planetShips[armyIndex];
                 planetShips.RemoveAt(armyIndex);
-                Destroy(planetShip.gameObject);
+                planetShip.DestroyPlanetShip();
 
                 //Indicates that the specified army's index has been found.
                 armyIndexFound = true;

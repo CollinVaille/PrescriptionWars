@@ -537,4 +537,43 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Updates the unit inspector to accurately reflect the new name of the ground unit.
         unitInspectorGroundUnitNameText.text = UnitListButtonSelected.AssignedGroundUnit.Name;
     }
+
+    /// <summary>
+    /// This method should be called using an event trigger whenever the disband button in the base section of the unit inspector is clicked.
+    /// </summary>
+    public void OnClickDisbandButton()
+    {
+        StartCoroutine(ConfirmDisbandingActionCoroutine());
+    }
+
+    /// <summary>
+    /// This method should be called on the click of the disband button in the unit inspector and confirms that the player wants to disband the selected ground unit.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmDisbandingActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        string topText = "Disband " + UnitListButtonSelected.TypeOfButton.ToString();
+        string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.Name;
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirms their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            DisbandSelectedGroundUnit();
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called in order to disband the selected ground unit and remove it and all child buttons from the unit list.
+    /// </summary>
+    private void DisbandSelectedGroundUnit()
+    {
+        UnitListButtonSelected.DisbandAssignedGroundUnit();
+    }
 }

@@ -144,6 +144,17 @@ public class PlanetShip : MonoBehaviour
     }
 
     /// <summary>
+    /// This method should be called in order to destroy the planet ship safely.
+    /// </summary>
+    public void DestroyPlanetShip()
+    {
+        //Removes the planet ship from the static list of planet ships.
+        planetShips.Remove(this);
+        //Destroys the planet ships's game object.
+        Destroy(gameObject);
+    }
+
+    /// <summary>
     /// Ensures that the player's planet ships are visible while the planet ships of the bots are not visible after a player id change.
     /// </summary>
     public static void OnPlayerIDChange()

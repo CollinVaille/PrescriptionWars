@@ -105,4 +105,13 @@ public class ArmyButton : ExpandableUnitListButton
         //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
         squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
     }
+
+    public override void DisbandAssignedGroundUnit()
+    {
+        //Removes the army from the list of armies on the selected planet.
+        ArmyManagementMenu.PlanetSelected.RemoveArmy(AssignedArmy);
+
+        //Executes the base logic for disbanding a ground unit.
+        base.DisbandAssignedGroundUnit();
+    }
 }

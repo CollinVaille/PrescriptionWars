@@ -81,4 +81,13 @@ public class SquadButton : ExpandableUnitListButton
         //Sets the text of the name text component to be the name of the squad.
         NameText.text = assignedSquad.Name;
     }
+
+    public override void DisbandAssignedGroundUnit()
+    {
+        //Removes the squad from its assigned army.
+        AssignedSquad.AssignedArmy.RemoveSquad(AssignedSquad);
+
+        //Executes the base logic for disbanding a ground unit.
+        base.DisbandAssignedGroundUnit();
+    }
 }

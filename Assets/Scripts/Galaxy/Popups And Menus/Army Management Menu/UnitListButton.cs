@@ -634,4 +634,32 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         //Updates the experience level text of the button to reflect the experience level of the ground unit. 
         ExperienceLevelText.text = AssignedGroundUnit.ExperienceLevel.ToString();
     }
+
+    /// <summary>
+    /// This method should be called in order to disband the button's assigned ground unit.
+    /// </summary>
+    public virtual void DisbandAssignedGroundUnit()
+    {
+        //Fills a list with all child buttons in the unit list that need to be destroyed.
+        List<UnitListButton> childButtonsToDestroy = new List<UnitListButton>();
+        for(int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)
+        {
+            UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+            if (buttonAtSiblingIndex.TypeOfButton <= TypeOfButton)
+                break;
+            childButtonsToDestroy.Add(buttonAtSiblingIndex);
+        }
+
+        //Destroys all neccessary child buttons in the unit list.
+        foreach(UnitListButton childButton in childButtonsToDestroy)
+        {
+            Destroy(childButton.gameObject);
+        }
+
+        //Destroys this unit list button.
+        Destroy(gameObject);
+
+        //No button in the unit list is selected after the disbanding action is complete.
+        ArmyManagementMenu.UnitListButtonSelected = null;
+    }
 }
