@@ -337,7 +337,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
         this.isDraggable = isDraggable;
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         //Removes the popup from the static list that contains all things with popup behaviour.
         galaxyPopupBehaviours.Remove(this);

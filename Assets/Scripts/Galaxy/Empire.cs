@@ -19,7 +19,10 @@ public class Empire
         pillSkins = Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString()));
     }
 
-    //Contains all of the possible pill skins that pills that belong to this empire can be.
+    /// <summary>
+    /// Contains all of the possible pill skins that pills that belong to this empire can be.
+    /// </summary>
+    public Material[] PillSkins { get => pillSkins; private set => pillSkins = value; }
     private Material[] pillSkins;
 
     public enum Culture

@@ -481,8 +481,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         unitInspectorPillViewBeingDragged = false;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         //Ensures that the cursor texture is the default cursor texture.
         if (cursorTextureChanged)
         {
@@ -555,7 +557,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         string topText = "Disband " + UnitListButtonSelected.TypeOfButton.ToString();
-        string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.Name;
+        string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -575,5 +577,55 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private void DisbandSelectedGroundUnit()
     {
         UnitListButtonSelected.DisbandAssignedGroundUnit();
+    }
+
+    /// <summary>
+    /// This method should be called using an event trigger whenever the change assigned pill skin button in the army section of the unit inspector is clicked.
+    /// </summary>
+    public void OnClickChangeAssignedPillSkinButton()
+    {
+        StartCoroutine(ConfirmChangingAssignedPillSkinActionCoroutine());
+    }
+
+    /// <summary>
+    /// This method should be called on the click of the change assigned pill skin button in the unit inspector and confirms that the player wants to change the selected ground unit's assigned pill skin.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmChangingAssignedPillSkinActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
+        string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
+        string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.Owner.PillSkins);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirms their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            ChangeSelectedGroundUnitAssignedPillSkin(confirmationPopupScript.ReturnValue);
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called in order to change the assigned pill skin of the ground unit selected in the unit list and being viewed in the unit inspector.
+    /// </summary>
+    /// <param name="pillSkin"></param>
+    private void ChangeSelectedGroundUnitAssignedPillSkin(Material pillSkin)
+    {
+        //Checks that the unit list button selected is an army button.
+        if(UnitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Army)
+        {
+            //Changes the assigned pill skin of the selected unit list button's ground unit to the pill skin specified.
+            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.AssignedPillSkin = pillSkin;
+        }
+        else
+        {
+            //Logs a warning that informs the programmer that the logic for changing the assigned pill skin for the type of unit list button selected has not been implemented yet.
+            Debug.LogWarning("Change Assigned Pill Skin Logic Not Implemented For Unit List Buttons of Type: " + UnitListButtonSelected.TypeOfButton.ToString() + ".");
+        }
     }
 }

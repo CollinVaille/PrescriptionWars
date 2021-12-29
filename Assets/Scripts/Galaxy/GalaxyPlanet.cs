@@ -53,6 +53,9 @@ public class GalaxyPlanet : MonoBehaviour
     #endif
     #endregion
     [SerializeField] private int ownerID = -1;
+    /// <summary>
+    /// Indicates the ID (index) of the empire that owns the planet.
+    /// </summary>
     public int OwnerID
     {
         get
@@ -65,6 +68,11 @@ public class GalaxyPlanet : MonoBehaviour
             nameLabel.color = Empire.empires[ownerID].LabelColor;
         }
     }
+    /// <summary>
+    /// Returns the empire that owns the planet.
+    /// </summary>
+    public Empire Owner { get => Empire.empires[OwnerID]; }
+
     #region Editor
     #if UNITY_EDITOR
     [ReadOnly]
