@@ -12,6 +12,12 @@ public class FlexibleColorPicker : GalaxyPopupBehaviour {
     * ----------------------------------------------------------
     */
 
+    [Header("Flexible Color Picker SFX Options")]
+
+    [SerializeField] private AudioClip mouseOverButtonSFX = null;
+    [SerializeField] private AudioClip clickButtonSFX = null;
+    [SerializeField] private AudioClip mouseOverDropdownOptionSFX = null;
+
     [Header("Flexible Color Picker")]
 
     //Unity connections
@@ -109,6 +115,31 @@ public class FlexibleColorPicker : GalaxyPopupBehaviour {
         }
     }
     private AdvancedSettings AS { get { return advancedSettings; } }
+
+
+
+
+
+
+
+    /*----------------------------------------------------------
+    * ------------------- Added Event Triggers -------------------
+    * ----------------------------------------------------------
+    */
+    public void OnPointerEnterButton()
+    {
+        AudioManager.PlaySFX(mouseOverButtonSFX);
+    }
+
+    public void OnButtonClick()
+    {
+        AudioManager.PlaySFX(clickButtonSFX);
+    }
+
+    public void OnPointerEnterDropdownOption()
+    {
+        AudioManager.PlaySFX(mouseOverDropdownOptionSFX);
+    }
 
 
 

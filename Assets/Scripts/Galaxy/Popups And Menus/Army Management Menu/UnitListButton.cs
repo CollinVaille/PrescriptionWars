@@ -57,6 +57,18 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// </summary>
     protected AudioClip PointerEnterSFX { get => pointerEnterSFX; }
 
+    [SerializeField, Tooltip("The sound effect that should be played whenever the player clicks on the unit list button.")] private AudioClip clickSFX = null;
+    /// <summary>
+    /// The sound effect that should be played whenever the player clicks on the unit list button.
+    /// </summary>
+    protected AudioClip ClickSFX { get => clickSFX; }
+
+    [SerializeField, Tooltip("The sound effect that should be played whenever the unit list button is sucessfully dragged to a new location in the unit list.")] private AudioClip movedSFX = null;
+    /// <summary>
+    /// The sound effect that should be played whenever the unit list button is sucessfully dragged to a new location in the unit list.
+    /// </summary>
+    protected AudioClip MovedSFX { get => movedSFX; }
+
     //------------------------
     //Non-inspector variables.
     //------------------------
@@ -255,6 +267,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     {
         //Sets the unit list button as the one selected and displayed in the unit inspector.
         ArmyManagementMenu.UnitListButtonSelected = this;
+
+        //Plays the sound effect for being clicked.
+        AudioManager.PlaySFX(clickSFX);
     }
 
     /// <summary>
@@ -531,6 +546,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 Debug.Log("Save logic does not exist for unit list button type: " + TypeOfButton.ToString());
                 break;
         }
+
+        //Plays the sound effect for the unit list button being successfully moved to another location in the unit list.
+        AudioManager.PlaySFX(movedSFX);
     }
 
     /// <summary>

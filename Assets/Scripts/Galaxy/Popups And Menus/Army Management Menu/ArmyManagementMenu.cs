@@ -66,6 +66,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
 
     [SerializeField] private AudioClip expandAllSFX = null;
     [SerializeField] private AudioClip collapseAllSFX = null;
+    [SerializeField] private AudioClip clickUnitInspectorButtonSFX = null;
+    [SerializeField] private AudioClip renameGroundUnitSFX = null;
+    [SerializeField] private AudioClip disbandGroundUnitSFX = null;
 
     [Header("Logic Options")]
 
@@ -481,7 +484,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         unitInspectorPillViewBeingDragged = false;
     }
 
-    protected override void OnDestroy()
+    public override void OnDestroy()
     {
         base.OnDestroy();
 
@@ -500,6 +503,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// </summary>
     public void OnClickRenameButton()
     {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
         StartCoroutine(ConfirmRenamingActionCoroutine());
     }
 
@@ -538,6 +544,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         UnitListButtonSelected.UpdateInfo();
         //Updates the unit inspector to accurately reflect the new name of the ground unit.
         unitInspectorGroundUnitNameText.text = UnitListButtonSelected.AssignedGroundUnit.Name;
+
+        //Plays the sound effect for renaming a ground unit.
+        AudioManager.PlaySFX(renameGroundUnitSFX);
     }
 
     /// <summary>
@@ -545,6 +554,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// </summary>
     public void OnClickDisbandButton()
     {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
         StartCoroutine(ConfirmDisbandingActionCoroutine());
     }
 
@@ -577,6 +589,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private void DisbandSelectedGroundUnit()
     {
         UnitListButtonSelected.DisbandAssignedGroundUnit();
+
+        //Plays the sound effect for disbanding a ground unit.
+        AudioManager.PlaySFX(disbandGroundUnitSFX);
     }
 
     /// <summary>
@@ -584,6 +599,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// </summary>
     public void OnClickChangeAssignedPillSkinButton()
     {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
         StartCoroutine(ConfirmChangingAssignedPillSkinActionCoroutine());
     }
 
@@ -598,6 +616,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
         string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.Owner.PillSkins);
+        confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.AssignedPillSkin);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -626,6 +645,63 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         {
             //Logs a warning that informs the programmer that the logic for changing the assigned pill skin for the type of unit list button selected has not been implemented yet.
             Debug.LogWarning("Change Assigned Pill Skin Logic Not Implemented For Unit List Buttons of Type: " + UnitListButtonSelected.TypeOfButton.ToString() + ".");
+        }
+    }
+
+    /// <summary>
+    /// This method should be called using an event trigger whenever the change icon color button in the squad section of the unit inspector is clicked.
+    /// </summary>
+    public void OnClickChangeIconColor()
+    {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
+        StartCoroutine(ConfirmChangingIconColorActionCoroutine());
+    }
+
+    /// <summary>
+    /// This method should be called on the click of the change icon color button in the unit inspector and confirms that the player wants to change the selected ground unit's icon color.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmChangingIconColorActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyColorPickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab).GetComponent<GalaxyColorPickerConfirmationPopup>();
+        string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.Name + "'s Icon Color";
+        string bodyText = "Are you sure that you want to change the icon color for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.IconColor);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirms their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            ChangeSelectedGroundUnitIconColor(confirmationPopupScript.ColorSelected);
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called in order to change the icon color of the ground unit selected in the unit list and being viewed in the unit inspector.
+    /// </summary>
+    /// <param name="newIconColor"></param>
+    private void ChangeSelectedGroundUnitIconColor(Color newIconColor)
+    {
+        //Checks that the unit list button selected is a squad button.
+        if (UnitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Squad)
+        {
+            //Gets the squad button component of the selected unit list button.
+            SquadButton squadButtonSelected = UnitListButtonSelected.gameObject.GetComponent<SquadButton>();
+            //Changes the actual squad icon color.
+            squadButtonSelected.AssignedSquad.IconColor = newIconColor;
+            //Updates the squad button to display the new icon color.
+            squadButtonSelected.UpdateInfo();
+        }
+        else
+        {
+            //Logs a warning that informs the programmer that the logic for changing the icon color for the type of unit list button selected has not been implemented yet.
+            Debug.LogWarning("Change Icon Color Logic Not Implemented For Unit List Buttons of Type: " + UnitListButtonSelected.TypeOfButton.ToString() + ".");
         }
     }
 }
