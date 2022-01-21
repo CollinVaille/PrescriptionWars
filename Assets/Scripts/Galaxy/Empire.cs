@@ -119,6 +119,17 @@ public class Empire
         }
     }
 
+    //Military.
+    private List<string> validSquadNames = new List<string>() { "Alpha Squad", "Bravo Squad", "Charlie Squad", "Delta Squad", "Echo Squad", "Foxtrot Squad", "Golf Squad", "Hotel Squad", "India Squad", "Juliet Squad", "Kilo Squad", "Lima Squad", "Mike Squad", "November Squad", "Oscar Squad", "Papa Squad", "Quebec Squad", "Romeo Squad", "Sierra Squad", "Tango Squad", "Uniform Squad", "Victor Squad", "Whiskey Squad", "X-Ray Squad", "Yankee Squad", "Zulu Squad" };
+    /// <summary>
+    /// Returns the list of squad names that are valid for a squad of this empire to be named.
+    /// </summary>
+    public List<string> ValidSquadNames { get => validSquadNames; private set => validSquadNames = value; }
+    /// <summary>
+    /// Returns a random squad name from the list of valid squad names that are valid for the empire.
+    /// </summary>
+    public string RandomValidSquadName { get => (ValidSquadNames == null || ValidSquadNames.Count == 0) ? "Squad" : ValidSquadNames[Random.Range(0, ValidSquadNames.Count)]; }
+
     //Tech.
     public TechManager techManager;
 

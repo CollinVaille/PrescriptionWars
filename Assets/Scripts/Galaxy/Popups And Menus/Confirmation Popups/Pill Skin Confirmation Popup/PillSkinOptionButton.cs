@@ -65,7 +65,6 @@ public class PillSkinOptionButton : MonoBehaviour
         get
         {
             return 95 + (195 * transform.GetSiblingIndex());
-            //return (((RectTransform)transform).sizeDelta.x / 2) + (((RectTransform)transform).sizeDelta.x + 5 * transform.GetSiblingIndex());
         }
     }
 
@@ -82,7 +81,7 @@ public class PillSkinOptionButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(transform.localPosition.x);
+
     }
 
     //This method is called whenever the scrollbar of the pill skin confirmation popup moves or changes value.
@@ -124,7 +123,6 @@ public class PillSkinOptionButton : MonoBehaviour
 
         //Logs that this pill skin option button has became visible.
         hasBecameVisible = true;
-        //Debug.Log(transform.GetSiblingIndex() + " Visible");
     }
 
     //This method is called whenever the pill skin option button is clicked.

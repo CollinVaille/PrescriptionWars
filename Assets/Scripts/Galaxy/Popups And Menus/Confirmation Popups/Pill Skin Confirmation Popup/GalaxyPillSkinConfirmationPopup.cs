@@ -20,6 +20,9 @@ public class GalaxyPillSkinConfirmationPopup : GalaxyConfirmationPopupBehaviour
     private Material[] pillSkins = null;
 
     private int pillSkinSeletced = 0;
+    /// <summary>
+    /// Returns the pill skin that the user ultimately selected.
+    /// </summary>
     public Material ReturnValue
     {
         get
