@@ -140,6 +140,16 @@ public class GalaxyPlanet : MonoBehaviour
 
     //Armies
     private List<GalaxyArmy> armies = new List<GalaxyArmy>();
+    public bool MaxArmyCountReached
+    {
+        get
+        {
+            if (planetShips.Count == 0)
+                return false;
+            else
+                return GetArmiesCount() >= planetShips[0].OffsetPositions.Length;
+        }
+    }
 
     //Ships
     private List<PlanetShip> planetShips = new List<PlanetShip>();

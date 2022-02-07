@@ -819,22 +819,48 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// </summary>
     public void OnClickCreateArmyButton()
     {
-        //Creates a new army on the selected planet.
-        PlanetSelected.AddArmy(new GalaxyArmy(PlanetSelected.Owner.empireCulture.ToString() + " Army", PlanetSelected.OwnerID));
+        //Ensures the planet selected is allowed to have another army stationed on it.
+        if (!PlanetSelected.MaxArmyCountReached)
+        {
+            //Creates a new army on the selected planet.
+            PlanetSelected.AddArmy(new GalaxyArmy(PlanetSelected.Owner.empireCulture.ToString() + " Army", PlanetSelected.OwnerID));
 
-        //Instantiates the army button from the army button prefab.
-        GameObject armyButton = Instantiate(armyButtonPrefab);
-        //Sets the parent of the army button.
-        armyButton.transform.SetParent(unitListButtonParent);
-        //Resets the scale of the army button.
-        armyButton.transform.localScale = Vector3.one;
-        //Gets the army button script component of the army button in order to edit some values in the script.
-        ArmyButton armyButtonScript = armyButton.GetComponent<ArmyButton>();
-        //Assigns the appropriate army to the army button.
-        armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(PlanetSelected.GetArmiesCount() - 1));
+            //Instantiates the army button from the army button prefab.
+            GameObject armyButton = Instantiate(armyButtonPrefab);
+            //Sets the parent of the army button.
+            armyButton.transform.SetParent(unitListButtonParent);
+            //Resets the scale of the army button.
+            armyButton.transform.localScale = Vector3.one;
+            //Gets the army button script component of the army button in order to edit some values in the script.
+            ArmyButton armyButtonScript = armyButton.GetComponent<ArmyButton>();
+            //Assigns the appropriate army to the army button.
+            armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(PlanetSelected.GetArmiesCount() - 1));
 
-        //Calls for a spacing update on the button above it if such a button exists.
-        if (UnitListButtonParent.childCount > 1)
-            UnitListButtonParent.GetChild(UnitListButtonParent.childCount - 2).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+            //Calls for a spacing update on the button above it if such a button exists.
+            if (UnitListButtonParent.childCount > 1)
+                UnitListButtonParent.GetChild(UnitListButtonParent.childCount - 2).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+        }
+        else
+        {
+            //Informs the player that the attempt to create a new army on the selected planet was a failure due to the max army count already having been reached on the planet selected.
+            StartCoroutine(ConfirmArmyCreationFailureDueToMaxArmyCount());
+        }
+    }
+
+    /// <summary>
+    /// This coroutine should be started whenever the player attempts to create a new army when the planet selected has already reached its max army count and ensures the player acknowledges the max army count has been reached.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmArmyCreationFailureDueToMaxArmyCount()
+    {
+        //Creates the confirmation popup to confirm the user acknowledges the failure to create an army.
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.Name + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.");
+
+        //Waits until the player has answered the confirmation popup and acknowledged the failure to create a new army.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
     }
 }

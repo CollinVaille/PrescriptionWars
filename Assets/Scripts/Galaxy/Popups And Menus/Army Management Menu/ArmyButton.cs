@@ -104,6 +104,20 @@ public class ArmyButton : ExpandableUnitListButton
         LeftImage.color = assignedArmy.ArmyIcon.color;
         //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
         squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
+
+        //Updates the info on all of the child buttons (essential for updating the army icon sprite).
+        for (int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)
+        {
+            //Gets the unit list button at the current sibling index.
+            UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+
+            //Breaks out of the loop for updating child button info if the unit list button at the current sibling index is not a child button.
+            if (buttonAtSiblingIndex.TypeOfButton <= TypeOfButton)
+                break;
+
+            //Updates the info on the button at the current sibling index because it is a child button.
+            buttonAtSiblingIndex.UpdateInfo();
+        }
     }
 
     public override void DisbandAssignedGroundUnit()
