@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CommsChannel : MonoBehaviour
 {
@@ -10,12 +11,8 @@ public class CommsChannel : MonoBehaviour
     //Management variables
     private Queue<RadioTransmission> commsChannel;
     private List<AudioSource> channelReceivers;
+    private Text subtitles;
     private float pitch = 1.0f;
-
-    //Common audio lines
-    private static bool commonAudioInitialized = false;
-    private static AudioClip startSound, endSound, thisIs, squad;
-    private static List<AudioClip> reportingIn;
 
     public void InitializeCommsChannel(Army army)
     {
@@ -25,30 +22,15 @@ public class CommsChannel : MonoBehaviour
         //Initialization
         commsChannel = new Queue<RadioTransmission>();
         channelReceivers = new List<AudioSource>();
+        subtitles = PlanetPauseMenu.pauseMenu.HUD.Find("Radio Subtitles").GetComponent<Text>();
 
-        InitializeCommonAudio();
+        RadioCommonAudio.InitializeCommonAudio();
 
         //Start management
         StartCoroutine(CommsChannelManager());
 
         //TEMPORARY
         AddChannelReceiver(GetComponent<AudioSource>());
-    }
-
-    private static void InitializeCommonAudio()
-    {
-        if (commonAudioInitialized)
-            return;
-
-        commonAudioInitialized = true;
-
-        startSound = Resources.Load<AudioClip>("Planet/Radio/Common/Start Sound");
-        endSound = Resources.Load<AudioClip>("Planet/Radio/Common/End Sound");
-        thisIs = Resources.Load<AudioClip>("Planet/Radio/Common/This Is");
-        squad = Resources.Load<AudioClip>("Planet/Radio/Common/Squad");
-
-        reportingIn = new List<AudioClip>();
-        God.InitializeAudioList(reportingIn, "Planet/Radio/Common/Reporting In ");
     }
 
     public void AddChannelReceiver(AudioSource newReceiver) { channelReceivers.Add(newReceiver); }
@@ -83,34 +65,35 @@ public class CommsChannel : MonoBehaviour
 
     private IEnumerator PlayTransmission(RadioTransmission rt)
     {
+        CommsPersonality commsPersonality = rt.squad.GetCommsPersonality();
+
         //Start sound
         pitch = 1.0f;
-        yield return new WaitForSeconds(PlayClip(startSound));
+        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.startSound));
 
         //Set the voice pitch
-        if (rt.sender.leader)
-            pitch = rt.sender.leader.GetComponent<AudioSource>().pitch;
+        if (rt.squad.leader)
+            pitch = commsPersonality.pitch;
 
-        //Play series of clips based on the type of transmission
-        switch (rt.transmissionType)
+        List<RadioClip> radioClips = RadioTransmissionLogic.DecodeTransmission(rt);
+        foreach(RadioClip radioClip in radioClips)
         {
-            case TransmissionType.ReportingIn:
-                if(Random.Range(0, 2) == 0)
-                    yield return new WaitForSeconds(PlayClip(thisIs));
+            //Play clip
+            subtitles.text = rt.squad.name + ": " + rt.subtitle;
+            PlayClip(radioClip.audioClip);
+            yield return new WaitForSeconds(radioClip.audioClip.length / pitch);
 
-                yield return new WaitForSeconds(PlayClip(rt.sender.Pronounce()));
-
-                if (Random.Range(0, 2) == 0)
-                    yield return new WaitForSeconds(PlayClip(squad));
-
-                yield return new WaitForSeconds(PlayClip(God.RandomClip(reportingIn)));
-
-                break;
+            //Silence between clips
+            radioClip.pauseDurationAfter *= Random.Range(commsPersonality.pauseLengthMultiplier.x, commsPersonality.pauseLengthMultiplier.y);
+            yield return new WaitForSeconds(radioClip.pauseDurationAfter);
         }
+
+        //Clear subtitles
+        subtitles.text = "";
 
         //End sound
         pitch = 1.0f;
-        yield return new WaitForSeconds(PlayClip(endSound));
+        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.endSound));
     }
 
     private float PlayClip(AudioClip clip)
@@ -126,19 +109,5 @@ public class CommsChannel : MonoBehaviour
         }
 
         return clip.length / pitch;
-    }
-}
-
-public enum TransmissionType { ReportingIn }
-
-public class RadioTransmission
-{
-    public TransmissionType transmissionType = TransmissionType.ReportingIn;
-    public Squad sender = null;
-
-    public RadioTransmission(Squad sender, TransmissionType transmissionType)
-    {
-        this.sender = sender;
-        this.transmissionType = transmissionType;
     }
 }

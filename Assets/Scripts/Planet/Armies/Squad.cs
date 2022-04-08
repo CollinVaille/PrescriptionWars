@@ -10,6 +10,9 @@ public class Squad : MonoBehaviour
 
     //Basic info
     public SquadType squadType = SquadType.Mobilized;
+
+    //Comms channel
+    private CommsPersonality leaderCommsPersonality = null;
     private AudioClip pronounciation = null;
 
     //References
@@ -36,7 +39,11 @@ public class Squad : MonoBehaviour
         army = Army.GetArmy(0);
         //for(int x = 0; x < 25; x++)
         if(squadType == SquadType.Mobilized)
+        {
             army.Comms().Send(new RadioTransmission(this, TransmissionType.ReportingIn));
+            army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+            army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+        }
 
         //Create marker for squad on the planet map
         if(squadType == SquadType.Mobilized)
@@ -299,6 +306,9 @@ public class Squad : MonoBehaviour
             else
                 leader = members[0];
 
+            //Load in his personality
+            leaderCommsPersonality = new CommsPersonality();
+
             //Start leader AI
             if(!leader.GetComponent<Player>())
             {
@@ -399,4 +409,6 @@ public class Squad : MonoBehaviour
     }
 
     public Army GetArmy() { return army; }
+
+    public CommsPersonality GetCommsPersonality() { return leaderCommsPersonality; }
 }
