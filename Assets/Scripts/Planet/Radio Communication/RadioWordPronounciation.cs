@@ -28,6 +28,11 @@ public class RadioWordPronounciation : MonoBehaviour
 
     private static List<RadioClip> PronounceWord(string word)
     {
+        //If it's a predefined word, just grab it
+        RadioClip predefinedWordClip = LoadPredefinedWordClip(word);
+        if (predefinedWordClip != null)
+            return new List<RadioClip>() { predefinedWordClip } ;
+
         //If it's a number pronounce that
         if (float.TryParse(word, out float number))
             return RadioNumericalPronounciation.PronounceNumber(number);
@@ -50,6 +55,18 @@ public class RadioWordPronounciation : MonoBehaviour
         for (int letterIndex = 0; letterIndex < word.Length;)
         {
             nextPhoeneticSyllable = null;
+
+            //Look at the next three letters, or however many is left, and get the next phoenetic syllable
+            if (letterIndex + 3 < word.Length)
+                nextPhoeneticSyllable = GetPhoeneticSyllable(word.Substring(letterIndex, 4));
+
+            //Got a match at three letters
+            if (nextPhoeneticSyllable != null)
+            {
+                radioClips.Add(LoadPhoeneticSyllableClip(nextPhoeneticSyllable));
+                letterIndex += 4;
+                continue;
+            }
 
             //Look at the next three letters, or however many is left, and get the next phoenetic syllable
             if (letterIndex + 2 < word.Length)
@@ -98,13 +115,18 @@ public class RadioWordPronounciation : MonoBehaviour
             case "A":
             case "AI":
             case "AY":
-                return "AY";
+                return "A";
             case "AH":
             case "AW":
-                return "AH";
+                return "AHH";
+            case "ALK":
+            case "AWK":
+                return "ALK";
             case "ANG":
             case "AIN":
                 return "ANG";
+            case "ANK":
+                return "ANK";
             case "B":
             case "BUH":
                 return "BUH";
@@ -117,6 +139,7 @@ public class RadioWordPronounciation : MonoBehaviour
             case "CR":
             case "CUR":
             case "COR":
+            case "CORR":
             case "KER":
                 return "KUR";
             case "D":
@@ -159,6 +182,12 @@ public class RadioWordPronounciation : MonoBehaviour
             case "ING":
             case "ENG":
                 return "ING";
+            case "ION":
+            case "TION":
+                return "ION";
+            case "IT":
+            case "ET":
+                return "IT";
             case "J":
             case "JU":
                 return "JUH";
@@ -194,6 +223,7 @@ public class RadioWordPronounciation : MonoBehaviour
                 return "QUH";
             case "R":
             case "RR":
+            case "AR":
             case "ER":
             case "UR":
             case "URR":
@@ -204,6 +234,9 @@ public class RadioWordPronounciation : MonoBehaviour
             case "S":
             case "SS":
                 return "SSS";
+            case "STR":
+            case "STIR":
+                return "STR";
             case "T":
             case "TA":
             case "TU":
@@ -237,4 +270,14 @@ public class RadioWordPronounciation : MonoBehaviour
     }
 
     private static RadioClip LoadPhoeneticSyllableClip(string syllable) { return new RadioClip("Planet/Radio/Syllables/" + syllable, false, 0.0f); }
+
+    private static RadioClip LoadPredefinedWordClip(string word)
+    {
+        AudioClip audioClip = Resources.Load<AudioClip>("Planet/Radio/Words/" + word);
+
+        if (!audioClip)
+            return null;
+        else
+            return new RadioClip(audioClip, Random.Range(0.3f, 0.5f));
+    }
 }

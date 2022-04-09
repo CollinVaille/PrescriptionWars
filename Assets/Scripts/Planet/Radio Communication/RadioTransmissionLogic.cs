@@ -35,10 +35,9 @@ public class RadioTransmissionLogic
                 break;
 
             case TransmissionType.Pronouncing:
-                radioClips.AddRange(RadioWordPronounciation.PronounceWords("Reporting In. Surrender Now Or Die."));
-                rt.subtitle += "Reporting In. Surrender Now Or Die.";
-                radioClips.AddRange(RadioNumericalPronounciation.PronounceNumber(1.69f));
-                rt.subtitle += " " + 1.69f;
+                string input = "This is Sierra Squad. Requesting backup now.";
+                radioClips.AddRange(RadioWordPronounciation.PronounceWords(input));
+                rt.subtitle += input;
                 //audioClips.AddRange(RadioNumericalPronounciation.PronounceNumber(3000));
                 break;
         }

@@ -277,7 +277,7 @@ public class Squad : MonoBehaviour
                 default: squadName = "Zeta"; break; //Woodrat, Packrat, Muskrat, Vulture, Winter, Mike
             }
 
-            pronounciation = Resources.Load<AudioClip>("Planet/Radio/Squad Names/" + squadName);
+            pronounciation = Resources.Load<AudioClip>("Planet/Radio/Words/" + squadName);
 
             return squadName + " Squad";
         }
