@@ -12,7 +12,7 @@ public class CommsChannel : MonoBehaviour
     private Queue<RadioTransmission> commsChannel;
     private List<AudioSource> channelReceivers;
     private Text subtitle;
-    private float pitch = 1.0f;
+    CommsPersonality commsPersonality;
 
     public void InitializeCommsChannel(Army army)
     {
@@ -54,32 +54,24 @@ public class CommsChannel : MonoBehaviour
             //Get the next message
             RadioTransmission rt = commsChannel.Dequeue();
 
-            Debug.Log("Beginning of transmission: " + rt.transmissionType);
-
             //Play entire audio transmission on all receivers
             yield return StartCoroutine(PlayTransmission(rt));
-
-            Debug.Log("End of transmission: " + rt.transmissionType);
         }
     }
 
     private IEnumerator PlayTransmission(RadioTransmission rt)
     {
-        CommsPersonality commsPersonality = rt.squad.GetCommsPersonality();
+        commsPersonality = rt.squad.GetCommsPersonality();
 
         //Start sound
-        pitch = 1.0f;
-        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.startSound));
-
-        //Set the voice pitch
-        if (rt.squad.leader)
-            pitch = commsPersonality.pitch;
+        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.startSound, true));
 
         List<RadioClip> radioClips = RadioTransmissionLogic.DecodeTransmission(rt);
         foreach(RadioClip radioClip in radioClips)
         {
+            //Play the radio clip
             Pill broadcaster = rt.squad.leader;
-            if(broadcaster && !broadcaster.IsDead())
+            if(!InterruptionDetected(broadcaster))
             {
                 //Play clip
                 SetSubtitleText(rt.squad.name + ": " + rt.subtitle);
@@ -88,30 +80,19 @@ public class CommsChannel : MonoBehaviour
                 //Wait for clip to end or broadcaster to die
                 for (float t = 0.0f; t < duration; t += Time.deltaTime)
                 {
-                    if (!broadcaster || broadcaster.IsDead())
+                    if (InterruptionDetected(broadcaster))
                         break;
 
                     yield return null;
                 }
             }
 
-            //If broadcaster died during radio transmission, air his death thrawls on air and then play the flatline exit sound
-            if (!broadcaster || broadcaster.IsDead())
+            //Special case handling for when radio clip is interrupted
+            if (InterruptionDetected(broadcaster))
             {
-                if(broadcaster)
-                {
-                    AudioSource dyingBroadcaster = broadcaster.GetAudioSource();
-                    if(dyingBroadcaster.isPlaying && dyingBroadcaster.clip)
-                    {
-                        //Death throws
-                        float duration = PlayClip(dyingBroadcaster.clip);
-                        yield return new WaitForSeconds(duration);
-
-                        //Flatline
-                        duration = PlayClip(RadioCommonAudio.flatline);
-                        yield return new WaitForSeconds(duration);
-                    }
-                }
+                //If broadcaster dies while on air, air his death thrawls, play the flatline exit sound, followed by a courtious automated voice message
+                if (broadcaster.IsDead())
+                    yield return StartCoroutine(PlayDeathInterruption(rt, broadcaster));
 
                 //Prematurely done with transmission
                 break;
@@ -126,12 +107,50 @@ public class CommsChannel : MonoBehaviour
         SetSubtitleText("");
 
         //End sound
-        pitch = 1.0f;
-        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.endSound));
+        yield return new WaitForSeconds(PlayClip(RadioCommonAudio.endSound, true));
     }
 
-    private float PlayClip(AudioClip clip)
+    private bool InterruptionDetected(Pill broadcaster)
     {
+        return broadcaster.IsDead();
+    }
+
+    private IEnumerator PlayDeathInterruption(RadioTransmission rt, Pill broadcaster)
+    {
+        AudioSource dyingBroadcaster = broadcaster.GetAudioSource();
+        float duration;
+
+        //Death throws
+        if (dyingBroadcaster.isPlaying && dyingBroadcaster.clip)
+        {
+            SetSubtitleText(rt.squad.name + ": *Dies*");
+            duration = PlayClip(dyingBroadcaster.clip);
+            yield return new WaitForSeconds(duration);
+        }
+
+        //Flatline
+        SetSubtitleText("*Connection Lost*");
+        duration = PlayClip(Resources.Load<AudioClip>("Planet/Radio/Mechanical/Flatline"), true);
+        yield return new WaitForSeconds(duration);
+
+        //Name of corresponder
+        SetSubtitleText("Voicemail: " + rt.squad.Pronounce() + " is not available to complete the call. This transmission will now end. Thank you for your patience.");
+        List<RadioClip> radioClips = RadioWordPronounciation.PronounceWords(rt.squad.name);
+        foreach(RadioClip radioClip in radioClips)
+        {
+            duration = PlayClip(radioClip.audioClip);
+            yield return new WaitForSeconds(duration);
+        }
+
+        //Voicemail
+        duration = PlayClip(Resources.Load<AudioClip>("Planet/Radio/Mechanical/Death Voicemail"), true);
+        yield return new WaitForSeconds(duration);
+    }
+
+    private float PlayClip(AudioClip clip, bool overridePersonalityWithGeneric = false)
+    {
+        float pitch = overridePersonalityWithGeneric ? 1.0f : commsPersonality.pitch;
+
         foreach (AudioSource receiver in channelReceivers)
         {
             if (receiver.isPlaying)

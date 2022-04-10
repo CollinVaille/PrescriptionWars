@@ -6,6 +6,8 @@ public enum TransmissionType { ReportingIn, Pronouncing }
 
 public class RadioTransmissionLogic
 {
+    const int reportingInClipCount = 7;
+
     public static List<RadioClip> DecodeTransmission(RadioTransmission rt)
     {
         List<RadioClip> radioClips = new List<RadioClip>();
@@ -29,7 +31,7 @@ public class RadioTransmissionLogic
                     rt.subtitle += "squad ";
                 }
 
-                radioClips.Add(new RadioClip(RadioCommonAudio.reportingIn));
+                radioClips.Add(new RadioClip("Planet/Radio/Reporting In/Reporting In " + Random.Range(1, reportingInClipCount + 1), false));
                 rt.subtitle += "reporting in.";
 
                 break;

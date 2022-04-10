@@ -583,6 +583,17 @@ public class PlanetPauseMenu : MonoBehaviour
         navigationBar.Find("Map Button").Find("Text").GetComponent<Text>().text = planetName + " Map";
     }
 
+    public void UpdateSquadName(string squadName, Color squadColor)
+    {
+        //Update squad navigation button's text
+        navigationBar.Find("Squad Button").Find("Text").GetComponent<Text>().text = squadName + " Squad";
+
+        //Update squad name title in squad menu
+        Text squadNameText = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>();
+        squadNameText.text = squadName + " Squad";
+        squadNameText.color = squadColor;
+    }
+
     public void UpdateFactionColor()
     {
         //Get player's faction color
@@ -605,9 +616,6 @@ public class PlanetPauseMenu : MonoBehaviour
             BlankSquadMemberDisplay(null);
         else //Have squad, so display info about it
         {
-            //Update squad name
-            pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Name").GetComponent<Text>().text = squad.name;
-
             //Update squad member list
             UpdateSquadMemberList(squad);
 
@@ -633,12 +641,12 @@ public class PlanetPauseMenu : MonoBehaviour
         //Create some needed variables
         if (squadMemberButtons == null)
             squadMemberButtons = new List<Transform>();
-        float buttonHeight = 40;
+        float buttonHeight = 25;
         Transform contentPane = pauseMenus[(int)MenuScreen.SquadMenu].Find("Squad Member Scroll View")
             .Find("Viewport").Find("Content");
 
         //For each current member: Repurpose old button for member OR create new button if ran out of old ones
-        float yPos = -25;
+        float yPos = -20;
         for (int x = 0; x < squad.members.Count; x++)
         {
             Pill member = squad.members[x];
@@ -665,14 +673,24 @@ public class PlanetPauseMenu : MonoBehaviour
                 squadMemberButtons.Add(memberButton);
             }
 
-            //Member name
-            memberButton.name = member.name + " Button";
-            memberButton.Find("Text").GetComponent<Text>().text = (member == Player.player) ?
-                member.name + " *" : member.name;
+            Text memberButtonText = memberButton.Find("Text").GetComponent<Text>();
 
-            //Member name color
-            memberButton.Find("Text").GetComponent<Text>().color = (member == squad.leader) ?
-                squad.GetArmy().color : Color.white;
+            //Customize button
+            memberButton.name = member.name + " Button";
+            if(member.IsDead()) //Dead
+            {
+                memberButton.GetComponent<Button>().interactable = false;
+                memberButtonText.text = (member == Player.player) ? member.name + " *  --  KIA" : member.name + "  --  KIA";
+                memberButtonText.color = Color.gray;
+                memberButtonText.fontStyle = (member == squad.leader) ? FontStyle.Bold : FontStyle.Normal;
+            }
+            else //Alive
+            {
+                memberButton.GetComponent<Button>().interactable = true;
+                memberButtonText.text = (member == Player.player) ? member.name + " *" : member.name;
+                memberButtonText.color = (member == squad.leader) ? Color.white : squad.GetArmy().color;
+                memberButtonText.fontStyle = (member == squad.leader) ? FontStyle.Bold : FontStyle.Normal;
+            }
 
             //Keep track of where next button will go vertically
             yPos -= buttonHeight;
@@ -680,7 +698,7 @@ public class PlanetPauseMenu : MonoBehaviour
 
         //Adjust height of content window in scroll view to include added buttons (so scrollbar works properly)
         Vector2 sizeDelta = contentPane.GetComponent<RectTransform>().sizeDelta;
-        sizeDelta.y = buttonHeight * squad.members.Count + buttonHeight / 4.0f;
+        sizeDelta.y = buttonHeight * squad.members.Count + buttonHeight / 3.0f;
         contentPane.GetComponent<RectTransform>().sizeDelta = sizeDelta;
 
         //Hide all extra buttons
@@ -732,12 +750,14 @@ public class PlanetPauseMenu : MonoBehaviour
         if(member == squad.leader)
         {
             squadMenu.Find("Member Role").GetComponent<Text>().text = "Squad Leader";
-            squadMenu.Find("Member Role").GetComponent<Text>().color = squad.GetArmy().color;
+            squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
+            squadMenu.Find("Member Role").GetComponent<Text>().fontStyle = FontStyle.Bold;
         }
         else
         {
             squadMenu.Find("Member Role").GetComponent<Text>().text = "Squadling";
-            squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
+            squadMenu.Find("Member Role").GetComponent<Text>().color = squad.GetArmy().color;
+            squadMenu.Find("Member Role").GetComponent<Text>().fontStyle = FontStyle.Normal;
         }
         
         //Set details

@@ -37,13 +37,6 @@ public class Squad : MonoBehaviour
 
         //Fix later
         army = Army.GetArmy(0);
-        //for(int x = 0; x < 25; x++)
-        if(squadType == SquadType.Mobilized)
-        {
-            army.Comms().Send(new RadioTransmission(this, TransmissionType.ReportingIn));
-            army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
-            army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
-        }
 
         //Create marker for squad on the planet map
         if(squadType == SquadType.Mobilized)
@@ -54,7 +47,7 @@ public class Squad : MonoBehaviour
     }
 
     //Adds a squad member
-    public void ReportingForDuty (Pill pill)
+    public void AddPillToSquad (Pill pill)
     {
         pill.squad = this;
         members.Add(pill);
@@ -63,20 +56,7 @@ public class Squad : MonoBehaviour
             SetLeader(pill);
 
         if (pill == Player.player)
-            PlanetPauseMenu.pauseMenu.navigationBar.Find("Squad Button").Find("Text").GetComponent<Text>().text = name;
-    }
-
-    //Removes a squad member
-    public void ReportingDeparture (Pill pill)
-    {
-        pill.squad = null;
-        members.Remove(pill);
-
-        if(pill == leader)
-            SetLeader();
-
-        if (pill == Player.player)
-            PlanetPauseMenu.pauseMenu.navigationBar.Find("Squad Button").Find("Text").GetComponent<Text>().text = "KIA";
+            PlanetPauseMenu.pauseMenu.UpdateSquadName(name, army.color);
     }
 
     //Called by leader to change the orders
@@ -191,36 +171,6 @@ public class Squad : MonoBehaviour
         }
     }
 
-    public void PopulateSquadMenu (Transform squadMenu)
-    {
-        squadMenu.Find("Squad Name").GetComponent<Text>().text = name;
-
-        //Squad leader
-        if(leader)
-        {
-            if(leader.GetComponent<Player>())
-                squadMenu.Find("Squad Leader").GetComponent<Text>().text = "Leader: " + leader.name + " (YOU)";
-            else
-                squadMenu.Find("Squad Leader").GetComponent<Text>().text = "Leader: " + leader.name;
-        }
-        else
-            squadMenu.Find("Squad Leader").GetComponent<Text>().text = "Leader: ???";
-
-        squadMenu.Find("Squad Orders").GetComponent<Text>().text = "Orders: " + God.SpaceOutString(orders.ToString());
-
-        squadMenu.Find("Squad Objective").GetComponent<Text>().text = "Objective: ???";
-
-        string squadMembers = "Members (" + members.Count + "):\n";
-
-        for(int x = 0; x < members.Count - 1; x++)
-            squadMembers += members[x].name + ", ";
-
-        if (members.Count != 0)
-            squadMembers += members[members.Count - 1].name;
-
-        squadMenu.Find("Squad Members").GetComponent<Text>().text = squadMembers;
-    }
-
     private string GenerateSquadName ()
     {
         if(squadType == SquadType.DayGuard)
@@ -279,7 +229,7 @@ public class Squad : MonoBehaviour
 
             pronounciation = Resources.Load<AudioClip>("Planet/Radio/Words/" + squadName);
 
-            return squadName + " Squad";
+            return squadName;
         }
     }
 
@@ -306,11 +256,20 @@ public class Squad : MonoBehaviour
             else
                 leader = members[0];
 
-            //Load in his personality
+            //Establish comms presence
             leaderCommsPersonality = new CommsPersonality();
+            if (squadType == SquadType.Mobilized)
+            {
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.ReportingIn));
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
+            }
 
             //Start leader AI
-            if(!leader.GetComponent<Player>())
+            if (!leader.GetComponent<Player>())
             {
                 StartCoroutine(GuardLeaderAI());
             }

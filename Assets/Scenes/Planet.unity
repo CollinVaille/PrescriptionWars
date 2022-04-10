@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.22090253, g: 0.095493756, b: 0.00462839, a: 1}
+  m_IndirectSpecularColor: {r: 0.5406096, g: 0.43995067, b: 0.0020420195, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 35968750}
   - component: {fileID: 35968752}
   - component: {fileID: 35968751}
+  - component: {fileID: 35968753}
   m_Layer: 5
   m_Name: Member Role
   m_TagString: Untagged
@@ -203,6 +204,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 35968749}
   m_CullTransparentMesh: 0
+--- !u!114 &35968753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35968749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: -2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &70274618
 GameObject:
   m_ObjectHideFlags: 0
@@ -6089,8 +6105,8 @@ MonoBehaviour:
   squads: []
   fieldGeneral: {fileID: 0}
   team: 0
-  culture: 5
-  color: {r: 1, g: 1, b: 1, a: 1}
+  culture: 2
+  color: {r: 0.54402506, g: 0.72070247, b: 1, a: 1}
   plasma1: {fileID: 0}
   plasma2: {fileID: 0}
 --- !u!4 &811231355
@@ -6115,7 +6131,7 @@ AudioDistortionFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 811231353}
   m_Enabled: 1
-  m_DistortionLevel: 0.75
+  m_DistortionLevel: 0.85
 --- !u!82 &811231357
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7630,6 +7646,7 @@ GameObject:
   - component: {fileID: 1032354138}
   - component: {fileID: 1032354140}
   - component: {fileID: 1032354139}
+  - component: {fileID: 1032354141}
   m_Layer: 5
   m_Name: Squad Name
   m_TagString: Untagged
@@ -7677,9 +7694,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 94b1aa0b92289c1498a2de5f58b28f15, type: 3}
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 35
-    m_FontStyle: 3
+    m_FontStyle: 1
     m_BestFit: 1
     m_MinSize: 0
     m_MaxSize: 35
@@ -7698,6 +7715,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1032354137}
   m_CullTransparentMesh: 0
+--- !u!114 &1032354141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032354137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 3, y: -3}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1050540287
 GameObject:
   m_ObjectHideFlags: 0

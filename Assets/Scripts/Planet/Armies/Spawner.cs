@@ -175,8 +175,6 @@ public class Spawner : MonoBehaviour
 
         SetSpawnPositionAndRotation(toRespawn);
 
-        SetSquad(toRespawn);
-
         toRespawn.BringToLife();
     }
 
@@ -249,7 +247,7 @@ public class Spawner : MonoBehaviour
             squad.InitializeSquad(atOnce, squadType);
         }
 
-        squad.ReportingForDuty(pill);
+        squad.AddPillToSquad(pill);
     }
 
     public static void SpawnCorpse (GameObject corpsePrefab, Transform fromPill)

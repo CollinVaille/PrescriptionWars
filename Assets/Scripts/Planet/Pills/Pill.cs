@@ -98,7 +98,6 @@ public class Pill : MonoBehaviour, Damageable
         controlOverride = false;
 
         //Report the sad news
-        squad.ReportingDeparture(this);
         spawner.ReportDeath(this, true);
     }
 
