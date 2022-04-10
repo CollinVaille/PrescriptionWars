@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RadioWordPronounciation : MonoBehaviour
 {
+    const int mispronounciationClipCount = 4;
+
     public static List<RadioClip> PronounceWords(string words)
     {
         //Make it all upper case first of all
@@ -16,18 +18,33 @@ public class RadioWordPronounciation : MonoBehaviour
         string[] wordList = words.Split(wordSeparators, System.StringSplitOptions.RemoveEmptyEntries);
 
         //Pronounce word by word
+        bool pronounicationChallenges = false;
         foreach(string word in wordList)
-            RadioClip.Combine(radioClips, PronounceWord(word));
+        {
+            RadioClip.Combine(radioClips, PronounceWord(word, out bool hadToSoundItOut));
+            if (hadToSoundItOut)
+                pronounicationChallenges = true;
+        }
 
-        //By default, all clips produced in this class will have a pause of zero. But, we don't want any pausing after the last clip because that's the end of the sentence
-        if (radioClips.Count > 0)
+        //Artistic touch ups before we return our pronounication
+        if(radioClips.Count > 0)
+        {
+            //Add bit asking audience to be kind to us
+            if (pronounicationChallenges)
+                radioClips.Insert(0, LoadMispronounceClip());
+
+            //By default, all clips produced in this class will have a pause of zero. But, we don't want any pausing after the last clip because that's the end of the sentence
             radioClips[radioClips.Count - 1].pauseDurationAfter = RadioClip.StandardPauseLength();
+        }
 
         return radioClips;
     }
 
-    private static List<RadioClip> PronounceWord(string word)
+    private static List<RadioClip> PronounceWord(string word, out bool hadToSoundItOut)
     {
+        //Let's see if there's an easy way to handle this word first
+        hadToSoundItOut = false;
+
         //If it's a predefined word, just grab it
         RadioClip predefinedWordClip = LoadPredefinedWordClip(word);
         if (predefinedWordClip != null)
@@ -37,7 +54,8 @@ public class RadioWordPronounciation : MonoBehaviour
         if (float.TryParse(word, out float number))
             return RadioNumericalPronounciation.PronounceNumber(number);
 
-        //Sound out the syllables with massive margin of error
+        //Else, sound out the syllables with massive margin of error
+        hadToSoundItOut = true;
         List<RadioClip> radioClips = SoundItOut(word);
 
         //By default, all clips produced in this class will have a pause of zero. But, we don't want any pausing after the last clip because that's the end of the word
@@ -270,6 +288,11 @@ public class RadioWordPronounciation : MonoBehaviour
     }
 
     private static RadioClip LoadPhoeneticSyllableClip(string syllable) { return new RadioClip("Planet/Radio/Syllables/" + syllable, false, 0.0f); }
+
+    private static RadioClip LoadMispronounceClip()
+    {
+        return new RadioClip("Planet/Radio/Mispronounce/Mispronounce " + Random.Range(1, mispronounciationClipCount + 1), false, Random.Range(0.3f, 0.5f));
+    }
 
     private static RadioClip LoadPredefinedWordClip(string word)
     {

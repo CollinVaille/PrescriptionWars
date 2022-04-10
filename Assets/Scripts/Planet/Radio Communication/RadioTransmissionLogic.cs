@@ -35,7 +35,7 @@ public class RadioTransmissionLogic
                 break;
 
             case TransmissionType.Pronouncing:
-                string input = "This is Sierra Squad. Requesting backup now.";
+                string input = "This is Warpig Squad. Requesting backup now.";
                 radioClips.AddRange(RadioWordPronounciation.PronounceWords(input));
                 rt.subtitle += input;
                 //audioClips.AddRange(RadioNumericalPronounciation.PronounceNumber(3000));

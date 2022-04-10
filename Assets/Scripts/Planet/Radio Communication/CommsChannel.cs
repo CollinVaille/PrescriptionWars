@@ -11,7 +11,7 @@ public class CommsChannel : MonoBehaviour
     //Management variables
     private Queue<RadioTransmission> commsChannel;
     private List<AudioSource> channelReceivers;
-    private Text subtitles;
+    private Text subtitle;
     private float pitch = 1.0f;
 
     public void InitializeCommsChannel(Army army)
@@ -22,7 +22,7 @@ public class CommsChannel : MonoBehaviour
         //Initialization
         commsChannel = new Queue<RadioTransmission>();
         channelReceivers = new List<AudioSource>();
-        subtitles = PlanetPauseMenu.pauseMenu.HUD.Find("Radio Subtitles").GetComponent<Text>();
+        subtitle = PlanetPauseMenu.pauseMenu.HUD.Find("Radio Subtitles").GetComponent<Text>();
 
         RadioCommonAudio.InitializeCommonAudio();
 
@@ -78,10 +78,44 @@ public class CommsChannel : MonoBehaviour
         List<RadioClip> radioClips = RadioTransmissionLogic.DecodeTransmission(rt);
         foreach(RadioClip radioClip in radioClips)
         {
-            //Play clip
-            subtitles.text = rt.squad.name + ": " + rt.subtitle;
-            PlayClip(radioClip.audioClip);
-            yield return new WaitForSeconds(radioClip.audioClip.length / pitch);
+            Pill broadcaster = rt.squad.leader;
+            if(broadcaster && !broadcaster.IsDead())
+            {
+                //Play clip
+                SetSubtitleText(rt.squad.name + ": " + rt.subtitle);
+                float duration = PlayClip(radioClip.audioClip);
+
+                //Wait for clip to end or broadcaster to die
+                for (float t = 0.0f; t < duration; t += Time.deltaTime)
+                {
+                    if (!broadcaster || broadcaster.IsDead())
+                        break;
+
+                    yield return null;
+                }
+            }
+
+            //If broadcaster died during radio transmission, air his death thrawls on air and then play the flatline exit sound
+            if (!broadcaster || broadcaster.IsDead())
+            {
+                if(broadcaster)
+                {
+                    AudioSource dyingBroadcaster = broadcaster.GetAudioSource();
+                    if(dyingBroadcaster.isPlaying && dyingBroadcaster.clip)
+                    {
+                        //Death throws
+                        float duration = PlayClip(dyingBroadcaster.clip);
+                        yield return new WaitForSeconds(duration);
+
+                        //Flatline
+                        duration = PlayClip(RadioCommonAudio.flatline);
+                        yield return new WaitForSeconds(duration);
+                    }
+                }
+
+                //Prematurely done with transmission
+                break;
+            }
 
             //Silence between clips
             radioClip.pauseDurationAfter *= Random.Range(commsPersonality.pauseLengthMultiplier.x, commsPersonality.pauseLengthMultiplier.y);
@@ -89,7 +123,7 @@ public class CommsChannel : MonoBehaviour
         }
 
         //Clear subtitles
-        subtitles.text = "";
+        SetSubtitleText("");
 
         //End sound
         pitch = 1.0f;
@@ -109,5 +143,19 @@ public class CommsChannel : MonoBehaviour
         }
 
         return clip.length / pitch;
+    }
+
+    private void SetSubtitleText(string subtitleText)
+    {
+        if(subtitleText != null && !subtitleText.Equals(""))
+        {
+            subtitle.text = subtitleText;
+            subtitle.enabled = true;
+        }
+        else
+        {
+            subtitle.text = "";
+            subtitle.enabled = false;
+        }
     }
 }
