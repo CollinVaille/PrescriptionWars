@@ -530,7 +530,7 @@ public class Bot1 : Pill
 
                     if(usingAgent)
                     {
-                        agent.isStopped = true;
+                        StopAgent();
                         usingAgent = StartNavigationTo(targetPosition);
                     }
                 }
@@ -549,7 +549,7 @@ public class Bot1 : Pill
 
                     //Disable agent
                     usingAgent = false;
-                    agent.isStopped = true;
+                    StopAgent();
                     agent.enabled = false;
                 }
             }
@@ -580,10 +580,24 @@ public class Bot1 : Pill
             yield return new WaitForSeconds(Random.Range(0.2f, 0.25f));
         }
 
-        if(agent.enabled && agent.isOnNavMesh)
-            agent.isStopped = true;
+        StopAgent();
 
         agent.enabled = false;
+    }
+
+    private void StopAgent()
+    {
+        if (agent.enabled && agent.isOnNavMesh)
+        {
+            try
+            {
+                agent.isStopped = true;
+            }
+            catch(System.Exception e)
+            {
+                Debug.Log("Caught NavMesh exception while stopping agent: " + e.ToString());
+            }
+        }
     }
 
     //Returns the distance between the two vectors NOT factoring in their y value (so ignoring height difference)

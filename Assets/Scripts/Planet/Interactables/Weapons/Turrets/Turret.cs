@@ -6,12 +6,15 @@ public abstract class Turret : Interactable
 {
     //Customization
     public int rounds = 200;
-    [Tooltip("Part of the turret that swivels when you aim it")] public Transform swivelingBody;
-    [Tooltip("Local position of occupant within swiveling body")] public Vector3 localOccupantPosition;
+    public AudioClip dryFire;
+    [Tooltip("Part of the turret that swivels when you aim it.")] public Transform swivelingBody;
+    [Tooltip("Local position of occupant within swiveling body.")] public Vector3 localOccupantPosition;
     public Transform[] turretTriggers;
-    [Tooltip("Local z position of trigger when pressed")] public float triggerPressedPos;
-    [Tooltip("Local z position of trigger when released")] public float triggerReleasedPos;
+    [Tooltip("Local z position of trigger when pressed.")] public float triggerPressedPos;
+    [Tooltip("Local z position of trigger when released.")] public float triggerReleasedPos;
     public AudioSource sfxSource;
+    [Tooltip("Occupant does not rotate with turret. Makes aiming more difficult and limits vertical reach.")] public bool detachedRotation = false;
+    [Tooltip("How far above/below 0.0f can the turret rotate on its x-axis in degrees.")] public float rotationLimit = 60.0f;
 
     //Status and reference variables
     protected float maxRounds = 0;
@@ -59,6 +62,11 @@ public abstract class Turret : Interactable
         occupant.transform.parent = swivelingBody;
         occupant.transform.localPosition = localOccupantPosition;
 
+        //Update rotation
+        occupant.transform.localEulerAngles = Vector3.zero;
+        if (occupant.GetComponent<Player>())
+            occupant.GetComponent<Player>().ResetHeadRotation();
+
         //Begin control override
         occupant.OverrideControl(this);
     }
@@ -70,6 +78,12 @@ public abstract class Turret : Interactable
 
         //Update transform
         occupant.transform.parent = null;
+
+        //Make sure player doesn't leave with broken back rotation
+        Vector3 occupantRot = occupant.transform.eulerAngles;
+        occupantRot.x = 0.0f;
+        occupantRot.z = 0.0f;
+        occupant.transform.eulerAngles = occupantRot;
 
         //Update rigidbody
         Rigidbody occupantRBody = occupant.GetRigidbody();
@@ -129,45 +143,59 @@ public abstract class Turret : Interactable
     {
         swivelingBody.Rotate(axis, angle, Space.Self);
 
-        ApplyRotationLimits();
+        ApplyXAxisRotationLimits();
+        ApplyZAxisRotationLimits();
         UpdateOccupantTransform();
     }
 
-    private void ApplyRotationLimits()
+    private void ApplyXAxisRotationLimits()
     {
-        //Put limits on rotation
+        //Put limits on x rotation
         if (swivelingBody.localEulerAngles.x > 180)
         {
-            if (swivelingBody.localEulerAngles.x < 300)
-                swivelingBody.localEulerAngles = new Vector3(300, 0, 0);
+            if (swivelingBody.localEulerAngles.x < 360 - rotationLimit)
+                swivelingBody.localEulerAngles = new Vector3(360 - rotationLimit, swivelingBody.localEulerAngles.y, 0);
         }
-        else if (swivelingBody.localEulerAngles.x > 60)
-            swivelingBody.localEulerAngles = new Vector3(60, 0, 0);
+        else if (swivelingBody.localEulerAngles.x > rotationLimit)
+            swivelingBody.localEulerAngles = new Vector3(rotationLimit, swivelingBody.localEulerAngles.y, 0);
+    }
+
+    private void ApplyZAxisRotationLimits()
+    {
+        //Global z-axis must always have no rotation, otherwise you get really funky behaviour
+        Vector3 globalRot = swivelingBody.localEulerAngles;
+        globalRot.z = 0.0f;
+        swivelingBody.localEulerAngles = globalRot;
     }
 
     private void UpdateOccupantTransform()
     {
-        //Reset LOCAL x pos of occupant
-        Vector3 occupantPosition = occupant.transform.localPosition;
-        occupantPosition.x = localOccupantPosition.x;
-        occupant.transform.localPosition = occupantPosition;
+        if (detachedRotation)
+        {
+            //Reset LOCAL x pos of occupant
+            Vector3 occupantPosition = occupant.transform.localPosition;
+            occupantPosition.x = localOccupantPosition.x;
+            occupant.transform.localPosition = occupantPosition;
 
-        //Adjust GLOBAL y pos of occupant to be slightly above turret
-        occupantPosition = occupant.transform.position;
-        occupantPosition.y = transform.position.y + 1;
-        occupant.transform.position = occupantPosition;
+            //Adjust GLOBAL y pos of occupant to be slightly above turret
+            occupantPosition = occupant.transform.position;
+            occupantPosition.y = transform.position.y + 1;
+            occupant.transform.position = occupantPosition;
 
-        //Then, snap occupant to ground
-        occupant.SnapToGround();
+            //Then, snap occupant to ground
+            occupant.SnapToGround();
 
-        //Make occupant look down sight of turret
-        occupant.transform.LookAt(transform);
+            //Make occupant look down sight of turret
+            occupant.transform.LookAt(transform);
 
-        //Reset GLOBAL x and z axis rotation (only y axis is allowed to change)
-        Vector3 occupantRotation = occupant.transform.eulerAngles;
-        occupantRotation.x = 0.0f;
-        occupantRotation.z = 0.0f;
-        occupant.transform.eulerAngles = occupantRotation;
+            //Reset GLOBAL x and z axis rotation (only y axis is allowed to change)
+            Vector3 occupantRotation = occupant.transform.eulerAngles;
+            occupantRotation.x = 0.0f;
+            occupantRotation.z = 0.0f;
+            occupant.transform.eulerAngles = occupantRotation;
+        }
+        else
+            occupant.transform.localEulerAngles = Vector3.zero;
     }
 
     protected override string GetInteractionVerb() { return occupant == Player.player ? "Get Off" : "Man"; }

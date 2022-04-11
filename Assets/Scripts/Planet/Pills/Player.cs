@@ -1368,6 +1368,8 @@ public class Player : Pill
 
     public Camera GetCamera () { return cameraTransform.GetComponent<Camera>(); }
 
+    public void ResetHeadRotation() { head.localEulerAngles = Vector3.zero; }
+
     public void ApplyDisplaySettings ()
     {
         rotationSpeed = VideoSettings.sensitivity;

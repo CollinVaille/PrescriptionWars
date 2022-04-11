@@ -11,7 +11,7 @@ public class MinigunTurret : Turret
     [Tooltip("Time from emission to destruction of death ray")] public float shotLifetime = 0.5f;
     public float damage = 20.0f, range = 300.0f;
     [Tooltip("Degrees per second the barrel rotates when firing")] public float rotaryVelocity = 90.0f;
-    public AudioClip spinUp, cooldown, firing, dryFire;
+    public AudioClip spinUp, cooldown, firing;
     public Light lightFlash;
     public string impactEffect;
 
