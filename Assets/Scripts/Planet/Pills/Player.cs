@@ -787,14 +787,22 @@ public class Player : Pill
 
         int key = ++itemInfoFlashCode;
 
+        //Update text
+        itemInfo.text = holding.GetItemInfo();
+        if (itemInfo.text == null || itemInfo.text.Equals("")) //If text is blank, then just blank everything and we're done
+        {
+            itemInfo.text = "";
+            itemInfo.enabled = false;
+            yield break;
+        }
+        else //Else, there's real text, so let's display it, wait, and then fade it out
+            itemInfo.enabled = true;
+
         //Make text fully opaque
         Color textColor;
         textColor = itemInfo.color;
         textColor.a = 1.0f;
         itemInfo.color = textColor;
-
-        //Update text
-        itemInfo.text = holding.GetItemInfo();
 
         //Wait to fade
         float duration = 3.0f;
@@ -824,6 +832,8 @@ public class Player : Pill
     }
 
     public void IncrementItemInfoFlashCode () { itemInfoFlashCode++; }
+
+    public void BlankItemInfo () { itemInfo.text = ""; }
 
     public override void EquipGear (GameObject gear, bool forHead)
     {

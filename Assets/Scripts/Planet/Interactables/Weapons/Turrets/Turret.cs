@@ -67,6 +67,10 @@ public abstract class Turret : Interactable
         if (occupant.GetComponent<Player>())
             occupant.GetComponent<Player>().ResetHeadRotation();
 
+        //Visual clean up
+        occupant.Holster(true);
+        UpdateRoundsOnUI();
+
         //Begin control override
         occupant.OverrideControl(this);
     }
@@ -89,6 +93,10 @@ public abstract class Turret : Interactable
         Rigidbody occupantRBody = occupant.GetRigidbody();
         occupantRBody.isKinematic = false;
         occupantRBody.collisionDetectionMode = occupantsPriorMode;
+
+        //Visual clean up
+        DurabilityTextManager.ClearDurabilityText();
+        occupant.Holster(false);
 
         //Update status and release control
         occupant.ReleaseOverride();
@@ -197,6 +205,8 @@ public abstract class Turret : Interactable
         else
             occupant.transform.localEulerAngles = Vector3.zero;
     }
+
+    protected virtual void UpdateRoundsOnUI() { DurabilityTextManager.SetDurabilityText(rounds); }
 
     protected override string GetInteractionVerb() { return occupant == Player.player ? "Get Off" : "Man"; }
 }

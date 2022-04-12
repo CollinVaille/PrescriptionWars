@@ -51,6 +51,8 @@ public class WD40 : RepairTool
 
     public override Vector3 GetRotationInItemRack() { return new Vector3(0, Random.Range(-180, 180), 0); }
 
+    public override Vector3 GetRotationInHolster() { return new Vector3(90, 0, 0); }
+
     public override void SecondaryAction() { StartCoroutine(ShootSubstance(false)); }
 
     public override void TertiaryAction() { StartCoroutine(ShootSubstance(true)); }

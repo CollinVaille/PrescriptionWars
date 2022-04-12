@@ -90,4 +90,7 @@ public class Shield : Item
 
     public override Vector3 GetPlaceInItemRack () { return new Vector3(0.0f, 0.0f, 0.5f); }
     public override Vector3 GetRotationInItemRack () { return new Vector3(180, 0, 0); }
+
+    public override Vector3 GetPlaceInHolster() { return new Vector3(0.1f, 0.0f, 0.0f); }
+    public override Vector3 GetRotationInHolster() { return new Vector3(0, 90, 90); }
 }

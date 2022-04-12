@@ -82,7 +82,10 @@ public class SequenceTurret : Turret
     {
         //Unleash the demon
         FireProjectile(bore.position);
+
+        //One less round now
         rounds--;
+        UpdateRoundsOnUI();
 
         //Recoil phase
         float restingZ = bore.localPosition.z;

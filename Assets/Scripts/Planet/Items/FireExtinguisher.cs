@@ -207,4 +207,7 @@ public class FireExtinguisher : Item
 
     public override Vector3 GetPlaceInItemRack() { return new Vector3(0.0f, 0.25f, 0.0f); }
     public override Vector3 GetRotationInItemRack() { return new Vector3(0, Random.Range(-180, 180), 0); }
+
+    public override Vector3 GetPlaceInHolster() { return new Vector3(0.5f, -0.1f, 0); }
+    public override Vector3 GetRotationInHolster() { return new Vector3(115, 0, 0); }
 }

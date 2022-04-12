@@ -60,6 +60,9 @@ public class PlanetPauseMenu : MonoBehaviour
         oneShotAudioSource = GetComponent<AudioSource>();
         mapCamera = God.god.GetComponent<Camera>();
 
+        //Set up other UI managers
+        DurabilityTextManager.SetUp(HUD);
+
         //Refresh pause state to start out as resumed
         paused = true;
         Pause(false);

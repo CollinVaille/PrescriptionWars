@@ -375,7 +375,7 @@ public class Bot1 : Pill
         Transform targetTransform = targetPill.transform;
         Gun gun = holding.GetComponent<Gun>();
 
-        noAmmo = gun.loadedBullets == 0 && gun.spareClips == 0;
+        noAmmo = gun.loadedBullets == 0 && gun.spareBullets == 0;
 
         //Attack loop
         while (!noAmmo && MeAndBroAlive(targetPill))
@@ -430,7 +430,7 @@ public class Bot1 : Pill
                 if (gun.loadedBullets == 0 && Random.Range(0, 2) == 0)
                 {
                     //Completely out
-                    if (gun.spareClips == 0)
+                    if (gun.spareBullets == 0)
                     {
                         noAmmo = true;
                         break;

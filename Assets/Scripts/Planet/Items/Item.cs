@@ -181,4 +181,7 @@ public class Item : MonoBehaviour
 
     public virtual Vector3 GetPlaceInItemRack () { return Vector3.zero; }
     public virtual Vector3 GetRotationInItemRack () { return new Vector3(-90, 0, 0); }
+
+    public virtual Vector3 GetPlaceInHolster() { return new Vector3(0.5f, 0, 0); }
+    public virtual Vector3 GetRotationInHolster() { return new Vector3(150, 0, 0); }
 }

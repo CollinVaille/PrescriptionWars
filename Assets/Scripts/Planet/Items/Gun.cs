@@ -9,7 +9,7 @@ public class Gun : Item
 
     //Customization
     public AudioClip fire, dryFire, reload;
-    public int loadedBullets, clipSize, spareClips;
+    public int loadedBullets, clipSize, spareBullets;
     public int range, bulletDamage, bulletKnockback;
     public float cooldown = 0;
     public string projectileName;
@@ -59,14 +59,11 @@ public class Gun : Item
         {
             //Lose bullet
             loadedBullets--;
+            UpdateAmmoCountOnUI();
 
             //Update bullet count display
             if (holderIsPlayer)
-            {
-                holder.GetComponent<Player>().FlashItemInfo();
-
                 StartCoroutine(Recoil());
-            }
 
             //Play sound effect
             holder.GetAudioSource().PlayOneShot(fire);
@@ -138,14 +135,8 @@ public class Gun : Item
             yield break;
 
         //Can't reload if no more clips
-        if (spareClips <= 0)
-        {
-            //Notify player they are screwed
-            if (holderIsPlayer)
-                holder.GetComponent<Player>().FlashItemInfo();
-
+        if (spareBullets <= 0)
             yield break;
-        }
 
         //Can't reload if busy doing something else
         if (holder.performingAction)
@@ -160,12 +151,10 @@ public class Gun : Item
         transform.localRotation = Quaternion.Euler(0, 0, -45);
 
         //Take out current clip
+        int previouslyLoadedBullets = loadedBullets;
         loadedBullets = 0;
+        UpdateAmmoCountOnUI();
         clip.Translate(Vector3.down * 0.1f, Space.Self);
-
-        //Update bullet count display for mid-reload to be 0
-        if (holderIsPlayer)
-            holder.GetComponent<Player>().FlashItemInfo();
 
         //Wait for reload to take place
         yield return new WaitForSeconds(reload.length * 0.8f);
@@ -175,37 +164,15 @@ public class Gun : Item
 
         if (holder)
         {
-            //Put new clip in
-            spareClips--;
-            loadedBullets = clipSize;
-
-            //Update bullet count display after reload
-            if (holderIsPlayer)
-                holder.GetComponent<Player>().FlashItemInfo();
+            //Put new bullets in
+            loadedBullets = Mathf.Min(previouslyLoadedBullets + spareBullets, clipSize);
+            spareBullets -= loadedBullets - previouslyLoadedBullets;
+            UpdateAmmoCountOnUI();
 
             //Reset rotation of weapon
             transform.localRotation = Quaternion.Euler(0, 0, 0);
 
             holder.performingAction = false;
-        }
-    }
-
-    public override string GetItemInfo ()
-    {
-        if (loadedBullets <= 0)
-        {
-            if(spareClips == 1)
-                return name + ": EMPTY   -   1 spare clip";
-            else
-                return name + ": EMPTY   -   " + spareClips + " spare clips";
-
-        }
-        else
-        {
-            if(spareClips == 1)
-                return name + ": ".PadRight(loadedBullets + 2, 'I') + "   -   1 spare clip";
-            else
-                return name + ": ".PadRight(loadedBullets + 2, 'I') + "   -   " + spareClips + " spare clips";
         }
     }
 
@@ -256,6 +223,8 @@ public class Gun : Item
     {
         base.PutInHand(newHolder);
 
+        UpdateAmmoCountOnUI();
+
         if (holderIsPlayer)
             holder.GetComponent<Player>().SetContinuousPrimaryAction(cooldown > 0);
     }
@@ -264,6 +233,15 @@ public class Gun : Item
     {
         aiming = false;
 
+        DurabilityTextManager.ClearDurabilityText();
+
         base.RetireFromHand();
     }
+
+    public override string GetItemInfo()
+    {
+        return "";
+    }
+
+    private void UpdateAmmoCountOnUI() { DurabilityTextManager.SetDurabilityText(loadedBullets, spareBullets); }
 }

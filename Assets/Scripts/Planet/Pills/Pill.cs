@@ -21,7 +21,7 @@ public class Pill : MonoBehaviour, Damageable
     public int team = 0;
     public float moveSpeed = 10;
     protected float health = 100, maxHealth;
-    protected bool dead = false, touchingWater = false, controlOverride = false;
+    protected bool dead = false, touchingWater = false, controlOverride = false, holstering = false;
     protected string statusReport = "Unresponsive";
     [HideInInspector] public bool performingAction = false, onFire = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
@@ -220,6 +220,41 @@ public class Pill : MonoBehaviour, Damageable
     }
 
     public virtual void Equip (Item primary, Item secondary) { }
+
+    //For right now, this is only safe to do when the pill is not doing anything else (like in control override).
+    //If this needs to become general use, you would need automatic handling of holster/unholster for any action to do with the held item.
+    public void Holster (bool holster)
+    {
+        //Avoid unnecessary work
+        if (!holding || holster == holstering)
+            return;
+
+        //Perform change
+        if(holster) //Put item in holster
+        {
+            //Update status
+            holding.RetireFromHand();
+
+            //Update UI
+            if (GetComponent<Player>())
+                GetComponent<Player>().BlankItemInfo();
+
+            //Set transform
+            holding.transform.parent = transform;
+            holding.transform.localPosition = holding.GetPlaceInHolster();
+            holding.transform.localEulerAngles = holding.GetRotationInHolster();
+        }
+        else //Take item out of holster
+        {
+            //Simplest and cleanest way: Just pretend like we haven't equipped this guy yet and then re-equip him. Ensures all reactivation code is triggered.
+            Item itemFromHolster = holding;
+            holding = null;
+            Equip(itemFromHolster);
+        }
+
+        //Update status
+        holstering = holster;
+    }
 
     public bool IsGrounded (float errorTolerance)
     {

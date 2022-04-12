@@ -113,6 +113,9 @@ public class MinigunTurret : Turret
         //Update state
         rounds = newRounds;
 
+        //Update UI
+        UpdateRoundsOnUI();
+
         //Update magazine visual
         Vector3 magazinePosition = magazine.localPosition;
         magazinePosition.x = Mathf.Lerp(magazinePositions.y, magazinePositions.x, rounds / maxRounds);
