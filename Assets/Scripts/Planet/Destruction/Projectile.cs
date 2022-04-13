@@ -76,7 +76,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
 
         //Check for collision
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, stepDistance, ~0, QueryTriggerInteraction.Ignore))
-            Impact(hit.transform);
+            Impact(hit.collider.transform);
 
         //Spin for cool effect
         transform.Rotate(Vector3.forward * stepTime * 720, Space.Self);
@@ -94,7 +94,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
     //Called when the projectile hits something
     private void Impact(Transform hit)
     {
-        Damageable victim = God.GetDamageable(hit);
+        Damageable victim = hit.GetComponentInParent<Damageable>();
         if (victim != null)
         {
             victim.Damage(damage, knockback, transform.position, DamageType.Projectile, launcher.team);

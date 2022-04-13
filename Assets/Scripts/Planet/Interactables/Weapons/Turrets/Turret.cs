@@ -23,7 +23,7 @@ public abstract class Turret : Interactable
     private int occupantCode = 0;
     protected bool triggerPressed = false;
 
-    public virtual void Start()
+    protected virtual void Start()
     {
         if (sfxSource)
             God.god.ManageAudioSource(sfxSource);

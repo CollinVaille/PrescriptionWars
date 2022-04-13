@@ -1154,7 +1154,7 @@ public class Player : Pill
             outdoorReverbPreset = God.god.GetComponent<AudioReverbZone>().reverbPreset;
             God.god.GetComponent<AudioReverbZone>().reverbPreset = indoorReverbPreset;
 
-            moveSpeed *= 0.5f;
+            //moveSpeed *= 0.5f;
 
             Building.playerInside = building;
 
@@ -1173,7 +1173,7 @@ public class Player : Pill
             Planet.planet.ambientVolume *= 4;
             God.god.GetComponent<AudioReverbZone>().reverbPreset = outdoorReverbPreset;
 
-            moveSpeed *= 2.0f;
+            //moveSpeed *= 2.0f;
 
             if (Building.playerInside)
             {

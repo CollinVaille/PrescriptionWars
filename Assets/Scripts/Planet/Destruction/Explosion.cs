@@ -106,7 +106,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
 
     private bool CanDamageStructure(Transform t)
     {
-        return God.GetDamageable(t) == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>()
+        return t.GetComponentInParent<Damageable>() == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>()
             && !t.name.Equals("Floor");
     }
 

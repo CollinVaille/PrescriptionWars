@@ -185,7 +185,7 @@ public class Vehicle : MonoBehaviour
     public void DamagePart(Transform part, Vector3 contactPoint, float radius, float impactSpeed, bool recursive)
     {
         //Determine if part is allowed to be damaged
-        if (!part.CompareTag("Untagged") || Vector3.Distance(part.position, contactPoint) > radius)
+        if (!part || !part.CompareTag("Untagged") || Vector3.Distance(part.position, contactPoint) > radius)
             return;
 
         //Remember original position

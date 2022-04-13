@@ -52,7 +52,7 @@ public class FireExtinguisher : Item
         sfxSource.Play();
 
         //Lifetime of single spurt
-        Damageable us = God.GetDamageable(transform);
+        Damageable us = transform.GetComponentInParent<Damageable>();
         while (actionKey == actionCode && holder)
         {
             //Player/bot specific loop guards/conditions
@@ -84,7 +84,7 @@ public class FireExtinguisher : Item
                         Transform hitTransform = hit.collider.transform;
 
                         //Can't touch ourselves and can't go through walls
-                        if (God.GetDamageable(hitTransform) == us || !DirectLineToTarget(hit.collider))
+                        if (hitTransform.GetComponentInParent<Damageable>() == us || !DirectLineToTarget(hit.collider))
                             continue;
 
                         PutOutFire(hitTransform);

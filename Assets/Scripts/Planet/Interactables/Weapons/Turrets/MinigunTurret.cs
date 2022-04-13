@@ -11,12 +11,20 @@ public class MinigunTurret : Turret
     [Tooltip("Time from emission to destruction of death ray")] public float shotLifetime = 0.5f;
     public float damage = 20.0f, range = 300.0f;
     [Tooltip("Degrees per second the barrel rotates when firing")] public float rotaryVelocity = 90.0f;
+    [Tooltip("Degrees per second the barrel rotates when firing")] public float groundHeight = 0.9f;
     public AudioClip spinUp, cooldown, firing;
     public Light lightFlash;
     public string impactEffect;
 
     //Status variables
     private int firingCode = 0;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        SinkTurretIntoGround();
+    }
 
     public override void OnTriggerPressed()
     {
@@ -128,5 +136,18 @@ public class MinigunTurret : Turret
         sfxSource.clip = sound;
         sfxSource.loop = loopSound;
         sfxSource.Play();
+    }
+
+    //This sink function is needed. If the ground height is not carefully set, it can lead to pills glitching up and down when trying to use the turret.
+    private void SinkTurretIntoGround()
+    {
+        //Determine current distance to ground
+        Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo);
+        float currentHeight = hitInfo.distance;
+
+        //Adjust distance to ground to fit target distance
+        Vector3 currentPos = transform.localPosition;
+        currentPos.y += groundHeight - currentHeight;
+        transform.localPosition = currentPos;
     }
 }

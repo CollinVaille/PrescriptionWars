@@ -481,8 +481,8 @@ public class Pill : MonoBehaviour, Damageable
     {
         if (controlOverride)
             return;
-        if(GetComponent<Player>())
-            Debug.Log(transform.parent);
+        //if(GetComponent<Player>())
+        //    Debug.Log(transform.parent);
 
         if(!transform.parent)
         {

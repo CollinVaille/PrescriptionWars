@@ -9,8 +9,8 @@ public class VehicleZone : MonoBehaviour
     {
         Pill pill = other.GetComponentInParent<Pill>();
 
-        if (pill && pill.GetComponent<Player>())
-            Debug.Log("Entering");
+        //if (pill && pill.GetComponent<Player>())
+        //    Debug.Log("Entering");
 
         if (pill)
             pill.ChangeVehicleZone(this, true);
@@ -27,8 +27,8 @@ public class VehicleZone : MonoBehaviour
     {
         Pill pill = other.GetComponentInParent<Pill>();
 
-        if (pill && pill.GetComponent<Player>())
-            Debug.Log("Exiting");
+        //if (pill && pill.GetComponent<Player>())
+        //    Debug.Log("Exiting");
 
         if (pill)
             pill.ChangeVehicleZone(this, false);
