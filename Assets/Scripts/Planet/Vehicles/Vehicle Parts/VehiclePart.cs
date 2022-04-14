@@ -15,14 +15,8 @@ public class VehiclePart : MonoBehaviour, Damageable
 
     protected virtual void Start()
     {
-        //Determine which vehicle part belongs to
-        Transform t = transform.parent;
-        while (t && !belongsTo)
-        {
-            belongsTo = t.GetComponent<Vehicle>();
-
-            t = t.parent;
-        }
+        //Determine which vehicle the part belongs to
+        belongsTo = transform.GetComponentInParent<Vehicle>();
 
         //Get other references
         partCollider = GetComponent<Collider>();
@@ -92,4 +86,6 @@ public class VehiclePart : MonoBehaviour, Damageable
         if (!working && health > 0)
             PartRecovery();
     }
+
+    public float GetHealthPercentage() { return health / initialHealth; }
 }
