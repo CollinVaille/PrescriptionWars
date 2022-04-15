@@ -272,4 +272,8 @@ public class God : MonoBehaviour
         newListener.enabled = true;
         currentListener = newListener;
     }
+
+    public GameObject InstantiateSomeShit(GameObject somePrefab) { return Instantiate(somePrefab); }
+
+    public void DestroySomeShit(GameObject toDestroy) { Destroy(toDestroy); }
 }

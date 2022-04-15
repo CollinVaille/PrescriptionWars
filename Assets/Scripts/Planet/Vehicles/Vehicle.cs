@@ -45,8 +45,8 @@ public class Vehicle : MonoBehaviour
     private List<Quaternion> originalPartRotations;
 
     //Thrusting, braking, and steering
-    [HideInInspector] public float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
-    [HideInInspector] public float steeringWheel = 0.0f; //0.0f = even/no rotation, 1.0f = full right, -1.0f = full left
+    [HideInInspector] protected float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
+    [HideInInspector] protected float steeringWheel = 0.0f; //0.0f = even/no rotation, 1.0f = full right, -1.0f = full left
     public float thrustPower = 2000, brakePower = 1500, turnStrength = 90;
     public float floorPosition = -0.1f;
 
@@ -57,7 +57,7 @@ public class Vehicle : MonoBehaviour
     protected int absoluteMaxSpeed = 1, currentMaxSpeed = 0, currentSpeed = 0;
 
     //Traction
-    private bool tractionControl = false;
+    private bool tractionControl = false, cruiseControl = false;
     public int traction = 50;
 
     //Damage
@@ -392,5 +392,21 @@ public class Vehicle : MonoBehaviour
 
         foreach (Engine engine in engines)
             engine.UpdateEngineEffects(backwardThrusting, currentSpeed, absoluteMaxSpeed);
+    }
+
+    public bool CruiseControlActivated() { return cruiseControl; }
+
+    public void SetCruiseControl(bool turnCruiseControlOn) { cruiseControl = turnCruiseControlOn; }
+
+    public void SetGasPedal(float gasPedal)
+    {
+        if (!CruiseControlActivated())
+            this.gasPedal = gasPedal;
+    }
+
+    public void SetSteeringWheel(float steeringWheel)
+    {
+        if (!CruiseControlActivated())
+            this.steeringWheel = steeringWheel;
     }
 }

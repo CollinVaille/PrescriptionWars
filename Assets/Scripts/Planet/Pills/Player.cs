@@ -1282,8 +1282,8 @@ public class Player : Pill
             //Update vehicle GUI
             if (vehicleUnderControl)
             {
-                vehicleUnderControl.gasPedal = Input.GetAxis("Vertical");
-                vehicleUnderControl.steeringWheel = Input.GetAxis("Horizontal");
+                vehicleUnderControl.SetGasPedal(Input.GetAxis("Vertical"));
+                vehicleUnderControl.SetSteeringWheel(Input.GetAxis("Horizontal"));
 
                 if (Input.GetButtonDown("Up One Gear"))
                     vehicleUnderControl.ChangeGear(true, true);

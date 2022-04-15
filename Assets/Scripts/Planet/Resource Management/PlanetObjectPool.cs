@@ -10,7 +10,7 @@ using UnityEngine;
  * Explosion explosion = explosionPool.GetGameObject("Large Plasma Explosion").GetComponent<Explosion>();
  */ 
 
-public class PlanetObjectPool : MonoBehaviour
+public class PlanetObjectPool
 {
     //STATIC MANAGEMENT -------------------------------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public class PlanetObjectPool : MonoBehaviour
 
         //Sad day: either game object doesn't exist or is empty
         //So return newly game object
-        theGameObject = Instantiate(Resources.Load<GameObject>(GetResourcePath(gameObjectName)));
+        theGameObject = God.god.InstantiateSomeShit(Resources.Load<GameObject>(GetResourcePath(gameObjectName)));
         theGameObject.GetComponent<PlanetPooledObject>().OneTimeSetUp();
         return theGameObject;
     }
@@ -72,7 +72,7 @@ public class PlanetObjectPool : MonoBehaviour
         else //Found game object pool, so see if game object fits...
         {
             if (gameObjects.Count > 20) //Too many pooled so just game object
-                Destroy(theGameObject);
+                God.god.DestroySomeShit(theGameObject);
             else //There's still room in pool, so put it in there
                 gameObjects.Add(theGameObject);
         }

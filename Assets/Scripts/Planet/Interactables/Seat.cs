@@ -75,7 +75,7 @@ public class Seat : Interactable
         if (!occupant)
             return;
 
-        if (controls)
+        if (controls && !controls.CruiseControlActivated())
             controls.SetPower(false);
 
         if (voluntary)
