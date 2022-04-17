@@ -48,7 +48,7 @@ public class Aircraft : Vehicle
         if (gasPedal > 0.01f) //Forward (thrust)
         {
             if(MovingBackward() || rBody.velocity.magnitude < currentMaxSpeed)
-                customBody.AddForce(Vector3.forward * thrustPower * Time.fixedDeltaTime, Space.Self);
+                customBody.AddForce(Vector3.forward * GetThrustPower() * Time.fixedDeltaTime, Space.Self);
         }
         else if (gasPedal < -0.01f) //Backward (brakes)
         {

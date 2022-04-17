@@ -5,7 +5,7 @@ using UnityEngine;
 //Lever that has up/down state.
 public class PlanetLever : Interactable
 {
-    public bool up = true;
+    public bool up = true, upIsOn = true;
 
     public AudioClip pullUp, pullDown;
     public float upRotation, downRotation;
@@ -20,7 +20,7 @@ public class PlanetLever : Interactable
         foreach (Interactable effector in effectors)
         {
             if(effector)
-                effector.Interact(interacting, up);
+                effector.Interact(interacting, up ? upIsOn : !upIsOn);
         }
     }
 

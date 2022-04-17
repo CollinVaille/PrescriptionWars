@@ -73,7 +73,7 @@ public class Hovercraft : Vehicle
         else //Under speed limit; normal control
         {
             if (gasPedal > 0)
-                rBody.AddForce(transform.forward * Time.fixedDeltaTime * thrustPower);
+                rBody.AddForce(transform.forward * Time.fixedDeltaTime * GetThrustPower());
             else if (gasPedal < 0)
                 rBody.AddForce(-transform.forward * Time.fixedDeltaTime * brakePower);
 

@@ -26,9 +26,13 @@ public class Engine : VehiclePart
 
     protected override void PartFailure()
     {
+        //No more power
         SetPower(false);
 
         base.PartFailure();
+
+        //Make sure all effects are updated before we stop getting updates (vehicle is responsible for calling update but we are removing ourselves from their list)
+        UpdateEngineEffects(false, 1, 1);
 
         belongsTo.RemoveEngine(this);
     }
@@ -77,7 +81,7 @@ public class Engine : VehiclePart
     {
         bool shouldBeOn = belongsTo.PoweredOn() && working && (!backwardThrusting || supportReverseThrusting);
 
-        UpdateEngineAudio(shouldBeOn, 1.0f + currentSpeed / absoluteMaxSpeed);
+        UpdateEngineAudio(shouldBeOn, belongsTo.EngineAudioCoefficient());
         UpdateEngineExhaust(shouldBeOn, backwardThrusting, currentSpeed, absoluteMaxSpeed);
     }
 
@@ -135,4 +139,6 @@ public class Engine : VehiclePart
         else if (engineFire && belongsTo.PoweredOn())
             engineFire.intensity = Mathf.Min(initialHealth / health, 2.5f);
     }
+
+    public AudioSource GetEngineAudio() { return engineAudio; }
 }

@@ -47,7 +47,8 @@ public class Vehicle : MonoBehaviour
     //Thrusting, braking, and steering
     [HideInInspector] protected float gasPedal = 0.0f; //0.0f = not pressed, 1.0f = full forward, -1.0f = full backward
     [HideInInspector] protected float steeringWheel = 0.0f; //0.0f = even/no rotation, 1.0f = full right, -1.0f = full left
-    public float thrustPower = 2000, brakePower = 1500, turnStrength = 90;
+    [SerializeField] private float thrustPower = 2000;
+    public float brakePower = 1500, turnStrength = 90;
     public float floorPosition = -0.1f;
 
     //Gears
@@ -55,6 +56,7 @@ public class Vehicle : MonoBehaviour
     public AudioClip gearShift, gearStuck, slowDown;
     private int gearNumber = 0;
     protected int absoluteMaxSpeed = 1, currentMaxSpeed = 0, currentSpeed = 0;
+    private bool lastGearIsThrust = false, thrusting = false;
 
     //Traction
     private bool tractionControl = false, cruiseControl = false;
@@ -233,6 +235,8 @@ public class Vehicle : MonoBehaviour
     {
         if(gearNumber == 0)
             gearIndicator.text = "Park";
+        else if(thrusting && gearNumber == gears.Length - 1)
+            gearIndicator.text = "Thrusting";
         else
             gearIndicator.text = "Gear " + gearNumber;
     }
@@ -245,14 +249,33 @@ public class Vehicle : MonoBehaviour
 
     public void ChangeGear(bool goUpOne, bool updateIndicator)
     {
+        //Can't change gears while thrusting
+        if(thrusting)
+        {
+            generalAudio.PlayOneShot(gearStuck);
+            return;
+        }
+
         //Change gear number
         if (goUpOne)
         {
-            if(++gearNumber >= gears.Length)
+            if (lastGearIsThrust)
             {
-                gearNumber = gears.Length - 1;
-                generalAudio.PlayOneShot(gearStuck);
-                return;
+                if (++gearNumber >= gears.Length - 1)
+                {
+                    gearNumber = gears.Length - 2;
+                    generalAudio.PlayOneShot(gearStuck);
+                    return;
+                }
+            }
+            else
+            {
+                if (++gearNumber >= gears.Length)
+                {
+                    gearNumber = gears.Length - 1;
+                    generalAudio.PlayOneShot(gearStuck);
+                    return;
+                }
             }
         }
         else if(--gearNumber < 0)
@@ -265,12 +288,12 @@ public class Vehicle : MonoBehaviour
         RefreshGear(updateIndicator, false);
     }
 
-    protected virtual void RefreshGear(bool updateIndicator, bool onStart)
+    protected virtual void RefreshGear(bool updateIndicator, bool skipSoundEffect)
     {
         //Update effects
         currentMaxSpeed = gears[gearNumber];
 
-        if(!onStart)
+        if(!skipSoundEffect)
             generalAudio.PlayOneShot(gearShift);
 
         if (updateIndicator)
@@ -359,6 +382,8 @@ public class Vehicle : MonoBehaviour
             brakePower -= brakingPerEngine;
     }
 
+    public List<Engine> GetEngines() { return engines; }
+
     public bool PoweredOn () { return on; }
 
     public AudioSource GetGeneralAudio () { return generalAudio; }
@@ -400,13 +425,41 @@ public class Vehicle : MonoBehaviour
 
     public void SetGasPedal(float gasPedal)
     {
-        if (!CruiseControlActivated())
-            this.gasPedal = gasPedal;
+        if (CruiseControlActivated() || thrusting)
+            return;
+
+        this.gasPedal = gasPedal;
     }
+
+    public void SetThrusting(bool thrusting)
+    {
+        this.thrusting = thrusting;
+
+        if(thrusting)
+        {
+            gasPedal = 1.0f;
+
+            gearNumber = gears.Length - 1;
+            RefreshGear(true, true);
+        }
+        else
+        {
+            gearNumber = gears.Length - 2;
+            RefreshGear(true, true);
+        }
+    }
+
+    protected float GetThrustPower() { return thrusting ? thrustPower * 2.0f : thrustPower; }
 
     public void SetSteeringWheel(float steeringWheel)
     {
         if (!CruiseControlActivated())
             this.steeringWheel = steeringWheel;
     }
+
+    public int GetCurrentGear() { return gearNumber; }
+
+    public void CoupleThrusterToVehicle() { lastGearIsThrust = true; }
+
+    public float EngineAudioCoefficient() { return 1.0f + ((1.0f * currentSpeed) / absoluteMaxSpeed); }
 }
