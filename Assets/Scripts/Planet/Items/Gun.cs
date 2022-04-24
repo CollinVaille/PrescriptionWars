@@ -243,5 +243,9 @@ public class Gun : Item
         return "";
     }
 
-    private void UpdateAmmoCountOnUI() { DurabilityTextManager.SetDurabilityText(loadedBullets, spareBullets); }
+    private void UpdateAmmoCountOnUI()
+    {
+        if(holderIsPlayer)
+            DurabilityTextManager.SetDurabilityText(loadedBullets, spareBullets);
+    }
 }

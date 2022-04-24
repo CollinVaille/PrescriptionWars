@@ -37,36 +37,44 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
 
     public void Launch(float damage, float knockback, float range, Pill launcher)
     {
-        //First, remember our mission briefing
-        this.damage = damage;
-        this.knockback = knockback;
-        this.range = range;
-        this.launcher = launcher;
-
-        //Then, theme the projectile's appearance to the faction color
-        Reskin();
-
-        //Thereafter, randomize initial rotation to make it look cooler
-        transform.Rotate(Vector3.forward * Random.Range(0, 90), Space.Self);
-
-        //Finally, proceed with launch!
-        distanceCovered = 0.0f;
-        gameObject.SetActive(true);
-
-        //Bwwaaaaahhh
-        if (sfxSource)
+        if (!launcher)
         {
-            God.god.ManageAudioSource(sfxSource);
-            sfxSource.Play();
+            Debug.Log("Projectile emitted but no one shot it?");
+            Decommission();
         }
-
-        //Raahhhhhhhh
-        float transitiveVelocity = transform.InverseTransformVector(launcher.GetRootGlobalVelocity()).z;
-        actualLaunchSpeed = transitiveVelocity <= 0 ? launchSpeed : launchSpeed + transitiveVelocity;
-        if (rBody)
-            rBody.AddRelativeForce(Vector3.forward * actualLaunchSpeed, ForceMode.VelocityChange);
         else
-            God.god.ManageVolatileObject(this);
+        {
+            //First, remember our mission briefing
+            this.damage = damage;
+            this.knockback = knockback;
+            this.range = range;
+            this.launcher = launcher;
+
+            //Then, theme the projectile's appearance to the faction color
+            Reskin();
+
+            //Thereafter, randomize initial rotation to make it look cooler
+            transform.Rotate(Vector3.forward * Random.Range(0, 90), Space.Self);
+
+            //Finally, proceed with launch!
+            distanceCovered = 0.0f;
+            gameObject.SetActive(true);
+
+            //Bwwaaaaahhh
+            if (sfxSource)
+            {
+                God.god.ManageAudioSource(sfxSource);
+                sfxSource.Play();
+            }
+
+            //Raahhhhhhhh
+            float transitiveVelocity = transform.InverseTransformVector(launcher.GetRootGlobalVelocity()).z;
+            actualLaunchSpeed = transitiveVelocity <= 0 ? launchSpeed : launchSpeed + transitiveVelocity;
+            if (rBody)
+                rBody.AddRelativeForce(Vector3.forward * actualLaunchSpeed, ForceMode.VelocityChange);
+            else
+                God.god.ManageVolatileObject(this);
+        }
     }
 
     //Used to update the collision detection, movement, etc...
@@ -110,6 +118,8 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
             explosion.transform.rotation = transform.rotation;
             explosion.Explode(launcher.team);
         }
+        else if(projectileType == ProjectileType.Laser) //Create particle system at point of impact
+            ImpactEffect.impactEffectPool.GetGameObject("Plasma Impact").GetComponent<ImpactEffect>().CreateEffect(transform.position);
 
         Decommission();
     }

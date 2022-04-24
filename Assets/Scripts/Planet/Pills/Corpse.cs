@@ -5,6 +5,7 @@ using UnityEngine;
 public class Corpse : MonoBehaviour
 {
     private Pill soulOfCorpse;
+    private Collider groundToStickTo;
     public bool beingExecuted = false;
 
     public void BootUpCorpse (Pill soulOfCorpse)
@@ -33,13 +34,15 @@ public class Corpse : MonoBehaviour
 
         //Now, stick pill in final resting place (no more rolling around)...
 
+        //Get rid of moving parts
+        Destroy(GetComponent<Rigidbody>());
+        Destroy(GetComponent<Collider>());
+
         //Push down into ground
-        transform.Translate(Vector3.down * 0.6f, Space.World);
+        PhysicallyPushIntoGround();
 
         //Finalize
         DavyJonesLocker.CheckOut(soulOfCorpse, this);
-        Destroy(GetComponent<Rigidbody>());
-        Destroy(GetComponent<Collider>());
         AudioSource sfxSource = GetComponent<AudioSource>();
         if (sfxSource)
         {
@@ -49,8 +52,38 @@ public class Corpse : MonoBehaviour
         Destroy(this);
     }
 
+    private void PhysicallyPushIntoGround()
+    {
+        transform.Translate(Vector3.down * 0.6f, Space.World);
+        DetermineTransformParent();
+    }
+
+    private void DetermineTransformParent()
+    {
+        if (!groundToStickTo)
+            return;
+
+        Vehicle vehicleParent = groundToStickTo.GetComponentInParent<Vehicle>();
+
+        if (vehicleParent)
+            transform.parent = vehicleParent.transform;
+        else
+        {
+            Rigidbody rBodyParent = groundToStickTo.GetComponentInParent<Rigidbody>();
+
+            if (rBodyParent)
+                transform.parent = rBodyParent.transform;
+        }
+    }
+
     private bool IsGrounded ()
     {
-        return Physics.Raycast(transform.position, Vector3.down, 5);
+        if(Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 5))
+        {
+            groundToStickTo = hitInfo.collider;
+            return true;
+        }
+
+        return false;
     }
 }

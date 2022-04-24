@@ -14,7 +14,6 @@ public class MinigunTurret : Turret
     [Tooltip("Degrees per second the barrel rotates when firing")] public float groundHeight = 0.9f;
     public AudioClip spinUp, cooldown, firing;
     public Light lightFlash;
-    public string impactEffect;
 
     //Status variables
     private int firingCode = 0;
@@ -43,7 +42,7 @@ public class MinigunTurret : Turret
 
         //Spin up
         PlaySound(spinUp, false);
-        for (float t = 0.0f, duration = spinUp.length; t < duration && firingKey == firingCode && triggerPressed; t += Time.deltaTime)
+        for (float t = 0.0f, duration = spinUp.length; t < duration && firingKey == firingCode && triggerPressed && occupant; t += Time.deltaTime)
         {
             float currentRotarySpeed = rotaryVelocity * Time.deltaTime * t / duration;
             barrel.Rotate(Vector3.forward * currentRotarySpeed, Space.Self);
@@ -57,7 +56,7 @@ public class MinigunTurret : Turret
                 //Firing loop
                 PlaySound(firing, true);
                 float flashTime = 0.05f;
-                for (float t = 0.0f; firingKey == firingCode && triggerPressed; t += Time.deltaTime)
+                for (float t = 0.0f; firingKey == firingCode && triggerPressed && occupant; t += Time.deltaTime)
                 {
                     //Spin barrel
                     float currentRotarySpeed = rotaryVelocity * Time.deltaTime;
@@ -112,8 +111,8 @@ public class MinigunTurret : Turret
 
     private void EmitDeathRay()
     {
-        DeathRay deathRay = DeathRay.GetDeathRay();
-        deathRay.Emit(emissionPoint.position, swivelingBody.eulerAngles, damage, range, occupant, shotLifetime, 0.1f, impactEffect);
+        DeathRay deathRay = DeathRay.deathRayPool.GetGameObject("Death Ray").GetComponent<DeathRay>();
+        deathRay.Emit(emissionPoint.position, swivelingBody.eulerAngles, damage, range, occupant, shotLifetime, 0.1f);
     }
 
     private void SetRounds(int newRounds)

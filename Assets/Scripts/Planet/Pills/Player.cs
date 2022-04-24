@@ -92,7 +92,6 @@ public class Player : Pill
 
         //Start coroutines
         StartCoroutine(ManageInteractOption());
-        StartCoroutine(ManageHealth());
         StartCoroutine(CameraOrbit());
         StartCoroutine(ManageFootstepsMaterial());
     }
@@ -581,7 +580,8 @@ public class Player : Pill
         Image healthBarBackground = PlanetPauseMenu.pauseMenu.HUD.Find("Health Bar Background").GetComponent<Image>();
 
         //Every frame, manage visibility of health bar until death
-        while (true)
+        int originalLifeNumber = GetLifeNumber();
+        while (originalLifeNumber == GetLifeNumber())
         {
             //Hide health bar
             SetImageTransparency(healthBar, 0);
@@ -623,10 +623,19 @@ public class Player : Pill
         SetImageTransparency(healthBarBackground, 0);
     }
 
+    public void UpdateHealthBarColor() { SetImageColorKeepTransparency(healthBar, squad.GetArmy().color); }
+
     private void SetImageTransparency (Image image, float alpha)
     {
         Color imageColor = image.color;
         imageColor.a = alpha;
+        image.color = imageColor;
+    }
+
+    private void SetImageColorKeepTransparency(Image image, Color color)
+    {
+        Color imageColor = color;
+        imageColor.a = image.color.a;
         image.color = imageColor;
     }
 
@@ -1123,8 +1132,11 @@ public class Player : Pill
     {
         base.BringToLife();
 
+        //Start managing our health again
+        StartCoroutine(ManageHealth());
+
         //Re-equip item we had before death
-        if(droppedOnDeath)
+        if (droppedOnDeath)
         {
             Equip(droppedOnDeath);
             droppedOnDeath = null;

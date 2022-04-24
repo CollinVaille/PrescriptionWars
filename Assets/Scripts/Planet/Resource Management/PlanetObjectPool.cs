@@ -18,6 +18,7 @@ public class PlanetObjectPool
     {
         Explosion.explosionPool = new PlanetObjectPool("Explosions/");
         Projectile.projectilePool = new PlanetObjectPool("Projectiles/");
+        DeathRay.deathRayPool = new PlanetObjectPool("Death Rays/");
         ImpactEffect.impactEffectPool = new PlanetObjectPool("Impact Effects/");
     }
 
@@ -78,5 +79,5 @@ public class PlanetObjectPool
         }
     }
 
-    private string GetResourcePath(string gameObjectName) { return "Planet/" + resourcePathPrefix + gameObjectName; }
+    private string GetResourcePath(string gameObjectName) { return "Planet/Pooled Objects/" + resourcePathPrefix + gameObjectName; }
 }

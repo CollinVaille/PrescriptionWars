@@ -65,7 +65,8 @@ public class ThrusterController : Interactable
 
         //Set audio to thrusting sound
         AudioClip originalEngineSound = engines[0].GetEngineAudio().clip;
-        SetEngineAudio(engines, thrustingSound);
+        float originalMinDistance = engines[0].GetEngineAudio().minDistance;
+        SetEngineAudio(engines, thrustingSound, originalMinDistance * 2.5f);
 
         //Apply the thrust
         int originalGear = vehicle.GetCurrentGear();
@@ -93,7 +94,7 @@ public class ThrusterController : Interactable
         }
 
         //Reset audio to normal engine sound
-        SetEngineAudio(engines, originalEngineSound);
+        SetEngineAudio(engines, originalEngineSound, originalMinDistance);
 
         //Wait for remaining duration of reset period
         for (; stateCooldown > 0; stateCooldown -= Time.deltaTime)
@@ -102,13 +103,14 @@ public class ThrusterController : Interactable
         currentState = ThrustingState.Ready;
     }
 
-    private void SetEngineAudio(List<Engine> engines, AudioClip clip)
+    private void SetEngineAudio(List<Engine> engines, AudioClip clip, float minDistance)
     {
         foreach(Engine engine in engines)
         {
             AudioSource engineAudio = engine.GetEngineAudio();
             engineAudio.Stop();
             engineAudio.clip = clip;
+            engineAudio.minDistance = minDistance;
             //If the engine is still being used, it will automatically resume playing via control from vehicle
         }
     }

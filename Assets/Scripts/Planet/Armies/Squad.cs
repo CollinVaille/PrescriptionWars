@@ -56,7 +56,10 @@ public class Squad : MonoBehaviour
             SetLeader(pill);
 
         if (pill == Player.player)
+        {
             PlanetPauseMenu.pauseMenu.UpdateSquadName(name, army.color);
+            Player.player.UpdateHealthBarColor();
+        }
     }
 
     //Called by leader to change the orders

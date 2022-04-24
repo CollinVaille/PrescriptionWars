@@ -54,7 +54,6 @@ public class God : MonoBehaviour
         Vehicle.setUp = false;
         Voice.InitialSetUp();
         PlanetObjectPool.SetUpPooling();
-        DeathRay.SetUpPooling();
         DavyJonesLocker.PrepareTheLockerForSouls();
     }
 

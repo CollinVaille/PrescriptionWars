@@ -23,6 +23,7 @@ public class Pill : MonoBehaviour, Damageable
     protected float health = 100, maxHealth;
     protected bool dead = false, touchingWater = false, controlOverride = false, holstering = false;
     protected string statusReport = "Unresponsive";
+    private int lifeNumber = 1;
     [HideInInspector] public bool performingAction = false, onFire = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
@@ -96,6 +97,9 @@ public class Pill : MonoBehaviour, Damageable
     {
         //Stop any override behaviours such as sleeping in bed, sitting in seat, climbing a ladder...
         controlOverride = false;
+
+        //RIP
+        lifeNumber++;
 
         //Report the sad news
         spawner.ReportDeath(this, true);
@@ -495,6 +499,8 @@ public class Pill : MonoBehaviour, Damageable
                 transform.parent = null;
         }
     }
+
+    public int GetLifeNumber() { return lifeNumber; }
 
     public string GetInfoDump()
     {
