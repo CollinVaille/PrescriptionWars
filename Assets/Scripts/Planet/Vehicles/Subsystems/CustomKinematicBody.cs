@@ -10,6 +10,7 @@ public class CustomKinematicBody : MonoBehaviour
     //Status variables
     private Vector3 globalVelocity = Vector3.zero;
     private Rigidbody rBody;
+    private float verticalMaxSpeed = 50.0f;
 
     private void Start()
     {
@@ -30,7 +31,18 @@ public class CustomKinematicBody : MonoBehaviour
             globalVelocity += force / rBody.mass;
         else
             globalVelocity += transform.TransformVector(force) / rBody.mass;
+
+        //After changing velocity, make sure we are still within limits
+        if(Mathf.Abs(globalVelocity.y) > verticalMaxSpeed)
+        {
+            if (globalVelocity.y < 0)
+                globalVelocity.y = -verticalMaxSpeed;
+            else
+                globalVelocity.y = verticalMaxSpeed;
+        }
     }
+
+    public void SetVerticalMaxSpeed(float verticalMaxSpeed) { this.verticalMaxSpeed = verticalMaxSpeed; }
 
     public void AddRotation(Vector3 rotation, Space space)
     {

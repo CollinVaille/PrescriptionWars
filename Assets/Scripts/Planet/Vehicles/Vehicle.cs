@@ -64,12 +64,12 @@ public class Vehicle : MonoBehaviour
 
     //Damage
     private float lastImpactTime = 0.0f;
-    protected List<Engine> engines;
+    private List<Engine> forwardEngines;
     private float thrustPerEngine = 0.0f, brakingPerEngine = 0.0f;
 
-    private void Awake()
+    protected virtual void Awake()
     {
-        engines = new List<Engine>();
+        forwardEngines = new List<Engine>();
     }
 
     protected virtual void Start()
@@ -131,7 +131,9 @@ public class Vehicle : MonoBehaviour
         if (on == turnOn)
             return;
 
-        if(turnOn) //Turn on
+        on = turnOn;
+
+        if (turnOn) //Turn on
             generalAudio.PlayOneShot(powerOn);
         else //Turn off
         {
@@ -139,7 +141,8 @@ public class Vehicle : MonoBehaviour
             gasPedal = 0.0f;
         }
 
-        on = turnOn;
+        foreach (Engine engine in forwardEngines)
+            engine.SetPower(turnOn);
     }
 
     protected void OnCollisionEnter(Collision collision)
@@ -352,16 +355,16 @@ public class Vehicle : MonoBehaviour
         }
     }
 
-    public void AddEngine (Engine engine, bool onStartUp)
+    public void AddForwardEngine (Engine engine, bool onStartUp)
     {
-        engines.Add(engine);
+        forwardEngines.Add(engine);
 
-        if(onStartUp)
+        if (onStartUp)
         {
-            thrustPerEngine = thrustPower / engines.Count;
+            thrustPerEngine = thrustPower / forwardEngines.Count;
 
-            if(engine.supportReverseThrusting)
-                brakingPerEngine = brakePower / engines.Count;
+            if (engine.supportReverseThrusting)
+                brakingPerEngine = brakePower / forwardEngines.Count;
         }
         else
         {
@@ -372,9 +375,9 @@ public class Vehicle : MonoBehaviour
         }
     }
 
-    public void RemoveEngine (Engine engine)
+    public void RemoveForwardEngine (Engine engine)
     {
-        engines.Remove(engine);
+        forwardEngines.Remove(engine);
 
         thrustPower -= thrustPerEngine;
 
@@ -382,7 +385,7 @@ public class Vehicle : MonoBehaviour
             brakePower -= brakingPerEngine;
     }
 
-    public List<Engine> GetEngines() { return engines; }
+    public List<Engine> GetForwardEngines() { return forwardEngines; }
 
     public bool PoweredOn () { return on; }
 
@@ -411,12 +414,12 @@ public class Vehicle : MonoBehaviour
 
     protected bool MovingBackward() { return transform.InverseTransformDirection(rBody.velocity).z < -0.1f; }
 
-    protected void UpdateEngineEffects()
+    protected virtual void UpdateEngineEffects()
     {
         bool backwardThrusting = MovingBackward();
 
-        foreach (Engine engine in engines)
-            engine.UpdateEngineEffects(backwardThrusting, currentSpeed, absoluteMaxSpeed);
+        foreach (Engine engine in forwardEngines)
+            engine.UpdateEngineEffects(backwardThrusting, currentSpeed, absoluteMaxSpeed, ForwardEngineAudioCoefficient());
     }
 
     public bool CruiseControlActivated() { return cruiseControl; }
@@ -461,5 +464,5 @@ public class Vehicle : MonoBehaviour
 
     public void CoupleThrusterToVehicle() { lastGearIsThrust = true; }
 
-    public float EngineAudioCoefficient() { return 1.0f + ((1.0f * currentSpeed) / absoluteMaxSpeed); }
+    public float ForwardEngineAudioCoefficient() { return 1.0f + ((1.0f * currentSpeed) / absoluteMaxSpeed); }
 }

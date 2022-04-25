@@ -6,9 +6,21 @@ public class Aircraft : Vehicle
 {
     //Customization
     public Transform physicalSteeringWheel;
+    [SerializeField] private float verticalThrustPower = 200.0f;
 
     //References
     private CustomKinematicBody customBody;
+    private VehicleAltitudeController altitudeController;
+    private List<Engine> verticalEngines;
+
+    //Status variables
+    private float thrustPerVerticalEngine = 0.0f;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        verticalEngines = new List<Engine>();
+    }
 
     protected override void Start()
     {
@@ -27,10 +39,13 @@ public class Aircraft : Vehicle
         //Call this even when off so that we can properly deactivate engine effects
         UpdateEngineEffects();
 
+        //Vehicle is completely stationary on its own, so we call this even when its off to simulate gravity
+        altitudeController.UpdateVerticalTranslation();
+
         if (!on)
             return;
 
-        UpdateTranslation();
+        UpdateHorizontalTranslation();
         UpdateRotation();
     }
 
@@ -38,11 +53,21 @@ public class Aircraft : Vehicle
     {
         base.SetPower(turnOn);
 
-        foreach (Engine engine in engines)
+        altitudeController.SetOffline(!turnOn);
+
+        foreach (Engine engine in verticalEngines)
             engine.SetPower(turnOn);
     }
 
-    private void UpdateTranslation()
+    protected override void UpdateEngineEffects()
+    {
+        base.UpdateEngineEffects();
+
+        foreach (Engine engine in verticalEngines)
+            engine.UpdateEngineEffects(false, CurrentFlooredUpwardSpeed(), altitudeController.maxControlledSpeed, VerticalEngineAudioCoefficient()); //Vertical engines don't do backwards thrusting
+    }
+
+    private void UpdateHorizontalTranslation()
     {
         //Move position based on speed
         if (gasPedal > 0.01f) //Forward (thrust)
@@ -73,5 +98,39 @@ public class Aircraft : Vehicle
             customBody.airResistance = (brakePower / rBody.mass) * 2.0f;
         else
             customBody.airResistance = 4.0f;
+    }
+
+    public void AddVerticalEngine(Engine engine, bool onStartUp)
+    {
+        verticalEngines.Add(engine);
+
+        if (onStartUp)
+            thrustPerVerticalEngine = verticalThrustPower / verticalEngines.Count;
+        else
+        {
+            verticalThrustPower += thrustPerVerticalEngine;
+
+            if (verticalEngines.Count == 1)
+                altitudeController.SetOffline(false);
+        }
+    }
+
+    public void RemoveVerticalEngine(Engine engine)
+    {
+        verticalEngines.Remove(engine);
+
+        verticalThrustPower -= thrustPerVerticalEngine;
+
+        if (verticalEngines.Count == 0)
+            altitudeController.SetOffline(true);
+    }
+
+    private float CurrentFlooredUpwardSpeed() { return Mathf.Max(rBody.velocity.y, 0); }
+
+    private float VerticalEngineAudioCoefficient() { return 1.0f + CurrentFlooredUpwardSpeed() / altitudeController.maxControlledSpeed; }
+
+    public void SetAltitudeController(VehicleAltitudeController altitudeController)
+    {
+        this.altitudeController = altitudeController;
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Engine : VehiclePart
 {
+    public enum EngineType { ForwardEngine, VerticalEngine }
+
+    public EngineType engineType = EngineType.ForwardEngine;
     public ParticleSystem exhaustCloud, exhaustStream;
     public ExhaustManager exhaustManager;
     public bool supportReverseThrusting = true;
@@ -21,7 +24,7 @@ public class Engine : VehiclePart
         if (engineAudio)
             God.god.ManageAudioSource(engineAudio);
 
-        belongsTo.AddEngine(this, true);
+        AddEngineToVehicle(true);
     }
 
     protected override void PartFailure()
@@ -32,16 +35,16 @@ public class Engine : VehiclePart
         base.PartFailure();
 
         //Make sure all effects are updated before we stop getting updates (vehicle is responsible for calling update but we are removing ourselves from their list)
-        UpdateEngineEffects(false, 1, 1);
+        UpdateEngineEffects(false, 1, 1, 1);
 
-        belongsTo.RemoveEngine(this);
+        RemoveEngineFromVehicle();
     }
 
     protected override void PartRecovery()
     {
         base.PartRecovery();
 
-        belongsTo.AddEngine(this, false);
+        AddEngineToVehicle(false);
     }
 
     protected override void DamageHealth(float amount)
@@ -77,11 +80,11 @@ public class Engine : VehiclePart
         }
     }
 
-    public void UpdateEngineEffects(bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed)
+    public void UpdateEngineEffects(bool backwardThrusting, float currentSpeed, float absoluteMaxSpeed, float engineAudioCoefficient)
     {
         bool shouldBeOn = belongsTo.PoweredOn() && working && (!backwardThrusting || supportReverseThrusting);
 
-        UpdateEngineAudio(shouldBeOn, belongsTo.EngineAudioCoefficient());
+        UpdateEngineAudio(shouldBeOn, engineAudioCoefficient);
         UpdateEngineExhaust(shouldBeOn, backwardThrusting, currentSpeed, absoluteMaxSpeed);
     }
 
@@ -141,4 +144,20 @@ public class Engine : VehiclePart
     }
 
     public AudioSource GetEngineAudio() { return engineAudio; }
+
+    private void AddEngineToVehicle(bool onStartUp)
+    {
+        if (engineType == EngineType.ForwardEngine)
+            belongsTo.AddForwardEngine(this, onStartUp);
+        else //Vertical engine
+            ((Aircraft)belongsTo).AddVerticalEngine(this, onStartUp);
+    }
+
+    private void RemoveEngineFromVehicle()
+    {
+        if (engineType == EngineType.ForwardEngine)
+            belongsTo.RemoveForwardEngine(this);
+        else //Vertical engine
+            ((Aircraft)belongsTo).RemoveVerticalEngine(this);
+    }
 }

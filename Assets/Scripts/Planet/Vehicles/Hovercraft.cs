@@ -60,9 +60,6 @@ public class Hovercraft : Vehicle
             engineAudio.pitch = 1.0f;
             engineAudio.Pause();
         }
-
-        foreach (Engine engine in engines)
-            engine.SetPower(turnOn);
     }
 
     private void UpdateMovement()
