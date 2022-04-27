@@ -80,6 +80,9 @@ public class VehicleAltitudeController : MonoBehaviour
             customPhysicsBody.AddForce(Vector3.up * 200000.0f * Time.fixedDeltaTime, Space.World);
         else if(currentState == VerticalMovementType.GoingDown)
             customPhysicsBody.AddForce(Vector3.down * 250000.0f * Time.fixedDeltaTime, Space.World);
-        //Else, just do nothing.
+        else //Altitude stabilization mode
+        {
+            //if(customPhysicsBody.)
+        }
     }
 }
