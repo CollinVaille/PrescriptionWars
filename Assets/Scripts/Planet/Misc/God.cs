@@ -32,6 +32,9 @@ public class God : MonoBehaviour
     private Camera currentCamera;
     private AudioListener currentListener;
 
+    //Altitude management
+    [Tooltip("X & Y are min & max heights allowed for vehicles, respectively.")] public Vector2 altitudeLimits;
+
     //Initialization
     private void Awake()
     {

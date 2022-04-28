@@ -75,11 +75,11 @@ public class VehicleAltitudeController : MonoBehaviour
     public void UpdateVerticalTranslation()
     {
         if (currentState == VerticalMovementType.Offline) //Free fall from gravity
-            customPhysicsBody.AddForce(Vector3.down * 200000.0f * Time.fixedDeltaTime, Space.World);
+            customPhysicsBody.AddForce(Vector3.down * 75000.0f * Time.fixedDeltaTime, Space.World);
         else if (currentState == VerticalMovementType.GoingUp)
-            customPhysicsBody.AddForce(Vector3.up * 200000.0f * Time.fixedDeltaTime, Space.World);
+            customPhysicsBody.AddForce(Vector3.up * 75000.0f * Time.fixedDeltaTime, Space.World);
         else if(currentState == VerticalMovementType.GoingDown)
-            customPhysicsBody.AddForce(Vector3.down * 250000.0f * Time.fixedDeltaTime, Space.World);
+            customPhysicsBody.AddForce(Vector3.down * 150000.0f * Time.fixedDeltaTime, Space.World);
         else //Altitude stabilization mode
         {
             //if(customPhysicsBody.)
