@@ -1272,8 +1272,8 @@ public class Player : Pill
         if (vehicleUnderControl)
         {
             vehicleUnderControl.UpdateGearIndicator();
-            Vehicle.speedometer.enabled = true;
-            Vehicle.gearIndicator.enabled = true;
+            Vehicle.speedometerText.enabled = true;
+            Vehicle.gearIndicatorText.enabled = true;
         }
 
         while (!dead && !seat.EjectingOccupant())
@@ -1309,8 +1309,8 @@ public class Player : Pill
         //Player clean up
         if(vehicleUnderControl)
         {
-            Vehicle.speedometer.enabled = false;
-            Vehicle.gearIndicator.enabled = false;
+            Vehicle.speedometerText.enabled = false;
+            Vehicle.gearIndicatorText.enabled = false;
         }
 
         seat.ReleaseControl(!dead);

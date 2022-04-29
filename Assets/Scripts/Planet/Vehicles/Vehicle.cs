@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Vehicle : MonoBehaviour
 {
     public static bool setUp = false;
-    public static Text speedometer, gearIndicator;
+    public static Text speedometerText, gearIndicatorText;
     public static int speedometerReading = 0;
 
     public static List<AudioClip> lightHits, mediumHits, hardHits;
@@ -16,8 +16,8 @@ public class Vehicle : MonoBehaviour
         if (setUp)
             return;
 
-        speedometer = PlanetPauseMenu.pauseMenu.HUD.Find("Speedometer").GetComponent<Text>();
-        gearIndicator = PlanetPauseMenu.pauseMenu.HUD.Find("Gear Indicator").GetComponent<Text>();
+        speedometerText = PlanetPauseMenu.pauseMenu.HUD.Find("Speedometer").GetComponent<Text>();
+        gearIndicatorText = PlanetPauseMenu.pauseMenu.HUD.Find("Gear Indicator").GetComponent<Text>();
         speedometerReading = 0;
 
         lightHits = new List<AudioClip>();
@@ -39,6 +39,7 @@ public class Vehicle : MonoBehaviour
     //References
     protected AudioSource generalAudio;
     protected Rigidbody rBody;
+    private Speedometer speedometer;
     private List<Collider> vehicleColliders;
     private List<Transform> parts;
     private List<Vector3> originalPartPositions;
@@ -230,18 +231,18 @@ public class Vehicle : MonoBehaviour
         if (currentSpeed != speedometerReading)
         {
             speedometerReading = currentSpeed;
-            speedometer.text = speedometerReading + " mph";
+            speedometerText.text = speedometerReading + " mph";
         }
     }
 
     public void UpdateGearIndicator()
     {
         if(gearNumber == 0)
-            gearIndicator.text = "Park";
+            gearIndicatorText.text = "Park";
         else if(thrusting && gearNumber == gears.Length - 1)
-            gearIndicator.text = "Thrusting";
+            gearIndicatorText.text = "Thrusting";
         else
-            gearIndicator.text = "Gear " + gearNumber;
+            gearIndicatorText.text = "Gear " + gearNumber;
     }
 
     public bool Grounded(float errorMargin)
@@ -301,6 +302,9 @@ public class Vehicle : MonoBehaviour
 
         if (updateIndicator)
             UpdateGearIndicator();
+
+        if (speedometer)
+            speedometer.UpdateGear(currentMaxSpeed);
     }
 
     private void AddCollidersRecursive(Transform t)
@@ -463,6 +467,8 @@ public class Vehicle : MonoBehaviour
     public int GetCurrentGear() { return gearNumber; }
 
     public void CoupleThrusterToVehicle() { lastGearIsThrust = true; }
+
+    public void CoupleSpeedometerToVehicle(Speedometer speedometer) { this.speedometer = speedometer; }
 
     public float ForwardEngineAudioCoefficient() { return 1.0f + ((1.0f * currentSpeed) / absoluteMaxSpeed); }
 }
