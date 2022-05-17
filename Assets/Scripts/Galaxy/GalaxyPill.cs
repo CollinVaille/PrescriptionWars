@@ -10,10 +10,21 @@ public class GalaxyPill: GalaxyGroundUnit
         //Assigns the pill the specified name.
         this.name = name;
         //Assigns the pill the specified class.
-        this.pillClass = pillClass;
+        className = pillClass.className;
         //Assigns the type of the pill to the initial pill type specified in the PillClass of the pill.
-        if (pillClass != null)
-            pillType = pillClass.initialPillType;
+        if (PillClass != null)
+            pillType = PillClass.initialPillType;
+    }
+
+    public GalaxyPill(string name, string className)
+    {
+        //Assigns the pill the specified name.
+        this.name = name;
+        //Assigns the pill the specified class.
+        this.className = className;
+        //Assigns the type of the pill to the initial pill type specified in the PillClass of the pill.
+        if (PillClass != null)
+            pillType = PillClass.initialPillType;
     }
 
     /// <summary>
@@ -26,12 +37,12 @@ public class GalaxyPill: GalaxyGroundUnit
     /// <summary>
     /// The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
     /// </summary>
-    public PillClass PillClass { get => pillClass; set => pillClass = value; }
+    public PillClass PillClass { get => PillClass.pillClasses.ContainsKey(className) ? PillClass.pillClasses[className] : null; set => className = value.className; }
     /// <summary>
     /// Indicates what type of class the class of the pill is (ex: Assault or Officer).
     /// </summary>
-    public PillClassType PillClassType { get => pillClass.classType; }
-    private PillClass pillClass = null;
+    public PillClassType PillClassType { get => PillClass.pillClasses[className].classType; }
+    private string className = null;
 
     /// <summary>
     /// Indicates what type of pill the pill is (Example: Player or Bot1).

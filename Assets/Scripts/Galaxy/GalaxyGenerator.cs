@@ -12,6 +12,11 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField]
     private List<Tech> techs = null;
 
+    [Header("Pill Classes")]
+
+    [SerializeField]
+    private List<PillClass> pillClasses = null;
+
     [Header("Initial Game Settings")]
 
     [SerializeField]
@@ -180,6 +185,19 @@ public class GalaxyGenerator : MonoBehaviour
 
     private void Awake()
     {
+        //Pill classes.
+        foreach(PillClass pillClass in pillClasses)
+        {
+            try
+            {
+                PillClass.pillClasses.Add(pillClass.className, pillClass);
+            }
+            catch (ArgumentException)
+            {
+                Debug.LogWarning("Pill class already exists with the same name and no duplicate pill class names are allowed. Class name: " + pillClass.className);
+            }
+        }
+
         //Prefabs.
         GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
         GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;

@@ -106,7 +106,7 @@ public class PillSkinOptionButton : MonoBehaviour
         if(pillSkin != null)
         {
             //Test pill creation.
-            GalaxyPill testPill = new GalaxyPill("Test Pill", new PillClass("Test", PillClassType.Assault, PillType.Bot1, Resources.Load<GameObject>("Planet/Gear/Head Gear/Goggles"), Resources.Load<GameObject>("Planet/Gear/Body Gear/Utility Backpack"), Resources.Load<GameObject>("Planet/Items/Laser Rifle"), Resources.Load<GameObject>("Planet/Items/WD-40")));
+            GalaxyPill testPill = new GalaxyPill("Test Pill", "Test");
             GalaxySquad testSquad = new GalaxySquad("Test Squad");
             testSquad.AddPill(testPill);
             GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.PlayerID, pillSkin);

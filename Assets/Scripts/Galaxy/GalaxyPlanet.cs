@@ -167,13 +167,13 @@ public class GalaxyPlanet : MonoBehaviour
     {
         AddArmy(new GalaxyArmy("Army of the South", ownerID));
         armies[0].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
-        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", null));
-        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", null));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", string.Empty));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", string.Empty));
         armies[0].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
         AddArmy(new GalaxyArmy("Army of the West", ownerID));
         armies[1].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
-        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", null));
-        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", null));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", string.Empty));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", string.Empty));
         armies[1].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
         AddArmy(new GalaxyArmy("Army of the North", ownerID));
     }
