@@ -186,7 +186,8 @@ public class GalaxyGenerator : MonoBehaviour
     private void Awake()
     {
         //Pill classes.
-        foreach(PillClass pillClass in pillClasses)
+        PillClass.pillClasses = new Dictionary<string, PillClass>();
+        foreach (PillClass pillClass in pillClasses)
         {
             try
             {

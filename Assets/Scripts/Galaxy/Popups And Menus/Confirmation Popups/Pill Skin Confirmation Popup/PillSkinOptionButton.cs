@@ -106,7 +106,7 @@ public class PillSkinOptionButton : MonoBehaviour
         if(pillSkin != null)
         {
             //Test pill creation.
-            GalaxyPill testPill = new GalaxyPill("Test Pill", "Test");
+            GalaxyPill testPill = new GalaxyPill("Test Pill", "Assault");
             GalaxySquad testSquad = new GalaxySquad("Test Squad");
             testSquad.AddPill(testPill);
             GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.PlayerID, pillSkin);

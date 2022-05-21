@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class PillClass
 {
-    public static Dictionary<string, PillClass> pillClasses = new Dictionary<string, PillClass>();
+    public static Dictionary<string, PillClass> pillClasses = null;
 
     public PillClass(string className, PillClassType classType, PillType initialPillType, string headGearName, string bodyGearName, string primaryName, string secondaryName)
     {
@@ -39,9 +39,9 @@ public enum PillClassType
     Assault,
     Riot,
     Officer,
-    Medic,
     Flamethrower,
-    Rocket
+    Rocket,
+    Engineer
 }
 
 public enum PillType

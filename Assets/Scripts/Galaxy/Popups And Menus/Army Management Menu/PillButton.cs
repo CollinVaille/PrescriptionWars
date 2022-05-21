@@ -66,6 +66,17 @@ public class PillButton : UnitListButton
 
         //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
         Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
+        //Sets the left image's sprite to the pill's class type sprite.
+        if(AssignedPill != null && AssignedPill.PillClass != null && AssignedPill.PillClass.iconSprite != null)
+        {
+            LeftImage.sprite = AssignedPill.PillClass.iconSprite;
+            LeftImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            LeftImage.sprite = null;
+            LeftImage.gameObject.SetActive(false);
+        }
     }
 
     public override void DisbandAssignedGroundUnit()

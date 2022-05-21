@@ -5259,13 +5259,37 @@ MonoBehaviour:
     - effectType: 4
       amount: 1
   pillClasses:
-  - className: Test
+  - className: Assault
     classType: 0
     initialPillType: 1
     headGearName: Goggles
     bodyGearName: Utility Backpack
     primaryName: Laser Rifle
-    secondaryName: WD-40
+    secondaryName: Machete
+    probability: 0
+  - className: Riot
+    classType: 1
+    initialPillType: 1
+    headGearName: Goggles
+    bodyGearName: Battle Kilt
+    primaryName: Riot Shield
+    secondaryName: Automatic Rifle
+    probability: 0
+  - className: Officer
+    classType: 2
+    initialPillType: 1
+    headGearName: Square Visor
+    bodyGearName: 
+    primaryName: Semiautomatic Rifle
+    secondaryName: Machete
+    probability: 0
+  - className: Flamethrower
+    classType: 3
+    initialPillType: 1
+    headGearName: Square Visor
+    bodyGearName: Utility Backpack
+    primaryName: WD-40
+    secondaryName: Fire Extinguisher
     probability: 0
   playerEmpireName: 
   numberOfPlanets: 60
