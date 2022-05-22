@@ -30,16 +30,16 @@ public class GalaxyBiomeGenerator : MonoBehaviour
     {
         foreach(GalaxyPlanet galaxyPlanet in galaxyPlanets)
         {
-            GalaxyBiome galaxyBiome = GetGalaxyBiome(galaxyPlanet.Biome);
+            GalaxyBiome galaxyBiome = GetGalaxyBiome(galaxyPlanet.biome);
             if (galaxyBiome == null)
                 continue;
 
             //Randomizes the planet's material.
             galaxyPlanet.ChangeMaterial(galaxyBiome.RandomMaterialName);
             //Determines if the planet should have a ring.
-            galaxyPlanet.Rings.SetActive(Random.Range(0f, 1f) <= galaxyBiome.PlanetaryRingChance);
+            galaxyPlanet.rings.SetActive(Random.Range(0f, 1f) <= galaxyBiome.PlanetaryRingChance);
             //Randomizes the planet's ring size.
-            galaxyPlanet.Rings.GetComponent<Renderer>().material.SetFloat("_Size", galaxyBiome.RandomRingSize);
+            galaxyPlanet.rings.GetComponent<Renderer>().material.SetFloat("_Size", galaxyBiome.RandomRingSize);
             //Randomizes the planet's size.
             galaxyPlanet.transform.parent.localScale = Vector3.one * galaxyBiome.RandomPlanetarySize;
             //Randomizes the planet's spin/rotation speed.
@@ -54,8 +54,8 @@ public class GalaxyBiomeGenerator : MonoBehaviour
             galaxyPlanet.GetComponent<Renderer>().material.SetColor("_Citiescolor", galaxyBiome.RandomCityColor);
             //Randomizes the color of the planet's rings.
             DualColorSet randomRingColorCombo = galaxyBiome.RandomRingColorCombo;
-            galaxyPlanet.Rings.GetComponent<Renderer>().material.SetColor("_BaseColor", randomRingColorCombo[0]);
-            galaxyPlanet.Rings.GetComponent<Renderer>().material.SetColor("_Color1", randomRingColorCombo[1]);
+            galaxyPlanet.rings.GetComponent<Renderer>().material.SetColor("_BaseColor", randomRingColorCombo[0]);
+            galaxyPlanet.rings.GetComponent<Renderer>().material.SetColor("_Color1", randomRingColorCombo[1]);
         }
     }
 

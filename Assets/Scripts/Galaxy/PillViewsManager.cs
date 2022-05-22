@@ -73,9 +73,11 @@ public class PillViewsManager : MonoBehaviour
     //This method updates the pill view that has any pill under the specified army.
     public static void UpdatePillViewsOfArmy(GalaxyArmy army)
     {
+        if (army == null)
+            return;
         foreach(PillView pillView in pillViews)
         {
-            if(pillView.DisplayedPill.AssignedSquad.AssignedArmy == army)
+            if(pillView != null && pillView.DisplayedPill != null && pillView.DisplayedPill.assignedSquad != null && pillView.DisplayedPill.assignedSquad.AssignedArmy != null && pillView.DisplayedPill.assignedSquad.AssignedArmy == army)
             {
                 pillView.DisplayedPill = pillView.DisplayedPill;
             }

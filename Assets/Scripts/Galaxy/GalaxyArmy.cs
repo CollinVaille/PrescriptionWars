@@ -5,43 +5,19 @@ using UnityEngine;
 public class GalaxyArmy: GalaxyGroundUnit
 {
     //Constructor of the galaxy army.
-    public GalaxyArmy(string name, int ownerEmpireID)
+    public GalaxyArmy(string name, int ownerEmpireID) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkin(), new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
-        //Assigns the name of the army.
-        this.name = name;
-        //Assigns the owner empire id.
-        this.ownerEmpireID = ownerEmpireID;
-
-        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
-        //Assigns the icon of the army and gives it a random sprite and silver color.
-        armyIcon = new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1));
+        
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin)
+    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin) : this(name, ownerEmpireID, pillSkin, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
-        //Assigns the name of the army.
-        this.name = name;
-        //Assigns the owner empire id.
-        this.ownerEmpireID = ownerEmpireID;
-
-        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        assignedPillSkin = pillSkin;
-        //Assigns the icon of the army and gives it a random sprite and silver color.
-        armyIcon = new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1));
+        
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon)
+    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkin(), armyIcon)
     {
-        //Assigns the name of the army.
-        this.name = name;
-        //Assigns the owner empire id.
-        this.ownerEmpireID = ownerEmpireID;
-
-        //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        assignedPillSkin = Empire.empires[this.ownerEmpireID].GetRandomPillSkin();
-        //Assigns the icon of the army to the specified value.
-        this.armyIcon = armyIcon;
+        
     }
 
     public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin, ArmyIcon armyIcon)
@@ -94,17 +70,17 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// <summary>
     /// Returns the total number of squads in the list of squads (count).
     /// </summary>
-    public int SquadsCount { get => squads.Count; }
+    public int squadCount { get => squads.Count; }
 
     /// <summary>
     /// Returns the number of squads that the army can contain.
     /// </summary>
-    public int NumberOfSquadsLimits { get => 5; }
+    public int squadCountLimit { get => 3; }
 
     /// <summary>
     /// Returns the exact amount of experience that the average pill in the army has.
     /// </summary>
-    public override float Experience
+    public override float experience
     {
         get
         {
@@ -115,7 +91,7 @@ public class GalaxyArmy: GalaxyGroundUnit
             {
                 for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
                 {
-                    totalExperience += squad.GetPillAt(pillIndex).Experience;
+                    totalExperience += squad.GetPillAt(pillIndex).experience;
                     totalPills++;
                 }
             }
@@ -126,7 +102,7 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// <summary>
     /// Returns the average experience level of the pills in the army.
     /// </summary>
-    public override int ExperienceLevel
+    public override int experienceLevel
     {
         get
         {
@@ -137,7 +113,7 @@ public class GalaxyArmy: GalaxyGroundUnit
             {
                 for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
                 {
-                    totalExperienceLevel += squad.GetPillAt(pillIndex).ExperienceLevel;
+                    totalExperienceLevel += squad.GetPillAt(pillIndex).experienceLevel;
                     totalPills++;
                 }
             }

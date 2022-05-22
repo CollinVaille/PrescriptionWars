@@ -160,7 +160,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         {
             GalaxyPlanet planetSelectedScript = planetSelected;
 
-            planetNameText.text = planetSelectedScript.Name;
+            planetNameText.text = planetSelectedScript.planetName;
 
             if (tabs[0].activeInHierarchy)
             {
@@ -181,7 +181,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
                 //Changes the planet name text to include the city name before it.
                 if (cityManagementMenu.activeInHierarchy)
                 {
-                    planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.Name;
+                    planetNameText.text = planetSelectedScript.cities[citySelected].cityName + ", " + planetSelectedScript.planetName;
                 }
 
                 //Updates the tabs unerline image location.
@@ -199,11 +199,11 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
             }
             if (tabs[2].activeInHierarchy)
             {
-                infoCultureText.text = "Culture: " + planetSelectedScript.Culture;
+                infoCultureText.text = "Culture: " + planetSelectedScript.culture;
                 infoCitiesText.text = "Cities: " + planetSelectedScript.cities.Count;
-                infoCapitalText.text = "Capital: " + planetSelectedScript.IsCapital;
-                infoIncomeText.text = "Income: " + planetSelectedScript.CreditsPerTurn;
-                infoPrescriptionText.text = "Prescription: " + planetSelectedScript.PrescriptionsPerTurn;
+                infoCapitalText.text = "Capital: " + planetSelectedScript.isCapital;
+                infoIncomeText.text = "Income: " + planetSelectedScript.creditsPerTurn;
+                infoPrescriptionText.text = "Prescription: " + planetSelectedScript.prescriptionsPerTurn;
 
                 if(tabs[2].activeInHierarchy && tabUnderlineImage.gameObject.transform.localPosition.x != 105)
                 {
@@ -267,7 +267,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Demolish Building";
-        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.Name + "?";
+        string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.planetName + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -308,7 +308,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Cancel Building Queued";
-        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.Name + "?";
+        string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.planetName + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -411,7 +411,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Resets the image of each city based on the biome.
         foreach(Image cityImage in cityImages)
         {
-            cityImage.sprite = GetCityImage(planetSelected.Biome);
+            cityImage.sprite = GetCityImage(planetSelected.biome);
         }
 
         //Resets the name of each city.

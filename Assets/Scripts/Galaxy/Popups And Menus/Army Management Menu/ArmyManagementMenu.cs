@@ -108,7 +108,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             planetSelectedID = value;
 
             //Updates the title text of the army management menu to accurately reflect what planet the player is managing the armies of.
-            titleText.text = PlanetSelected.Name + " Army Management";
+            titleText.text = PlanetSelected.planetName + " Army Management";
         }
     }
 
@@ -555,7 +555,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             confirmationPopupScript.CreateConfirmationPopup(topText);
 
             //Adds the player empire's valid squad names as dropdown options.
-            foreach(string squadName in PlanetSelected.Owner.ValidSquadNames)
+            foreach(string squadName in PlanetSelected.owner.ValidSquadNames)
             {
                 confirmationPopupScript.AddDropdownOption(squadName);
                 //Makes the squad's current name the preselected option.
@@ -658,7 +658,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
         string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
         string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
-        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.Owner.PillSkins);
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.owner.PillSkins);
         confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.AssignedPillSkin);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -823,7 +823,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         if (!PlanetSelected.MaxArmyCountReached)
         {
             //Creates a new army on the selected planet.
-            PlanetSelected.AddArmy(new GalaxyArmy(PlanetSelected.Owner.empireCulture.ToString() + " Army", PlanetSelected.OwnerID));
+            PlanetSelected.AddArmy(new GalaxyArmy(PlanetSelected.owner.empireCulture.ToString() + " Army", PlanetSelected.ownerID));
 
             //Instantiates the army button from the army button prefab.
             GameObject armyButton = Instantiate(armyButtonPrefab);
@@ -855,7 +855,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup to confirm the user acknowledges the failure to create an army.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.Name + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.");
+        confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.planetName + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.");
 
         //Waits until the player has answered the confirmation popup and acknowledged the failure to create a new army.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);

@@ -41,16 +41,16 @@ public class PillView : MonoBehaviour
             {
                 //Sets the skin of the pill.
                 pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.Skin;
-                if (displayedPill.PillClass != null)
+                if (displayedPill.pillClass != null)
                 {
                     //Sets the head gear of the pill.
-                    SetHeadGear(displayedPill.PillClass.headGear);
+                    SetHeadGear(displayedPill.pillClass.headGear);
                     //Sets the body gear of the pill.
-                    SetBodyGear(displayedPill.PillClass.bodyGear);
+                    SetBodyGear(displayedPill.pillClass.bodyGear);
                     //Sets the primary of the pill.
-                    SetPrimary(displayedPill.PillClass.primary);
+                    SetPrimary(displayedPill.pillClass.primary);
                     //Sets the secondary of the pill.
-                    SetSecondary(displayedPill.PillClass.secondary);
+                    SetSecondary(displayedPill.pillClass.secondary);
                 }
             }
         }
@@ -180,7 +180,7 @@ public class PillView : MonoBehaviour
             Destroy(currentSecondary);
         }
 
-        if (secondary != null && displayedPill.IsSecondaryVisible)
+        if (secondary != null && displayedPill.isSecondaryVisible)
         {
             currentSecondary = Instantiate(secondary, pillTransform.position, pillTransform.rotation);
             currentSecondary.transform.SetParent(pillTransform);

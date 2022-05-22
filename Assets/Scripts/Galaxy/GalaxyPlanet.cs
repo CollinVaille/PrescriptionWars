@@ -18,8 +18,8 @@ public class GalaxyPlanet : MonoBehaviour
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private Planet.Biome biome = Planet.Biome.Unknown;
-    public Planet.Biome Biome { get => biome; }
+    [SerializeField] private Planet.Biome biomeVar = Planet.Biome.Unknown;
+    public Planet.Biome biome { get => biomeVar; }
 
     //Planet culture
     #region Editor
@@ -27,18 +27,8 @@ public class GalaxyPlanet : MonoBehaviour
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private Empire.Culture culture = Empire.Culture.Red;
-    public Empire.Culture Culture
-    {
-        get
-        {
-            return culture;
-        }
-        set
-        {
-            culture = value;
-        }
-    }
+    [SerializeField] private Empire.Culture cultureVar = Empire.Culture.Red;
+    public Empire.Culture culture { get => cultureVar; set => cultureVar = value; }
 
     #region Editor
     #if UNITY_EDITOR
@@ -52,59 +42,45 @@ public class GalaxyPlanet : MonoBehaviour
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private int ownerID = -1;
+    [SerializeField] private int ownerIDVar = -1;
     /// <summary>
     /// Indicates the ID (index) of the empire that owns the planet.
     /// </summary>
-    public int OwnerID
+    public int ownerID
     {
         get
         {
-            return ownerID;
+            return ownerIDVar;
         }
         set
         {
-            ownerID = value;
-            nameLabel.color = Empire.empires[ownerID].LabelColor;
+            ownerIDVar = value;
+            nameLabel.color = Empire.empires[ownerIDVar].LabelColor;
         }
     }
     /// <summary>
     /// Returns the empire that owns the planet.
     /// </summary>
-    public Empire Owner { get => Empire.empires[OwnerID]; }
+    public Empire owner { get => Empire.empires[ownerID]; }
 
     #region Editor
     #if UNITY_EDITOR
     [ReadOnly]
     #endif
     #endregion
-    [SerializeField] private int planetID = -1;
-    public int PlanetID
+    [SerializeField] private int planetIDVar = -1;
+    public int planetID { get => planetIDVar; set => planetIDVar = value; }
+
+    public bool isCapital
     {
         get
         {
-            return planetID;
+            return owner != null ? owner.capitalPlanetID == planetID : false;
         }
         set
         {
-            planetID = value;
-        }
-    }
-    #region Editor
-    #if UNITY_EDITOR
-    [ReadOnly]
-    #endif
-    #endregion
-    [SerializeField] private bool isCapital;
-    public bool IsCapital
-    {
-        get
-        {
-            return isCapital;
-        }
-        set
-        {
-            isCapital = value;
+            if (owner != null)
+                owner.capitalPlanetID = planetID;
         }
     }
 
@@ -115,25 +91,27 @@ public class GalaxyPlanet : MonoBehaviour
     #endregion
     [SerializeField] private string materialName;
 
-    public List<int> NeighborPlanets { get => neighborPlanets; }
+    public List<int> neighborPlanets { get => neighborPlanetsVar; }
 
     //Non-inspector variables.
 
-    public string Name
+    private string planetNameVar;
+    public string planetName
     {
         get
         {
-            return nameLabel.text;
+            return planetNameVar;
         }
         set
         {
+            planetNameVar = value;
             nameLabel.text = value;
             gameObject.name = value;
         }
     }
 
     //A list of all the planets this planet is connected to via the hyperspace lanes
-    private List<int> neighborPlanets = new List<int>();
+    private List<int> neighborPlanetsVar = new List<int>();
 
     //Cities
     public List<GalaxyCity> cities = new List<GalaxyCity>();
@@ -158,27 +136,26 @@ public class GalaxyPlanet : MonoBehaviour
     private static Transform mainCamTransform = null;
 
     //Rings
-    public GameObject Rings { get => transform.parent.GetChild(transform.GetSiblingIndex() + 1).gameObject; }
+    public GameObject rings { get => transform.parent.GetChild(transform.GetSiblingIndex() + 1).gameObject; }
 
     //Atmosphere
-    public GameObject Atmosphere { get => transform.parent.GetChild(transform.GetSiblingIndex() + 2).gameObject; }
+    public GameObject atmosphere { get => transform.parent.GetChild(transform.GetSiblingIndex() + 2).gameObject; }
 
     private void Start()
     {
-        AddArmy(new GalaxyArmy("Army of the South", ownerID));
-        armies[0].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
+        AddArmy(new GalaxyArmy("Army of the South", ownerIDVar));
+        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
         armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Assault"));
         armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Riot"));
-        armies[0].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
-        AddArmy(new GalaxyArmy("Army of the West", ownerID));
-        armies[1].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
+        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        AddArmy(new GalaxyArmy("Army of the West", ownerIDVar));
+        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
         armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Officer"));
         armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Flamethrower"));
-        armies[1].AddSquad(new GalaxySquad(Owner.RandomValidSquadName));
-        AddArmy(new GalaxyArmy("Army of the North", ownerID));
+        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
     }
 
-    public float CreditsPerTurn
+    public float creditsPerTurn
     {
         get
         {
@@ -186,14 +163,14 @@ public class GalaxyPlanet : MonoBehaviour
 
             foreach (GalaxyCity galaxyCity in cities)
             {
-                credits += galaxyCity.GetCreditsPerTurn(ownerID);
+                credits += galaxyCity.GetCreditsPerTurn(ownerIDVar);
             }
 
             return credits;
         }
     }
 
-    public float PrescriptionsPerTurn
+    public float prescriptionsPerTurn
     {
         get
         {
@@ -201,14 +178,14 @@ public class GalaxyPlanet : MonoBehaviour
 
             foreach (GalaxyCity galaxyCity in cities)
             {
-                prescriptions += galaxyCity.GetPrescriptionsPerTurn(ownerID);
+                prescriptions += galaxyCity.GetPrescriptionsPerTurn(ownerIDVar);
             }
 
             return prescriptions;
         }
     }
 
-    public float SciencePerTurn
+    public float sciencePerTurn
     {
         get
         {
@@ -216,14 +193,14 @@ public class GalaxyPlanet : MonoBehaviour
 
             foreach (GalaxyCity galaxyCity in cities)
             {
-                science += galaxyCity.GetSciencePerTurn(ownerID);
+                science += galaxyCity.GetSciencePerTurn(ownerIDVar);
             }
 
             return science;
         }
     }
 
-    public float ProductionPerTurn
+    public float productionPerTurn
     {
         get
         {
@@ -231,7 +208,7 @@ public class GalaxyPlanet : MonoBehaviour
 
             foreach (GalaxyCity galaxyCity in cities)
             {
-                production += galaxyCity.GetProductionPerTurn(ownerID);
+                production += galaxyCity.GetProductionPerTurn(ownerIDVar);
             }
 
             return production;
@@ -241,11 +218,12 @@ public class GalaxyPlanet : MonoBehaviour
     public void InitializePlanet (string planetName, int planetID, Planet.Biome biome)
     {
         //Sets the name of the planet.
+        planetNameVar = planetName;
         AddNameLabel(planetName);
         //Sets the planet's ID.
-        this.planetID = planetID;
+        this.planetIDVar = planetID;
         //Sets the planet's biome.
-        this.biome = biome;
+        this.biomeVar = biome;
     }
 
     public void GenerateCities(bool isCapital)
@@ -273,7 +251,7 @@ public class GalaxyPlanet : MonoBehaviour
             while (!goodCityName)
             {
                 goodCityName = true;
-                galaxyCity.cityName = CityGenerator.GenerateCityName(biome, galaxyCity.buildingLimit * 15);
+                galaxyCity.cityName = CityGenerator.GenerateCityName(biomeVar, galaxyCity.buildingLimit * 15);
 
                 foreach(GalaxyCity city in cities)
                 {
@@ -349,21 +327,25 @@ public class GalaxyPlanet : MonoBehaviour
 
     public void ConquerPlanet(int conquerorID)
     {
+        //Updates the capital planet of the former owner.
+        if (isCapital)
+            owner.PickNewCapital();
+
         //Removes the planet from the previous owner's list of owned planets.
-        if(ownerID != -1)
+        if(ownerIDVar != -1)
         {
-            for(int x = 0; x < Empire.empires[ownerID].planetsOwned.Count; x++)
+            for(int x = 0; x < Empire.empires[ownerIDVar].planetsOwned.Count; x++)
             {
-                if(Empire.empires[ownerID].planetsOwned[x] == planetID)
+                if(Empire.empires[ownerIDVar].planetsOwned[x] == planetIDVar)
                 {
-                    Empire.empires[ownerID].planetsOwned.RemoveAt(x);
+                    Empire.empires[ownerIDVar].planetsOwned.RemoveAt(x);
                     break;
                 }
             }
         }
 
         //Adds the planet to the new owner's list of owned planets.
-        Empire.empires[conquerorID].planetsOwned.Add(planetID);
+        Empire.empires[conquerorID].planetsOwned.Add(planetIDVar);
 
         //Updates the color of the planet label.
         nameLabel.color = Empire.empires[conquerorID].LabelColor;
@@ -376,12 +358,12 @@ public class GalaxyPlanet : MonoBehaviour
         }
 
         //Sets the planet's owner id as the conqueror's id.
-        ownerID = conquerorID;
+        ownerIDVar = conquerorID;
     }
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerID == GalaxyManager.PlayerID && !GalaxyCamera.IsMouseOverUIElement)
+        if(ownerIDVar == GalaxyManager.PlayerID && !GalaxyCamera.IsMouseOverUIElement)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetManagementMenu.PlanetSelected = this;
@@ -402,12 +384,12 @@ public class GalaxyPlanet : MonoBehaviour
         foreach(GalaxyCity city in cities)
         {
             //Adds each city's resources per turn to the empire.
-            Empire.empires[ownerID].Credits += city.GetCreditsPerTurn(ownerID);
-            Empire.empires[ownerID].Prescriptions += city.GetPrescriptionsPerTurn(ownerID);
-            Empire.empires[ownerID].Science += city.GetSciencePerTurn(ownerID);
+            Empire.empires[ownerIDVar].Credits += city.GetCreditsPerTurn(ownerIDVar);
+            Empire.empires[ownerIDVar].Prescriptions += city.GetPrescriptionsPerTurn(ownerIDVar);
+            Empire.empires[ownerIDVar].Science += city.GetSciencePerTurn(ownerIDVar);
 
             //Progresses the building queue.
-            city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerID), city);
+            city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerIDVar), city);
         }
     }
 
@@ -454,9 +436,9 @@ public class GalaxyPlanet : MonoBehaviour
         //Gets the planet ship script component in order to edit some variables of the planet ship.
         PlanetShip newShipScript = newShip.GetComponent<PlanetShip>();
         //Sets the location of the planet ship based off of the planet id and army index.
-        newShipScript.SetLocation(planetID, armies.Count - 1);
+        newShipScript.SetLocation(planetIDVar, armies.Count - 1);
         //Sets the material of the planet ship in order for it to represent the color of the empire that owns the army and the planet.
-        newShipScript.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerID].empireCulture];
+        newShipScript.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[ownerIDVar].empireCulture];
         //Adds the newly created planet ship to the list of planet ships that belong to the planet.
         planetShips.Add(newShipScript);
     }
@@ -542,7 +524,7 @@ public class GalaxyPlanet : MonoBehaviour
     public void ChangeMaterial(string materialName)
     {
         GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + materialName);
-        Atmosphere.GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + materialName + " Atmosphere");
+        atmosphere.GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + materialName + " Atmosphere");
         this.materialName = materialName;
     }
 }

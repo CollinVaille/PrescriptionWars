@@ -13,9 +13,9 @@ public abstract class GalaxyGroundUnit
     /// <summary>
     /// Indicates exactly how much experience a ground unit has.
     /// </summary>
-    public virtual float Experience { get; set; }
+    public virtual float experience { get; set; }
     /// <summary>
     /// Indicates what level of experience the ground unit has.
     /// </summary>
-    public virtual int ExperienceLevel { get; }
+    public virtual int experienceLevel { get; }
 }

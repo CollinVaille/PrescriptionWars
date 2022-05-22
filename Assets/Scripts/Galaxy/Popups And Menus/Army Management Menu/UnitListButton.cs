@@ -506,7 +506,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 for (int siblingIndex = 0; siblingIndex < transform.parent.childCount; siblingIndex++)
                 {
                     UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-                    if ((buttonAtSiblingIndex.TypeOfButton == ButtonType.Army && buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == pill.AssignedSquad.AssignedArmy) || (buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == pill.AssignedSquad))
+                    if ((buttonAtSiblingIndex.TypeOfButton == ButtonType.Army && buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == pill.assignedSquad.AssignedArmy) || (buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == pill.assignedSquad))
                     {
                         originalParentButtons.Add(buttonAtSiblingIndex);
                         if (originalParentButtons.Count >= 2)
@@ -514,7 +514,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                     }
                 }
                 //Removes the pill from its current squad.
-                pill.AssignedSquad.RemovePill(pill);
+                pill.assignedSquad.RemovePill(pill);
                 //Finds the new squad the pill will be assigned to and the new parent buttons of this button (squad parent at index 0 and army parent at index 1).
                 GalaxySquad newSquadAssigned = null;
                 List<UnitListButton> newParentButtons = new List<UnitListButton>();
@@ -650,7 +650,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         //Updates the name text of the button to reflect the name of the ground unit.
         NameText.text = AssignedGroundUnit.Name;
         //Updates the experience level text of the button to reflect the experience level of the ground unit. 
-        ExperienceLevelText.text = AssignedGroundUnit.ExperienceLevel.ToString();
+        ExperienceLevelText.text = AssignedGroundUnit.experienceLevel.ToString();
     }
 
     /// <summary>

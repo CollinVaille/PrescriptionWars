@@ -65,11 +65,12 @@ public class PillButton : UnitListButton
         base.UpdateInfo();
 
         //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
-        Button.image.color = Empire.empires[assignedPill.AssignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
+        Button.image.color = Empire.empires[assignedPill.assignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
         //Sets the left image's sprite to the pill's class type sprite.
-        if(AssignedPill != null && AssignedPill.PillClass != null && AssignedPill.PillClass.iconSprite != null)
+        if(AssignedPill != null && AssignedPill.pillClass != null && AssignedPill.pillClass.iconSprite != null)
         {
-            LeftImage.sprite = AssignedPill.PillClass.iconSprite;
+            LeftImage.sprite = AssignedPill.pillClass.iconSprite;
+            LeftImage.gameObject.GetComponent<GalaxyTooltip>().Text = "Class Name: " + AssignedPill.pillClass.className + "\nClass Type: " + AssignedPill.pillClass.classType;
             LeftImage.gameObject.SetActive(true);
         }
         else
@@ -82,7 +83,7 @@ public class PillButton : UnitListButton
     public override void DisbandAssignedGroundUnit()
     {
         //Removes the pill from its assigned squad.
-        AssignedPill.AssignedSquad.RemovePill(AssignedPill);
+        AssignedPill.assignedSquad.RemovePill(AssignedPill);
 
         //Executes the base logic for disbanding a ground unit.
         base.DisbandAssignedGroundUnit();

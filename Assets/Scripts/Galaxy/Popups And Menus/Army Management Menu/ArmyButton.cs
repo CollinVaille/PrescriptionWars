@@ -103,7 +103,7 @@ public class ArmyButton : ExpandableUnitListButton
         //Sets the color of the left image to the appropriate color of the army's icon.
         LeftImage.color = assignedArmy.ArmyIcon.color;
         //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
-        squadsCountText.text = "(" + assignedArmy.SquadsCount + "/" + assignedArmy.NumberOfSquadsLimits + ")";
+        squadsCountText.text = "(" + assignedArmy.squadCount + "/" + assignedArmy.squadCountLimit + ")";
 
         //Updates the info on all of the child buttons (essential for updating the army icon sprite).
         for (int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)

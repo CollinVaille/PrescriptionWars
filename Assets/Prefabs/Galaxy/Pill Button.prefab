@@ -276,6 +276,7 @@ GameObject:
   - component: {fileID: 3586495166624268493}
   - component: {fileID: 5897509765347996508}
   - component: {fileID: 107644124424100040}
+  - component: {fileID: 232801754017784287}
   m_Layer: 0
   m_Name: Left Image
   m_TagString: Untagged
@@ -340,6 +341,39 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &232801754017784287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7531245310008918308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: 5, y: -15}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0
+  followsMouse: 1
+  text: 'Class Name: Blank
+
+    Class Type: Blank'
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 0
+  fontSize: 0
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &9045297987684139831
 GameObject:
   m_ObjectHideFlags: 0

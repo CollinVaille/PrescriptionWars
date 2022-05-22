@@ -398,13 +398,13 @@ public class GalaxyGenerator : MonoBehaviour
             for (int y = 0; y < planets.Count; y++)
             {
                 sourcePlanet = planets[y];
-                if (sourcePlanet.transform.GetChild(0).GetComponent<GalaxyPlanet>().OwnerID == -1)
+                if (sourcePlanet.transform.GetChild(0).GetComponent<GalaxyPlanet>().ownerID == -1)
                 {
                     Empire.empires[empireID].planetsOwned.Add(y);
                     GalaxyPlanet planet = planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>();
-                    planet.OwnerID = empireID;
-                    planet.Culture = Empire.empires[empireID].empireCulture;
-                    planet.IsCapital = true;
+                    planet.ownerID = empireID;
+                    planet.culture = Empire.empires[empireID].empireCulture;
+                    planet.isCapital = true;
                     sourcePlanet = planets[y];
                     break;
                 }
@@ -416,7 +416,7 @@ public class GalaxyGenerator : MonoBehaviour
 
                 for(int y = 0; y < planets.Count; y++)
                 {
-                    if(planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>().OwnerID == -1)
+                    if(planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>().ownerID == -1)
                     {
                         if(indexToAdd == -1)
                         {
@@ -431,9 +431,9 @@ public class GalaxyGenerator : MonoBehaviour
 
                 Empire.empires[empireID].planetsOwned.Add(indexToAdd);
                 GalaxyPlanet planet = planets[indexToAdd].transform.GetChild(0).GetComponent<GalaxyPlanet>();
-                planet.OwnerID = empireID;
-                planet.Culture = Empire.empires[empireID].empireCulture;
-                planet.IsCapital = false;
+                planet.ownerID = empireID;
+                planet.culture = Empire.empires[empireID].empireCulture;
+                planet.isCapital = false;
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -446,7 +446,7 @@ public class GalaxyGenerator : MonoBehaviour
                 string empireName = "";
                 while (true)
                 {
-                    empireName = EmpireNameGenerator.GenerateEmpireName(planets[Empire.empires[empireID].planetsOwned[0]].transform.GetChild(0).GetComponent<GalaxyPlanet>().Name);
+                    empireName = EmpireNameGenerator.GenerateEmpireName(planets[Empire.empires[empireID].planetsOwned[0]].transform.GetChild(0).GetComponent<GalaxyPlanet>().planetName);
 
                     if (empireID == 0)
                         break;
@@ -473,13 +473,13 @@ public class GalaxyGenerator : MonoBehaviour
         {
             for (int y = 0; y < planets.Count; y++)
             {
-                if (planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>().OwnerID == -1)
+                if (planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>().ownerID == -1)
                 {
                     Empire.empires[iteration].planetsOwned.Add(y);
                     GalaxyPlanet planet = planets[y].transform.GetChild(0).GetComponent<GalaxyPlanet>();
-                    planet.OwnerID = iteration;
-                    planet.Culture = Empire.empires[iteration].empireCulture;
-                    planet.IsCapital = false;
+                    planet.ownerID = iteration;
+                    planet.culture = Empire.empires[iteration].empireCulture;
+                    planet.isCapital = false;
                     break;
                 }
             }
@@ -753,7 +753,7 @@ public class GalaxyGenerator : MonoBehaviour
     {
         for(int x = 0; x < planets.Count; x++)
         {
-            if (planetName.Equals(planets[x].transform.GetChild(0).GetComponent<GalaxyPlanet>().Name))
+            if (planetName.Equals(planets[x].transform.GetChild(0).GetComponent<GalaxyPlanet>().planetName))
                 return true;
         }
 

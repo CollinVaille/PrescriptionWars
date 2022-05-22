@@ -173,7 +173,7 @@ public class CheatConsole : MonoBehaviour
             GalaxyPlanet planet = GalaxyManager.planets[x].GetComponent<GalaxyPlanet>();
 
             //string planetName = GeneralHelperMethods.RemoveCarriageReturn(planet.nameLabel.text.ToLower());
-            string planetName = planet.Name.ToLower();
+            string planetName = planet.planetName.ToLower();
 
             if (inputedPlanetName.Equals(planetName))
             {
