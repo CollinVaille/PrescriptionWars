@@ -345,7 +345,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// </summary>
     private void PopulateUnitList()
     {
-        for(int armyIndex = 0; armyIndex < PlanetSelected.GetArmiesCount(); armyIndex++)
+        for(int armyIndex = 0; armyIndex < PlanetSelected.armyCount; armyIndex++)
         {
             //Instantiates the army button from the army button prefab.
             GameObject armyButton = Instantiate(armyButtonPrefab);
@@ -820,7 +820,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     public void OnClickCreateArmyButton()
     {
         //Ensures the planet selected is allowed to have another army stationed on it.
-        if (!PlanetSelected.MaxArmyCountReached)
+        if (!PlanetSelected.armyCountLimitReached)
         {
             //Creates a new army on the selected planet.
             PlanetSelected.AddArmy(new GalaxyArmy(PlanetSelected.owner.empireCulture.ToString() + " Army", PlanetSelected.ownerID));
@@ -834,7 +834,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Gets the army button script component of the army button in order to edit some values in the script.
             ArmyButton armyButtonScript = armyButton.GetComponent<ArmyButton>();
             //Assigns the appropriate army to the army button.
-            armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(PlanetSelected.GetArmiesCount() - 1));
+            armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(PlanetSelected.armyCount - 1));
 
             //Calls for a spacing update on the button above it if such a button exists.
             if (UnitListButtonParent.childCount > 1)

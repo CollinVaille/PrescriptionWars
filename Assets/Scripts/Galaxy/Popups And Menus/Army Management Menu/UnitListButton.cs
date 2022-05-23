@@ -437,7 +437,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
             case ButtonType.Army:
                 //Finds the original index the army was at in the list of armies on the planet.
                 int originalArmyIndex = 0;
-                for(int armyIndex = 0; armyIndex < ArmyManagementMenu.PlanetSelected.GetArmiesCount(); armyIndex++)
+                for(int armyIndex = 0; armyIndex < ArmyManagementMenu.PlanetSelected.armyCount; armyIndex++)
                 {
                     if(ArmyManagementMenu.PlanetSelected.GetArmyAt(armyIndex) == gameObject.GetComponent<ArmyButton>().AssignedArmy)
                     {

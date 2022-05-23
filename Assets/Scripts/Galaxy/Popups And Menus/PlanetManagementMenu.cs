@@ -341,7 +341,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     {
         if (direction.Equals("right"))
         {
-            if (buildingSelected < GalaxyBuilding.buildingEnums.Count - 1)
+            if (buildingSelected < GalaxyBuilding.buildingTypeCount - 1)
             {
                 buildingSelected++;
             }
@@ -358,7 +358,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
             }
             else
             {
-                buildingSelected = GalaxyBuilding.buildingEnums.Count - 1;
+                buildingSelected = GalaxyBuilding.buildingTypeCount - 1;
             }
         }
 

@@ -105,8 +105,11 @@ public class GalaxyPlanet : MonoBehaviour
         set
         {
             planetNameVar = value;
-            nameLabel.text = value;
             gameObject.name = value;
+            if (nameLabel != null)
+                nameLabel.text = value;
+            else
+                AddNameLabel(value);
         }
     }
 
@@ -118,14 +121,25 @@ public class GalaxyPlanet : MonoBehaviour
 
     //Armies
     private List<GalaxyArmy> armies = new List<GalaxyArmy>();
-    public bool MaxArmyCountReached
+    /// <summary>
+    /// Returns the number of armies that are located on the planet.
+    /// </summary>
+    public int armyCount { get => armies.Count; }
+    /// <summary>
+    /// Indicates the maximum number of armies that are allowed to be stationed on the planet.
+    /// </summary>
+    public int armyCountLimit { get => 2; }
+    /// <summary>
+    /// Indicates whether the limit of how many armies can be stationed on the planet has been reached.
+    /// </summary>
+    public bool armyCountLimitReached
     {
         get
         {
             if (planetShips.Count == 0)
                 return false;
             else
-                return GetArmiesCount() >= planetShips[0].OffsetPositions.Length;
+                return armyCount >= planetShips[0].OffsetPositions.Length || armyCount >= armyCountLimit;
         }
     }
 
@@ -141,20 +155,7 @@ public class GalaxyPlanet : MonoBehaviour
     //Atmosphere
     public GameObject atmosphere { get => transform.parent.GetChild(transform.GetSiblingIndex() + 2).gameObject; }
 
-    private void Start()
-    {
-        AddArmy(new GalaxyArmy("Army of the South", ownerIDVar));
-        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
-        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Assault"));
-        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Riot"));
-        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
-        AddArmy(new GalaxyArmy("Army of the West", ownerIDVar));
-        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
-        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Officer"));
-        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Flamethrower"));
-        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
-    }
-
+    //Resources
     public float creditsPerTurn
     {
         get
@@ -213,6 +214,20 @@ public class GalaxyPlanet : MonoBehaviour
 
             return production;
         }
+    }
+
+    private void Start()
+    {
+        AddArmy(new GalaxyArmy("Army of the South", ownerIDVar));
+        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Assault"));
+        armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Riot"));
+        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        AddArmy(new GalaxyArmy("Army of the West", ownerIDVar));
+        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Officer"));
+        armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Flamethrower"));
+        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
     }
 
     public void InitializePlanet (string planetName, int planetID, Planet.Biome biome)
@@ -394,15 +409,6 @@ public class GalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the number of armies that are located on the planet.
-    /// </summary>
-    /// <returns></returns>
-    public int GetArmiesCount()
-    {
-        return armies.Count;
-    }
-
-    /// <summary>
     /// Returns the army at the specified index.
     /// </summary>
     /// <param name="index"></param>
@@ -543,7 +549,7 @@ public struct GalaxyBuilding
         Prescriptor,
         TradePost
     }
-    public static List<BuildingType> buildingEnums = new List<BuildingType>() {BuildingType.ResearchFacility, BuildingType.Depot, BuildingType.Prescriptor, BuildingType.TradePost };
+    public static int buildingTypeCount { get => Enum.GetNames(typeof(BuildingType)).Length; }
 
     public static float GetCreditsCost(BuildingType buildingType)
     {
