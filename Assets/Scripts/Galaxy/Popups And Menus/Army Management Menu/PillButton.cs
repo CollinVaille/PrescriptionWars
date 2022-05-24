@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PillButton : UnitListButton
 {
+    [Header("Components")]
+
+    [SerializeField] private Image rightImage = null;
+
     //------------------------
     //Non-inspector variables.
     //------------------------
@@ -65,7 +70,7 @@ public class PillButton : UnitListButton
         base.UpdateInfo();
 
         //Sets the color of the pill button to match the empire color of the empire that owns the assigned pill.
-        Button.image.color = Empire.empires[assignedPill.assignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
+        Button.image.color = Empire.empires[assignedPill.assignedSquad.assignedArmy.OwnerEmpireID].EmpireColor;
         //Sets the left image's sprite to the pill's class type sprite.
         if(AssignedPill != null && AssignedPill.pillClass != null && AssignedPill.pillClass.iconSprite != null)
         {
@@ -78,6 +83,8 @@ public class PillButton : UnitListButton
             LeftImage.sprite = null;
             LeftImage.gameObject.SetActive(false);
         }
+        //Toggles the right image depending on whether or not the assigned pill is a squad leader.
+        rightImage.gameObject.SetActive(AssignedPill != null && AssignedPill.isSquadLeader);
     }
 
     public override void DisbandAssignedGroundUnit()

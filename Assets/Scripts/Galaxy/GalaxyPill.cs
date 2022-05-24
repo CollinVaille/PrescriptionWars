@@ -57,6 +57,11 @@ public class GalaxyPill: GalaxyGroundUnit
     private GalaxySquad assignedSquadVar = null;
 
     /// <summary>
+    /// Indicates whether the pill is in a squad and is the leader of said squad.
+    /// </summary>
+    public bool isSquadLeader { get => assignedSquad != null ? assignedSquad.squadLeader == this : false; }
+
+    /// <summary>
     /// Returns the skin material of the pill that is specified either in the squad (checked first) or the army.
     /// </summary>
     public Material Skin
@@ -64,10 +69,10 @@ public class GalaxyPill: GalaxyGroundUnit
         get
         {
             //Returns the pill skin assigned to the squad if the squad is a special squad.
-            if (assignedSquadVar.AssignedPillSkin != null)
-                return assignedSquadVar.AssignedPillSkin;
+            if (assignedSquadVar.assignedPillSkin != null)
+                return assignedSquadVar.assignedPillSkin;
             //Else if the squad is not a special squad then it returns the pill skin assigned to the army.
-            return assignedSquadVar.AssignedArmy.AssignedPillSkin;
+            return assignedSquadVar.assignedArmy.AssignedPillSkin;
         }
     }
 

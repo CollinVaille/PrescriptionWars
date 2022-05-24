@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SquadButton : ExpandableUnitListButton
 {
@@ -73,19 +74,31 @@ public class SquadButton : ExpandableUnitListButton
         base.UpdateInfo();
 
         //Sets the color of the squad button to match the empire color of the empire that owns the assigned squad.
-        Button.image.color = Empire.empires[assignedSquad.AssignedArmy.OwnerEmpireID].EmpireColor;
+        Button.image.color = Empire.empires[assignedSquad.assignedArmy.OwnerEmpireID].EmpireColor;
         //Sets the sprite of the left image to show the icon of the army that the squad is assigned to.
-        LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + AssignedSquad.AssignedArmy.ArmyIcon.spriteName);
+        LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + AssignedSquad.assignedArmy.ArmyIcon.spriteName);
         //Sets the color of the left image to the appropriate color of the army's icon.
-        LeftImage.color = AssignedSquad.IconColor;
+        LeftImage.color = AssignedSquad.iconColor;
         //Sets the text of the name text component to be the name of the squad.
         NameText.text = assignedSquad.Name;
+
+        //Updates the info on all child pill buttons (mostly because of the squad leader).
+        if(ChildButtons != null)
+        {
+            foreach(UnitListButton childButton in ChildButtons)
+            {
+                if(childButton.TypeOfButton == ButtonType.Pill)
+                {
+                    childButton.gameObject.GetComponent<PillButton>().UpdateInfo();
+                }
+            }
+        }
     }
 
     public override void DisbandAssignedGroundUnit()
     {
         //Removes the squad from its assigned army.
-        AssignedSquad.AssignedArmy.RemoveSquad(AssignedSquad);
+        AssignedSquad.assignedArmy.RemoveSquad(AssignedSquad);
 
         //Executes the base logic for disbanding a ground unit.
         base.DisbandAssignedGroundUnit();

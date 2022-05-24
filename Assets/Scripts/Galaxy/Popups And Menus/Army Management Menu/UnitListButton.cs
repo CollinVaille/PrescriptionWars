@@ -35,13 +35,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     [Header("Base Logic Options")]
 
     [SerializeField] private ButtonType buttonType = 0;
-    public ButtonType TypeOfButton
-    {
-        get
-        {
-            return buttonType;
-        }
-    }
+    public ButtonType TypeOfButton { get => buttonType; }
     public enum ButtonType
     {
         Army,
@@ -94,13 +88,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// Indicates the height of the button when it was created.
     /// </summary>
     private float initialHeight = 0;
-    public float InitialHeight
-    {
-        get
-        {
-            return initialHeight;
-        }
-    }
+    public float InitialHeight { get => initialHeight; }
 
     /// <summary>
     /// Indicates whether the spacing between this unit list button and the next needs to be updated the next frame.
@@ -126,13 +114,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// <summary>
     /// Indicates whether the unit list button is currently being dragged.
     /// </summary>
-    protected bool BeingDragged
-    {
-        get
-        {
-            return beingDragged;
-        }
-    }
+    protected bool BeingDragged { get => beingDragged; }
     /// <summary>
     /// Indicates whether the unit list button is currently being dragged.
     /// </summary>
@@ -140,17 +122,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// <summary>
     /// Indicates whether or not the latest button move was successful or not.
     /// </summary>
-    protected bool LatestButtonMoveSuccessful
-    {
-        get
-        {
-            return latestButtonMoveSuccessful;
-        }
-        private set
-        {
-            latestButtonMoveSuccessful = value;
-        }
-    }
+    protected bool LatestButtonMoveSuccessful { get => latestButtonMoveSuccessful; private set => latestButtonMoveSuccessful = value; }
     /// <summary>
     /// Indicates whether or not the latest button move was successful or not.
     /// </summary>
@@ -471,14 +443,14 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 ArmyButton originalParentArmyButton = null;
                 for(int siblingIdex = 0; siblingIdex < transform.parent.childCount; siblingIdex++)
                 {
-                    if (transform.parent.GetChild(siblingIdex).GetComponent<UnitListButton>().TypeOfButton == ButtonType.Army && transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>().AssignedArmy == squad.AssignedArmy)
+                    if (transform.parent.GetChild(siblingIdex).GetComponent<UnitListButton>().TypeOfButton == ButtonType.Army && transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>().AssignedArmy == squad.assignedArmy)
                     {
                         originalParentArmyButton = transform.parent.GetChild(siblingIdex).GetComponent<ArmyButton>();
                         break;
                     }
                 }
                 //Removes the squad from its current army.
-                squad.AssignedArmy.RemoveSquad(squad);
+                squad.assignedArmy.RemoveSquad(squad);
                 //Finds the new army the squad will be assigned to.
                 GalaxyArmy newArmyAssigned = null;
                 ArmyButton parentArmyButton = null;
@@ -501,12 +473,13 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 break;
             case ButtonType.Pill:
                 GalaxyPill pill = gameObject.GetComponent<PillButton>().AssignedPill;
+                bool squadLeader = pill.isSquadLeader;
                 //Stores the original parent buttons.
                 List<UnitListButton> originalParentButtons = new List<UnitListButton>();
                 for (int siblingIndex = 0; siblingIndex < transform.parent.childCount; siblingIndex++)
                 {
                     UnitListButton buttonAtSiblingIndex = transform.parent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-                    if ((buttonAtSiblingIndex.TypeOfButton == ButtonType.Army && buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == pill.assignedSquad.AssignedArmy) || (buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == pill.assignedSquad))
+                    if ((buttonAtSiblingIndex.TypeOfButton == ButtonType.Army && buttonAtSiblingIndex.gameObject.GetComponent<ArmyButton>().AssignedArmy == pill.assignedSquad.assignedArmy) || (buttonAtSiblingIndex.TypeOfButton == ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == pill.assignedSquad))
                     {
                         originalParentButtons.Add(buttonAtSiblingIndex);
                         if (originalParentButtons.Count >= 2)
@@ -514,6 +487,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                     }
                 }
                 //Removes the pill from its current squad.
+                GalaxySquad originalSquad = pill.assignedSquad;
                 pill.assignedSquad.RemovePill(pill);
                 //Finds the new squad the pill will be assigned to and the new parent buttons of this button (squad parent at index 0 and army parent at index 1).
                 GalaxySquad newSquadAssigned = null;
@@ -534,6 +508,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                 }
                 //Assigns the pill to its new squad.
                 newSquadAssigned.InsertPill(newSiblingIndex - newParentButtons[0].transform.GetSiblingIndex() - 1, pill);
+                //Sets the pill back as the squad leader if it was before.
+                if (squadLeader && newSquadAssigned == originalSquad)
+                    originalSquad.squadLeader = pill;
                 //Updates the information displayed on the new parent buttons.
                 foreach (UnitListButton newParentButton in newParentButtons)
                     newParentButton.UpdateInfo();

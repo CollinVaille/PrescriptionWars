@@ -89,7 +89,7 @@ public class GalaxyArmy: GalaxyGroundUnit
 
             foreach (GalaxySquad squad in squads)
             {
-                for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
+                for (int pillIndex = 0; pillIndex < squad.pillCount; pillIndex++)
                 {
                     totalExperience += squad.GetPillAt(pillIndex).experience;
                     totalPills++;
@@ -111,7 +111,7 @@ public class GalaxyArmy: GalaxyGroundUnit
 
             foreach (GalaxySquad squad in squads)
             {
-                for (int pillIndex = 0; pillIndex < squad.TotalNumberOfPills; pillIndex++)
+                for (int pillIndex = 0; pillIndex < squad.pillCount; pillIndex++)
                 {
                     totalExperienceLevel += squad.GetPillAt(pillIndex).experienceLevel;
                     totalPills++;
@@ -133,7 +133,7 @@ public class GalaxyArmy: GalaxyGroundUnit
 
             foreach(GalaxySquad squad in squads)
             {
-                totalNumberOfPills += squad.TotalNumberOfPills;
+                totalNumberOfPills += squad.pillCount;
             }
 
             return totalNumberOfPills;
@@ -147,7 +147,7 @@ public class GalaxyArmy: GalaxyGroundUnit
     public void AddSquad(GalaxySquad squad)
     {
         squads.Add(squad);
-        squad.AssignedArmy = this;
+        squad.assignedArmy = this;
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class GalaxyArmy: GalaxyGroundUnit
             squads.Insert(index, squad);
         else
             squads.Add(squad);
-        squad.AssignedArmy = this;
+        squad.assignedArmy = this;
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// <param name="squad"></param>
     public void RemoveSquad(GalaxySquad squad)
     {
-        squad.AssignedArmy = null;
+        squad.assignedArmy = null;
         squads.Remove(squad);
     }
 

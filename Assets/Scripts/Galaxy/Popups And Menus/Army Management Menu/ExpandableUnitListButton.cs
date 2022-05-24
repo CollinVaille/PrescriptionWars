@@ -99,7 +99,7 @@ public class ExpandableUnitListButton : UnitListButton
             }
             else if (TypeOfButton == ButtonType.Squad)
             {
-                if (gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills > 0)
+                if (gameObject.GetComponent<SquadButton>().AssignedSquad.pillCount > 0)
                     Expand();
             }
         }
@@ -140,7 +140,7 @@ public class ExpandableUnitListButton : UnitListButton
         if (TypeOfButton == ButtonType.Army)
             childCount = gameObject.GetComponent<ArmyButton>().AssignedArmy.squadCount;
         else if (TypeOfButton == ButtonType.Squad)
-            childCount = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
+            childCount = gameObject.GetComponent<SquadButton>().AssignedSquad.pillCount;
         //Ensures that the button actually has child buttons to display before going through the rest of the expanding logic.
         if (childCount > 0)
         {
@@ -206,7 +206,7 @@ public class ExpandableUnitListButton : UnitListButton
         if (TypeOfButton == ButtonType.Army)
             numberOfChildButtons = gameObject.GetComponent<ArmyButton>().AssignedArmy.squadCount;
         else if (TypeOfButton == ButtonType.Squad)
-            numberOfChildButtons = gameObject.GetComponent<SquadButton>().AssignedSquad.TotalNumberOfPills;
+            numberOfChildButtons = gameObject.GetComponent<SquadButton>().AssignedSquad.pillCount;
         else
             Debug.Log("Expand all logic not implemented for unit list button type: " + TypeOfButton.ToString());
         //Finds each expandable child button of this expandable unit list button.

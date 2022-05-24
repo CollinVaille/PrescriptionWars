@@ -206,7 +206,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     unitInspectorSquadParent.gameObject.SetActive(true);
                     unitInspectorPillParent.gameObject.SetActive(false);
                     //Gets the leader of the squad (could be null if there are no pills in the squad).
-                    GalaxyPill squadLeader = unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.SquadLeader;
+                    GalaxyPill squadLeader = unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.squadLeader;
                     //Deletes/clears the pill view if the squad has no leader.
                     if (squadLeader == null)
                     {
@@ -712,7 +712,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         GalaxyColorPickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab).GetComponent<GalaxyColorPickerConfirmationPopup>();
         string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.Name + "'s Icon Color";
         string bodyText = "Are you sure that you want to change the icon color for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
-        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.IconColor);
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.iconColor);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -737,7 +737,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Gets the squad button component of the selected unit list button.
             SquadButton squadButtonSelected = UnitListButtonSelected.gameObject.GetComponent<SquadButton>();
             //Changes the actual squad icon color.
-            squadButtonSelected.AssignedSquad.IconColor = newIconColor;
+            squadButtonSelected.AssignedSquad.iconColor = newIconColor;
             //Updates the squad button to display the new icon color.
             squadButtonSelected.UpdateInfo();
         }

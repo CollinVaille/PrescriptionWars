@@ -77,7 +77,7 @@ public class PillViewsManager : MonoBehaviour
             return;
         foreach(PillView pillView in pillViews)
         {
-            if(pillView != null && pillView.DisplayedPill != null && pillView.DisplayedPill.assignedSquad != null && pillView.DisplayedPill.assignedSquad.AssignedArmy != null && pillView.DisplayedPill.assignedSquad.AssignedArmy == army)
+            if(pillView != null && pillView.DisplayedPill != null && pillView.DisplayedPill.assignedSquad != null && pillView.DisplayedPill.assignedSquad.assignedArmy != null && pillView.DisplayedPill.assignedSquad.assignedArmy == army)
             {
                 pillView.DisplayedPill = pillView.DisplayedPill;
             }

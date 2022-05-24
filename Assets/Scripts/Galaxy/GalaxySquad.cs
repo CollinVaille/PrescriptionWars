@@ -19,7 +19,7 @@ public class GalaxySquad: GalaxyGroundUnit
         //Sets the name of the squad to the specified name.
         Name = name;
         //Sets the color of the icon that represents the squad to the specified color.
-        IconColor = iconColor;
+        this.iconColor = iconColor;
     }
 
     public GalaxySquad(string name, Material pillSkin)
@@ -27,7 +27,7 @@ public class GalaxySquad: GalaxyGroundUnit
         //Sets the name of the squad to the specified name.
         Name = name;
         //Sets the assigned pill skin of the squad to the specified pill skin.
-        AssignedPillSkin = pillSkin;
+        assignedPillSkin = pillSkin;
 
         //Randomizes the color of the icon that represents the squad.
         RandomizeIconColor();
@@ -38,38 +38,38 @@ public class GalaxySquad: GalaxyGroundUnit
         //Sets the name of the squad to the specified name.
         Name = name;
         //Sets the color of the icon that represents the squad to the specified color.
-        IconColor = iconColor;
+        this.iconColor = iconColor;
         //Sets the assigned pill skin of the squad to the specified pill skin.
-        AssignedPillSkin = pillSkin;
+        assignedPillSkin = pillSkin;
     }
 
     /// <summary>
     /// Indicates the color of the icon that represents the squad.
     /// </summary>
-    public Color IconColor { get => iconColor; set => iconColor = value; }
-    private Color iconColor;
+    public Color iconColor { get => iconColorVar; set => iconColorVar = value; }
+    private Color iconColorVar;
 
     /// <summary>
     /// The material that will be assigned to all pills of this squad (will usually be null and the material assigned to pills in the army class will be used, should only be used for special squads).
     /// </summary>
-    public Material AssignedPillSkin { get => assignedPillSkin; private set => assignedPillSkin = value; }
-    private Material assignedPillSkin = null;
+    public Material assignedPillSkin { get => assignedPillSkinVar; private set => assignedPillSkinVar = value; }
+    private Material assignedPillSkinVar = null;
 
     /// <summary>
     /// List of all of the pills in the squad.
     /// </summary>
-    private List<GalaxyPill> pills = new List<GalaxyPill>();
+    private List<GalaxyPill> pills = null;
 
     /// <summary>
     /// Returns the length (count) of the list of pills.
     /// </summary>
-    public int TotalNumberOfPills { get => pills.Count; }
+    public int pillCount { get => pills != null ? pills.Count : 0; }
 
     /// <summary>
     /// The army that this squad is assigned to.
     /// </summary>
-    public GalaxyArmy AssignedArmy { get => assignedArmy; set => assignedArmy = value; }
-    private GalaxyArmy assignedArmy = null;
+    public GalaxyArmy assignedArmy { get => assignedArmyVar; set => assignedArmyVar = value; }
+    private GalaxyArmy assignedArmyVar = null;
 
     /// <summary>
     /// Returns the exact amount of experience that the average pill in the squad has.
@@ -80,12 +80,15 @@ public class GalaxySquad: GalaxyGroundUnit
         {
             float totalExperience = 0.0f;
 
-            foreach (GalaxyPill pill in pills)
+            if(pills != null)
             {
-                totalExperience += pill.experience;
+                foreach (GalaxyPill pill in pills)
+                {
+                    totalExperience += pill.experience;
+                }
             }
 
-            return pills.Count <= 0 ? 0 : totalExperience / pills.Count;
+            return pillCount <= 0 ? 0 : totalExperience / pillCount;
         }
     }
     /// <summary>
@@ -97,34 +100,51 @@ public class GalaxySquad: GalaxyGroundUnit
         {
             int totalExperienceLevel = 0;
 
-            foreach (GalaxyPill pill in pills)
+            if(pills != null)
             {
-                totalExperienceLevel += pill.experienceLevel;
+                foreach (GalaxyPill pill in pills)
+                {
+                    totalExperienceLevel += pill.experienceLevel;
+                }
             }
 
-            return pills.Count <= 0 ? 0 : totalExperienceLevel / pills.Count;
+            return pillCount <= 0 ? 0 : totalExperienceLevel / pillCount;
         }
     }
 
     /// <summary>
     /// Returns the pill that is the leader of the squad.
     /// </summary>
-    public GalaxyPill SquadLeader
+    public GalaxyPill squadLeader
     {
         get
         {
-            return squadLeader;
+            return squadLeaderIndex >= 0 && pills != null && squadLeaderIndex < pillCount ? GetPillAt(squadLeaderIndex) : null;
         }
         set
         {
-            squadLeader = value;
-            string debugString = squadLeader == null ? "Null" : squadLeader.Name;
+            if(value == null)
+            {
+                squadLeaderIndex = -1;
+                return;
+            }
+
+            int newSquadLeaderIndex = -1;
+            for(int index = 0; index < pillCount; index++)
+            {
+                if(GetPillAt(index) == value)
+                {
+                    newSquadLeaderIndex = index;
+                    break;
+                }
+            }
+            squadLeaderIndex = newSquadLeaderIndex;
         }
     }
     /// <summary>
     /// The pill that is the leader of the squad (will be null if no pills are in the squad).
     /// </summary>
-    private GalaxyPill squadLeader = null;
+    private int squadLeaderIndex = -1;
 
     /// <summary>
     /// Returns the total number of pills in the squad of the specified class.
@@ -152,12 +172,17 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="pill"></param>
     public void AddPill(GalaxyPill pill)
     {
+        if (pill == null)
+            return;
+        if (pills == null)
+            pills = new List<GalaxyPill>();
+
         pills.Add(pill);
         pill.assignedSquad = this;
 
         //Makes the pill that is being added to the squad the squad leader if there were no pills in the squad before.
-        if (SquadLeader == null)
-            SquadLeader = pill;
+        if (squadLeader == null)
+            squadLeader = pill;
     }
 
     /// <summary>
@@ -167,10 +192,24 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="pill"></param>
     public void InsertPill(int index, GalaxyPill pill)
     {
-        if (index < pills.Count)
+        GalaxyPill leader = squadLeader;
+        if (pill == null)
+            return;
+        if (pills == null)
+            pills = new List<GalaxyPill>();
+        leader = squadLeader;
+
+        if (pillCount > 0 && index < pillCount)
         {
+            if (index < 0)
+                index = 0;
+
             pills.Insert(index, pill);
             pill.assignedSquad = this;
+
+            squadLeader = leader;
+            if (squadLeader == null)
+                squadLeader = pill;
         }
         else
             AddPill(pill);
@@ -182,11 +221,18 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="pill"></param>
     public void RemovePill(GalaxyPill pill)
     {
+        if (pill == null || pills == null || !pills.Contains(pill))
+            return;
+
+        bool pillIsSquadLeader = pill == squadLeader;
+        GalaxyPill originalSquadLeader = squadLeader;
         pill.assignedSquad = null;
         pills.Remove(pill);
         //Assigns the squad a new squad leader if the pill that is being removed from the squad was the squad leader.
-        if (pill != null && pill == SquadLeader)
-            SquadLeader = TotalNumberOfPills > 0 ? GetPillAt(0) : null;
+        if (pillIsSquadLeader)
+            squadLeader = pillCount > 0 ? GetPillAt(0) : null;
+        else
+            squadLeader = originalSquadLeader;
     }
 
     /// <summary>
@@ -195,12 +241,19 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <param name="index"></param>
     public void RemovePillAt(int index)
     {
+        if (pills == null || index < 0 || index >= pillCount)
+            return;
+
         GalaxyPill pill = GetPillAt(index);
+        bool pillIsSquadLeader = pill == squadLeader;
+        GalaxyPill originalSquadLeader = squadLeader;
         pill.assignedSquad = null;
         pills.RemoveAt(index);
         //Assigns the squad a new squad leader if the pill that is being removed from the squad was the squad leader.
-        if (pill != null && pill == SquadLeader)
-            SquadLeader = TotalNumberOfPills > 0 ? GetPillAt(0) : null;
+        if (pillIsSquadLeader)
+            squadLeader = pillCount > 0 ? GetPillAt(0) : null;
+        else
+            squadLeader = originalSquadLeader;
     }
 
     /// <summary>
@@ -210,7 +263,7 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <returns></returns>
     public GalaxyPill GetPillAt(int index)
     {
-        return pills[index];
+        return pills != null && index >= 0 && index < pillCount ? pills[index] : null;
     }
 
     /// <summary>
@@ -218,6 +271,6 @@ public class GalaxySquad: GalaxyGroundUnit
     /// </summary>
     private void RandomizeIconColor()
     {
-        IconColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1);
+        iconColor = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1);
     }
 }
