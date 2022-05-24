@@ -863,4 +863,52 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Destroys the confirmation popup.
         confirmationPopupScript.DestroyConfirmationPopup();
     }
+
+    /// <summary>
+    /// This method should be called whenever the assign squad leader button is clicked in the unit inspector (pill button unit inspector only).
+    /// </summary>
+    public void OnClickAssignSquadLeaderButton()
+    {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
+        StartCoroutine(ConfirmAssigningSquadLeaderActionCoroutine());
+    }
+
+    /// <summary>
+    /// This coroutine should be started whenenever the player attempts to assign a pill in a squad as the squad leader and confirms that they wish for this action to be carried through.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmAssigningSquadLeaderActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.Name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.Name + "?");
+
+        //Waits until the player has answered the confirmation popup.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //Assigns the selected pill as the squad leader if needed.
+        if (!UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader && confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.squadLeader = UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
+            SquadButton parentSquadButton = null;
+            for(int siblingIndex = UnitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)
+            {
+                UnitListButton buttonAtSiblingIndex = UnitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                if(buttonAtSiblingIndex.TypeOfButton == UnitListButton.ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad)
+                {
+                    parentSquadButton = buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>();
+                    break;
+                }
+            }
+            if(parentSquadButton != null)
+            {
+                parentSquadButton.UpdateInfo();
+            }
+        }
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
 }
