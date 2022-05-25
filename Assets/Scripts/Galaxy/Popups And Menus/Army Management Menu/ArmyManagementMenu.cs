@@ -855,7 +855,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup to confirm the user acknowledges the failure to create an army.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.planetName + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.");
+        confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.planetName + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.", true);
 
         //Waits until the player has answered the confirmation popup and acknowledged the failure to create a new army.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -883,7 +883,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.Name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.Name + "?");
+        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.Name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.Name + "?", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader);
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);

@@ -7,12 +7,32 @@ public class GalaxyConfirmationPopup : GalaxyConfirmationPopupBehaviour
 {
     [Header("Confirmation Popup Components")]
 
-    [SerializeField]
-    private Text bodyText = null;
+    [SerializeField] private Text bodyText = null;
+
+    [SerializeField] private Button confirmButton = null;
+    [SerializeField] private Button cancelButton = null;
+    [SerializeField] private Button okayButton = null;
 
     //Non-inspector variables.
 
     public static GameObject galaxyConfirmationPopupPrefab;
+
+    /// <summary>
+    /// Indicates whether the confirmation popup can have only one possible answer (answer = okay, which is acknowledgement, answer is technically cancel).
+    /// </summary>
+    public bool isAcknowledgementOnly
+    {
+        get
+        {
+            return !confirmButton.gameObject.activeInHierarchy && !cancelButton.gameObject.activeInHierarchy && okayButton.gameObject.activeInHierarchy;
+        }
+        set
+        {
+            confirmButton.gameObject.SetActive(!value);
+            cancelButton.gameObject.SetActive(!value);
+            okayButton.gameObject.SetActive(value);
+        }
+    }
 
     // Start is called before the first frame update
     public override void Start()
@@ -26,10 +46,11 @@ public class GalaxyConfirmationPopup : GalaxyConfirmationPopupBehaviour
         base.Update();
     }
 
-    public void CreateConfirmationPopup(string popupTopText, string popupBodyText)
+    public void CreateConfirmationPopup(string popupTopText, string popupBodyText, bool acknowledgementOnly = false)
     {
         CreateConfirmationPopup(popupTopText);
 
         bodyText.text = popupBodyText;
+        isAcknowledgementOnly = acknowledgementOnly;
     }
 }
