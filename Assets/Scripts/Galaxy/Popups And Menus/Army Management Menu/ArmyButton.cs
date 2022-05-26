@@ -97,11 +97,11 @@ public class ArmyButton : ExpandableUnitListButton
         base.UpdateInfo();
 
         //Sets the color of the army button to match the empire color of the empire that owns the assigned army.
-        Button.image.color = Empire.empires[assignedArmy.OwnerEmpireID].EmpireColor;
+        Button.image.color = Empire.empires[assignedArmy.ownerEmpireID].EmpireColor;
         //Sets the sprite of the left image to the appropriate army icon.
-        LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + assignedArmy.ArmyIcon.spriteName);
+        LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + assignedArmy.armyIcon.spriteName);
         //Sets the color of the left image to the appropriate color of the army's icon.
-        LeftImage.color = assignedArmy.ArmyIcon.color;
+        LeftImage.color = assignedArmy.armyIcon.color;
         //Sets the text of the squads count text to accurately represent how many squads are in the army and how many squads the army could possibly have.
         squadsCountText.text = "(" + assignedArmy.squadCount + "/" + assignedArmy.squadCountLimit + ")";
 

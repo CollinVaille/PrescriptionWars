@@ -25,42 +25,46 @@ public class GalaxyArmy: GalaxyGroundUnit
         //Assigns the name of the army.
         this.name = name;
         //Assigns the owner empire id.
-        this.ownerEmpireID = ownerEmpireID;
+        this.ownerEmpireIDVar = ownerEmpireID;
 
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        assignedPillSkin = pillSkin;
+        assignedPillSkinVar = pillSkin;
         //Assigns the icon of the army to the specified value.
-        this.armyIcon = armyIcon;
+        this.armyIconVar = armyIcon;
     }
 
     /// <summary>
     /// Indicates the empire id of the empire that owns this army (the index of the empire in the Empire.empires list of empires).
     /// </summary>
-    public int OwnerEmpireID { get => ownerEmpireID; }
-    private int ownerEmpireID;
+    public int ownerEmpireID { get => ownerEmpireIDVar; }
+    /// <summary>
+    /// Indicates the empire that owns the army (returns null if there is no empire that actively owns the army).
+    /// </summary>
+    public Empire owner { get => Empire.empires != null && ownerEmpireID >= 0 && ownerEmpireID < Empire.empires.Count ? Empire.empires[ownerEmpireID] : null; }
+    private int ownerEmpireIDVar;
 
     /// <summary>
     /// The material that will be applied to all pills in the army that are not part of a special squad.
     /// </summary>
-    public Material AssignedPillSkin
+    public Material assignedPillSkin
     {
         get
         {
-            return assignedPillSkin;
+            return assignedPillSkinVar;
         }
         set
         {
-            assignedPillSkin = value;
+            assignedPillSkinVar = value;
             PillViewsManager.UpdatePillViewsOfArmy(this);
         }
     }
-    private Material assignedPillSkin = null;
+    private Material assignedPillSkinVar = null;
 
     /// <summary>
     /// The information needed in order to create the icon that represents the army.
     /// </summary>
-    public ArmyIcon ArmyIcon { get => armyIcon; }
-    private ArmyIcon armyIcon = null;
+    public ArmyIcon armyIcon { get => armyIconVar; }
+    private ArmyIcon armyIconVar = null;
 
     /// <summary>
     /// List of all of the squads in the army.
@@ -125,7 +129,7 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// <summary>
     /// Returns the total number of pills in the army (wounded or not).
     /// </summary>
-    public int TotalNumberOfPills
+    public int pillsCount
     {
         get
         {

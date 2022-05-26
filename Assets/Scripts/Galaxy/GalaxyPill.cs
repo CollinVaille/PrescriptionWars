@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class GalaxyPill: GalaxyGroundUnit
 {
-    //Constructor for the class.
-    public GalaxyPill(string name, PillClass pillClass)
+    //Constructors for the class.
+    public GalaxyPill(string name, PillClass pillClass) : this(name, pillClass != null ? pillClass.className : string.Empty)
     {
-        //Assigns the pill the specified name.
-        this.name = name;
-        //Assigns the pill the specified class.
-        className = pillClass.className;
-        //Assigns the type of the pill to the initial pill type specified in the PillClass of the pill.
-        if (this.pillClass != null)
-            pillTypeVar = this.pillClass.initialPillType;
+        
     }
 
     public GalaxyPill(string name, string className)
@@ -25,14 +19,34 @@ public class GalaxyPill: GalaxyGroundUnit
         //Assigns the type of the pill to the initial pill type specified in the PillClass of the pill.
         if (pillClass != null)
             pillTypeVar = pillClass.initialPillType;
+        //Assigns the lowest possible experience level to the pill.
+        experience = experienceBounds.x;
     }
 
     /// <summary>
     /// Indicates the amount of experience that the pill has.
     /// </summary>
     private float experienceVar;
-    public override float experience { get => experienceVar; set => experienceVar = value; }
+    public override float experience
+    {
+        get
+        {
+            return experienceVar;
+        }
+        set
+        {
+            experienceVar = value;
+            if (experienceVar < experienceBounds.x)
+                experienceVar = experienceBounds.x;
+            else if (experienceVar > experienceBounds.y)
+                experienceVar = experienceBounds.y;
+        }
+    }
     public override int experienceLevel { get => (int)experience; }
+    /// <summary>
+    /// The x value indicates the minimum amount of experience that a pill can have while the y value indicates the maximum amount of experience that a pill can have, the final x and y values depend on empire bonuses.
+    /// </summary>
+    public Vector2Int experienceBounds { get => new Vector2Int(1 + (assignedSquad != null && assignedSquad.assignedArmy != null && assignedSquad.assignedArmy.owner != null ? assignedSquad.assignedArmy.owner.pillExperienceBoundingEffects.x : 0), 5 + (assignedSquad != null && assignedSquad.assignedArmy != null && assignedSquad.assignedArmy.owner != null ? assignedSquad.assignedArmy.owner.pillExperienceBoundingEffects.y : 0)); }
 
     /// <summary>
     /// The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
@@ -72,7 +86,7 @@ public class GalaxyPill: GalaxyGroundUnit
             if (assignedSquadVar.assignedPillSkin != null)
                 return assignedSquadVar.assignedPillSkin;
             //Else if the squad is not a special squad then it returns the pill skin assigned to the army.
-            return assignedSquadVar.assignedArmy.AssignedPillSkin;
+            return assignedSquadVar.assignedArmy.assignedPillSkin;
         }
     }
 

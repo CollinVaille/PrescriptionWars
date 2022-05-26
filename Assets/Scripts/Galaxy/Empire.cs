@@ -133,6 +133,10 @@ public class Empire
     /// Returns a random squad name from the list of valid squad names that are valid for the empire.
     /// </summary>
     public string RandomValidSquadName { get => (ValidSquadNames == null || ValidSquadNames.Count == 0) ? "Squad" : ValidSquadNames[Random.Range(0, ValidSquadNames.Count)]; }
+    /// <summary>
+    /// The x value is added to the lower bound for pill experience and the y value is added to the upper bound for pill experience.
+    /// </summary>
+    public Vector2Int pillExperienceBoundingEffects { get => Vector2Int.zero; }
 
     //Tech.
     public TechManager techManager;

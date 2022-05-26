@@ -659,7 +659,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
         string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.owner.PillSkins);
-        confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.AssignedPillSkin);
+        confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkin);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -682,7 +682,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         if(UnitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Army)
         {
             //Changes the assigned pill skin of the selected unit list button's ground unit to the pill skin specified.
-            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.AssignedPillSkin = pillSkin;
+            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkin = pillSkin;
         }
         else
         {
@@ -778,7 +778,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, armyIcons, new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1), ArmyIconNamesLoader.armyIconNames);
 
         //Army's currently selected icon is pre-selected.
-        confirmationPopupScript.SetSpriteSelected(Resources.Load<Sprite>("Galaxy/Army Icons/" + UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.ArmyIcon.spriteName));
+        confirmationPopupScript.SetSpriteSelected(Resources.Load<Sprite>("Galaxy/Army Icons/" + UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.armyIcon.spriteName));
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -803,7 +803,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Gets the squad button component of the selected unit list button.
             ArmyButton armyButtonSelected = UnitListButtonSelected.gameObject.GetComponent<ArmyButton>();
             //Changes the actual squad icon color.
-            armyButtonSelected.AssignedArmy.ArmyIcon.spriteName = newArmyIconSpriteName;
+            armyButtonSelected.AssignedArmy.armyIcon.spriteName = newArmyIconSpriteName;
             //Updates the squad button to display the new icon color.
             armyButtonSelected.UpdateInfo();
         }
