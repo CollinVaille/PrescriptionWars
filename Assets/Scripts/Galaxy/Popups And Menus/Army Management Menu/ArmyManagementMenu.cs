@@ -298,6 +298,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         armyManagementMenus.Add(armyManagementMenuScript);
     }
 
+    public override void Awake()
+    {
+        base.Awake();
+
+        //Adds this army management menu to the list that contains all army management menus.
+        armyManagementMenus.Add(this);
+    }
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -367,7 +375,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         base.Close();
 
-        //Removes the army management menu from the list of army management menus.
+        //Unselects the currently selected unit list button (mostly to delete any active pill views).
+        UnitListButtonSelected = null;
+        //Removes this army management menu from the list of army management menus.
         armyManagementMenus.Remove(this);
         //Destroys the army management menu.
         Destroy(gameObject);
@@ -510,6 +520,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Logs that the cursor texture has been reset.
             cursorTextureChanged = false;
         }
+        //Unselects the currently selected unit list button (mostly to delete any active pill views).
+        UnitListButtonSelected = null;
+        //Removes this army management menu from the list of army management menus.
+        armyManagementMenus.Remove(this);
     }
 
     /// <summary>
@@ -910,5 +924,18 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
 
         //Destroys the confirmation popup.
         confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Closes all army management menus and removes them from the static list.
+    /// </summary>
+    public static void CloseAll()
+    {
+        if (armyManagementMenus == null || armyManagementMenus.Count == 0)
+            return;
+        for(int menuIndex = armyManagementMenus.Count - 1; menuIndex >= 0; menuIndex--)
+        {
+            armyManagementMenus[menuIndex].Close();
+        }
     }
 }

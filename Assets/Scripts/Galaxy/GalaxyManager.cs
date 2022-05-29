@@ -258,6 +258,9 @@ public class GalaxyManager : GalaxyViewBehaviour
             if (PlanetManagementMenu.planetManagementMenu.gameObject.activeInHierarchy)
                 PlanetManagementMenu.planetManagementMenu.Close();
 
+            //Closes all army management menus.
+            ArmyManagementMenu.CloseAll();
+
             //Everyone makes their moves for the turn.
             for (int x = 0; x < Empire.empires.Count; x++)
             {

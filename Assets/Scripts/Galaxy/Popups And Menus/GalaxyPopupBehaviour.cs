@@ -65,16 +65,16 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     private RectTransform rectTransform = null;
 
     //List that contains all popups that inherit from galaxy popup behaviour.
-    private static List<GalaxyPopupBehaviour> galaxyPopupBehaviours = new List<GalaxyPopupBehaviour>();
+    private static List<GalaxyPopupBehaviour> popups = new List<GalaxyPopupBehaviour>();
 
     //Indicates whether any popup that inherits from galaxy popup behaviour is active in the hierarchy.
     public static bool IsAPopupActiveInHierarchy
     {
         get
         {
-            foreach(GalaxyPopupBehaviour galaxyPopupBehaviour in galaxyPopupBehaviours)
+            foreach(GalaxyPopupBehaviour popup in popups)
             {
-                if (galaxyPopupBehaviour.gameObject.activeInHierarchy)
+                if (popup.gameObject.activeInHierarchy)
                     return true;
             }
 
@@ -96,7 +96,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     public virtual void Awake()
     {
         //Adds the popup to the static list that contains all things with popup behaviour.
-        galaxyPopupBehaviours.Add(this);
+        popups.Add(this);
 
         //Sets the variable that holds the value of the rect transform of the popup.
         rectTransform = (RectTransform)transform;
@@ -340,6 +340,6 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     public virtual void OnDestroy()
     {
         //Removes the popup from the static list that contains all things with popup behaviour.
-        galaxyPopupBehaviours.Remove(this);
+        popups.Remove(this);
     }
 }
