@@ -173,6 +173,9 @@ public class GalaxyManager : GalaxyViewBehaviour
     public override void Start()
     {
         base.Start();
+
+        //Loads the video settings in if they haven't been loaded in already.
+        VideoSettings.LoadSettings();
     }
 
     public override void Awake()

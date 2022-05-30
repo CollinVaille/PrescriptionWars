@@ -8,7 +8,6 @@ public class MainMenu : MonoBehaviour
     public List<GameObject> menus;
 
     public AudioSettingsMenu audioSettingsMenu;
-    public VideoSettingsMenu videoSettingsMenu;
 
     [Header("Scene Components")]
 
@@ -44,7 +43,7 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         //audioSettingsMenu.LoadSettings();
-        videoSettingsMenu.LoadSettings();
+        VideoSettings.LoadSettings();
     }
 
     public void Awake()
