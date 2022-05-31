@@ -27,7 +27,7 @@ public class GalaxyPauseMenu : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Escape) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && (!GalaxySettingsMenu.ClosedOnFrame && !settingsMenu.gameObject.activeInHierarchy);
+            return Input.GetKeyDown(KeyCode.Escape) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && (!GalaxySettingsMenu.closedOnFrame && !settingsMenu.gameObject.activeInHierarchy);
         }
     }
 

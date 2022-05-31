@@ -1,20 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GalaxySettingsMenu : GalaxyPopupBehaviour
 {
-    private static bool closedOnFrame = false;
+    public enum SettingsMode
+    {
+        Game,
+        Video,
+        Audio
+    }
+
+    [Header("Components")]
+
+    [SerializeField] private List<Button> settingsModeButtons = new List<Button>();
+
+    [Header("Coloring Options")]
+
+    [SerializeField] private Color unselectedButtonColor = Color.white;
+    [SerializeField] private Color selectedButtonColor = Color.black;
+
+    [Header("SFX Options")]
+
+    [SerializeField] private AudioClip selectSettingsModeSFX = null;
+    [SerializeField] private AudioClip hoverSettingsModeButtonSFX = null;
+
     /// <summary>
     /// Read only property that indicates whether the settings menu has been closed on the current frame.
     /// </summary>
-    public static bool ClosedOnFrame
+    public static bool closedOnFrame { get => closedOnFrameVar; private set => closedOnFrameVar = value; }
+    private static bool closedOnFrameVar = false;
+
+    /// <summary>
+    /// Property that should be used to both access and set the settings mode of the settings menu (Game, Video, or Audio).
+    /// </summary>
+    public SettingsMode settingsMode
     {
-        get
+        get => settingsModeVar;
+        set
         {
-            return closedOnFrame;
+            settingsModeButtons[(int)settingsModeVar].image.color = unselectedButtonColor;
+            settingsModeVar = value;
+            settingsModeButtons[(int)value].image.color = selectedButtonColor;
         }
     }
+    private SettingsMode settingsModeVar = SettingsMode.Game;
 
     // Start is called before the first frame update
     public override void Start()
@@ -38,6 +69,7 @@ public class GalaxySettingsMenu : GalaxyPopupBehaviour
 
     public override void Close()
     {
+        //Executes base popup behaviour closing logic.
         base.Close();
 
         //Logs that the settings menu has been closed on the current frame.
@@ -48,6 +80,30 @@ public class GalaxySettingsMenu : GalaxyPopupBehaviour
     {
         base.Open();
 
-        SetDraggable(!GalaxyPauseMenu.IsOpen);
+        //Resets the settings mode of the menu.
+        settingsMode = 0;
+
+        //SetDraggable(!GalaxyPauseMenu.IsOpen);
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever a settings mode button is pressed and sets the settings mode to the specified value.
+    /// </summary>
+    /// <param name="newSettingsMode"></param>
+    public void OnClickSettingsModeButton(int newSettingsMode)
+    {
+        if(settingsMode != (SettingsMode)newSettingsMode)
+        {
+            settingsMode = (SettingsMode)newSettingsMode;
+            AudioManager.PlaySFX(selectSettingsModeSFX);
+        }
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the pointer enters a settings mode button (game, video, or audio) and plays a sound effect.
+    /// </summary>
+    public void OnPointerEnterSettingsModeButton()
+    {
+        AudioManager.PlaySFX(hoverSettingsModeButtonSFX);
     }
 }
