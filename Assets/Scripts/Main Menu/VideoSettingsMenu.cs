@@ -69,12 +69,14 @@ public class VideoSettings
     public static int viewDistance = 1000;
     public static int quality = 0;
 
+    //Fullscreen mode.
     /// <summary>
     /// Enum property that should be used to both access and modify the fullscreen mode of the application.
     /// </summary>
     public static FullScreenMode fullScreenMode { get => fullScreenModeVar; set { fullScreenModeVar = value; Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, value); resolution = resolution; } }
     private static FullScreenMode fullScreenModeVar;
 
+    //Resolution
     /// <summary>
     /// Property that should be used to both access and modify the resolution of the application.
     /// </summary>
@@ -110,6 +112,13 @@ public class VideoSettings
     /// </summary>
     public static int resolutionIndex { get; private set; }
 
+    //VSync.
+    /// <summary>
+    /// Property that should be used to both access and modify if the application has vsync enabled.
+    /// </summary>
+    public static bool vSyncEnabled { get => vSyncCount > 0; set { vSyncCount = value ? 1 : 0; QualitySettings.vSyncCount = vSyncCount; } }
+    private static int vSyncCount = 0;
+
     public static void SaveSettings()
     {
         PlayerPrefs.SetInt("Sensitivity", sensitivity);
@@ -117,6 +126,7 @@ public class VideoSettings
         PlayerPrefs.SetInt("Quality", quality);
         PlayerPrefs.SetInt("Fullscreen Mode", (int)fullScreenMode);
         PlayerPrefs.SetInt("Resolution Index", resolutionIndex);
+        PlayerPrefs.SetInt("VSync", vSyncCount);
     }
 
     public static void LoadSettings()
@@ -131,5 +141,6 @@ public class VideoSettings
         quality = PlayerPrefs.GetInt("Quality", 0);
         fullScreenMode = (FullScreenMode)PlayerPrefs.GetInt("Fullscreen Mode", 3);
         resolution = possibleResolutions[PlayerPrefs.GetInt("Resolution Index", 0)];
+        vSyncEnabled = PlayerPrefs.GetInt("VSync", 0) > 0;
     }
 }

@@ -11,10 +11,26 @@ public class VideoSettingsScrollList : MonoBehaviour
     [SerializeField] private Dropdown fullScreenModeDropdown = null;
     [SerializeField] private Dropdown resolutionDropdown = null;
 
+    [Header("Toggle Components")]
+
+    [SerializeField] private Toggle vSyncToggle = null;
+
+    [Header("Text Components")]
+
+    [SerializeField] private Text vSyncToggleText = null;
+
+    [Header("Sprite Options")]
+
+    [SerializeField] private Sprite unselectedDropdownOptionSprite = null;
+    [SerializeField] private Sprite selectedDropdownOptionSprite = null;
+
     [Header("SFX Options")]
 
     [SerializeField] private AudioClip hoverButtonSFX = null;
     [SerializeField] private AudioClip clickButtonSFX = null;
+    [SerializeField] private AudioClip dropdownOptionHoverSFX = null;
+    [SerializeField] private AudioClip dropdownOptionClickSFX = null;
+    [SerializeField] private AudioClip toggleClickSFX = null;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +87,8 @@ public class VideoSettingsScrollList : MonoBehaviour
     {
         fullScreenModeDropdown.SetValueWithoutNotify((int)VideoSettings.fullScreenMode);
         resolutionDropdown.SetValueWithoutNotify(VideoSettings.resolutionIndex);
+        vSyncToggle.SetIsOnWithoutNotify(VideoSettings.vSyncEnabled);
+        vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
     }
 
     /// <summary>
@@ -96,5 +114,48 @@ public class VideoSettingsScrollList : MonoBehaviour
     public void OnResolutionDropdownValueChange()
     {
         VideoSettings.resolution = VideoSettings.possibleResolutions[resolutionDropdown.value];
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the value of the vsync toggle changes and accomplishes the tasks of updating the application's vsync value, updating the toggle's text, and playing the appropriate sound effect.
+    /// </summary>
+    public void OnVSyncToggleValueChange()
+    {
+        //Updates the application's vsync value.
+        VideoSettings.vSyncEnabled = vSyncToggle.isOn;
+
+        //Updates the toggle's text.
+        vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(toggleClickSFX);
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the pointer enters a dropdown option and does the tasks of playing the appropriate sound effect and updating the background image's sprite.
+    /// </summary>
+    public void OnPointerEnterDropdownOption(Image backgroundImage)
+    {
+        //Updates the dropdown option's background image sprite.
+        backgroundImage.sprite = selectedDropdownOptionSprite;
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(dropdownOptionHoverSFX);
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the pointer exits a dropdown option and updates the background image's sprite.
+    /// </summary>
+    public void OnPointerExitDropdownOption(Image backgroundImage)
+    {
+        backgroundImage.sprite = unselectedDropdownOptionSprite;
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the player clicks on a dropdown option and plays the appropriate sound effect.
+    /// </summary>
+    public void OnClickDropdownOption()
+    {
+        AudioManager.PlaySFX(dropdownOptionClickSFX);
     }
 }
