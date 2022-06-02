@@ -27,7 +27,6 @@ public class VideoSettingsMenu : GalaxyMenuBehaviour
     public void ToggleFullScreen()
     {
         VideoSettings.fullScreenMode = (FullScreenMode)fullscreenDropdown.value;
-        VideoSettings.resolution = VideoSettings.resolution;
     }
 
     public void ChangeResolution()
@@ -73,14 +72,43 @@ public class VideoSettings
     /// <summary>
     /// Enum property that should be used to both access and modify the fullscreen mode of the application.
     /// </summary>
-    public static FullScreenMode fullScreenMode { get => fullScreenModeVar; set { fullScreenModeVar = value; Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, value); } }
+    public static FullScreenMode fullScreenMode { get => fullScreenModeVar; set { fullScreenModeVar = value; Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, value); resolution = resolution; } }
     private static FullScreenMode fullScreenModeVar;
 
     /// <summary>
     /// Property that should be used to both access and modify the resolution of the application.
     /// </summary>
-    public static Vector2Int resolution { get => resolutionVar; set { resolutionVar = value; Screen.SetResolution(value.x, value.y, Screen.fullScreenMode); } }
-    private static Vector2Int resolutionVar = new Vector2Int(1280, 720);
+    public static Vector2Int resolution
+    {
+        get => possibleResolutions[resolutionIndex];
+        set
+        {
+            int correspondingResolutionIndex = -1;
+            for(int tempResolutionIndex = 0; tempResolutionIndex < possibleResolutions.Length; tempResolutionIndex++)
+            {
+                if(possibleResolutions[tempResolutionIndex].x == value.x && possibleResolutions[tempResolutionIndex].y == value.y)
+                {
+                    correspondingResolutionIndex = tempResolutionIndex;
+                    break;
+                }
+            }
+            if (correspondingResolutionIndex < 0 || correspondingResolutionIndex >= possibleResolutions.Length)
+            {
+                Debug.LogWarning("Resolution: " + value.x + "x" + value.y + " was not found in the array of possible resolutions, resolution remains unchanged.");
+                return;
+            }
+            resolutionIndex = correspondingResolutionIndex;
+            Screen.SetResolution(possibleResolutions[resolutionIndex].x, possibleResolutions[resolutionIndex].y, Screen.fullScreenMode);
+        }
+    }
+    /// <summary>
+    /// Readonly array that contains all possible resolutions of the application.
+    /// </summary>
+    public static readonly Vector2Int[] possibleResolutions = new Vector2Int[] { new Vector2Int(1280, 720), new Vector2Int(1920, 1080), new Vector2Int(2560, 1440), new Vector2Int(3840, 2160) };
+    /// <summary>
+    /// Indicates which index in the array of possible resolutions in the current resolution of the application.
+    /// </summary>
+    public static int resolutionIndex { get; private set; }
 
     public static void SaveSettings()
     {
@@ -88,8 +116,7 @@ public class VideoSettings
         PlayerPrefs.SetInt("View Distance", viewDistance);
         PlayerPrefs.SetInt("Quality", quality);
         PlayerPrefs.SetInt("Fullscreen Mode", (int)fullScreenMode);
-        PlayerPrefs.SetInt("Resolution Width", resolution.x);
-        PlayerPrefs.SetInt("Resolution Height", resolution.y);
+        PlayerPrefs.SetInt("Resolution Index", resolutionIndex);
     }
 
     public static void LoadSettings()
@@ -103,6 +130,6 @@ public class VideoSettings
         viewDistance = PlayerPrefs.GetInt("View Distance", 1000);
         quality = PlayerPrefs.GetInt("Quality", 0);
         fullScreenMode = (FullScreenMode)PlayerPrefs.GetInt("Fullscreen Mode", 3);
-        resolution = new Vector2Int(PlayerPrefs.GetInt("Resolution Width", 1280), PlayerPrefs.GetInt("Resolution Height", 720));
+        resolution = possibleResolutions[PlayerPrefs.GetInt("Resolution Index", 0)];
     }
 }
