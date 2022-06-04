@@ -60,7 +60,11 @@ public class VideoSettingsMenu : GalaxyMenuBehaviour
     }
 }
 
-public class VideoSettings
+
+
+
+
+public static class VideoSettings
 {
     public static bool loaded { get => loadedVar; private set => loadedVar = value; }
     private static bool loadedVar = false;
@@ -116,8 +120,92 @@ public class VideoSettings
     /// <summary>
     /// Property that should be used to both access and modify if the application has vsync enabled.
     /// </summary>
-    public static bool vSyncEnabled { get => vSyncCount > 0; set { vSyncCount = value ? 1 : 0; QualitySettings.vSyncCount = vSyncCount; } }
+    public static bool vSyncEnabled { get => vSyncCount > 0; set { vSyncCount = value ? 1 : 0; QualitySettings.vSyncCount = vSyncCount; Application.targetFrameRate = vSyncEnabled ? -1 : targetFrameRateVar; } }
     private static int vSyncCount = 0;
+
+    //Target Frame Rate.
+    /// <summary>
+    /// Readonly array that contains all target frame rates that have been chosen to be supported (mostly due to being common refresh rates).
+    /// </summary>
+    public static readonly int[] supportedTargetFrameRates = new int[] { -1, 24, 30, 60, 75, 120, 144, 165, 240, 360 };
+    /// <summary>
+    /// Array that contains all possible target frame rates depending on the current monitor's refresh rate.
+    /// </summary>
+    public static int[] possibleTargetFrameRates
+    {
+        get
+        {
+            List<int> possibleTargetFrameRatesList = new List<int>();
+            for(int supportedTargetFrameRateIndex = 0; supportedTargetFrameRateIndex < supportedTargetFrameRates.Length; supportedTargetFrameRateIndex++)
+            {
+                if (supportedTargetFrameRates[supportedTargetFrameRateIndex] > Screen.currentResolution.refreshRate)
+                    break;
+                possibleTargetFrameRatesList.Add(supportedTargetFrameRates[supportedTargetFrameRateIndex]);
+            }
+            return possibleTargetFrameRatesList.ToArray();
+        }
+    }
+    /// <summary>
+    /// Possible target frame rates int array converted to a string array with -1 being changed to unlimited.
+    /// </summary>
+    public static string[] possibleTargetFrameRateDropdownOptions
+    {
+        get
+        {
+            int[] possibleTargetFrameRatesArr = possibleTargetFrameRates;
+            List<string> dropdownOptionsList = new List<string>();
+            for(int possibleTargetFrameRateIndex = 0; possibleTargetFrameRateIndex < possibleTargetFrameRatesArr.Length; possibleTargetFrameRateIndex++)
+            {
+                dropdownOptionsList.Add(possibleTargetFrameRatesArr[possibleTargetFrameRateIndex] >= 0 ? possibleTargetFrameRatesArr[possibleTargetFrameRateIndex].ToString() : "Unlimited");
+            }
+            return dropdownOptionsList.ToArray();
+        }
+    }
+    /// <summary>
+    /// Property that should be used to both access and mutate the target frame rate of the application.
+    /// The accessor returns -1 if vsync is enabled and the actual target frame rate if vsync is disabled.
+    /// The mutator checks if the specified target frame rate is possible first, then it sets the private variable equal to the specified value, then if vsync is enabled it logs a warning saying that changes will not be applied until vsync is disabled or if vsync is disabled then it applies the specified target frame rate immediately.
+    /// </summary>
+    public static int targetFrameRate
+    {
+        get => vSyncEnabled ? -1 : targetFrameRateVar;
+        set
+        {
+            if(!new List<int>(possibleTargetFrameRates).Contains(value))
+            {
+                Debug.LogWarning(value.ToString() + " is not a valid target frame rate. Target frame rate value remains unchanged.");
+                return;
+            }
+            targetFrameRateVar = value;
+            if (vSyncEnabled)
+                Debug.LogWarning("Target frame rate set to " + value + ", however actual change will not take effect while vsync is enabled.");
+            else
+                Application.targetFrameRate = value;
+        }
+    }
+    /// <summary>
+    /// Access only property that indicates at exactly which index in the array of possible target frame rates that the current target frame rate located at (returns -1 if current target frame rate could not be found within the possible target frame rates array).
+    /// </summary>
+    public static int targetFrameRateIndex
+    {
+        get
+        {
+            int targetFrameRateIndexVar = -1;
+            for(int index = 0; index < possibleTargetFrameRates.Length; index++)
+            {
+                if(targetFrameRate == possibleTargetFrameRates[index])
+                {
+                    targetFrameRateIndexVar = index;
+                    break;
+                }
+            }
+            return targetFrameRateIndexVar;
+        }
+    }
+    /// <summary>
+    /// Private static variable that holds the user's specified target frame rate (thus will not match the property's value when vsync is enabled).
+    /// </summary>
+    private static int targetFrameRateVar = -1;
 
     public static void SaveSettings()
     {
@@ -127,6 +215,7 @@ public class VideoSettings
         PlayerPrefs.SetInt("Fullscreen Mode", (int)fullScreenMode);
         PlayerPrefs.SetInt("Resolution Index", resolutionIndex);
         PlayerPrefs.SetInt("VSync", vSyncCount);
+        PlayerPrefs.SetInt("Target Frame Rate", targetFrameRateVar);
     }
 
     public static void LoadSettings()
@@ -142,5 +231,6 @@ public class VideoSettings
         fullScreenMode = (FullScreenMode)PlayerPrefs.GetInt("Fullscreen Mode", 3);
         resolution = possibleResolutions[PlayerPrefs.GetInt("Resolution Index", 0)];
         vSyncEnabled = PlayerPrefs.GetInt("VSync", 0) > 0;
+        targetFrameRate = PlayerPrefs.GetInt("Target Frame Rate", -1);
     }
 }

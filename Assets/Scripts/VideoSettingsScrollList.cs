@@ -6,10 +6,15 @@ using UnityEngine.UI;
 
 public class VideoSettingsScrollList : MonoBehaviour
 {
+    [Header("Scroll List Option Components")]
+
+    [SerializeField] private GameObject targetFrameRateOption = null;
+
     [Header("Dropdown Components")]
 
     [SerializeField] private Dropdown fullScreenModeDropdown = null;
     [SerializeField] private Dropdown resolutionDropdown = null;
+    [SerializeField] private Dropdown targetFrameRateDropdown = null;
 
     [Header("Toggle Components")]
 
@@ -39,7 +44,7 @@ public class VideoSettingsScrollList : MonoBehaviour
         List<string> fullScreenDropdownOptions = new List<string>();
         for(int enumIndex = 0; enumIndex < Enum.GetNames(typeof(FullScreenMode)).Length; enumIndex++)
         {
-            fullScreenDropdownOptions.Add(((FullScreenMode)enumIndex).ToString());
+            fullScreenDropdownOptions.Add(GeneralHelperMethods.GetEnumText(((FullScreenMode)enumIndex).ToString()));
         }
         fullScreenModeDropdown.AddOptions(fullScreenDropdownOptions);
 
@@ -50,6 +55,9 @@ public class VideoSettingsScrollList : MonoBehaviour
             resolutionDropdownOptions.Add(VideoSettings.possibleResolutions[resolutionIndex].x + "x" + VideoSettings.possibleResolutions[resolutionIndex].y);
         }
         resolutionDropdown.AddOptions(resolutionDropdownOptions);
+
+        //Updates the options of the target frame rate dropdown.
+        targetFrameRateDropdown.AddOptions(new List<string>(VideoSettings.possibleTargetFrameRateDropdownOptions));
 
         LoadSettings();
     }
@@ -89,6 +97,8 @@ public class VideoSettingsScrollList : MonoBehaviour
         resolutionDropdown.SetValueWithoutNotify(VideoSettings.resolutionIndex);
         vSyncToggle.SetIsOnWithoutNotify(VideoSettings.vSyncEnabled);
         vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
+        targetFrameRateOption.SetActive(!vSyncToggle.isOn);
+        targetFrameRateDropdown.SetValueWithoutNotify(VideoSettings.targetFrameRateIndex);
     }
 
     /// <summary>
@@ -117,6 +127,14 @@ public class VideoSettingsScrollList : MonoBehaviour
     }
 
     /// <summary>
+    /// This method is called through an event trigger whenever the value of the target frame rate dropdown changes and updates the application's target frame rate.
+    /// </summary>
+    public void OnTargetFrameRateDropdownValueChange()
+    {
+        VideoSettings.targetFrameRate = VideoSettings.possibleTargetFrameRates[targetFrameRateDropdown.value];
+    }
+
+    /// <summary>
     /// This method is called through an event trigger whenever the value of the vsync toggle changes and accomplishes the tasks of updating the application's vsync value, updating the toggle's text, and playing the appropriate sound effect.
     /// </summary>
     public void OnVSyncToggleValueChange()
@@ -126,6 +144,8 @@ public class VideoSettingsScrollList : MonoBehaviour
 
         //Updates the toggle's text.
         vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
+        //Updates whether or not the target frame rate dropdown option is active in the hierarchy.
+        targetFrameRateOption.SetActive(!vSyncToggle.isOn);
 
         //Plays the appropriate sound effect.
         AudioManager.PlaySFX(toggleClickSFX);
