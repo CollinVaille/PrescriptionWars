@@ -15,6 +15,7 @@ public class VideoSettingsScrollList : MonoBehaviour
     [SerializeField] private Dropdown fullScreenModeDropdown = null;
     [SerializeField] private Dropdown resolutionDropdown = null;
     [SerializeField] private Dropdown targetFrameRateDropdown = null;
+    [SerializeField] private Dropdown antiAliasingDropdown = null;
 
     [Header("Toggle Components")]
 
@@ -59,6 +60,14 @@ public class VideoSettingsScrollList : MonoBehaviour
         //Updates the options of the target frame rate dropdown.
         targetFrameRateDropdown.AddOptions(new List<string>(VideoSettings.possibleTargetFrameRateDropdownOptions));
 
+        //Updates the options of the anti-aliasing (msaa) dropdown.
+        List<string> antiAliasingDropdownOptions = new List<string>();
+        for(int optionIndex = 0; optionIndex < VideoSettings.antiAliasingOptions.Length; optionIndex++)
+        {
+            antiAliasingDropdownOptions.Add(VideoSettings.antiAliasingOptions[optionIndex].ToString());
+        }
+        antiAliasingDropdown.AddOptions(antiAliasingDropdownOptions);
+
         LoadSettings();
     }
 
@@ -99,6 +108,7 @@ public class VideoSettingsScrollList : MonoBehaviour
         vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
         targetFrameRateOption.SetActive(!vSyncToggle.isOn);
         targetFrameRateDropdown.SetValueWithoutNotify(VideoSettings.targetFrameRateIndex);
+        antiAliasingDropdown.SetValueWithoutNotify(VideoSettings.antiAliasingIndex);
     }
 
     /// <summary>
@@ -132,6 +142,14 @@ public class VideoSettingsScrollList : MonoBehaviour
     public void OnTargetFrameRateDropdownValueChange()
     {
         VideoSettings.targetFrameRate = VideoSettings.possibleTargetFrameRates[targetFrameRateDropdown.value];
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the value of the anti-aliasing (msaa) dropdown changes and updates the application's anti-aliasing setting.
+    /// </summary>
+    public void OnAntiAliasingDropdownValueChange()
+    {
+        VideoSettings.antiAliasing = VideoSettings.antiAliasingOptions[antiAliasingDropdown.value];
     }
 
     /// <summary>

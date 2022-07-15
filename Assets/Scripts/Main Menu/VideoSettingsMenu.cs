@@ -207,6 +207,51 @@ public static class VideoSettings
     /// </summary>
     private static int targetFrameRateVar = -1;
 
+    /// <summary>
+    /// Readonly array that contains all anti-aliasing (msaa) values that have been chosen to be supported (mostly due to Unity and hardware limitations).
+    /// </summary>
+    public static readonly int[] antiAliasingOptions = new int[] { 0, 2, 4, 8 };
+    /// <summary>
+    /// Property that should be used both to access and mutate the anti-aliasing (msaa) value of the application. Does not set the variable to the specified value if the specified anti-aliasing value is not a valid option from the readonly array of options.
+    /// </summary>
+    public static int antiAliasing
+    {
+        get => antiAliasingVar;
+        set
+        {
+            if (!new List<int>(antiAliasingOptions).Contains(value))
+            {
+                Debug.LogWarning(value.ToString() + " is not a valid anti-aliasing (msaa) option. Anti-aliasing (msaa) value remains unchanged.");
+                return;
+            }
+            antiAliasingVar = value;
+            QualitySettings.antiAliasing = value;
+        }
+    }
+    /// <summary>
+    /// Access only property that indicates which index in the readonly array of anti-aliasing options currently corresponds to the anti-aliasing value of the application. Returns -1 if no such index is found.
+    /// </summary>
+    public static int antiAliasingIndex
+    {
+        get
+        {
+            int antiAliasingIndexVar = -1;
+            for (int index = 0; index < antiAliasingOptions.Length; index++)
+            {
+                if (antiAliasing == antiAliasingOptions[index])
+                {
+                    antiAliasingIndexVar = index;
+                    break;
+                }
+            }
+            return antiAliasingIndexVar;
+        }
+    }
+    /// <summary>
+    /// Private static variable that holds the user's specified anti-aliasing (msaa) value.
+    /// </summary>
+    private static int antiAliasingVar = 0;
+
     public static void SaveSettings()
     {
         PlayerPrefs.SetInt("Sensitivity", sensitivity);
@@ -216,6 +261,7 @@ public static class VideoSettings
         PlayerPrefs.SetInt("Resolution Index", resolutionIndex);
         PlayerPrefs.SetInt("VSync", vSyncCount);
         PlayerPrefs.SetInt("Target Frame Rate", targetFrameRateVar);
+        PlayerPrefs.SetInt("Anti-aliasing", antiAliasingVar);
     }
 
     public static void LoadSettings()
@@ -232,5 +278,6 @@ public static class VideoSettings
         resolution = possibleResolutions[PlayerPrefs.GetInt("Resolution Index", 0)];
         vSyncEnabled = PlayerPrefs.GetInt("VSync", 0) > 0;
         targetFrameRate = PlayerPrefs.GetInt("Target Frame Rate", -1);
+        antiAliasing = PlayerPrefs.GetInt("Anti-aliasing", 0);
     }
 }
