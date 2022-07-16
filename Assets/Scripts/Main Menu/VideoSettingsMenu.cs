@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class VideoSettingsMenu : GalaxyMenuBehaviour
 {
@@ -252,6 +253,42 @@ public static class VideoSettings
     /// </summary>
     private static int antiAliasingVar = 0;
 
+    /// <summary>
+    /// Property that should be used both to access and mutate the value that indicates whether or not the application's fps counter is enabled.
+    /// </summary>
+    public static bool fpsCounterEnabled
+    {
+        get => fpsCounterEnabledVar;
+        set
+        {
+            if(!fpsCounterEnabledVar && value)
+            {
+                Text fpsCounterText = GameObject.Instantiate(Resources.Load<GameObject>("General/Video Settings Prefabs/FPS Counter Text").GetComponent<Text>());
+                fpsCounterText.transform.SetParent(canvas.transform);
+                fpsCounterText.transform.localPosition = new Vector3(Mathf.Abs(fpsCounterText.transform.localPosition.x), Mathf.Abs(fpsCounterText.transform.localPosition.y), Mathf.Abs(fpsCounterText.transform.localPosition.z));
+                fpsCounterText.gameObject.name = "FPS Counter Text";
+            }
+            else if (fpsCounterEnabledVar && !value)
+            {
+                GameObject.Destroy(canvas.transform.Find("FPS Counter Text").gameObject);
+            }
+            fpsCounterEnabledVar = value;
+        }
+    } 
+    /// <summary>
+    /// Private static variable that holds the user's preference for whether or not the application's fps counter is enabled.
+    /// </summary>
+    private static bool fpsCounterEnabledVar = false;
+
+    /// <summary>
+    /// Private static string the holds the name of the previously active scene (string.empty if there was no previously active scene).
+    /// </summary>
+    private static string previousSceneName = string.Empty;
+    /// <summary>
+    /// Private static variable that holds the canvas that displays all needed video information to the user.
+    /// </summary>
+    private static Canvas canvas = null;
+
     public static void SaveSettings()
     {
         PlayerPrefs.SetInt("Sensitivity", sensitivity);
@@ -262,10 +299,30 @@ public static class VideoSettings
         PlayerPrefs.SetInt("VSync", vSyncCount);
         PlayerPrefs.SetInt("Target Frame Rate", targetFrameRateVar);
         PlayerPrefs.SetInt("Anti-aliasing", antiAliasingVar);
+        PlayerPrefs.SetInt("FPS Counter", fpsCounterEnabledVar ? 1 : 0);
     }
 
     public static void LoadSettings()
     {
+        if (!previousSceneName.Equals(SceneManager.GetActiveScene().name))
+        {
+            canvas = GameObject.Instantiate(Resources.Load<GameObject>("General/Video Settings Prefabs/Video Settings Canvas")).GetComponent<Canvas>();
+            canvas.transform.SetParent(Camera.main.transform.parent);
+            canvas.gameObject.name = "Video Settings Canvas";
+            canvas.transform.SetAsLastSibling();
+            canvas.gameObject.SetActive(false);
+            canvas.gameObject.SetActive(true);
+
+            if (fpsCounterEnabled)
+            {
+                Text fpsCounterText = GameObject.Instantiate(Resources.Load<GameObject>("General/Video Settings Prefabs/FPS Counter Text").GetComponent<Text>());
+                fpsCounterText.transform.SetParent(canvas.transform);
+                fpsCounterText.transform.localPosition = new Vector3(Mathf.Abs(fpsCounterText.transform.localPosition.x), Mathf.Abs(fpsCounterText.transform.localPosition.y), Mathf.Abs(fpsCounterText.transform.localPosition.z));
+                fpsCounterText.gameObject.name = "FPS Counter Text";
+            }
+        }
+        previousSceneName = SceneManager.GetActiveScene().name;
+
         if (loaded)
             return;
 
@@ -279,5 +336,6 @@ public static class VideoSettings
         vSyncEnabled = PlayerPrefs.GetInt("VSync", 0) > 0;
         targetFrameRate = PlayerPrefs.GetInt("Target Frame Rate", -1);
         antiAliasing = PlayerPrefs.GetInt("Anti-aliasing", 0);
+        fpsCounterEnabled = PlayerPrefs.GetInt("FPS Counter", 0) == 1;
     }
 }

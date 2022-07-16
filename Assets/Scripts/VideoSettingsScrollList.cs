@@ -20,10 +20,12 @@ public class VideoSettingsScrollList : MonoBehaviour
     [Header("Toggle Components")]
 
     [SerializeField] private Toggle vSyncToggle = null;
+    [SerializeField] private Toggle fpsCounterToggle = null;
 
     [Header("Text Components")]
 
     [SerializeField] private Text vSyncToggleText = null;
+    [SerializeField] private Text fpsCounterToggleText = null;
 
     [Header("Sprite Options")]
 
@@ -64,7 +66,7 @@ public class VideoSettingsScrollList : MonoBehaviour
         List<string> antiAliasingDropdownOptions = new List<string>();
         for(int optionIndex = 0; optionIndex < VideoSettings.antiAliasingOptions.Length; optionIndex++)
         {
-            antiAliasingDropdownOptions.Add(VideoSettings.antiAliasingOptions[optionIndex].ToString());
+            antiAliasingDropdownOptions.Add(VideoSettings.antiAliasingOptions[optionIndex] == 0 ? "None" : VideoSettings.antiAliasingOptions[optionIndex].ToString() + "x");
         }
         antiAliasingDropdown.AddOptions(antiAliasingDropdownOptions);
 
@@ -109,6 +111,8 @@ public class VideoSettingsScrollList : MonoBehaviour
         targetFrameRateOption.SetActive(!vSyncToggle.isOn);
         targetFrameRateDropdown.SetValueWithoutNotify(VideoSettings.targetFrameRateIndex);
         antiAliasingDropdown.SetValueWithoutNotify(VideoSettings.antiAliasingIndex);
+        fpsCounterToggle.SetIsOnWithoutNotify(VideoSettings.fpsCounterEnabled);
+        fpsCounterToggleText.text = fpsCounterToggle.isOn ? "Enabled" : "Disabled";
     }
 
     /// <summary>
@@ -164,6 +168,21 @@ public class VideoSettingsScrollList : MonoBehaviour
         vSyncToggleText.text = vSyncToggle.isOn ? "Enabled" : "Disabled";
         //Updates whether or not the target frame rate dropdown option is active in the hierarchy.
         targetFrameRateOption.SetActive(!vSyncToggle.isOn);
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(toggleClickSFX);
+    }
+
+    /// <summary>
+    /// This method is called through an event trigger whenever the value of the fps counter toggle changes and accomplishes the tasks of activating or deactivating the application's fps counter for the player to view and plays the appropriate sound effect.
+    /// </summary>
+    public void OnFPSCounterToggleValueChange()
+    {
+        //Updates the whether or not the application's fps counter is active and enabled.
+        VideoSettings.fpsCounterEnabled = fpsCounterToggle.isOn;
+
+        //Updates the toggle's text.
+        fpsCounterToggleText.text = fpsCounterToggle.isOn ? "Enabled" : "Disabled";
 
         //Plays the appropriate sound effect.
         AudioManager.PlaySFX(toggleClickSFX);
