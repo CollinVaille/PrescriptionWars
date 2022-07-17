@@ -64,7 +64,7 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
     public virtual void Awake()
     {
         //Makes sure that the audio settings have been loaded in.
-        if (!AudioSettings.Loaded)
+        if (!AudioSettings.loaded)
             AudioSettings.LoadSettings();
     }
 

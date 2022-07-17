@@ -36,17 +36,17 @@ public class AudioSettingsMenu : GalaxyMenuBehaviour
     {
         if (type.Equals("Master Volume"))
         {
-            AudioSettings.MasterVolume = masterVolumeSlider.value / 100.0f;
+            AudioSettings.masterVolume = masterVolumeSlider.value / 100.0f;
             selectedText.text = masterVolumeSlider.value + "%";
         }
         if(type.Equals("Music Volume"))
         {
-            AudioSettings.MusicVolume = musicVolumeSlider.value / 100.0f;
+            AudioSettings.musicVolume = musicVolumeSlider.value / 100.0f;
             selectedText.text = musicVolumeSlider.value + "%";
         }
         if(type.Equals("SFX Volume"))
         {
-            AudioSettings.SFXVolume = sfxVolumeSlider.value / 100.0f;
+            AudioSettings.sfxVolume = sfxVolumeSlider.value / 100.0f;
             selectedText.text = sfxVolumeSlider.value + "%";
         }
     }
@@ -54,9 +54,9 @@ public class AudioSettingsMenu : GalaxyMenuBehaviour
     //Updates the sliders to accurately reflect the master volume, music volume, and sfx volume.
     public void UpdateSliderValues()
     {
-        masterVolumeSlider.value = Mathf.RoundToInt(AudioSettings.MasterVolume * 100.0f);
-        musicVolumeSlider.value = Mathf.RoundToInt(AudioSettings.MusicVolume * 100.0f);
-        sfxVolumeSlider.value = Mathf.RoundToInt(AudioSettings.SFXVolume * 100.0f);
+        masterVolumeSlider.value = Mathf.RoundToInt(AudioSettings.masterVolume * 100.0f);
+        musicVolumeSlider.value = Mathf.RoundToInt(AudioSettings.musicVolume * 100.0f);
+        sfxVolumeSlider.value = Mathf.RoundToInt(AudioSettings.sfxVolume * 100.0f);
     }
 
     public void SaveSettings()
@@ -67,73 +67,83 @@ public class AudioSettingsMenu : GalaxyMenuBehaviour
 
 public class AudioSettings
 {
-    private static bool loaded = false;
-    public static bool Loaded
-    {
-        get
-        {
-            return loaded;
-        }
-    }
+    /// <summary>
+    /// Publicly accessible and privately mutateable bool that indicates whether or not the audio settings have been loaded in from playerprefs at all yet.
+    /// </summary>
+    public static bool loaded { get; private set; }
 
-    private static float masterVolume;
-    public static float MasterVolume
+    /// <summary>
+    /// Publicly accessible and mutateable float that indicates the master volume level (from 0-1) of both the sfx and music audio sources.
+    /// </summary>
+    public static float masterVolume
     {
         get
         {
-            return masterVolume;
+            return masterVolumeVar;
         }
         set
         {
-            masterVolume = value;
+            masterVolumeVar = value;
             AudioManager.UpdateMasterVolume();
         }
     }
+    private static float masterVolumeVar;
 
-    private static float sfxVolume;
-    public static float SFXVolume
+    /// <summary>
+    /// Publicly accessible and mutateable float that indicates the volume level (from 0-1) of the sfx audio source, this number will be multiplied by the master volume to get the final effective volume of the sfx audio source.
+    /// </summary>
+    public static float sfxVolume
     {
         get
         {
-            return sfxVolume;
+            return sfxVolumeVar;
         }
         set
         {
-            sfxVolume = value;
+            sfxVolumeVar = value;
             AudioManager.UpdateSFXVolume();
         }
     }
+    private static float sfxVolumeVar;
 
-    private static float musicVolume;
-    public static float MusicVolume
+    /// <summary>
+    /// Publicly accessible and mutateable float that indicates the volume level (from 0-1) of the music audio source, this number will be multiplied by the master volume to get the final effective volume of the music audio source.
+    /// </summary>
+    public static float musicVolume
     {
         get
         {
-            return musicVolume;
+            return musicVolumeVar;
         }
         set
         {
-            musicVolume = value;
+            musicVolumeVar = value;
             AudioManager.UpdateMusicVolume();
         }
     }
+    private static float musicVolumeVar;
 
+    /// <summary>
+    /// Public static method that should be called in order to save the current audio settings to Unity's player prefs.
+    /// </summary>
     public static void SaveSettings()
     {
-        PlayerPrefs.SetFloat("Master Volume", MasterVolume);
-        PlayerPrefs.SetFloat("Music Volume", MusicVolume);
-        PlayerPrefs.SetFloat("SFX Volume", SFXVolume);
-        //PlayerPrefs.Save();
+        PlayerPrefs.SetFloat("Master Volume", masterVolumeVar);
+        PlayerPrefs.SetFloat("Music Volume", musicVolumeVar);
+        PlayerPrefs.SetFloat("SFX Volume", sfxVolumeVar);
     }
 
+    /// <summary>
+    /// Public static method that should be called at the start of every scene in order to load the player's preferred audio settings from Unity's player prefs.
+    /// </summary>
     public static void LoadSettings()
     {
-        if (Loaded)
+        if (loaded)
             return;
         loaded = true;
 
-        MasterVolume = PlayerPrefs.GetFloat("Master Volume", 1.0f);
-        MusicVolume = PlayerPrefs.GetFloat("Music Volume", 1.0f);
-        SFXVolume = PlayerPrefs.GetFloat("SFX Volume", 1.0f);
+        masterVolume = PlayerPrefs.GetFloat("Master Volume", 1.0f);
+        musicVolume = PlayerPrefs.GetFloat("Music Volume", 1.0f);
+        sfxVolume = PlayerPrefs.GetFloat("SFX Volume", 1.0f);
     }
 }

@@ -50,7 +50,7 @@ public class AudioManager : MonoBehaviour
         //Asigns the sfx source and updates its volume.
         AudioManager.sfxSource = sfxSource;
         if(AudioManager.sfxSource != null)
-            AudioManager.sfxSource.volume = AudioSettings.SFXVolume;
+            AudioManager.sfxSource.volume = AudioSettings.sfxVolume;
     }
 
     //Assigns the musicSource to the specified audio source.
@@ -59,27 +59,27 @@ public class AudioManager : MonoBehaviour
         //Assigns the music source and updates its volume.
         AudioManager.musicSource = musicSource;
         if (AudioManager.musicSource != null)
-            AudioManager.musicSource.volume = AudioSettings.MusicVolume;
+            AudioManager.musicSource.volume = AudioSettings.musicVolume;
     }
 
     //Updates the volume of the audio listener to equal the master volume value indicated in the AudioSettings.
     public static void UpdateMasterVolume()
     {
-        AudioListener.volume = AudioSettings.MasterVolume;
+        AudioListener.volume = AudioSettings.masterVolume;
     }
 
     //Updates the volume of the sfxSource to match the sfx volume indicated in the AudioSettings.
     public static void UpdateSFXVolume()
     {
         if (sfxSource != null)
-            sfxSource.volume = AudioSettings.SFXVolume;
+            sfxSource.volume = AudioSettings.sfxVolume;
     }
 
     //Updates the volume of the musicSource to match the music volume indicated in the AudioSettings.
     public static void UpdateMusicVolume()
     {
         if (musicSource != null)
-            musicSource.volume = AudioSettings.MusicVolume;
+            musicSource.volume = AudioSettings.musicVolume;
     }
 
     //Plays the specified sound effect if the sfxSource is assigned and not null.

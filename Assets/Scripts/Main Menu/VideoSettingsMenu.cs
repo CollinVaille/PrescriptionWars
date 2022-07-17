@@ -289,6 +289,9 @@ public static class VideoSettings
     /// </summary>
     private static Canvas canvas = null;
 
+    /// <summary>
+    /// Public static method that should be called in order to save the current video settings to Unity's player prefs.
+    /// </summary>
     public static void SaveSettings()
     {
         PlayerPrefs.SetInt("Sensitivity", sensitivity);
@@ -302,6 +305,9 @@ public static class VideoSettings
         PlayerPrefs.SetInt("FPS Counter", fpsCounterEnabledVar ? 1 : 0);
     }
 
+    /// <summary>
+    /// Public static method that should be called at the start of every scene in order to load the player's preferred video settings from Unity's player prefs.
+    /// </summary>
     public static void LoadSettings()
     {
         if (!previousSceneName.Equals(SceneManager.GetActiveScene().name))
