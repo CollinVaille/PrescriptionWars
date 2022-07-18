@@ -56,7 +56,7 @@ public class Empire
             //Sets the name of the empire to the specified name.
             empireName = value;
             //Updates the resource bar to accurately reflect the name the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateEmpireNameTooltip();
         }
     }
@@ -118,7 +118,7 @@ public class Empire
             //Sets the flag of the empire to the specified flag.
             empireFlag = value;
             //Updates the resource bar to accurately reflect the flag the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateFlag();
         }
     }
@@ -159,7 +159,7 @@ public class Empire
             //Sets the amount of credits the empire has to the specified value.
             credits = value;
             //Updates the resource bar to accurately reflect the amount of credits that the empire has if it is the player's empire.
-            if(IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if(IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateCreditsText();
         }
     }
@@ -177,7 +177,7 @@ public class Empire
             //Sets the amount of prescriptions that the empire has to the specified value.
             prescriptions = value;
             //Updates the resource bar to accurately reflect the amount of prescriptions that the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdatePrescriptionsText();
         }
     }
@@ -195,7 +195,7 @@ public class Empire
             //Sets the amount of science that the empire has to the specified value.
             science = value;
             //Updates the resource bar to accurately reflect the amount of science that the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateScienceText();
         }
     }
@@ -211,7 +211,7 @@ public class Empire
         set
         {
             baseCreditsPerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateCreditsText();
         }
     }
@@ -226,7 +226,7 @@ public class Empire
         set
         {
             basePrescriptionsPerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdatePrescriptionsText();
         }
     }
@@ -241,7 +241,7 @@ public class Empire
         set
         {
             baseSciencePerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.GalaxyFinishedGenerating)
+            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateScienceText();
         }
     }

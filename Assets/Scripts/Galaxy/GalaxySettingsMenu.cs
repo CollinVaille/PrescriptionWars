@@ -15,6 +15,7 @@ public class GalaxySettingsMenu : GalaxyPopupBehaviour
     [Header("Components")]
 
     [SerializeField] private List<Button> settingsModeButtons = new List<Button>();
+    [SerializeField] private List<GameObject> settingsModeScrollLists = new List<GameObject>();
 
     [Header("Coloring Options")]
 
@@ -41,8 +42,10 @@ public class GalaxySettingsMenu : GalaxyPopupBehaviour
         set
         {
             settingsModeButtons[(int)settingsModeVar].image.color = unselectedButtonColor;
+            settingsModeScrollLists[(int)settingsModeVar].SetActive(false);
             settingsModeVar = value;
             settingsModeButtons[(int)value].image.color = selectedButtonColor;
+            settingsModeScrollLists[(int)value].SetActive(true);
         }
     }
     private SettingsMode settingsModeVar = SettingsMode.Game;

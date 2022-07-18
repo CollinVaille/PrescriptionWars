@@ -11,6 +11,7 @@ public class GalaxyPauseMenu : MonoBehaviour
     [SerializeField, Tooltip("The sound effect that will be played when a button is clicked.")] private AudioClip clickButtonSFX = null;
     [SerializeField, Tooltip("The sound effect that will be played when the pointer enters or hovers over a button.")] private AudioClip hoverButtonSFX = null;
     [SerializeField, Tooltip("The sound effect that will be played when the pause menu closes.")] private AudioClip closeMenuSFX = null;
+    [SerializeField, Tooltip("The sound effect that will be played when the pause menu opens.")] private AudioClip openMenuSFX = null;
 
     [Header("Text Components")]
 
@@ -32,19 +33,13 @@ public class GalaxyPauseMenu : MonoBehaviour
     }
 
     //Static reference of the pause menu.
-    private static GalaxyPauseMenu pauseMenu = null;
+    public static GalaxyPauseMenu pauseMenu = null;
 
     /// <summary>
     /// Indicates whether the pause menu is currently active in the hierarchy.
     /// Note: Returns false if the internal static reference to the pause menu is null.
     /// </summary>
-    public static bool IsOpen
-    {
-        get
-        {
-            return pauseMenu != null ? pauseMenu.gameObject.activeInHierarchy : false;
-        }
-    }
+    public static bool isOpen { get => pauseMenu != null && pauseMenu.gameObject.activeInHierarchy; }
 
     private void Awake()
     {
@@ -82,6 +77,18 @@ public class GalaxyPauseMenu : MonoBehaviour
 
         //Closes the pause menu.
         Close();
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to open the pause menu.
+    /// </summary>
+    public static void Open()
+    {
+        if(pauseMenu != null && !pauseMenu.gameObject.activeInHierarchy)
+        {
+            pauseMenu.gameObject.SetActive(true);
+            AudioManager.PlaySFX(pauseMenu.openMenuSFX);
+        }
     }
 
     //Closes the pause menu by deactivating its game object.

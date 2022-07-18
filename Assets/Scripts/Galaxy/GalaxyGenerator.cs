@@ -7,115 +7,76 @@ public class GalaxyGenerator : MonoBehaviour
 {
     [Header("Tech")]
 
-    [SerializeField]
-    private List<string> techTotems = null;
-    [SerializeField]
-    private List<Tech> techs = null;
+    [SerializeField] private List<string> techTotems = null;
+    [SerializeField] private List<Tech> techs = null;
 
     [Header("Pill Classes")]
 
-    [SerializeField]
-    private List<PillClass> pillClasses = null;
+    [SerializeField] private List<PillClass> pillClasses = null;
 
     [Header("Initial Game Settings")]
 
-    [SerializeField]
-    private string playerEmpireName;
+    [SerializeField] private string playerEmpireName;
 
-    [SerializeField]
-    private int numberOfPlanets = 60;
-    [SerializeField]
-    private int numberOfEmpires = 5;
-    [SerializeField]
-    private int distanceBetweenPlanets = 30;
-    [SerializeField]
-    private int hyperspaceLaneCheckingRadius = 60;
+    [SerializeField] private int numberOfPlanets = 60;
+    [SerializeField] private int numberOfEmpires = 5;
+    [SerializeField] private int distanceBetweenPlanets = 30;
+    [SerializeField] private int hyperspaceLaneCheckingRadius = 60;
 
     [Header("Camera Settings")]
 
-    [SerializeField]
-    private Camera galaxyCamera = null;
+    [SerializeField] private Camera galaxyCamera = null;
 
-    [SerializeField]
-    private Canvas galaxyCanvas = null;
+    [SerializeField] private Canvas galaxyCanvas = null;
 
     public Material skyboxMaterial;
 
-    [SerializeField]
-    private float leftBoundary = -50;
-    [SerializeField]
-    private float rightBoundary = 500;
-    [SerializeField]
-    private float topBoundary = 260;
-    [SerializeField]
-    private float bottomBoundary = 0;
+    [SerializeField] private float leftBoundary = -50;
+    [SerializeField] private float rightBoundary = 500;
+    [SerializeField] private float topBoundary = 260;
+    [SerializeField] private float bottomBoundary = 0;
 
     [Header("Planet Materials")]
 
-    [SerializeField]
-    private List<Material> frozenMaterials = null;
-    [SerializeField]
-    private List<Material> spiritMaterials = null;
-    [SerializeField]
-    private List<Material> temperateMaterials = null;
-    [SerializeField]
-    private List<Material> desertMaterials = null;
-    [SerializeField]
-    private List<Material> swampMaterials = null;
-    [SerializeField]
-    private List<Material> hellMaterials = null;
+    [SerializeField] private List<Material> frozenMaterials = null;
+    [SerializeField] private List<Material> spiritMaterials = null;
+    [SerializeField] private List<Material> temperateMaterials = null;
+    [SerializeField] private List<Material> desertMaterials = null;
+    [SerializeField] private List<Material> swampMaterials = null;
+    [SerializeField] private List<Material> hellMaterials = null;
 
     [Space]
 
-    [SerializeField]
-    private List<Material> empireMaterials = null;
+    [SerializeField] private List<Material> empireMaterials = null;
 
     [Header("Prefabs")]
 
-    [SerializeField]
-    private GameObject planetPrefab = null;
-    [SerializeField]
-    private GameObject planetShipPrefab = null;
-    [SerializeField]
-    private GameObject galaxyConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject galaxyInputFieldConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject galaxyDropdownConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject galaxyPillSkinConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject galaxyColorPickerConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject galaxySpritePickerConfirmationPopupPrefab = null;
-    [SerializeField]
-    private GameObject tooltipPrefab = null;
-    [SerializeField]
-    private GameObject backArrowPrefab = null;
-    [SerializeField]
-    private GameObject pillViewPrefab = null;
-    [SerializeField]
-    private GameObject armyManagementMenuPrefab = null;
+    [SerializeField] private GameObject planetPrefab = null;
+    [SerializeField] private GameObject planetShipPrefab = null;
+    [SerializeField] private GameObject galaxyConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject galaxyInputFieldConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject galaxyDropdownConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject galaxyPillSkinConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject galaxyColorPickerConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject galaxySpritePickerConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject tooltipPrefab = null;
+    [SerializeField] private GameObject backArrowPrefab = null;
+    [SerializeField] private GameObject pillViewPrefab = null;
+    [SerializeField] private GameObject armyManagementMenuPrefab = null;
 
     [Header("Parents")]
 
-    [SerializeField]
-    private Transform hyperspacesLanesParent = null;
-    [SerializeField]
-    private Transform planetParent = null;
-    [SerializeField]
-    private Transform planetShipParent = null;
-    [SerializeField]
-    private Transform galaxyConfirmationPopupParent = null;
-    [SerializeField]
-    private Transform popupsParent = null;
+    [SerializeField] private Transform hyperspacesLanesParent = null;
+    [SerializeField] private Transform planetParent = null;
+    [SerializeField] private Transform planetShipParent = null;
+    [SerializeField] private Transform galaxyConfirmationPopupParent = null;
+    [SerializeField] private Transform popupsParent = null;
 
     [Header("Manager Objects")]
 
-    [SerializeField]
-    private HyperspaceLanesManager hyperspaceLanesManager = null;
-    [SerializeField]
-    private PlanetManagementMenu planetManagementMenu = null;
+    [SerializeField] private HyperspaceLanesManager hyperspaceLanesManager = null;
+    [SerializeField] private PlanetManagementMenu planetManagementMenu = null;
+    [SerializeField] private GalaxyPauseMenu pauseMenu = null;
 
     //Non-inspector variables.
 
@@ -123,15 +84,10 @@ public class GalaxyGenerator : MonoBehaviour
 
     private List<GameObject> planets;
 
-    //Indicates whether the galaxy is finished generating or not.
-    private static bool galaxyFinishedGenerating;
-    public static bool GalaxyFinishedGenerating
-    {
-        get
-        {
-            return galaxyFinishedGenerating;
-        }
-    }
+    /// <summary>
+    /// Indicates whether the galaxy is finished generating or not.
+    /// </summary>
+    public static bool galaxyFinishedGenerating { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -218,6 +174,7 @@ public class GalaxyGenerator : MonoBehaviour
         //Manager objects.
         HyperspaceLanesManager.hyperspaceLanesManager = hyperspaceLanesManager;
         PlanetManagementMenu.planetManagementMenu = planetManagementMenu;
+        GalaxyPauseMenu.pauseMenu = pauseMenu;
     }
 
     // Update is called once per frame

@@ -7,15 +7,12 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 {
     [Header("Confirmation Popup Base Components")]
 
-    [SerializeField]
-    private Text topText = null;
+    [SerializeField] private Text topText = null;
 
     [Header("Confirmation Popup Base Audio Options")]
 
-    [SerializeField]
-    private AudioClip mouseOverSFX = null;
-    [SerializeField]
-    private AudioClip mouseClickSFX = null;
+    [SerializeField] private AudioClip mouseOverSFX = null;
+    [SerializeField] private AudioClip mouseClickSFX = null;
 
     //Non-inspector variables.
     public enum GalaxyConfirmationPopupAnswer

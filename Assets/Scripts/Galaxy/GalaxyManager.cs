@@ -207,10 +207,16 @@ public class GalaxyManager : GalaxyViewBehaviour
         GalaxySettingsMenu.ResetClosedOnFrameBool();
 
         //Toggles the cheat console if the player presses tilde.
-        if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
+        if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && !GalaxyPauseMenu.isOpen)
         {
             if(!IronpillModeEnabled)
                 cheatConsole.ToggleConsole();
+        }
+
+        //Opens the pause menu if the player presses the escape key and no other popup is open.
+        if(Input.GetKeyDown(KeyCode.Escape) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && !GalaxyPopupBehaviour.IsAPopupActiveInHierarchy && !GalaxyPauseMenu.isOpen)
+        {
+            GalaxyPauseMenu.Open();
         }
     }
 
