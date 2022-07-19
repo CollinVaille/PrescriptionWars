@@ -48,12 +48,8 @@ public class HyperspaceLanesManager : MonoBehaviour
 
             //Create the hyperspace lane.
             GameObject line = Instantiate(linePrefab);
-
             line.name = lineName;
-
-            line.GetComponent<Line>().gameObject1 = planet1;
-            line.GetComponent<Line>().gameObject2 = planet2;
-
+            line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2}, planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor, planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor);
             line.transform.parent = daddy;
 
             hyperspaceLanes.Add(line);

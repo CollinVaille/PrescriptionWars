@@ -99,11 +99,11 @@ public class GalaxyGenerator : MonoBehaviour
         //Generates the planets of the galaxy.
         GeneratePlanets();
 
-        //Generates the hyperspace lanes of the galaxy.
-        GenerateHyperspaceLanes();
-
         //Generates the empires of the galaxy.
         GenerateEmpires();
+
+        //Generates the hyperspace lanes of the galaxy.
+        GenerateHyperspaceLanes();
 
         //Generates the stats of each planet in the galaxy.
         GeneratePlanetStats();
@@ -122,7 +122,7 @@ public class GalaxyGenerator : MonoBehaviour
 
         //Creates the necessary warning notifications at the start of the game.
         GalaxyManager.galaxyManager.WarningRightSideNotificationsUpdate();
-        
+
         //Clean up section :)
         GeneralHelperMethods.ClearTextFileCache();
 
