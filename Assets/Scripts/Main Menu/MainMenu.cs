@@ -42,8 +42,7 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //audioSettingsMenu.LoadSettings();
-        VideoSettings.LoadSettings();
+
     }
 
     public void Awake()

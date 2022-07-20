@@ -374,6 +374,9 @@ public class GalaxyPlanet : MonoBehaviour
 
         //Sets the planet's owner id as the conqueror's id.
         ownerIDVar = conquerorID;
+
+        //Updates the coloring of every hyperspace lane in the galaxy (updates every one just to be safe).
+        HyperspaceLanesManager.hyperspaceLanesManager.UpdateHyperspaceLaneColoring();
     }
 
     private void OnMouseUpAsButton ()

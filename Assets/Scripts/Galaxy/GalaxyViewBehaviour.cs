@@ -66,6 +66,9 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
         //Makes sure that the audio settings have been loaded in.
         if (!AudioSettings.loaded)
             AudioSettings.LoadSettings();
+        //Makes sure that video seetings have been loaded in.
+        if (!VideoSettings.loaded)
+            VideoSettings.LoadSettings();
     }
 
     // Update is called once per frame

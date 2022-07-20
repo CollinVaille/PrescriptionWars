@@ -508,7 +508,6 @@ public class GalaxyGenerator : MonoBehaviour
 
         //Set up lane manager
         HyperspaceLanesManager laneManager = hyperspaceLanesManager.GetComponent<HyperspaceLanesManager>();
-        laneManager.hyperspaceLanes = new List<GameObject>();
 
         //Get planet positions
         Vector3[] planetPositions = new Vector3[planets.Count];
