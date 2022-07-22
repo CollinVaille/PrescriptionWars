@@ -47,6 +47,10 @@ public class GalaxyPill: GalaxyGroundUnit
     /// The x value indicates the minimum amount of experience that a pill can have while the y value indicates the maximum amount of experience that a pill can have, the final x and y values depend on empire bonuses.
     /// </summary>
     public Vector2Int experienceBounds { get => new Vector2Int(1 + (assignedSquad != null && assignedSquad.assignedArmy != null && assignedSquad.assignedArmy.owner != null ? assignedSquad.assignedArmy.owner.pillExperienceBoundingEffects.x : 0), 5 + (assignedSquad != null && assignedSquad.assignedArmy != null && assignedSquad.assignedArmy.owner != null ? assignedSquad.assignedArmy.owner.pillExperienceBoundingEffects.y : 0)); }
+    /// <summary>
+    /// The x value indicates the minimum amount of experience that a pill can have while the y value indicates the maximum amount of experience that a pill can have (not factoring in any empire bonuses or really any bonuses at all).
+    /// </summary>
+    public static readonly Vector2Int baseExperienceBounds = new Vector2Int(1, 5);
 
     /// <summary>
     /// The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
