@@ -77,7 +77,7 @@ public class PlanetShip : MonoBehaviour
     {
         get
         {
-            return Empire.empires[GalaxyManager.planets[attachedPlanetID].ownerID].IsPlayerEmpire;
+            return Empire.empires[GalaxyManager.planets[attachedPlanetID].ownerID].isPlayerEmpire;
         }
     }
 

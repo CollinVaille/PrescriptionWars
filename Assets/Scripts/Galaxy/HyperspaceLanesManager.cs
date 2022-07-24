@@ -33,8 +33,8 @@ public class HyperspaceLanesManager : MonoBehaviour
             {
                 if(value == HyperspaceLaneColoringMode.EmpireColorGradient)
                 {
-                    interiorHyperspaceLane.GetComponent<Line>().startColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
-                    interiorHyperspaceLane.GetComponent<Line>().endColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
+                    interiorHyperspaceLane.GetComponent<Line>().startColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
+                    interiorHyperspaceLane.GetComponent<Line>().endColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
                 }
                 else if (value == HyperspaceLaneColoringMode.Static)
                 {
@@ -89,8 +89,8 @@ public class HyperspaceLanesManager : MonoBehaviour
             {
                 if (value == HyperspaceLaneColoringMode.EmpireColorGradient)
                 {
-                    borderHyperspaceLane.GetComponent<Line>().startColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
-                    borderHyperspaceLane.GetComponent<Line>().endColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
+                    borderHyperspaceLane.GetComponent<Line>().startColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
+                    borderHyperspaceLane.GetComponent<Line>().endColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
                 }
                 else if (value == HyperspaceLaneColoringMode.Static)
                 {
@@ -213,7 +213,7 @@ public class HyperspaceLanesManager : MonoBehaviour
             if(planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner == planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner)
             {
                 if(interiorHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.EmpireColorGradient)
-                    line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor, planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor);
+                    line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor, planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor);
                 else if (interiorHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.Static)
                     line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, interiorHyperspaceLaneStaticColor, interiorHyperspaceLaneStaticColor);
             }
@@ -221,7 +221,7 @@ public class HyperspaceLanesManager : MonoBehaviour
             else
             {
                 if(borderHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.EmpireColorGradient)
-                    line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor, planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor);
+                    line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, planet1.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor, planet2.transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor);
                 else if (borderHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.Static)
                     line.GetComponent<Line>().Initialize(new List<GameObject>() { planet1, planet2 }, borderHyperspaceLaneStaticColor, borderHyperspaceLaneStaticColor);
             }
@@ -243,8 +243,8 @@ public class HyperspaceLanesManager : MonoBehaviour
         {
             if(interiorHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.EmpireColorGradient)
             {
-                interiorHyperspaceLane.GetComponent<Line>().startColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
-                interiorHyperspaceLane.GetComponent<Line>().endColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
+                interiorHyperspaceLane.GetComponent<Line>().startColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
+                interiorHyperspaceLane.GetComponent<Line>().endColor = interiorHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
             }
             else if (interiorHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.Static)
             {
@@ -259,8 +259,8 @@ public class HyperspaceLanesManager : MonoBehaviour
         {
             if (borderHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.EmpireColorGradient)
             {
-                borderHyperspaceLane.GetComponent<Line>().startColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
-                borderHyperspaceLane.GetComponent<Line>().endColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.LabelColor;
+                borderHyperspaceLane.GetComponent<Line>().startColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[0].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
+                borderHyperspaceLane.GetComponent<Line>().endColor = borderHyperspaceLane.GetComponent<Line>().gameObjects[1].transform.GetChild(0).GetComponent<GalaxyPlanet>().owner.labelColor;
             }
             else if (borderHyperspaceLaneColoringMode == HyperspaceLaneColoringMode.Static)
             {

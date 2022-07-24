@@ -30,24 +30,43 @@ public class GalaxySpecialPill
     private string skinName = null;
 
     /// <summary>
-    /// Public property that should be used both to access and mutate the empire that the special pill is assigned to (returns null if the galaxy pill leader is not assigned to an empire).
+    /// Public property that should be used both to access and mutate the empire that the special pill is assigned to (returns null if the special pill is not assigned to an empire).
     /// </summary>
     public Empire assignedEmpire
     {
         get => assignedEmpireID >= 0 && assignedEmpireID < Empire.empires.Count ? Empire.empires[assignedEmpireID] : null;
         set
         {
-            assignedEmpireID = value != null ? value.EmpireID : -1;
+            if (assignedEmpire != null && assignedEmpire != value)
+            {
+                assignedEmpire.RemoveSpecialPill(specialPillID);
+                specialPillID = -1;
+            }
+            assignedEmpireID = value != null ? value.empireID : -1;
+            if(value != null)
+            {
+                specialPillID = assignedEmpire.specialPillsCount;
+                assignedEmpire.AddSpecialPill(this);
+            }
             CheckExperienceIsWithinBounds();
         }
     }
     /// <summary>
-    /// Private int that holds the empire ID of the pill leader's assigned empire (-1 if there is no assigned empire).
+    /// Private int that holds the empire ID of the special pill's assigned empire (-1 if there is no assigned empire).
     /// </summary>
     private int assignedEmpireID = -1;
 
     /// <summary>
-    /// Dictionary containing the pill leader's experience in each type of skill (null if has no experience with any skill).
+    /// Public int property that should be used to access the special pill's id in their empire's special pills dictionary.
+    /// </summary>
+    public int specialPillID { get => specialPillIDVar; private set => specialPillIDVar = value; }
+    /// <summary>
+    /// Private int that holds the special pill's id in their empire's special pills dictionary.
+    /// </summary>
+    private int specialPillIDVar = -1;
+
+    /// <summary>
+    /// Dictionary containing the special pill's experience in each type of skill (null if has no experience with any skill).
     /// </summary>
     private Dictionary<Skill, float> experience = null;
 
@@ -59,7 +78,7 @@ public class GalaxySpecialPill
         get
         {
             Dictionary<Skill, Vector2Int> experienceBoundsTemp = new Dictionary<Skill, Vector2Int>(baseExperienceBounds);
-            experienceBoundsTemp[Skill.Soldiering] = experienceBoundsTemp[Skill.Soldiering] + assignedEmpire.pillExperienceBoundingEffects;
+            experienceBoundsTemp[Skill.Soldiering] = assignedEmpire != null ? experienceBoundsTemp[Skill.Soldiering] + assignedEmpire.pillExperienceBoundingEffects : experienceBoundsTemp[Skill.Soldiering];
             return experienceBoundsTemp;
         }
     }
@@ -97,7 +116,7 @@ public class GalaxySpecialPill
     }
 
     /// <summary>
-    /// Returns a float that indicates how much experience the pill leader has in the specified skill.
+    /// Returns a float that indicates how much experience the special pill has in the specified skill.
     /// </summary>
     /// <param name="skill"></param>
     /// <returns></returns>
@@ -109,7 +128,7 @@ public class GalaxySpecialPill
     }
 
     /// <summary>
-    /// Returns a float that indicates how much experience the pill leader has in the specified skill (experience float rounded to an int).
+    /// Returns a float that indicates how much experience the special pill has in the specified skill (experience float rounded to an int).
     /// </summary>
     /// <param name="skill"></param>
     /// <returns></returns>
@@ -119,7 +138,7 @@ public class GalaxySpecialPill
     }
 
     /// <summary>
-    /// Public void method that should be used to set how much experience the pill leader has with the specified skill.
+    /// Public void method that should be used to set how much experience the special pill has with the specified skill.
     /// </summary>
     /// <param name="skill"></param>
     /// <param name="experienceAmount"></param>
@@ -128,18 +147,18 @@ public class GalaxySpecialPill
         //Initializes the experience dictionary if it wasn't already initialized.
         experience = experience == null ? new Dictionary<Skill, float>() : experience;
 
-        //Sets the galaxy pill leader's experience to the specified amount with the specified skill.
+        //Sets the special pill's experience to the specified amount with the specified skill.
         if (experience.ContainsKey(skill))
             experience[skill] = experienceAmount;
         else
             experience.Add(skill, experienceAmount);
 
-        //Ensures that the galaxy pill leader's experience with the specified skill stays within the possible experience bounds.
+        //Ensures that the special pill's experience with the specified skill stays within the possible experience bounds.
         CheckExperienceIsWithinBounds(new List<Skill>() { skill });
     }
 
     /// <summary>
-    /// Private void method that should be called in order to ensure that the pill leader's experience in each skill specified stays within the possible bounds (checks all skills if no specified skills are specified).
+    /// Private void method that should be called in order to ensure that the special pill's experience in each skill specified stays within the possible bounds (checks all skills if no specified skills are specified).
     /// </summary>
     private void CheckExperienceIsWithinBounds(List<Skill> skills = null)
     {

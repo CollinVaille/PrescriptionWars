@@ -146,14 +146,14 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Sets the color of all of the dividers based on the player empire's label color.
         foreach (Image divider in dividers)
         {
-            divider.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
+            divider.color = Empire.empires[GalaxyManager.PlayerID].labelColor;
         }
 
-        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
-        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
-        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
-        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].LabelColor;
-        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].EmpireColor;
+        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].color;
+        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].color;
+        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].color;
+        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].labelColor;
+        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].color;
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
@@ -633,7 +633,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     public void ToggleShadow(Shadow shadow)
     {
-        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].LabelColor;
+        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].labelColor;
         shadow.enabled = !shadow.enabled;
     }
 }

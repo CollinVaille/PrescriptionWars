@@ -288,23 +288,23 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's flag.
 
-            Empire.empires[empireID].EmpireFlag = new Flag();
+            Empire.empires[empireID].flag = new Flag();
             if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
             {
-                Empire.empires[empireID].EmpireFlag.symbolSelected = NewGameMenu.empireFlag.symbolSelected;
-                Empire.empires[empireID].EmpireFlag.backgroundColor = NewGameMenu.empireFlag.backgroundColor;
-                Empire.empires[empireID].EmpireFlag.symbolColor = NewGameMenu.empireFlag.symbolColor;
+                Empire.empires[empireID].flag.symbolSelected = NewGameMenu.empireFlag.symbolSelected;
+                Empire.empires[empireID].flag.backgroundColor = NewGameMenu.empireFlag.backgroundColor;
+                Empire.empires[empireID].flag.symbolColor = NewGameMenu.empireFlag.symbolColor;
             }
             else
             {
                 //Generates the symbol color of each empire's flag based on the empire's culture.
-                Empire.empires[empireID].EmpireFlag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
+                Empire.empires[empireID].flag.symbolColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
 
                 //Generates the background color of each empire's flag.
-                if (Empire.empires[empireID].EmpireFlag.symbolColor.r + Empire.empires[empireID].EmpireFlag.symbolColor.g + Empire.empires[empireID].EmpireFlag.symbolColor.b < 0.6f)
-                    Empire.empires[empireID].EmpireFlag.backgroundColor = Color.white;
+                if (Empire.empires[empireID].flag.symbolColor.r + Empire.empires[empireID].flag.symbolColor.g + Empire.empires[empireID].flag.symbolColor.b < 0.6f)
+                    Empire.empires[empireID].flag.backgroundColor = Color.white;
                 else
-                    Empire.empires[empireID].EmpireFlag.backgroundColor = Color.black;
+                    Empire.empires[empireID].flag.backgroundColor = Color.black;
 
                 //Generates the symbol on each empire's flag (ensures there will be no duplicates).
                 int random = 0;
@@ -318,13 +318,13 @@ public class GalaxyGenerator : MonoBehaviour
                     bool goodSymbol = true;
                     for(int y = 0; y < empireID; y++)
                     {
-                        if (Empire.empires[y].EmpireFlag.symbolSelected == random)
+                        if (Empire.empires[y].flag.symbolSelected == random)
                             goodSymbol = false;
                     }
                     if (goodSymbol)
                         break;
                 }
-                Empire.empires[empireID].EmpireFlag.symbolSelected = random;
+                Empire.empires[empireID].flag.symbolSelected = random;
             }
 
             //----------------------------------------------------------------------------------------------------
@@ -333,17 +333,17 @@ public class GalaxyGenerator : MonoBehaviour
             if(empireID == GalaxyManager.PlayerID)
             {
                 Color randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
-                Empire.empires[empireID].EmpireColor = randomColor;
+                Empire.empires[empireID].color = randomColor;
             }
             else
             {
-                Empire.empires[empireID].EmpireColor = Empire.empires[empireID].EmpireFlag.symbolColor;
+                Empire.empires[empireID].color = Empire.empires[empireID].flag.symbolColor;
             }
 
             //----------------------------------------------------------------------------------------------------
             //Sets the empire's material color.
             int materialIndex = (int)Empire.empires[empireID].empireCulture;
-            empireMaterials[materialIndex].color = Empire.empires[empireID].EmpireColor;
+            empireMaterials[materialIndex].color = Empire.empires[empireID].color;
             GalaxyManager.empireMaterials[materialIndex] = empireMaterials[materialIndex];
 
             //----------------------------------------------------------------------------------------------------
@@ -397,7 +397,7 @@ public class GalaxyGenerator : MonoBehaviour
             //Generate the empire's name.
 
             if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized && !playerEmpireName.Equals(""))
-                Empire.empires[empireID].EmpireName = playerEmpireName;
+                Empire.empires[empireID].name = playerEmpireName;
             else
             {
                 string empireName = "";
@@ -411,14 +411,14 @@ public class GalaxyGenerator : MonoBehaviour
                     bool goodName = true;
                     for (int y = 0; y < empireID; y++)
                     {
-                        if (Empire.empires[y].EmpireName.Equals(empireName))
+                        if (Empire.empires[y].name.Equals(empireName))
                             goodName = false;
                     }
 
                     if (goodName)
                         break;
                 }
-                Empire.empires[empireID].EmpireName = empireName;
+                Empire.empires[empireID].name = empireName;
             }
         }
 

@@ -569,7 +569,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             confirmationPopupScript.CreateConfirmationPopup(topText);
 
             //Adds the player empire's valid squad names as dropdown options.
-            foreach(string squadName in PlanetSelected.owner.ValidSquadNames)
+            foreach(string squadName in PlanetSelected.owner.validSquadNames)
             {
                 confirmationPopupScript.AddDropdownOption(squadName);
                 //Makes the squad's current name the preselected option.

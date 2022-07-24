@@ -55,7 +55,7 @@ public class GalaxyPlanet : MonoBehaviour
         set
         {
             ownerIDVar = value;
-            nameLabel.color = Empire.empires[ownerIDVar].LabelColor;
+            nameLabel.color = Empire.empires[ownerIDVar].labelColor;
         }
     }
     /// <summary>
@@ -219,15 +219,15 @@ public class GalaxyPlanet : MonoBehaviour
     private void Start()
     {
         AddArmy(new GalaxyArmy("Army of the South", ownerIDVar));
-        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[0].AddSquad(new GalaxySquad(owner.randomValidSquadName));
         armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Assault"));
         armies[0].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Riot"));
-        armies[0].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[0].AddSquad(new GalaxySquad(owner.randomValidSquadName));
         AddArmy(new GalaxyArmy("Army of the West", ownerIDVar));
-        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[1].AddSquad(new GalaxySquad(owner.randomValidSquadName));
         armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Bob", "Officer"));
         armies[1].GetSquadAt(0).AddPill(new GalaxyPill("Kevin", "Flamethrower"));
-        armies[1].AddSquad(new GalaxySquad(owner.RandomValidSquadName));
+        armies[1].AddSquad(new GalaxySquad(owner.randomValidSquadName));
     }
 
     public void InitializePlanet (string planetName, int planetID, Planet.Biome biome)
@@ -363,7 +363,7 @@ public class GalaxyPlanet : MonoBehaviour
         Empire.empires[conquerorID].planetsOwned.Add(planetIDVar);
 
         //Updates the color of the planet label.
-        nameLabel.color = Empire.empires[conquerorID].LabelColor;
+        nameLabel.color = Empire.empires[conquerorID].labelColor;
 
         //Updates the material of the planet ships to match the color of the conquering empire's ships and enables if the conquering empire is the player and diables them if not.
         foreach(PlanetShip planetShip in planetShips)
@@ -403,8 +403,8 @@ public class GalaxyPlanet : MonoBehaviour
         {
             //Adds each city's resources per turn to the empire.
             Empire.empires[ownerIDVar].Credits += city.GetCreditsPerTurn(ownerIDVar);
-            Empire.empires[ownerIDVar].Prescriptions += city.GetPrescriptionsPerTurn(ownerIDVar);
-            Empire.empires[ownerIDVar].Science += city.GetSciencePerTurn(ownerIDVar);
+            Empire.empires[ownerIDVar].prescriptions += city.GetPrescriptionsPerTurn(ownerIDVar);
+            Empire.empires[ownerIDVar].science += city.GetSciencePerTurn(ownerIDVar);
 
             //Progresses the building queue.
             city.buildingQueue.EndTurn(city.GetProductionPerTurn(ownerIDVar), city);

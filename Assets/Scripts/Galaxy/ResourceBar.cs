@@ -96,13 +96,13 @@ public class ResourceBar : MonoBehaviour
 
     public static void UpdatePrescriptionsText()
     {
-        resourceBar.prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].Prescriptions);
+        resourceBar.prescriptionsText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].prescriptions);
         resourceBar.prescriptionsText.text += " +" + (int)Empire.empires[GalaxyManager.PlayerID].GetPrescriptionsPerTurn();
     }
 
     public static void UpdateScienceText()
     {
-        resourceBar.scienceText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].Science);
+        resourceBar.scienceText.text = GetResourceString(Empire.empires[GalaxyManager.PlayerID].science);
         try
         {
             resourceBar.scienceText.text += "/" + Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost;
@@ -117,19 +117,19 @@ public class ResourceBar : MonoBehaviour
     public static void UpdateFlag()
     {
         //Updates the flag's symbol.
-        if (resourceBar.flagSymbolNum != Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected)
+        if (resourceBar.flagSymbolNum != Empire.empires[GalaxyManager.PlayerID].flag.symbolSelected)
         {
-            resourceBar.flagSymbol.sprite = Resources.Load<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected]);
-            resourceBar.flagSymbolNum = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolSelected;
+            resourceBar.flagSymbol.sprite = Resources.Load<Sprite>("General/Flag Symbols/" + FlagDataLoader.flagSymbolNames[Empire.empires[GalaxyManager.PlayerID].flag.symbolSelected]);
+            resourceBar.flagSymbolNum = Empire.empires[GalaxyManager.PlayerID].flag.symbolSelected;
         }
 
-        resourceBar.flagBackground.color = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.backgroundColor;
-        resourceBar.flagSymbol.color = Empire.empires[GalaxyManager.PlayerID].EmpireFlag.symbolColor;
+        resourceBar.flagBackground.color = Empire.empires[GalaxyManager.PlayerID].flag.backgroundColor;
+        resourceBar.flagSymbol.color = Empire.empires[GalaxyManager.PlayerID].flag.symbolColor;
     }
 
     public static void UpdateEmpireNameTooltip()
     {
-        resourceBar.empireNameTooltip.Text = Empire.empires[GalaxyManager.PlayerID].EmpireName;
+        resourceBar.empireNameTooltip.Text = Empire.empires[GalaxyManager.PlayerID].name;
     }
 
     public static void UpdateTurnText()

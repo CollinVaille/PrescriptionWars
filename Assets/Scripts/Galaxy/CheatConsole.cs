@@ -224,7 +224,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.PlayerID].EmpireName = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
+            Empire.empires[GalaxyManager.PlayerID].name = command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1));
             commandHistoryText.text += "\nSuccess";
         }
         catch (Exception)
@@ -271,7 +271,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.PlayerID].Science += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+            Empire.empires[GalaxyManager.PlayerID].science += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
         catch (Exception)
         {
@@ -286,7 +286,7 @@ public class CheatConsole : MonoBehaviour
     {
         try
         {
-            Empire.empires[GalaxyManager.PlayerID].Prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
+            Empire.empires[GalaxyManager.PlayerID].prescriptions += int.Parse(command.Substring(command.IndexOf(' ') + 1, command.Length - (command.IndexOf(' ') + 1)));
         }
         catch (Exception)
         {

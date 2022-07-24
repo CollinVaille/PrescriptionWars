@@ -8,10 +8,10 @@ public class Empire
     public Empire(int empireID)
     {
         //Sets the empire id of the empire.
-        EmpireID = empireID;
+        this.empireID = empireID;
 
         //Initializes the tech manager of the empire.
-        techManager = new TechManager(this.EmpireID);
+        techManager = new TechManager(this.empireID);
     }
 
     //This method is called right after the galaxy has finished generating (at the end of the start method in the galaxy generator class).
@@ -51,41 +51,42 @@ public class Empire
     //General Information.
 
     //Indicates the name of the empire.
-    private string empireName;
-    public string EmpireName
+    private string nameVar;
+    public string name
     {
         get
         {
-            return empireName;
+            return nameVar;
         }
         set
         {
             //Sets the name of the empire to the specified name.
-            empireName = value;
+            nameVar = value;
             //Updates the resource bar to accurately reflect the name the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateEmpireNameTooltip();
         }
     }
+
     public Culture empireCulture;
 
-    private Color empireColor;
-    public Color EmpireColor
+    private Color colorVar;
+    public Color color
     {
         get
         {
-            return empireColor;
+            return colorVar;
         }
         set
         {
-            empireColor = value;
+            colorVar = value;
         }
     }
-    public Color LabelColor
+    public Color labelColor
     {
         get
         {
-            Color labelColor = empireColor;
+            Color labelColor = colorVar;
 
             if (empireCulture == Culture.Red || empireCulture == Culture.Green || empireCulture == Culture.Blue)
             {
@@ -98,14 +99,8 @@ public class Empire
         }
     }
 
-    public int EmpireID { get; }
-    public bool IsPlayerEmpire
-    {
-        get
-        {
-            return EmpireID == GalaxyManager.PlayerID;
-        }
-    }
+    public int empireID { get; }
+    public bool isPlayerEmpire { get => empireID == GalaxyManager.PlayerID; }
     public bool receivesResearchEffects = true;
 
     private int capitalPlanetIDVar = -1;
@@ -113,37 +108,51 @@ public class Empire
     public GalaxyPlanet capitalPlanet { get => GalaxyManager.planets != null && capitalPlanetID >= 0 && capitalPlanetID < GalaxyManager.planets.Count ? GalaxyManager.planets[capitalPlanetID] : null; set => capitalPlanetID = value != null ? value.planetID : capitalPlanetID; }
 
     //Flags.
-    private Flag empireFlag;
-    public Flag EmpireFlag
+    private Flag flagVar;
+    public Flag flag
     {
         get
         {
-            return empireFlag;
+            return flagVar;
         }
         set
         {
             //Sets the flag of the empire to the specified flag.
-            empireFlag = value;
+            flagVar = value;
             //Updates the resource bar to accurately reflect the flag the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateFlag();
         }
     }
 
     //Military.
-    private List<string> validSquadNames = new List<string>() { "Alpha Squad", "Bravo Squad", "Charlie Squad", "Delta Squad", "Echo Squad", "Foxtrot Squad", "Golf Squad", "Hotel Squad", "India Squad", "Juliet Squad", "Kilo Squad", "Lima Squad", "Mike Squad", "November Squad", "Oscar Squad", "Papa Squad", "Quebec Squad", "Romeo Squad", "Sierra Squad", "Tango Squad", "Uniform Squad", "Victor Squad", "Whiskey Squad", "X-Ray Squad", "Yankee Squad", "Zulu Squad" };
+    private List<string> validSquadNamesVar = new List<string>() { "Alpha Squad", "Bravo Squad", "Charlie Squad", "Delta Squad", "Echo Squad", "Foxtrot Squad", "Golf Squad", "Hotel Squad", "India Squad", "Juliet Squad", "Kilo Squad", "Lima Squad", "Mike Squad", "November Squad", "Oscar Squad", "Papa Squad", "Quebec Squad", "Romeo Squad", "Sierra Squad", "Tango Squad", "Uniform Squad", "Victor Squad", "Whiskey Squad", "X-Ray Squad", "Yankee Squad", "Zulu Squad" };
     /// <summary>
     /// Returns the list of squad names that are valid for a squad of this empire to be named.
     /// </summary>
-    public List<string> ValidSquadNames { get => validSquadNames; private set => validSquadNames = value; }
+    public List<string> validSquadNames { get => validSquadNamesVar; private set => validSquadNamesVar = value; }
     /// <summary>
     /// Returns a random squad name from the list of valid squad names that are valid for the empire.
     /// </summary>
-    public string RandomValidSquadName { get => (ValidSquadNames == null || ValidSquadNames.Count == 0) ? "Squad" : ValidSquadNames[UnityEngine.Random.Range(0, ValidSquadNames.Count)]; }
+    public string randomValidSquadName { get => (validSquadNames == null || validSquadNames.Count == 0) ? "Squad" : validSquadNames[UnityEngine.Random.Range(0, validSquadNames.Count)]; }
     /// <summary>
     /// The x value is added to the lower bound for pill experience and the y value is added to the upper bound for pill experience.
     /// </summary>
     public Vector2Int pillExperienceBoundingEffects { get => Vector2Int.zero; }
+
+    //Special pills.
+    /// <summary>
+    /// Dictionary that contains all special pills serving the empire that are attached to an int id.
+    /// </summary>
+    private Dictionary<int, GalaxySpecialPill> specialPills = null;
+    /// <summary>
+    /// Public property that indicates how many special pills the empire has had in total (even ones no longer serving the empire).
+    /// </summary>
+    public int specialPillsCount { get => specialPillsCountVar; }
+    /// <summary>
+    /// Private int that indicates how many special pills the empire has had in total (even ones no longer serving the empire).
+    /// </summary>
+    private int specialPillsCountVar = 0;
 
     //Tech.
     public TechManager techManager;
@@ -166,89 +175,89 @@ public class Empire
             //Sets the amount of credits the empire has to the specified value.
             credits = value;
             //Updates the resource bar to accurately reflect the amount of credits that the empire has if it is the player's empire.
-            if(IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            if(isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateCreditsText();
         }
     }
 
     //Indicates the number of prescriptions that the empire has.
-    private float prescriptions;
-    public float Prescriptions
+    private float prescriptionsVar;
+    public float prescriptions
     {
         get
         {
-            return prescriptions;
+            return prescriptionsVar;
         }
         set
         {
             //Sets the amount of prescriptions that the empire has to the specified value.
-            prescriptions = value;
+            prescriptionsVar = value;
             //Updates the resource bar to accurately reflect the amount of prescriptions that the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdatePrescriptionsText();
         }
     }
 
     //Indicates the amount of science that the empire has.
-    private float science;
-    public float Science
+    private float scienceVar;
+    public float science
     {
         get
         {
-            return science;
+            return scienceVar;
         }
         set
         {
             //Sets the amount of science that the empire has to the specified value.
-            science = value;
+            scienceVar = value;
             //Updates the resource bar to accurately reflect the amount of science that the empire has if it is the player's empire.
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateScienceText();
         }
     }
 
     //Indicates the base amount of credits that the empire receives per turn.
-    private float baseCreditsPerTurn;
-    public float BaseCreditsPerTurn
+    private float baseCreditsPerTurnVar;
+    public float baseCreditsPerTurn
     {
         get
         {
-            return baseCreditsPerTurn;
+            return baseCreditsPerTurnVar;
         }
         set
         {
-            baseCreditsPerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            baseCreditsPerTurnVar = value;
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateCreditsText();
         }
     }
     //Indicates the base amount of prescriptions that the empire receives per turn.
-    private float basePrescriptionsPerTurn;
-    public float BasePrescriptionsPerTurn
+    private float basePrescriptionsPerTurnVar;
+    public float basePrescriptionsPerTurn
     {
         get
         {
-            return basePrescriptionsPerTurn;
+            return basePrescriptionsPerTurnVar;
         }
         set
         {
-            basePrescriptionsPerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            basePrescriptionsPerTurnVar = value;
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdatePrescriptionsText();
         }
     }
     //Indicates the base amount of science that the empire receives per turn.
-    private float baseSciencePerTurn;
-    public float BaseSciencePerTurn
+    private float baseSciencePerTurnVar;
+    public float baseSciencePerTurn
     {
         get
         {
-            return baseSciencePerTurn;
+            return baseSciencePerTurnVar;
         }
         set
         {
-            baseSciencePerTurn = value;
-            if (IsPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
+            baseSciencePerTurnVar = value;
+            if (isPlayerEmpire && GalaxyGenerator.galaxyFinishedGenerating)
                 ResourceBar.UpdateScienceText();
         }
     }
@@ -256,7 +265,7 @@ public class Empire
     public float GetCreditsPerTurn()
     {
         //Accounts for the base credits per turn of the empire.
-        float creditsPerTurn = BaseCreditsPerTurn;
+        float creditsPerTurn = baseCreditsPerTurn;
 
         //Accounts for credits generated by the empire's planets.
         for (int x = 0; x < planetsOwned.Count; x++)
@@ -270,7 +279,7 @@ public class Empire
     public float GetPrescriptionsPerTurn()
     {
         //Accounts for the base prescriptions per turn of the empire.
-        float prescriptionsPerTurn = BasePrescriptionsPerTurn;
+        float prescriptionsPerTurn = basePrescriptionsPerTurn;
 
         //Accounts for the prescriptions generated by the empire's planets.
         for (int x = 0; x < planetsOwned.Count; x++)
@@ -284,7 +293,7 @@ public class Empire
     public float GetSciencePerTurn()
     {
         //Accounts for the base science per turn of the empire.
-        float sciencePerTurn = BaseSciencePerTurn;
+        float sciencePerTurn = baseSciencePerTurn;
 
         //Accounts for the science per turn generated by the empire's planets.
         for (int x = 0; x < planetsOwned.Count; x++)
@@ -383,7 +392,7 @@ public class Empire
         }
 
         //Updates the text of the resource bar that says the production per turn of the empire if this empire is the player empire.
-        if (IsPlayerEmpire)
+        if (isPlayerEmpire)
         {
             ResourceBar.UpdateProductionText();
         }
@@ -403,5 +412,47 @@ public class Empire
             break;
         }
         capitalPlanetID = newCapitalPlanetID;
+    }
+
+    /// <summary>
+    /// Public void method that should be called in order to add a special pill to the list of special pills that are serving the empire.
+    /// </summary>
+    /// <param name="specialPill"></param>
+    public void AddSpecialPill(GalaxySpecialPill specialPill)
+    {
+        if (specialPill == null || (specialPills != null && specialPills.ContainsKey(specialPill.specialPillID)))
+            return;
+        if (specialPills == null)
+            specialPills = new Dictionary<int, GalaxySpecialPill>();
+        specialPills.Add(specialPillsCountVar, specialPill);
+        specialPill.assignedEmpire = this;
+        specialPillsCountVar++;
+    }
+
+    /// <summary>
+    /// Public method that returns the special pill serving the empire with the specified specialPillID (returns null if no such special pill exists).
+    /// </summary>
+    /// <param name="specialPillID"></param>
+    /// <returns></returns>
+    public GalaxySpecialPill GetSpecialPill(int specialPillID)
+    {
+        if (specialPills != null && specialPills.ContainsKey(specialPillID))
+            return specialPills[specialPillID];
+        return null;
+    }
+
+    /// <summary>
+    /// Public method that should be called in order remove a special pill from the list of special pills that are serving the empire. Returns a boolean indicating whether a successful removal occured.
+    /// </summary>
+    /// <param name="specialPillID"></param>
+    /// <returns></returns>
+    public bool RemoveSpecialPill(int specialPillID)
+    {
+        if (specialPills != null && specialPills.ContainsKey(specialPillID))
+        {
+            specialPills.Remove(specialPillID);
+            return true;
+        }
+        return false;
     }
 }

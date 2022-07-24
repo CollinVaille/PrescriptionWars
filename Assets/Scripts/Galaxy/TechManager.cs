@@ -36,10 +36,10 @@ public class TechManager
             if (techTotems[techTotemSelected].techsAvailable.Count > 0)
             {
                 //Detects if the empire has enough science to complete the selected tech.
-                if (Empire.empires[ownerEmpireID].Science >= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost)
+                if (Empire.empires[ownerEmpireID].science >= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost)
                 {
                     //Removes the tech's cost from the total science.
-                    Empire.empires[ownerEmpireID].Science -= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost;
+                    Empire.empires[ownerEmpireID].science -= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost;
 
                     //Creates the right side notification that tells the user that they have finished the tech that they were researching.
                     if (ownerEmpireID == GalaxyManager.PlayerID)
@@ -70,7 +70,7 @@ public class TechManager
         if (!researchingSomething)
         {
             //If the player has nothing researching for an entire turn, the science is set back to zero as a sort of punishment. :)
-            Empire.empires[ownerEmpireID].Science = 0;
+            Empire.empires[ownerEmpireID].science = 0;
         }
     }
 

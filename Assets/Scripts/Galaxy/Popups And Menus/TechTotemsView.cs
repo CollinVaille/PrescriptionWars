@@ -104,7 +104,7 @@ public class TechTotemsView : GalaxyMenuBehaviour
             if (x != newTechTotemSelected)
                 researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, -400);
             else if (newTechTotemSelected >= 0 && newTechTotemSelected < Empire.empires[GalaxyManager.PlayerID].techManager.techTotems.Count && Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[newTechTotemSelected].techsAvailable.Count != 0)
-                researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, Empire.empires[GalaxyManager.PlayerID].Science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost * 350 + -400);
+                researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, Empire.empires[GalaxyManager.PlayerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost * 350 + -400);
             else
                 researchProgressRawImages[x].transform.localPosition = new Vector2(researchProgressRawImages[x].transform.localPosition.x, -400);
         }
@@ -134,7 +134,7 @@ public class TechTotemsView : GalaxyMenuBehaviour
             {
                 if (Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable.Count > 0)
                 {
-                    researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, (Empire.empires[GalaxyManager.PlayerID].Science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost) * 350 + -400, researchProgressRawImages[x].transform.localPosition.z);
+                    researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, (Empire.empires[GalaxyManager.PlayerID].science / Tech.entireTechList[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techsAvailable[Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[Empire.empires[GalaxyManager.PlayerID].techManager.techTotemSelected].techDisplayed]].cost) * 350 + -400, researchProgressRawImages[x].transform.localPosition.z);
                     if (researchProgressRawImages[x].transform.localPosition.y > -50)
                         researchProgressRawImages[x].transform.localPosition = new Vector3(researchProgressRawImages[x].transform.localPosition.x, -50, researchProgressRawImages[x].transform.localPosition.z);
                 }

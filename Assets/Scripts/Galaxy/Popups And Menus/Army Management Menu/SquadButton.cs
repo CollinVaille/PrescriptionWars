@@ -74,7 +74,7 @@ public class SquadButton : ExpandableUnitListButton
         base.UpdateInfo();
 
         //Sets the color of the squad button to match the empire color of the empire that owns the assigned squad.
-        Button.image.color = Empire.empires[assignedSquad.assignedArmy.ownerEmpireID].EmpireColor;
+        Button.image.color = Empire.empires[assignedSquad.assignedArmy.ownerEmpireID].color;
         //Sets the sprite of the left image to show the icon of the army that the squad is assigned to.
         LeftImage.sprite = Resources.Load<Sprite>("Galaxy/Army Icons/" + AssignedSquad.assignedArmy.armyIcon.spriteName);
         //Sets the color of the left image to the appropriate color of the army's icon.
