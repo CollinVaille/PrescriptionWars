@@ -43,7 +43,7 @@ public class PillSkinOptionButton : MonoBehaviour
 
     private bool hasBecameVisible = false;
 
-    private Material pillSkin = null;
+    private string pillSkinName = null;
 
     private PillView pillView = null;
     public PillView PillView
@@ -98,18 +98,18 @@ public class PillSkinOptionButton : MonoBehaviour
     private void OnOptionBecameVisible()
     {
         //Assigns the texture of the pill skin raw image.
-        pillSkinRawImage.texture = pillSkin != null ? pillSkin.mainTexture : null;
-        if (pillSkin == null)
+        pillSkinRawImage.texture = pillSkinName != null ? Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.PlayerID].empireCulture.ToString()) + "/" + pillSkinName).mainTexture : null;
+        if (pillSkinName == null)
             pillSkinRawImage.gameObject.SetActive(false);
 
         //Creates the pill view and assigns the pill view raw image texture.
-        if(pillSkin != null)
+        if(pillSkinName != null)
         {
             //Test pill creation.
             GalaxyPill testPill = new GalaxyPill("Test Pill", "Assault");
             GalaxySquad testSquad = new GalaxySquad("Test Squad");
             testSquad.AddPill(testPill);
-            GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.PlayerID, pillSkin);
+            GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.PlayerID, pillSkinName);
             testArmy.AddSquad(testSquad);
 
             //Pill view creation.
@@ -145,7 +145,7 @@ public class PillSkinOptionButton : MonoBehaviour
     }
 
     //This method should be called in order to create a new pill skin option button.
-    public static PillSkinOptionButton CreatePillSkinOptionButton(GameObject prefab, Transform parent, GalaxyPillSkinConfirmationPopup assignedConfirmationPopup, Material pillSkin)
+    public static PillSkinOptionButton CreatePillSkinOptionButton(GameObject prefab, Transform parent, GalaxyPillSkinConfirmationPopup assignedConfirmationPopup, string pillSkinName)
     {
         GameObject pillSkinOptionButton = Instantiate(prefab);
         PillSkinOptionButton pillSkinOptionButtonScript = pillSkinOptionButton.GetComponent<PillSkinOptionButton>();
@@ -155,7 +155,7 @@ public class PillSkinOptionButton : MonoBehaviour
 
         pillSkinOptionButtonScript.assignedConfirmationPopup = assignedConfirmationPopup;
 
-        pillSkinOptionButtonScript.pillSkin = pillSkin;
+        pillSkinOptionButtonScript.pillSkinName = pillSkinName;
 
         return pillSkinOptionButtonScript;
     }

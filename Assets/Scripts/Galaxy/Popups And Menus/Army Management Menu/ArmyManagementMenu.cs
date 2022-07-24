@@ -672,8 +672,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
         string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
         string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
-        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.owner.PillSkins);
-        confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkin);
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.owner.pillSkinNames);
+        confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -689,14 +689,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     /// <summary>
     /// This method should be called in order to change the assigned pill skin of the ground unit selected in the unit list and being viewed in the unit inspector.
     /// </summary>
-    /// <param name="pillSkin"></param>
-    private void ChangeSelectedGroundUnitAssignedPillSkin(Material pillSkin)
+    /// <param name="pillSkinName"></param>
+    private void ChangeSelectedGroundUnitAssignedPillSkin(string pillSkinName)
     {
         //Checks that the unit list button selected is an army button.
         if(UnitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Army)
         {
             //Changes the assigned pill skin of the selected unit list button's ground unit to the pill skin specified.
-            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkin = pillSkin;
+            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName = pillSkinName;
         }
         else
         {

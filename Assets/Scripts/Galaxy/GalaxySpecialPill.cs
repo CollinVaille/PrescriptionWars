@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GalaxyPillLeader
+public class GalaxySpecialPill
 {
     public enum Skill
     {
@@ -12,13 +12,25 @@ public class GalaxyPillLeader
     }
 
     /// <summary>
-    /// Public property that should be used both to access and mutate the name of the galaxy pill leader.
+    /// Public property that should be used both to access and mutate the name of the special pill.
     /// </summary>
     public string name { get => nameVar; set => nameVar = value; }
-    private string nameVar = string.Empty;
+    private string nameVar = null;
 
     /// <summary>
-    /// Public property that should be used both to access and mutate the empire that the galaxy pill leader is assigned to (returns null if the galaxy pill leader is not assigned to an empire).
+    /// Public property that should be used both to access and mutate the class of the special pill (the class mainly defines their gear).
+    /// </summary>
+    public PillClass pillClass { get => PillClass.pillClasses.ContainsKey(pillClassName) ? PillClass.pillClasses[pillClassName] : null; set => pillClassName = value != null ? value.className : null; }
+    private string pillClassName = null;
+
+    /// <summary>
+    /// Public property that should be used both to access and mutate the skin of the special pill.
+    /// </summary>
+    public Material skin { get => assignedEmpire == null ? null : Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(assignedEmpire.empireCulture.ToString()) + "/" + skinName); set => skinName = value == null ? null : value.name; }
+    private string skinName = null;
+
+    /// <summary>
+    /// Public property that should be used both to access and mutate the empire that the special pill is assigned to (returns null if the galaxy pill leader is not assigned to an empire).
     /// </summary>
     public Empire assignedEmpire
     {
@@ -57,14 +69,29 @@ public class GalaxyPillLeader
     /// </summary>
     private static readonly Dictionary<Skill, Vector2Int> baseExperienceBounds = new Dictionary<Skill, Vector2Int>() { { Skill.Soldiering, GalaxyPill.baseExperienceBounds }, { Skill.Generalship, new Vector2Int(1, 5) } };
 
-    public GalaxyPillLeader(GalaxyPill pillSoldier) : this(pillSoldier.Name, new Dictionary<Skill, float>() { { Skill.Soldiering, pillSoldier.experience } }, pillSoldier.assignedSquad.assignedArmy.owner)
+    /// <summary>
+    /// Public property that should be used to convert this special pill into a regular galaxy pill soldier (Warning: this process will get rid of the special pill's specified skin and all experience except for soldiering).
+    /// </summary>
+    public GalaxyPill convertedToGalaxyPill
+    {
+        get
+        {
+            GalaxyPill galaxyPill = new GalaxyPill(name, pillClassName);
+            galaxyPill.experience = GetExperience(Skill.Soldiering);
+            return galaxyPill;
+        }
+    }
+
+    public GalaxySpecialPill(GalaxyPill pillSoldier) : this(pillSoldier.Name, pillSoldier.pillClass.className, pillSoldier.Skin, new Dictionary<Skill, float>() { { Skill.Soldiering, pillSoldier.experience } }, pillSoldier.assignedSquad.assignedArmy.owner)
     {
 
     }
 
-    public GalaxyPillLeader(string name, Dictionary<Skill, float> experience, Empire assignedEmpire)
+    public GalaxySpecialPill(string name, string pillClassName, Material skin, Dictionary<Skill, float> experience, Empire assignedEmpire)
     {
         this.name = name;
+        this.pillClassName = pillClassName;
+        this.skin = skin;
         this.experience = experience;
         this.assignedEmpire = assignedEmpire;
     }

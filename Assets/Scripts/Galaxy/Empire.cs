@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,14 +17,20 @@ public class Empire
     //This method is called right after the galaxy has finished generating (at the end of the start method in the galaxy generator class).
     public void OnGalaxyGenerationCompletion()
     {
-        pillSkins = Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString()));
+        foreach(Material material in Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(empireCulture.ToString())))
+        {
+            if(pillSkinNamesVar == null)
+                pillSkinNamesVar = new string[0];
+            Array.Resize(ref pillSkinNamesVar, pillSkinNamesVar.Length + 1);
+            pillSkinNamesVar[pillSkinNamesVar.Length - 1] = material.name;
+        }
     }
 
     /// <summary>
     /// Contains all of the possible pill skins that pills that belong to this empire can be.
     /// </summary>
-    public Material[] PillSkins { get => pillSkins; private set => pillSkins = value; }
-    private Material[] pillSkins;
+    public string[] pillSkinNames { get => pillSkinNamesVar; }
+    private string[] pillSkinNamesVar = null;
 
     public enum Culture
     {
@@ -132,7 +139,7 @@ public class Empire
     /// <summary>
     /// Returns a random squad name from the list of valid squad names that are valid for the empire.
     /// </summary>
-    public string RandomValidSquadName { get => (ValidSquadNames == null || ValidSquadNames.Count == 0) ? "Squad" : ValidSquadNames[Random.Range(0, ValidSquadNames.Count)]; }
+    public string RandomValidSquadName { get => (ValidSquadNames == null || ValidSquadNames.Count == 0) ? "Squad" : ValidSquadNames[UnityEngine.Random.Range(0, ValidSquadNames.Count)]; }
     /// <summary>
     /// The x value is added to the lower bound for pill experience and the y value is added to the upper bound for pill experience.
     /// </summary>
@@ -301,9 +308,9 @@ public class Empire
     }
 
     //Returns a random pill skin from the empire's array of possible pill skins.
-    public Material GetRandomPillSkin()
+    public string GetRandomPillSkinName()
     {
-        return pillSkins[Random.Range(0, pillSkins.Length)];
+        return pillSkinNamesVar[UnityEngine.Random.Range(0, pillSkinNamesVar.Length)];
     }
 
     public void PlayAI()

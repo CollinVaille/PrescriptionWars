@@ -22,25 +22,25 @@ public class GalaxySquad: GalaxyGroundUnit
         this.iconColor = iconColor;
     }
 
-    public GalaxySquad(string name, Material pillSkin)
+    public GalaxySquad(string name, string pillSkinName)
     {
         //Sets the name of the squad to the specified name.
         Name = name;
         //Sets the assigned pill skin of the squad to the specified pill skin.
-        assignedPillSkin = pillSkin;
+        assignedPillSkinName = pillSkinName;
 
         //Randomizes the color of the icon that represents the squad.
         RandomizeIconColor();
     }
 
-    public GalaxySquad(string name, Color iconColor, Material pillSkin)
+    public GalaxySquad(string name, Color iconColor, string pillSkinName)
     {
         //Sets the name of the squad to the specified name.
         Name = name;
         //Sets the color of the icon that represents the squad to the specified color.
         this.iconColor = iconColor;
         //Sets the assigned pill skin of the squad to the specified pill skin.
-        assignedPillSkin = pillSkin;
+        assignedPillSkinName = pillSkinName;
     }
 
     /// <summary>
@@ -52,8 +52,8 @@ public class GalaxySquad: GalaxyGroundUnit
     /// <summary>
     /// The material that will be assigned to all pills of this squad (will usually be null and the material assigned to pills in the army class will be used, should only be used for special squads).
     /// </summary>
-    public Material assignedPillSkin { get => assignedPillSkinVar; private set => assignedPillSkinVar = value; }
-    private Material assignedPillSkinVar = null;
+    public string assignedPillSkinName { get => assignedPillSkinNameVar; private set => assignedPillSkinNameVar = value; }
+    private string assignedPillSkinNameVar = null;
 
     /// <summary>
     /// List of all of the pills in the squad.

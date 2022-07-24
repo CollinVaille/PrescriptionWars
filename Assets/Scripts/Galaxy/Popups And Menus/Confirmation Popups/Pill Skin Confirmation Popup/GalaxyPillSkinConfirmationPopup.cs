@@ -17,17 +17,17 @@ public class GalaxyPillSkinConfirmationPopup : GalaxyConfirmationPopupBehaviour
 
     //Non-inspector variables.
 
-    private Material[] pillSkins = null;
+    private string[] pillSkinNames = null;
 
     private int pillSkinSeletced = 0;
     /// <summary>
     /// Returns the pill skin that the user ultimately selected.
     /// </summary>
-    public Material ReturnValue
+    public string ReturnValue
     {
         get
         {
-            return pillSkins[pillSkinSeletced];
+            return pillSkinNames[pillSkinSeletced];
         }
     }
 
@@ -58,22 +58,22 @@ public class GalaxyPillSkinConfirmationPopup : GalaxyConfirmationPopupBehaviour
     }
 
     //This method should be called in order to properly create the confirmation popup and set the text components.
-    public void CreateConfirmationPopup(string topText, string bodyText, Material[] pillSkins)
+    public void CreateConfirmationPopup(string topText, string bodyText, string[] pillSkinNames)
     {
         CreateConfirmationPopup(topText);
         this.bodyText.text = bodyText;
-        this.pillSkins = pillSkins;
+        this.pillSkinNames = pillSkinNames;
 
-        if (pillSkins != null)
+        if (pillSkinNames != null)
             PopulateScrollList();
     }
 
     //This method should be called in order to populate the scroll list with pill skin option buttons.
     private void PopulateScrollList()
     {
-        foreach (Material pillSkin in pillSkins)
+        foreach (string pillSkinName in pillSkinNames)
         {
-            PillSkinOptionButton.CreatePillSkinOptionButton(pillSkinOptionButtonPrefab, scrollListContent, this, pillSkin);
+            PillSkinOptionButton.CreatePillSkinOptionButton(pillSkinOptionButtonPrefab, scrollListContent, this, pillSkinName);
         }
     }
 
@@ -88,12 +88,12 @@ public class GalaxyPillSkinConfirmationPopup : GalaxyConfirmationPopupBehaviour
     }
 
     //This method is called in order to set the pill skin selected index to the index that the specified pill skin is located at.
-    public void SetPillSkinSelected(Material pillSkin)
+    public void SetPillSkinSelected(string pillSkinName)
     {
         int skinIndex = -1;
-        for(int x = 0; x < pillSkins.Length; x++)
+        for(int x = 0; x < pillSkinNames.Length; x++)
         {
-            if(pillSkin == pillSkins[x])
+            if(pillSkinName.Equals(pillSkinNames[x]))
             {
                 skinIndex = x;
                 break;

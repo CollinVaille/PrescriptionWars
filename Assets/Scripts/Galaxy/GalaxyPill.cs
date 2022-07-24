@@ -55,7 +55,7 @@ public class GalaxyPill: GalaxyGroundUnit
     /// <summary>
     /// The class of the pill contains the primary and secondary weapon game objects and the head gear and body gear game objects.
     /// </summary>
-    public PillClass pillClass { get => PillClass.pillClasses.ContainsKey(className) ? PillClass.pillClasses[className] : null; set => className = value.className; }
+    public PillClass pillClass { get => PillClass.pillClasses.ContainsKey(className) ? PillClass.pillClasses[className] : null; set => className = value != null ? value.className : null; }
     /// <summary>
     /// Indicates what type of class the class of the pill is (ex: Assault or Officer).
     /// </summary>
@@ -87,10 +87,10 @@ public class GalaxyPill: GalaxyGroundUnit
         get
         {
             //Returns the pill skin assigned to the squad if the squad is a special squad.
-            if (assignedSquadVar.assignedPillSkin != null)
-                return assignedSquadVar.assignedPillSkin;
+            if (assignedSquadVar.assignedPillSkinName != null)
+                return Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(assignedSquad.assignedArmy.owner.empireCulture.ToString()) + "/" + assignedSquad.assignedPillSkinName);
             //Else if the squad is not a special squad then it returns the pill skin assigned to the army.
-            return assignedSquadVar.assignedArmy.assignedPillSkin;
+            return Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(assignedSquad.assignedArmy.owner.empireCulture.ToString()) + "/" + assignedSquad.assignedArmy.assignedPillSkinName);
         }
     }
 

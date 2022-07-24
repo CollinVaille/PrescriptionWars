@@ -5,22 +5,22 @@ using UnityEngine;
 public class GalaxyArmy: GalaxyGroundUnit
 {
     //Constructor of the galaxy army.
-    public GalaxyArmy(string name, int ownerEmpireID) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkin(), new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
+    public GalaxyArmy(string name, int ownerEmpireID) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin) : this(name, ownerEmpireID, pillSkin, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
+    public GalaxyArmy(string name, int ownerEmpireID, string pillSkinName) : this(name, ownerEmpireID, pillSkinName, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkin(), armyIcon)
+    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), armyIcon)
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, Material pillSkin, ArmyIcon armyIcon)
+    public GalaxyArmy(string name, int ownerEmpireID, string pillSkinName, ArmyIcon armyIcon)
     {
         //Assigns the name of the army.
         this.name = name;
@@ -28,7 +28,7 @@ public class GalaxyArmy: GalaxyGroundUnit
         this.ownerEmpireIDVar = ownerEmpireID;
 
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
-        assignedPillSkinVar = pillSkin;
+        assignedPillSkinNameVar = pillSkinName;
         //Assigns the icon of the army to the specified value.
         this.armyIconVar = armyIcon;
     }
@@ -44,21 +44,21 @@ public class GalaxyArmy: GalaxyGroundUnit
     private int ownerEmpireIDVar;
 
     /// <summary>
-    /// The material that will be applied to all pills in the army that are not part of a special squad.
+    /// The name of the material that will be applied to all pills in the army that are not part of a special squad.
     /// </summary>
-    public Material assignedPillSkin
+    public string assignedPillSkinName
     {
         get
         {
-            return assignedPillSkinVar;
+            return assignedPillSkinNameVar;
         }
         set
         {
-            assignedPillSkinVar = value;
+            assignedPillSkinNameVar = value;
             PillViewsManager.UpdatePillViewsOfArmy(this);
         }
     }
-    private Material assignedPillSkinVar = null;
+    private string assignedPillSkinNameVar = null;
 
     /// <summary>
     /// The information needed in order to create the icon that represents the army.
