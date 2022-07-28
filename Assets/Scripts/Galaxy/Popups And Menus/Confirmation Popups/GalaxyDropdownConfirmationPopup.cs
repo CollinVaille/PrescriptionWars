@@ -42,6 +42,11 @@ public class GalaxyDropdownConfirmationPopup : GalaxyConfirmationPopupBehaviour
         base.Update();
     }
 
+    new public void CreateConfirmationPopup(string topText)
+    {
+        base.CreateConfirmationPopup(topText);
+    }
+
     //Adds a new dropdown option for the player to selected that has the passed through string displayed on it.
     public void AddDropdownOption(string optionText)
     {

@@ -66,6 +66,15 @@ public class GalaxySpecialPill
     private int specialPillIDVar = -1;
 
     /// <summary>
+    /// Public string that indicates what task the special pill is assigned to.
+    /// </summary>
+    public string task = null;
+    /// <summary>
+    /// Public property that returns a boolean value that indictaes whether or not the special pill is busy with a task.
+    /// </summary>
+    public bool isBusy { get => task != null; }
+
+    /// <summary>
     /// Dictionary containing the special pill's experience in each type of skill (null if has no experience with any skill).
     /// </summary>
     private Dictionary<Skill, float> experience = null;
@@ -97,6 +106,10 @@ public class GalaxySpecialPill
         {
             GalaxyPill galaxyPill = new GalaxyPill(name, pillClassName);
             galaxyPill.experience = GetExperience(Skill.Soldiering);
+            galaxyPill.assignedSquad = new GalaxySquad("Placeholder Squad");
+            galaxyPill.assignedSquad.AddPill(galaxyPill);
+            galaxyPill.assignedSquad.assignedArmy = new GalaxyArmy("Placeholder Army", GalaxyManager.PlayerID, skinName);
+            galaxyPill.assignedSquad.assignedArmy.AddSquad(galaxyPill.assignedSquad);
             return galaxyPill;
         }
     }
@@ -132,7 +145,7 @@ public class GalaxySpecialPill
     /// </summary>
     /// <param name="skill"></param>
     /// <returns></returns>
-    public float GetExperienceLevel(Skill skill)
+    public int GetExperienceLevel(Skill skill)
     {
         return (int)GetExperience(skill);
     }

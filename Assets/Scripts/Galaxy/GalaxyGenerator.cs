@@ -59,6 +59,7 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField] private GameObject galaxyPillSkinConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxyColorPickerConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxySpritePickerConfirmationPopupPrefab = null;
+    [SerializeField] private GameObject specialPillConfirmationPopupPrefab = null;
     [SerializeField] private GameObject tooltipPrefab = null;
     [SerializeField] private GameObject backArrowPrefab = null;
     [SerializeField] private GameObject pillViewPrefab = null;
@@ -162,6 +163,7 @@ public class GalaxyGenerator : MonoBehaviour
         GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab = galaxyPillSkinConfirmationPopupPrefab;
         GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab = galaxyColorPickerConfirmationPopupPrefab;
         GalaxySpritePickerConfirmationPopup.galaxySpritePickerConfirmationPopupPrefab = galaxySpritePickerConfirmationPopupPrefab;
+        SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab = specialPillConfirmationPopupPrefab;
         GalaxyTooltip.tooltipPrefab = tooltipPrefab;
         GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
         PillViewsManager.pillViewPrefab = pillViewPrefab;

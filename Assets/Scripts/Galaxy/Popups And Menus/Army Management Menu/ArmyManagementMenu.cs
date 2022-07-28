@@ -927,6 +927,17 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     }
 
     /// <summary>
+    /// This method should be called whenever the assign general button is clicked in the unit inspector (army button unit inspector only).
+    /// </summary>
+    public void OnClickAssignGeneralButton()
+    {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
+
+    }
+
+    /// <summary>
     /// Closes all army management menus and removes them from the static list.
     /// </summary>
     public static void CloseAll()

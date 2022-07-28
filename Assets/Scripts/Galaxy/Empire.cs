@@ -146,6 +146,24 @@ public class Empire
     /// </summary>
     private Dictionary<int, GalaxySpecialPill> specialPills = null;
     /// <summary>
+    /// Public property that returns a list with all of the special pills serving the empire in it. New special pills cannot be added to this list. A list with zero elements is returned if there are no special pills serving the empire.
+    /// </summary>
+    public List<GalaxySpecialPill> specialPillsList
+    {
+        get
+        {
+            List<GalaxySpecialPill> specialPillsListTemp = new List<GalaxySpecialPill>();
+            if(specialPills != null)
+            {
+                foreach(int specialPillID in specialPills.Keys)
+                {
+                    specialPillsListTemp.Add(specialPills[specialPillID]);
+                }
+            }
+            return specialPillsListTemp;
+        }
+    }
+    /// <summary>
     /// Public property that indicates how many special pills the empire has had in total (even ones no longer serving the empire).
     /// </summary>
     public int specialPillsCount { get => specialPillsCountVar; }

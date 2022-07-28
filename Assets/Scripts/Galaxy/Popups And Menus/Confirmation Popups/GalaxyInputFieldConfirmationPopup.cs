@@ -28,6 +28,11 @@ public class GalaxyInputFieldConfirmationPopup : GalaxyConfirmationPopupBehaviou
         base.Update();
     }
 
+    new public void CreateConfirmationPopup(string topText)
+    {
+        base.CreateConfirmationPopup(topText);
+    }
+
     //Can be called in order to set the max number of characters the input field will allow for the user to type.
     public void SetCharacterLimit(int maxNumberOfCharacters)
     {

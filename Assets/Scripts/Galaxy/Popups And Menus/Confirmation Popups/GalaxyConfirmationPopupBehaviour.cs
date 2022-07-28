@@ -47,7 +47,7 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
         }
     }
 
-    public void CreateConfirmationPopup(string popupTopText)
+    protected void CreateConfirmationPopup(string popupTopText)
     {
         topText.text = popupTopText;
 
