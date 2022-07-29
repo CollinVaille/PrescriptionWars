@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
 {
@@ -38,8 +39,6 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
     }
     private int skillSelectedIndexVar = -1;
 
-    private bool created = false;
-
     /// <summary>
     /// The prefab that all special pill confirmation popups should be instantiated from (set in the GalaxyGenerator).
     /// </summary>
@@ -55,21 +54,15 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
     public override void Update()
     {
         base.Update();
-
-        if (!created)
-        {
-            CreateConfirmationPopup("Test", 0);
-            created = true;
-        }
     }
 
     /// <summary>
     /// This method should be called in order to properly create the confirmation popup, set the text components, and populate the scroll list.
     /// </summary>
     /// <param name="topText"></param>
-    public void CreateConfirmationPopup(string topText, int skillSelectedIndex, int specialPillIDSelected = -1)
+    public void CreateConfirmationPopup(string topText, int skillSelectedIndex = -1, int specialPillIDSelected = -1)
     {
-        CreateConfirmationPopup(topText);
+        base.CreateConfirmationPopup(topText);
 
         GalaxySpecialPill specialPill = new GalaxySpecialPill("Bob", "Assault", Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.PlayerID].empireCulture.ToString()) + "/" + Empire.empires[GalaxyManager.PlayerID].GetRandomPillSkinName()), null, Empire.empires[GalaxyManager.PlayerID]);
         skillSelectedIndexVar = skillSelectedIndex;
@@ -82,6 +75,25 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
     /// </summary>
     private void PopulateScrollList()
     {
+        //Deletes any previously existing special pill option buttons.
+        if(scrollListContent.childCount > 0)
+        {
+            for(int childIndex = scrollListContent.childCount - 1; childIndex >= 0; childIndex--)
+            {
+                Destroy(scrollListContent.GetChild(childIndex).gameObject);
+            }
+        }
+
+        //Creates the none button at the top of the scroll list.
+        SpecialPillOptionButton noneButton = Instantiate(specialPillOptionButtonPrefab).GetComponent<SpecialPillOptionButton>();
+        noneButton.transform.SetParent(scrollListContent);
+        noneButton.transform.localScale = Vector3.one;
+        noneButton.specialPillConfirmationPopup = this;
+        noneButton.specialPillID = -1;
+        noneButton.skillSelectedIndex = skillSelectedIndex;
+        noneButton.selected = noneButton.specialPillID == specialPillIDSelected;
+
+        //Sort all special pills belonging to the player empire into two separate lists saying whether or not they have already been assigned a task.
         List<GalaxySpecialPill> availableSpecialPills = new List<GalaxySpecialPill>();
         List<GalaxySpecialPill> busySpecialPills = new List<GalaxySpecialPill>();
         foreach (GalaxySpecialPill specialPill in Empire.empires[GalaxyManager.PlayerID].specialPillsList)
@@ -91,6 +103,8 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
             else
                 availableSpecialPills.Add(specialPill);
         }
+
+        //Special pills that are available and not busy with a task have their buttons added to the scroll list before the special pills that are assigned a task and are busy.
         foreach(GalaxySpecialPill availableSpecialPill in availableSpecialPills)
         {
             SpecialPillOptionButton specialPillOptionButton = Instantiate(specialPillOptionButtonPrefab).GetComponent<SpecialPillOptionButton>();
@@ -99,7 +113,10 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
             specialPillOptionButton.specialPillConfirmationPopup = this;
             specialPillOptionButton.specialPillID = availableSpecialPill.specialPillID;
             specialPillOptionButton.skillSelectedIndex = skillSelectedIndex;
+            specialPillOptionButton.selected = specialPillOptionButton.specialPillID == specialPillIDSelected;
         }
+
+        //Special pills that are busy with a task are added to the scroll list last, after the special pills that are available and not assigned a task.
         foreach(GalaxySpecialPill busySpecialPill in busySpecialPills)
         {
             SpecialPillOptionButton specialPillOptionButton = Instantiate(specialPillOptionButtonPrefab).GetComponent<SpecialPillOptionButton>();
@@ -108,6 +125,7 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
             specialPillOptionButton.specialPillConfirmationPopup = this;
             specialPillOptionButton.specialPillID = busySpecialPill.specialPillID;
             specialPillOptionButton.skillSelectedIndex = skillSelectedIndex;
+            specialPillOptionButton.selected = specialPillOptionButton.specialPillID == specialPillIDSelected;
         }
     }
 
@@ -149,7 +167,7 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
     /// </summary>
     public void OnPointerEnterSpecialPillOptionButton(SpecialPillOptionButton specialPillOptionButton)
     {
-        if(!specialPillOptionButton.selected)
+        if(!specialPillOptionButton.selected && specialPillOptionButton.gameObject.GetComponent<Button>().interactable)
             AudioManager.PlaySFX(pointerEnterSpecialPillOptionButtonSFX);
     }
 }

@@ -17,6 +17,9 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
     [SerializeField] private Text taskText = null;
     [SerializeField] private Text skillText = null;
     [SerializeField] private Text experienceLevelText = null;
+    [SerializeField] private Text centerText = null;
+
+    [SerializeField] private GalaxyTooltip pillViewTooltip = null;
 
     /// <summary>
     /// Public property that is access only and returns the special pill that the option button is meant to represent (returns null if there is none).
@@ -41,6 +44,11 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
                 else
                     pillView.DisplayedPill = specialPill.convertedToGalaxyPill;
                 pillViewRawImage.texture = pillView.RenderTexture;
+                pillViewTooltip.Text = specialPill.name + "\n";
+                foreach (GalaxySpecialPill.Skill skill in Enum.GetValues(typeof(GalaxySpecialPill.Skill)))
+                {
+                    pillViewTooltip.Text += "\n" + GeneralHelperMethods.GetEnumText(skill.ToString()) + " Experience Level: " + specialPill.GetExperienceLevel(skill);
+                }
                 pillViewRawImage.gameObject.SetActive(true);
                 nameText.text = specialPill.name;
                 nameText.gameObject.SetActive(true);
@@ -49,10 +57,12 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
                 if(!selected)
                     gameObject.GetComponent<Button>().interactable = !specialPill.isBusy;
                 skillSelectedIndex = skillSelectedIndex;
+                centerText.gameObject.SetActive(false);
             }
             else
             {
-                pillView.Delete();
+                if(pillView != null)
+                    pillView.Delete();
                 pillViewRawImage.gameObject.SetActive(false);
                 pillViewRawImage.texture = null;
                 nameText.gameObject.SetActive(false);
@@ -61,6 +71,8 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
                 skillText.gameObject.SetActive(false);
                 experienceLevelImage.gameObject.SetActive(false);
                 experienceLevelText.gameObject.SetActive(false);
+                centerText.text = "None";
+                centerText.gameObject.SetActive(true);
             }
         }
     }
@@ -123,7 +135,7 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
 
     private PillView pillView = null;
 
-    public SpecialPillConfirmationPopup specialPillConfirmationPopup = null;
+    [HideInInspector] public SpecialPillConfirmationPopup specialPillConfirmationPopup = null;
 
     // Start is called before the first frame update
     void Start()

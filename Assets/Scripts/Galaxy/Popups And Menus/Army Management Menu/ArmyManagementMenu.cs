@@ -190,13 +190,31 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     unitInspectorSquadParent.gameObject.SetActive(false);
                     unitInspectorPillParent.gameObject.SetActive(false);
 
-                    //Deactivates the pill view because there is not a valid pill (general) to display.
-                    UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
-
-                    if (unitInspectorPillView != null)
+                    //Gets the general of the army (could be null if there is no general).
+                    GalaxySpecialPill general = unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.general;
+                    //Deletes/clears the pill view if the army has no general.
+                    if (general == null)
                     {
-                        unitInspectorPillView.Delete();
-                        UnitListInspectorPillViewRawImage.texture = null;
+                        //Deactivates the pill view because there is no pill to display.
+                        UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
+
+                        if (unitInspectorPillView != null)
+                        {
+                            unitInspectorPillView.Delete();
+                            UnitListInspectorPillViewRawImage.texture = null;
+                        }
+                    }
+                    //Displays the general in the unit inspector pill view.
+                    else
+                    {
+                        //Activates the pill view because there is a valid pill (general) to display.
+                        UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+
+                        if (unitInspectorPillView == null)
+                            unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
+                        else
+                            unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
+                        UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
                     }
                     break;
                 //Activates the base and squad components of the unit inspector if the unit list button selected is a squad button.
@@ -934,7 +952,56 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Plays the sound effect for pressing a button in the unit inspector.
         AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
 
+        StartCoroutine(ConfirmAssigningGeneralActionCoroutine());
+    }
 
+    /// <summary>
+    /// This coroutine should be started whenenever the player attempts to assign a general to an army and confirms that the player wishes for the action to be carried through.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmAssigningGeneralActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        SpecialPillConfirmationPopup confirmationPopupScript = Instantiate(SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab).GetComponent<SpecialPillConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Assign General For " + UnitListButtonSelected.AssignedGroundUnit.Name, (int)GalaxySpecialPill.Skill.Generalship, UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirms their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID = confirmationPopupScript.returnValue;
+            //Gets the general of the army (could be null if there is no general).
+            GalaxySpecialPill general = unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.general;
+            //Deletes/clears the pill view if the army has no general.
+            if (general == null)
+            {
+                //Deactivates the pill view because there is no pill to display.
+                UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
+
+                if (unitInspectorPillView != null)
+                {
+                    unitInspectorPillView.Delete();
+                    UnitListInspectorPillViewRawImage.texture = null;
+                }
+            }
+            //Displays the general in the unit inspector pill view.
+            else
+            {
+                //Activates the pill view because there is a valid pill (general) to display.
+                UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+
+                if (unitInspectorPillView == null)
+                    unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
+                else
+                    unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
+                UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+            }
+        }
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
     }
 
     /// <summary>

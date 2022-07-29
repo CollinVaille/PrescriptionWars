@@ -5,32 +5,33 @@ using UnityEngine;
 public class GalaxyArmy: GalaxyGroundUnit
 {
     //Constructor of the galaxy army.
-    public GalaxyArmy(string name, int ownerEmpireID) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
+    public GalaxyArmy(string name, int ownerEmpireID) : this(name, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), ownerEmpireID, -1, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, string pillSkinName) : this(name, ownerEmpireID, pillSkinName, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
+    public GalaxyArmy(string name, int ownerEmpireID, string pillSkinName) : this(name, pillSkinName, ownerEmpireID, -1, new ArmyIcon(ArmyIconNamesLoader.armyIconNames[Random.Range(0, ArmyIconNamesLoader.armyIconNames.Length)], new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1)))
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon) : this(name, ownerEmpireID, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), armyIcon)
+    public GalaxyArmy(string name, int ownerEmpireID, ArmyIcon armyIcon) : this(name, Empire.empires[ownerEmpireID].GetRandomPillSkinName(), ownerEmpireID, -1, armyIcon)
     {
         
     }
 
-    public GalaxyArmy(string name, int ownerEmpireID, string pillSkinName, ArmyIcon armyIcon)
+    public GalaxyArmy(string name, string pillSkinName, int ownerEmpireID, int generalSpecialPillID, ArmyIcon armyIcon)
     {
         //Assigns the name of the army.
         this.name = name;
         //Assigns the owner empire id.
-        this.ownerEmpireIDVar = ownerEmpireID;
-
+        ownerEmpireIDVar = ownerEmpireID;
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
         assignedPillSkinNameVar = pillSkinName;
         //Assigns the icon of the army to the specified value.
-        this.armyIconVar = armyIcon;
+        armyIconVar = armyIcon;
+        //Assigns the general of the army.
+        this.generalSpecialPillID = generalSpecialPillID;
     }
 
     /// <summary>
@@ -42,6 +43,34 @@ public class GalaxyArmy: GalaxyGroundUnit
     /// </summary>
     public Empire owner { get => Empire.empires != null && ownerEmpireID >= 0 && ownerEmpireID < Empire.empires.Count ? Empire.empires[ownerEmpireID] : null; }
     private int ownerEmpireIDVar;
+
+    /// <summary>
+    /// Public property that should be used both to access and mutate the general of the army.
+    /// </summary>
+    public GalaxySpecialPill general
+    {
+        get => owner != null ? owner.GetSpecialPill(generalSpecialPillID) : null;
+        set => generalSpecialPillID = value == null ? -1 : value.specialPillID;
+    }
+    /// <summary>
+    /// Public property that should be used both to access and mutate the general of the army via a special pill ID.
+    /// </summary>
+    public int generalSpecialPillID
+    {
+        get => generalSpecialPillIDVar;
+        set
+        {
+            if (owner != null && owner.GetSpecialPill(generalSpecialPillIDVar) != null)
+                owner.GetSpecialPill(generalSpecialPillIDVar).task = null;
+            generalSpecialPillIDVar = value;
+            if (owner != null && owner.GetSpecialPill(value) != null)
+                owner.GetSpecialPill(value).task = "Commanding " + Name;
+        }
+    }
+    /// <summary>
+    /// Private int variable that holds the id of the special pill that is the general of the army.
+    /// </summary>
+    private int generalSpecialPillIDVar = -1;
 
     /// <summary>
     /// The name of the material that will be applied to all pills in the army that are not part of a special squad.
