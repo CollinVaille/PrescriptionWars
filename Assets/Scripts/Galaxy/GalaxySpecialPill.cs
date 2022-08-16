@@ -24,6 +24,12 @@ public class GalaxySpecialPill
     private string pillClassName = null;
 
     /// <summary>
+    /// Indicates what type of pill the pill is (Example: Player or Bot1).
+    /// </summary>
+    public PillType pillType { get => pillTypeVar; set => pillTypeVar = value; }
+    private PillType pillTypeVar = PillType.Bot1;
+
+    /// <summary>
     /// Public property that should be used both to access and mutate the skin of the special pill.
     /// </summary>
     public Material skin { get => assignedEmpire == null ? null : Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(assignedEmpire.empireCulture.ToString()) + "/" + skinName); set => skinName = value == null ? null : value.name; }
@@ -110,11 +116,12 @@ public class GalaxySpecialPill
             galaxyPill.assignedSquad.AddPill(galaxyPill);
             galaxyPill.assignedSquad.assignedArmy = new GalaxyArmy("Placeholder Army", GalaxyManager.PlayerID, skinName);
             galaxyPill.assignedSquad.assignedArmy.AddSquad(galaxyPill.assignedSquad);
+            galaxyPill.specialPill = this;
             return galaxyPill;
         }
     }
 
-    public GalaxySpecialPill(GalaxyPill pillSoldier) : this(pillSoldier.Name, pillSoldier.pillClass.className, pillSoldier.Skin, new Dictionary<Skill, float>() { { Skill.Soldiering, pillSoldier.experience } }, pillSoldier.assignedSquad.assignedArmy.owner)
+    public GalaxySpecialPill(GalaxyPill pillSoldier) : this(pillSoldier.name, pillSoldier.pillClass.className, pillSoldier.skin, new Dictionary<Skill, float>() { { Skill.Soldiering, pillSoldier.experience } }, pillSoldier.assignedSquad.assignedArmy.owner)
     {
 
     }

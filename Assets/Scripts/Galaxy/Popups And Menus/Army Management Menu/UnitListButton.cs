@@ -625,7 +625,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     public virtual void UpdateInfo()
     {
         //Updates the name text of the button to reflect the name of the ground unit.
-        NameText.text = AssignedGroundUnit.Name;
+        NameText.text = AssignedGroundUnit.name;
         //Updates the experience level text of the button to reflect the experience level of the ground unit. 
         ExperienceLevelText.text = AssignedGroundUnit.experienceLevel.ToString();
     }

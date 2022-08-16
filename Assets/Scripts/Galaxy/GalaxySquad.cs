@@ -8,7 +8,7 @@ public class GalaxySquad: GalaxyGroundUnit
     public GalaxySquad(string name)
     {
         //Sets the name of the squad to the specified name.
-        Name = name;
+        base.name = name;
 
         //Randomizes the color of the icon that represents the squad.
         RandomizeIconColor();
@@ -17,7 +17,7 @@ public class GalaxySquad: GalaxyGroundUnit
     public GalaxySquad(string name, Color iconColor)
     {
         //Sets the name of the squad to the specified name.
-        Name = name;
+        base.name = name;
         //Sets the color of the icon that represents the squad to the specified color.
         this.iconColor = iconColor;
     }
@@ -25,7 +25,7 @@ public class GalaxySquad: GalaxyGroundUnit
     public GalaxySquad(string name, string pillSkinName)
     {
         //Sets the name of the squad to the specified name.
-        Name = name;
+        base.name = name;
         //Sets the assigned pill skin of the squad to the specified pill skin.
         assignedPillSkinName = pillSkinName;
 
@@ -36,7 +36,7 @@ public class GalaxySquad: GalaxyGroundUnit
     public GalaxySquad(string name, Color iconColor, string pillSkinName)
     {
         //Sets the name of the squad to the specified name.
-        Name = name;
+        base.name = name;
         //Sets the color of the icon that represents the squad to the specified color.
         this.iconColor = iconColor;
         //Sets the assigned pill skin of the squad to the specified pill skin.

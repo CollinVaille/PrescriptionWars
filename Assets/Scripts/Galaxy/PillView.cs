@@ -40,7 +40,7 @@ public class PillView : MonoBehaviour
             if(displayedPill != null)
             {
                 //Sets the skin of the pill.
-                pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.Skin;
+                pillTransform.GetComponent<MeshRenderer>().sharedMaterial = displayedPill.skin;
                 if (displayedPill.pillClass != null)
                 {
                     //Sets the head gear of the pill.

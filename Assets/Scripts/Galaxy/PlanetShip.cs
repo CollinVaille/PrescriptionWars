@@ -111,7 +111,7 @@ public class PlanetShip : MonoBehaviour
     /// </summary>
     private void OnMouseEnter()
     {
-        tooltip.Text = GalaxyManager.planets[attachedPlanetID].GetArmyAt(attachedArmyIndex).Name;
+        tooltip.Text = GalaxyManager.planets[attachedPlanetID].GetArmyAt(attachedArmyIndex).name;
     }
 
     /// <summary>

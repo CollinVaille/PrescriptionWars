@@ -279,7 +279,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Sets the type of the ground unit in the unit inspector.
             unitInspectorGroundUnitTypeText.text = unitListButtonSelected.TypeOfButton.ToString();
             //Sets the name of the ground unit in the unit inspector.
-            unitInspectorGroundUnitNameText.text = unitListButtonSelected.AssignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : unitListButtonSelected.AssignedGroundUnit.Name;
+            unitInspectorGroundUnitNameText.text = unitListButtonSelected.AssignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : unitListButtonSelected.AssignedGroundUnit.name;
         }
     }
 
@@ -567,7 +567,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             GalaxyInputFieldConfirmationPopup confirmationPopupScript = Instantiate(GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab).GetComponent<GalaxyInputFieldConfirmationPopup>();
             string topText = "Rename " + UnitListButtonSelected.TypeOfButton.ToString();
             confirmationPopupScript.CreateConfirmationPopup(topText);
-            confirmationPopupScript.SetPlaceHolderText(UnitListButtonSelected.AssignedGroundUnit.Name);
+            confirmationPopupScript.SetPlaceHolderText(UnitListButtonSelected.AssignedGroundUnit.name);
 
             //Waits until the player has confirmed or cancelled the action.
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -591,7 +591,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             {
                 confirmationPopupScript.AddDropdownOption(squadName);
                 //Makes the squad's current name the preselected option.
-                if (squadName.Equals(UnitListButtonSelected.AssignedGroundUnit.Name))
+                if (squadName.Equals(UnitListButtonSelected.AssignedGroundUnit.name))
                     confirmationPopupScript.SetDropdownOptionSelected(squadName);
             }
 
@@ -614,11 +614,11 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private void RenameSelectedGroundUnit(string newName)
     {
         //Sets the selected ground unit's name.
-        UnitListButtonSelected.AssignedGroundUnit.Name = newName;
+        UnitListButtonSelected.AssignedGroundUnit.name = newName;
         //Updates the selected unit list button to accurately reflect the new name of the ground unit.
         UnitListButtonSelected.UpdateInfo();
         //Updates the unit inspector to accurately reflect the new name of the ground unit.
-        unitInspectorGroundUnitNameText.text = UnitListButtonSelected.AssignedGroundUnit.Name;
+        unitInspectorGroundUnitNameText.text = UnitListButtonSelected.AssignedGroundUnit.name;
 
         //Plays the sound effect for renaming a ground unit.
         AudioManager.PlaySFX(renameGroundUnitSFX);
@@ -644,7 +644,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         string topText = "Disband " + UnitListButtonSelected.TypeOfButton.ToString();
-        string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -689,7 +689,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Creates the confirmation popup.
         GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
         string topText = "Change " + UnitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
-        string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        string bodyText = "Are you sure that you want to change the assigned pill skin for " + UnitListButtonSelected.AssignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, PlanetSelected.owner.pillSkinNames);
         confirmationPopupScript.SetPillSkinSelected(UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName);
 
@@ -742,8 +742,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup.
         GalaxyColorPickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab).GetComponent<GalaxyColorPickerConfirmationPopup>();
-        string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.Name + "'s Icon Color";
-        string bodyText = "Are you sure that you want to change the icon color for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.name + "'s Icon Color";
+        string bodyText = "Are you sure that you want to change the icon color for " + UnitListButtonSelected.AssignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.iconColor);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -799,8 +799,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup.
         GalaxySpritePickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxySpritePickerConfirmationPopup.galaxySpritePickerConfirmationPopupPrefab).GetComponent<GalaxySpritePickerConfirmationPopup>();
-        string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.Name + "'s Army Icon";
-        string bodyText = "Are you sure that you want to change the army icon for " + UnitListButtonSelected.AssignedGroundUnit.Name + "?";
+        string topText = "Change " + UnitListButtonSelected.AssignedGroundUnit.name + "'s Army Icon";
+        string bodyText = "Are you sure that you want to change the army icon for " + UnitListButtonSelected.AssignedGroundUnit.name + "?";
         //Fills up an array of sprites with all of the possible army icon sprites before creating the confirmation popup.
         Sprite[] armyIcons = new Sprite[ArmyIconNamesLoader.armyIconNames.Length];
         for (int armyIconIndex = 0; armyIconIndex < armyIcons.Length; armyIconIndex++)
@@ -915,7 +915,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.Name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.Name + "?", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader);
+        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.name + "?", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader);
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -963,7 +963,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     {
         //Creates the confirmation popup.
         SpecialPillConfirmationPopup confirmationPopupScript = Instantiate(SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab).GetComponent<SpecialPillConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Assign General For " + UnitListButtonSelected.AssignedGroundUnit.Name, (int)GalaxySpecialPill.Skill.Generalship, UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID);
+        confirmationPopupScript.CreateConfirmationPopup("Assign General For " + UnitListButtonSelected.AssignedGroundUnit.name, (int)GalaxySpecialPill.Skill.Generalship, UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -998,6 +998,90 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
                 UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
             }
+        }
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called whenever the demote special pill into service button is clicked in the unit inspector (squad button unit inspector only).
+    /// </summary>
+    public void OnClickDemoteSpecialPillIntoServiceButton()
+    {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
+        StartCoroutine(ConfirmDemotingSpecialPillIntoServiceActionCoroutine());
+    }
+
+    /// <summary>
+    /// This coroutine should be started whenenever the player attempts to demote a special pill into service and confirms that the player wishes for the action to be carried through.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmDemotingSpecialPillIntoServiceActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        SpecialPillConfirmationPopup confirmationPopupScript = Instantiate(SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab).GetComponent<SpecialPillConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Demote Special Pill Into Service In " + UnitListButtonSelected.AssignedGroundUnit.name, (int)GalaxySpecialPill.Skill.Soldiering);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //If the player confirms their action, it carries out the logic behind it.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            GalaxySpecialPill specialPill = GalaxyManager.planets[planetSelectedID].owner.GetSpecialPill(confirmationPopupScript.returnValue);
+            if(specialPill != null)
+            {
+                specialPill.task = "Serving In " + UnitListButtonSelected.AssignedGroundUnit.name;
+                GalaxyPill galaxyPill = specialPill.convertedToGalaxyPill;
+                UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.AddPill(galaxyPill);
+                if (UnitListButtonSelected.gameObject.GetComponent<SquadButton>().Expanded)
+                {
+                    GameObject pillButton = Instantiate(pillButtonPrefab);
+                    pillButton.transform.SetParent(unitListButtonParent);
+                    pillButton.transform.SetSiblingIndex(UnitListButtonSelected.transform.GetSiblingIndex() + UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.pillCount);
+                    pillButton.transform.localScale = Vector3.one;
+                    PillButton pillButtonScript = pillButton.GetComponent<PillButton>();
+                    pillButtonScript.Initialize(this, galaxyPill);
+                    unitListButtonParent.GetChild(pillButton.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+                }
+            }
+        }
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// This method should be called whenever the promote to special pill button is clicked in the unit inspector (pill button unit inspector only).
+    /// </summary>
+    public void OnClickPromoteToSpecialPillButton()
+    {
+        //Plays the sound effect for pressing a button in the unit inspector.
+        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
+
+        StartCoroutine(ConfirmPromotingToSpecialPillActionCoroutine());
+    }
+
+    /// <summary>
+    /// This coroutine should be started whenenever the player attempts to promote a galaxy pill to a special pill and confirms that the player wishes for the action to be carried through.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmPromotingToSpecialPillActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Promote To Special Pill", "Are you sure that you want to promote " + UnitListButtonSelected.AssignedGroundUnit.name + " to a special pill? This action will remove " + UnitListButtonSelected.AssignedGroundUnit.name + " from their assigned squad.");
+
+        //Waits until the player has answered the confirmation popup.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        //Assigns the selected pill as the squad leader if needed.
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            
         }
 
         //Destroys the confirmation popup.

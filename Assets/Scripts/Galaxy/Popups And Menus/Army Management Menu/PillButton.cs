@@ -8,6 +8,13 @@ public class PillButton : UnitListButton
     [Header("Components")]
 
     [SerializeField] private Image rightImage = null;
+    protected Image RightImage { get => rightImage; }
+
+    [SerializeField] private GalaxyTooltip leftImageTooltip = null;
+    protected GalaxyTooltip LeftImageTooltip { get => leftImageTooltip; }
+
+    [SerializeField] private GalaxyTooltip rightImageTooltip = null;
+    protected GalaxyTooltip RightImageTooltip { get => rightImageTooltip; }
 
     //------------------------
     //Non-inspector variables.
@@ -84,15 +91,37 @@ public class PillButton : UnitListButton
             LeftImage.gameObject.SetActive(false);
         }
         //Toggles the right image depending on whether or not the assigned pill is a squad leader.
-        rightImage.gameObject.SetActive(AssignedPill != null && AssignedPill.isSquadLeader);
+        RightImage.gameObject.SetActive(AssignedPill != null && AssignedPill.isSquadLeader);
     }
 
     public override void DisbandAssignedGroundUnit()
     {
+        //Deletes the pill's special pill if it exists since the pill is being completely disbanded.
+        if (AssignedPill.specialPill != null)
+            AssignedPill.assignedSquad.assignedArmy.owner.RemoveSpecialPill(assignedPill.specialPill.specialPillID);
         //Removes the pill from its assigned squad.
         AssignedPill.assignedSquad.RemovePill(AssignedPill);
 
         //Executes the base logic for disbanding a ground unit.
         base.DisbandAssignedGroundUnit();
+    }
+
+    public override void OnTooltipOpen(GalaxyTooltip tooltip)
+    {
+        //Executes the base class's logic for when the tooltip opens.
+        base.OnTooltipOpen(tooltip);
+
+        //Sets the position of the left image tooltip if it is the tooltip that opened.
+        if (tooltip == LeftImageTooltip)
+            LeftImageTooltip.Position = new Vector2(LeftImage.transform.position.x - 35, LeftImage.transform.position.y + 77);
+        //Sets the position of the right image tooltip if it is the tooltip that opened.
+        else if (tooltip == RightImageTooltip)
+            RightImageTooltip.Position = new Vector2(RightImage.transform.position.x - 35, RightImage.transform.position.y + 59);
+    }
+
+    public override void OnTooltipClose(GalaxyTooltip tooltip)
+    {
+        //Executes the base class's logic for when the tooltip closes.
+        base.OnTooltipClose(tooltip);
     }
 }

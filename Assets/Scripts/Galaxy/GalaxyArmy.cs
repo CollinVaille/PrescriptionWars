@@ -23,7 +23,7 @@ public class GalaxyArmy: GalaxyGroundUnit
     public GalaxyArmy(string name, string pillSkinName, int ownerEmpireID, int generalSpecialPillID, ArmyIcon armyIcon)
     {
         //Assigns the name of the army.
-        this.name = name;
+        this.nameVar = name;
         //Assigns the owner empire id.
         ownerEmpireIDVar = ownerEmpireID;
         //Assigns the material that will be applied to all pills in the army that are not part of a special squad.
@@ -64,7 +64,7 @@ public class GalaxyArmy: GalaxyGroundUnit
                 owner.GetSpecialPill(generalSpecialPillIDVar).task = null;
             generalSpecialPillIDVar = value;
             if (owner != null && owner.GetSpecialPill(value) != null)
-                owner.GetSpecialPill(value).task = "Commanding " + Name;
+                owner.GetSpecialPill(value).task = "Commanding " + name;
         }
     }
     /// <summary>

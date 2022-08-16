@@ -5,10 +5,10 @@ using UnityEngine;
 public abstract class GalaxyGroundUnit
 {
     /// <summary>
-    /// Indicates the name of the ground unit.
+    /// Public property that should be used both to access and mutate the name of the ground unit.
     /// </summary>
-    public virtual string Name { get => name; set => name = value; }
-    protected string name;
+    public virtual string name { get => nameVar; set => nameVar = value; }
+    protected string nameVar;
 
     /// <summary>
     /// Indicates exactly how much experience a ground unit has.

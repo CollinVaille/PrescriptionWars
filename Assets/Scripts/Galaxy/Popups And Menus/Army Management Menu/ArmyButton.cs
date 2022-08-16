@@ -122,6 +122,15 @@ public class ArmyButton : ExpandableUnitListButton
 
     public override void DisbandAssignedGroundUnit()
     {
+        //Deletes all special pills that are being disbanded.
+        for(int squadIndex = 0; squadIndex < AssignedArmy.squadCount; squadIndex++)
+        {
+            for(int pillIndex = 0; pillIndex < AssignedArmy.GetSquadAt(squadIndex).pillCount; pillIndex++)
+            {
+                if (AssignedArmy.GetSquadAt(squadIndex).GetPillAt(pillIndex).specialPill != null)
+                    AssignedArmy.owner.RemoveSpecialPill(AssignedArmy.GetSquadAt(squadIndex).GetPillAt(pillIndex).specialPill.specialPillID);
+            }
+        }
         //Removes the army from the list of armies on the selected planet.
         ArmyManagementMenu.PlanetSelected.RemoveArmy(AssignedArmy);
 

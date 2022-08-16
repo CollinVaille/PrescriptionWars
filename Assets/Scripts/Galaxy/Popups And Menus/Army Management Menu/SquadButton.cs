@@ -80,7 +80,7 @@ public class SquadButton : ExpandableUnitListButton
         //Sets the color of the left image to the appropriate color of the army's icon.
         LeftImage.color = AssignedSquad.iconColor;
         //Sets the text of the name text component to be the name of the squad.
-        NameText.text = assignedSquad.Name;
+        NameText.text = assignedSquad.name;
 
         //Updates the info on all child pill buttons (mostly because of the squad leader).
         if(ChildButtons != null)
@@ -97,6 +97,12 @@ public class SquadButton : ExpandableUnitListButton
 
     public override void DisbandAssignedGroundUnit()
     {
+        //Deletes all special pills that are being disbanded.
+        for (int pillIndex = 0; pillIndex < AssignedSquad.pillCount; pillIndex++)
+        {
+            if (AssignedSquad.GetPillAt(pillIndex).specialPill != null)
+                AssignedSquad.assignedArmy.owner.RemoveSpecialPill(AssignedSquad.GetPillAt(pillIndex).specialPill.specialPillID);
+        }
         //Removes the squad from its assigned army.
         AssignedSquad.assignedArmy.RemoveSquad(AssignedSquad);
 
