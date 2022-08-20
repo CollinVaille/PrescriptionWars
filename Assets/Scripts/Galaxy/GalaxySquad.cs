@@ -147,6 +147,11 @@ public class GalaxySquad: GalaxyGroundUnit
     private int squadLeaderIndex = -1;
 
     /// <summary>
+    /// Public property that should be accessed in order to determine if the squad is at maximum capacity and cannot support any more pills as squad members.
+    /// </summary>
+    public bool atMaximumCapacity { get => true; }
+
+    /// <summary>
     /// Returns the total number of pills in the squad of the specified class.
     /// </summary>
     /// <param name="classType"></param>

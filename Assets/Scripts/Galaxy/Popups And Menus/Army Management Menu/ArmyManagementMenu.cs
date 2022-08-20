@@ -1012,7 +1012,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Plays the sound effect for pressing a button in the unit inspector.
         AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
 
-        StartCoroutine(ConfirmDemotingSpecialPillIntoServiceActionCoroutine());
+        if (!UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.atMaximumCapacity)
+            StartCoroutine(ConfirmDemotingSpecialPillIntoServiceActionCoroutine());
+        else
+            StartCoroutine(ConfirmDemotingSpecialPillIntoServiceFailureDueToSquadCapacityReachedActionCoroutine());
     }
 
     /// <summary>
@@ -1047,8 +1050,25 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     pillButtonScript.Initialize(this, galaxyPill);
                     unitListButtonParent.GetChild(pillButton.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
                 }
+                else
+                {
+                    UnitListButtonSelected.gameObject.GetComponent<SquadButton>().Expand(false);
+                }
             }
         }
+
+        //Destroys the confirmation popup.
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    private IEnumerator ConfirmDemotingSpecialPillIntoServiceFailureDueToSquadCapacityReachedActionCoroutine()
+    {
+        //Creates the confirmation popup.
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Demotion Failure", UnitListButtonSelected.AssignedGroundUnit.name + " is at maximum capacity and cannot have any more squad members.", true);
+
+        //Waits until the player has confirmed or cancelled the action.
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //Destroys the confirmation popup.
         confirmationPopupScript.DestroyConfirmationPopup();
@@ -1081,7 +1101,16 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Assigns the selected pill as the squad leader if needed.
         if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            
+            GalaxySpecialPill specialPill = UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill != null ? UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill : new GalaxySpecialPill(UnitListButtonSelected.GetComponent<PillButton>().AssignedPill);
+            UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.assignedSquad.RemovePill(UnitListButtonSelected.GetComponent<PillButton>().AssignedPill);
+            specialPill.task = null;
+            UnitListButton buttonAbove = unitListButtonParent.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>(), buttonBelow = unitListButtonParent.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>();
+            Destroy(UnitListButtonSelected.gameObject);
+            buttonAbove.SpacingUpdateRequiredNextFrame = true;
+            buttonBelow.SpacingUpdateRequiredNextFrame = true;
+
+            //No button in the unit list is selected after the promoting action has been completed.
+            UnitListButtonSelected = null;
         }
 
         //Destroys the confirmation popup.
