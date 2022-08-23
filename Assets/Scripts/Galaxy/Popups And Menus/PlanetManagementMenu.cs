@@ -146,14 +146,14 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         //Sets the color of all of the dividers based on the player empire's label color.
         foreach (Image divider in dividers)
         {
-            divider.color = Empire.empires[GalaxyManager.PlayerID].labelColor;
+            divider.color = Empire.empires[GalaxyManager.playerID].labelColor;
         }
 
-        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].color;
-        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.PlayerID].color;
-        buildButtonText.color = Empire.empires[GalaxyManager.PlayerID].color;
-        tabUnderlineImage.color = Empire.empires[GalaxyManager.PlayerID].labelColor;
-        buildingCostText.color = Empire.empires[GalaxyManager.PlayerID].color;
+        buildingsCompletedScrollbar.image.color = Empire.empires[GalaxyManager.playerID].color;
+        buildingQueueScrollbar.image.color = Empire.empires[GalaxyManager.playerID].color;
+        buildButtonText.color = Empire.empires[GalaxyManager.playerID].color;
+        tabUnderlineImage.color = Empire.empires[GalaxyManager.playerID].labelColor;
+        buildingCostText.color = Empire.empires[GalaxyManager.playerID].color;
 
         //UI components that require a valid planet to be selcted.
         if (planetSelected != null)
@@ -325,7 +325,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     public void CancelBuildingQueued(int indexToCancel)
     {
         //Refunds the player of the credits that they spent putting that building into the building queue.
-        Empire.empires[GalaxyManager.PlayerID].Credits += GalaxyBuilding.GetCreditsCost(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
+        Empire.empires[GalaxyManager.playerID].Credits += GalaxyBuilding.GetCreditsCost(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type);
 
         //Removes the building in the queue at the requested index.
         planetSelected.cities[citySelected].buildingQueue.buildingsQueued.RemoveAt(indexToCancel);
@@ -371,10 +371,10 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
     //Adds a new galaxy building to a city's building queue.
     public void AddBuildingToQueue()
     {
-        if(planetSelected != null && planetSelected.cities[citySelected].buildingsCompleted.Count + planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.PlayerID].Credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
+        if(planetSelected != null && planetSelected.cities[citySelected].buildingsCompleted.Count + planetSelected.cities[citySelected].buildingQueue.buildingsQueued.Count < planetSelected.cities[citySelected].buildingLimit && Empire.empires[GalaxyManager.playerID].Credits >= GalaxyBuilding.GetCreditsCost((GalaxyBuilding.BuildingType)buildingSelected))
         {
             //Adds a building of the specified type to the building queue.
-            planetSelected.cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.PlayerID);
+            planetSelected.cities[citySelected].AddBuildingToQueue((GalaxyBuilding.BuildingType)buildingSelected, GalaxyManager.playerID);
 
             //Plays the add to queue sound effect.
             AudioManager.PlaySFX(clickThreeAudioClip);
@@ -633,7 +633,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
 
     public void ToggleShadow(Shadow shadow)
     {
-        shadow.effectColor = Empire.empires[GalaxyManager.PlayerID].labelColor;
+        shadow.effectColor = Empire.empires[GalaxyManager.playerID].labelColor;
         shadow.enabled = !shadow.enabled;
     }
 }

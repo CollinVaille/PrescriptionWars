@@ -23,14 +23,14 @@ public class GalaxyCamera : MonoBehaviour
     {
         get
         {
-            return Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.GalaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.GalaxyCamera.pixelHeight;
+            return Input.mousePosition.x >= 0 && Input.mousePosition.x <= GalaxyManager.galaxyCamera.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= GalaxyManager.galaxyCamera.pixelHeight;
         }
     }
 
     private void Update ()
     {
         //WASD and scrollwheel movement
-        if (!CheatConsole.IsInputFieldFocused && GalaxyManager.IsGalaxyViewActiveInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
+        if (!CheatConsole.IsInputFieldFocused && GalaxyManager.activeInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");
@@ -40,12 +40,12 @@ public class GalaxyCamera : MonoBehaviour
             movementVector.x = 0.0f;
             movementVector.y = 0.0f;
         }
-        if(GalaxyManager.IsGalaxyViewActiveInHierarchy && !IsMouseOverUIElement)
+        if(GalaxyManager.activeInHierarchy && !IsMouseOverUIElement)
             movementVector.z = Input.GetAxis("Mouse ScrollWheel") * 40;
 
         //Click and drag movement
 
-        if (Input.GetMouseButton(0) && !IsMouseOverUIElement && GalaxyManager.IsGalaxyViewActiveInHierarchy && IsMouseInViewport)
+        if (Input.GetMouseButton(0) && !IsMouseOverUIElement && GalaxyManager.activeInHierarchy && IsMouseInViewport)
         {
             movementVector.x += (previousMousePosition.x - Input.mousePosition.x) / 20.0f;
             movementVector.y += (previousMousePosition.y - Input.mousePosition.y) / 20.0f;

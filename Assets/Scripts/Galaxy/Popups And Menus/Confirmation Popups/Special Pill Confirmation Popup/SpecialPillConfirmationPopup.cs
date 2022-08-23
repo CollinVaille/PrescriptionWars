@@ -64,7 +64,7 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
     {
         base.CreateConfirmationPopup(topText);
 
-        GalaxySpecialPill specialPill = new GalaxySpecialPill("Bob", "Assault", Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.PlayerID].empireCulture.ToString()) + "/" + Empire.empires[GalaxyManager.PlayerID].GetRandomPillSkinName()), null, Empire.empires[GalaxyManager.PlayerID]);
+        GalaxySpecialPill specialPill = new GalaxySpecialPill("Bob", "Assault", Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.playerID].empireCulture.ToString()) + "/" + Empire.empires[GalaxyManager.playerID].GetRandomPillSkinName()), null, Empire.empires[GalaxyManager.playerID]);
         skillSelectedIndexVar = skillSelectedIndex;
         PopulateScrollList();
         ChangeSpecialPillIDSelected(specialPillIDSelected);
@@ -96,7 +96,7 @@ public class SpecialPillConfirmationPopup : GalaxyConfirmationPopupBehaviour
         //Sort all special pills belonging to the player empire into two separate lists saying whether or not they have already been assigned a task.
         List<GalaxySpecialPill> availableSpecialPills = new List<GalaxySpecialPill>();
         List<GalaxySpecialPill> busySpecialPills = new List<GalaxySpecialPill>();
-        foreach (GalaxySpecialPill specialPill in Empire.empires[GalaxyManager.PlayerID].specialPillsList)
+        foreach (GalaxySpecialPill specialPill in Empire.empires[GalaxyManager.playerID].specialPillsList)
         {
             if (specialPill.isBusy)
                 busySpecialPills.Add(specialPill);

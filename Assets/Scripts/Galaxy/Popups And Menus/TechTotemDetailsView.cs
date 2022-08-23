@@ -107,11 +107,11 @@ public class TechTotemDetailsView : GalaxyMenuBehaviour
 
         if(displayMode == TechDetailsViewDisplayMode.TechsAvailable)
         {
-            techsToDisplayByID = new List<int>(Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[techTotemDisplayed].techsAvailable);
+            techsToDisplayByID = new List<int>(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemDisplayed].techsAvailable);
         }
         else if (displayMode == TechDetailsViewDisplayMode.TechsCompleted)
         {
-            techsToDisplayByID = new List<int>(Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[techTotemDisplayed].techsCompleted);
+            techsToDisplayByID = new List<int>(Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemDisplayed].techsCompleted);
         }
         
         techsToDisplayByID = Tech.GetSortedTechIDListByLevel(techsToDisplayByID);
@@ -139,7 +139,7 @@ public class TechTotemDetailsView : GalaxyMenuBehaviour
         //Sets the variable that indicates the tech totem that is having its tech displayed to the specified value.
         techTotemDisplayed = newTechTotemDisplayed;
         //Sets the title text of the view to be the name of the tech totem that is having the details of its tech displayed.
-        titleText.text = Empire.empires[GalaxyManager.PlayerID].techManager.techTotems[techTotemDisplayed].name;
+        titleText.text = Empire.empires[GalaxyManager.playerID].techManager.techTotems[techTotemDisplayed].name;
 
         //Sets the display mode of the view to the default display mode and forced the update of the scroll list.
         SetDisplayMode(defaultDisplayMode, true);

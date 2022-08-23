@@ -307,7 +307,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Instantiates a new army management menu from the army management menu prefab.
         GameObject armyManagementMenu = Instantiate(armyManagementMenuPrefab);
         //Sets the parent of the army management menu.
-        armyManagementMenu.transform.SetParent(GalaxyManager.PopupsParent);
+        armyManagementMenu.transform.SetParent(GalaxyManager.popupsParent);
         //Gets the script component of the army management menu in order to edit values.
         ArmyManagementMenu armyManagementMenuScript = armyManagementMenu.GetComponent<ArmyManagementMenu>();
         //Sets the planet selected on the army management menu.

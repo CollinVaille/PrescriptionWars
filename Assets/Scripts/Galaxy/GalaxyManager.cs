@@ -7,72 +7,54 @@ using System;
 
 public class GalaxyManager : GalaxyViewBehaviour
 {
-    [Header("Cheat Console")]
+    [Header("Galaxy Manager Components")]
 
-    [SerializeField]
-    private CheatConsole cheatConsole = null;
-    public CheatConsole CheatConsole
-    {
-        get
-        {
-            return cheatConsole;
-        }
-    }
-    
-    [Header("Other Views")]
+    [SerializeField, LabelOverride("Cheat Console")] private CheatConsole cheatConsoleVar = null;
+    [SerializeField, LabelOverride("Research View")] private GameObject researchViewVar = null;
 
-    [SerializeField]
-    private GameObject researchView = null;
-    public GameObject ResearchView
-    {
-        get
-        {
-            return researchView;
-        }
-    }
+    [Header("Galaxy Manager SFX Options")]
 
-    [Header("Sound Effects")]
+    [SerializeField] private AudioClip switchToResearchViewSFX = null;
+    [SerializeField] private AudioClip techFinishedSFX = null;
+    [SerializeField] private AudioClip endTurnSFX = null;
 
-    [SerializeField]
-    private AudioClip switchToResearchViewSFX = null;
-    [SerializeField]
-    private AudioClip techFinishedSFX = null;
-    [SerializeField]
-    private AudioClip endTurnSFX = null;
+    [Header("Galaxy Manager Settings")]
 
-    [Header("Settings")]
+    [SerializeField] private bool ironpillModeEnabledVar = false;
 
-    [SerializeField]
-    private bool ironpillModeEnabled = false;
-    public static bool IronpillModeEnabled
+    //Non-inspector variables.
+
+    public CheatConsole cheatConsole { get => cheatConsoleVar; }
+
+    public GameObject researchView { get => researchViewVar; }
+
+    /// <summary>
+    /// Public property that should be used both to access and mutate whether ironpill mode (cheats disabled and achievements enabled) is enabled.
+    /// </summary>
+    public static bool ironpillModeEnabled
     {
         get
         {
             if (galaxyManager == null)
                 return false;
-            return galaxyManager.ironpillModeEnabled;
+            return galaxyManager.ironpillModeEnabledVar;
         }
         set
         {
-            if(galaxyManager != null)
-                galaxyManager.ironpillModeEnabled = value;
+            if (galaxyManager != null)
+                galaxyManager.ironpillModeEnabledVar = value;
         }
     }
 
-    //Non-inspector variables.
-
     //Indicates the empire ID of the player's empire.
-    private static int playerID = 0;
-    public static int PlayerID
+    private static int playerIDVar = 0;
+    public static int playerID
     {
-        get
-        {
-            return playerID;
-        }
+        get => playerIDVar;
         set
         {
             //Sets the variable that indicates the empire ID of the player's empire to the specified value.
-            playerID = value;
+            playerIDVar = value;
             //Updates the resource bar to accurately reflect the new empire that the player has switched to.
             ResourceBar.UpdateAllEmpireDependantComponents();
             //Logs with the planet ships that the playerID value has been changed and that the visibility of the planet ships might need to be updated.
@@ -80,26 +62,23 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
     //Indicates the turn that the game is on.
-    private static int turnNumber = 0;
-    public static int TurnNumber
+    public static int turnNumber
     {
-        get
-        {
-            return turnNumber;
-        }
-        set
+        get => turnNumberVar;
+        private set
         {
             //Sets the variable that indicates what turn the game is on to the specified value.
-            turnNumber = value;
+            turnNumberVar = value;
             //Updates the resource bar to accurately reflect what turn the game is on.
             ResourceBar.UpdateTurnText();
         }
     }
+    private static int turnNumberVar = 0;
 
-    public static List<GalaxyPlanet> planets;
+    public static List<GalaxyPlanet> planets = null;
 
     public static bool observationModeEnabled = false;
-    public static bool IsGalaxyViewActiveInHierarchy
+    public static bool activeInHierarchy
     {
         get
         {
@@ -109,59 +88,35 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
 
-    public static GalaxyManager galaxyManager;
+    public static GalaxyManager galaxyManager = null;
 
     public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null, null };
     public static Dictionary<Empire.Culture, Material[]> pillMaterials = new Dictionary<Empire.Culture, Material[]>();
 
-    private static Camera galaxyCamera = null;
-    public static Camera GalaxyCamera
-    {
-        get
-        {
-            return galaxyCamera;
-        }
-    }
+    public static Camera galaxyCamera { get => galaxyCameraVar; }
+    private static Camera galaxyCameraVar = null;
 
-    private static Canvas galaxyCanvas = null;
-    public static Canvas GalaxyCanvas
-    {
-        get
-        {
-            return galaxyCanvas;
-        }
-    }
+    public static Canvas galaxyCanvas { get => galaxyCanvasVar; }
+    private static Canvas galaxyCanvasVar = null;
 
-    private static Transform galaxyConfirmationPopupParent = null;
-    public static Transform GalaxyConfirmationPopupParent
-    {
-        get
-        {
-            return galaxyConfirmationPopupParent;
-        }
-    }
+    public static Transform galaxyConfirmationPopupParent { get => galaxyConfirmationPopupParentVar; }
+    private static Transform galaxyConfirmationPopupParentVar = null;
 
-    private static Transform popupsParent = null;
-    public static Transform PopupsParent
-    {
-        get
-        {
-            return popupsParent;
-        }
-    }
+    public static Transform popupsParent { get => popupsParentVar; }
+    private static Transform popupsParentVar = null;
 
     public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup, Transform parentOfPopups)
     {
         planets = planetList;
-        galaxyCamera = galaxyCam;
-        galaxyCanvas = canvasOfGalaxy;
-        galaxyConfirmationPopupParent = parentOfGalaxyConfirmationPopup;
-        popupsParent = parentOfPopups;
+        galaxyCameraVar = galaxyCam;
+        galaxyCanvasVar = canvasOfGalaxy;
+        galaxyConfirmationPopupParentVar = parentOfGalaxyConfirmationPopup;
+        popupsParentVar = parentOfPopups;
 
         if (NewGameMenu.initialized)
         {
             //Sets whether or not the game has ironman mode enabled.
-            IronpillModeEnabled = NewGameMenu.IronmanModeEnabled;
+            ironpillModeEnabled = NewGameMenu.IronmanModeEnabled;
         }
 
         //Loads in all of the materials that will be applied to pills in pill views.
@@ -209,8 +164,8 @@ public class GalaxyManager : GalaxyViewBehaviour
         //Toggles the cheat console if the player presses tilde.
         if (Input.GetKeyDown(KeyCode.BackQuote) && !GalaxyConfirmationPopupBehaviour.IsAGalaxyConfirmationPopupOpen() && !GalaxyPauseMenu.isOpen)
         {
-            if(!IronpillModeEnabled)
-                cheatConsole.ToggleConsole();
+            if(!ironpillModeEnabled)
+                cheatConsoleVar.ToggleConsole();
         }
 
         //Opens the pause menu if the player presses the escape key and no other popup is open.
@@ -223,7 +178,7 @@ public class GalaxyManager : GalaxyViewBehaviour
     public void WarningRightSideNotificationsUpdate()
     {
         //No research selected warning.
-        if(Empire.empires[PlayerID].techManager.techTotemSelected < 0)
+        if(Empire.empires[playerID].techManager.techTotemSelected < 0)
         {
             if (!RightSideNotificationManager.NotificationExistsOfTopic("No Research Selected") && !RightSideNotificationManager.NotificationExistsOfTopic("Research Completed"))
                 RightSideNotificationManager.CreateNewWarningRightSideNotification("Science Icon", "No Research Selected", WarningRightSideNotificationClickEffect.OpenResearchView);
@@ -243,9 +198,9 @@ public class GalaxyManager : GalaxyViewBehaviour
         //Turns off the galaxy view.
         transform.gameObject.SetActive(false);
         //Turns on the research view.
-        researchView.SetActive(true);
+        researchViewVar.SetActive(true);
         //Switches the skybox material to the one assigned to the research view.
-        RenderSettings.skybox = researchView.GetComponent<ResearchViewManager>().skyboxMaterial;
+        RenderSettings.skybox = researchViewVar.GetComponent<ResearchViewManager>().skyboxMaterial;
 
         //Plays the switch to research view sound effect.
         AudioManager.PlaySFX(switchToResearchViewSFX);
@@ -273,7 +228,7 @@ public class GalaxyManager : GalaxyViewBehaviour
             //Everyone makes their moves for the turn.
             for (int x = 0; x < Empire.empires.Count; x++)
             {
-                if (x != PlayerID || observationModeEnabled)
+                if (x != playerID || observationModeEnabled)
                     Empire.empires[x].PlayAI();
             }
 
@@ -286,12 +241,30 @@ public class GalaxyManager : GalaxyViewBehaviour
             WarningRightSideNotificationsUpdate();
 
             //Logs that a turn has been completed.
-            TurnNumber++;
+            turnNumber++;
         }
     }
 
     public void PlayTechFinishedSFX()
     {
         AudioManager.PlaySFX(techFinishedSFX);
+    }
+
+    /// <summary>
+    /// This method is called upon the galaxy manager being destroyed which effectively means that the scene has changed and resets all needed static variables.
+    /// </summary>
+    private void OnDestroy()
+    {
+        playerIDVar = 0;
+        turnNumberVar = 0;
+        planets = null;
+        observationModeEnabled = false;
+        galaxyManager = null;
+        empireMaterials = new List<Material>() { null, null, null, null, null, null };
+        pillMaterials = new Dictionary<Empire.Culture, Material[]>();
+        galaxyCameraVar = null;
+        galaxyCanvasVar = null;
+        galaxyConfirmationPopupParentVar = null;
+        popupsParentVar = null;
     }
 }

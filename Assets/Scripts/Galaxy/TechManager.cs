@@ -42,7 +42,7 @@ public class TechManager
                     Empire.empires[ownerEmpireID].science -= Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]].cost;
 
                     //Creates the right side notification that tells the user that they have finished the tech that they were researching.
-                    if (ownerEmpireID == GalaxyManager.PlayerID)
+                    if (ownerEmpireID == GalaxyManager.playerID)
                         CreateResearchCompletedNotification(Tech.entireTechList[techTotems[techTotemSelected].techsAvailable[techTotems[techTotemSelected].techDisplayed]]);
 
                     //Removes the completed tech from the available techs list and adds it to the techs completed list.
@@ -59,7 +59,7 @@ public class TechManager
                     UpdateTechnologyEffects();
 
                     //Plays the tech finished sound effect if it is the player that has completed the tech.
-                    if (ownerEmpireID == GalaxyManager.PlayerID)
+                    if (ownerEmpireID == GalaxyManager.playerID)
                         GalaxyManager.galaxyManager.PlayTechFinishedSFX();
                 }
 

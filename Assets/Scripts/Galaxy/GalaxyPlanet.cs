@@ -369,7 +369,7 @@ public class GalaxyPlanet : MonoBehaviour
         foreach(PlanetShip planetShip in planetShips)
         {
             planetShip.SharedMaterial = GalaxyManager.empireMaterials[(int)Empire.empires[conquerorID].empireCulture];
-            planetShip.gameObject.SetActive(conquerorID == GalaxyManager.PlayerID);
+            planetShip.gameObject.SetActive(conquerorID == GalaxyManager.playerID);
         }
 
         //Sets the planet's owner id as the conqueror's id.
@@ -381,7 +381,7 @@ public class GalaxyPlanet : MonoBehaviour
 
     private void OnMouseUpAsButton ()
     {
-        if(ownerIDVar == GalaxyManager.PlayerID && !GalaxyCamera.IsMouseOverUIElement)
+        if(ownerIDVar == GalaxyManager.playerID && !GalaxyCamera.IsMouseOverUIElement)
         {
             //Tells the planet management menu to display the information from this planet.
             PlanetManagementMenu.planetManagementMenu.PlanetSelected = this;

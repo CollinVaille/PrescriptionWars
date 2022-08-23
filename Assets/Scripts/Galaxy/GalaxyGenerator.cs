@@ -265,7 +265,7 @@ public class GalaxyGenerator : MonoBehaviour
 
             Empire.empires[empireID].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
-            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
+            if (empireID == GalaxyManager.playerID && NewGameMenu.initialized)
                 empireCulture = NewGameMenu.EmpireCulture;
             else
             {
@@ -291,7 +291,7 @@ public class GalaxyGenerator : MonoBehaviour
             //Generates the empire's flag.
 
             Empire.empires[empireID].flag = new Flag();
-            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized)
+            if (empireID == GalaxyManager.playerID && NewGameMenu.initialized)
             {
                 Empire.empires[empireID].flag.symbolSelected = NewGameMenu.empireFlag.symbolSelected;
                 Empire.empires[empireID].flag.backgroundColor = NewGameMenu.empireFlag.backgroundColor;
@@ -332,7 +332,7 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's color.
 
-            if(empireID == GalaxyManager.PlayerID)
+            if(empireID == GalaxyManager.playerID)
             {
                 Color randomColor = GetRandomColorBasedOnCulture(Empire.empires[empireID].empireCulture);
                 Empire.empires[empireID].color = randomColor;
@@ -398,7 +398,7 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generate the empire's name.
 
-            if (empireID == GalaxyManager.PlayerID && NewGameMenu.initialized && !playerEmpireName.Equals(""))
+            if (empireID == GalaxyManager.playerID && NewGameMenu.initialized && !playerEmpireName.Equals(""))
                 Empire.empires[empireID].name = playerEmpireName;
             else
             {

@@ -100,7 +100,7 @@ public class Empire
     }
 
     public int empireID { get; }
-    public bool isPlayerEmpire { get => empireID == GalaxyManager.PlayerID; }
+    public bool isPlayerEmpire { get => empireID == GalaxyManager.playerID; }
     public bool receivesResearchEffects = true;
 
     private int capitalPlanetIDVar = -1;

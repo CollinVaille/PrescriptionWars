@@ -98,7 +98,7 @@ public class PillSkinOptionButton : MonoBehaviour
     private void OnOptionBecameVisible()
     {
         //Assigns the texture of the pill skin raw image.
-        pillSkinRawImage.texture = pillSkinName != null ? Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.PlayerID].empireCulture.ToString()) + "/" + pillSkinName).mainTexture : null;
+        pillSkinRawImage.texture = pillSkinName != null ? Resources.Load<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(Empire.empires[GalaxyManager.playerID].empireCulture.ToString()) + "/" + pillSkinName).mainTexture : null;
         if (pillSkinName == null)
             pillSkinRawImage.gameObject.SetActive(false);
 
@@ -109,7 +109,7 @@ public class PillSkinOptionButton : MonoBehaviour
             GalaxyPill testPill = new GalaxyPill("Test Pill", "Assault");
             GalaxySquad testSquad = new GalaxySquad("Test Squad");
             testSquad.AddPill(testPill);
-            GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.PlayerID, pillSkinName);
+            GalaxyArmy testArmy = new GalaxyArmy("Test Army", GalaxyManager.playerID, pillSkinName);
             testArmy.AddSquad(testSquad);
 
             //Pill view creation.

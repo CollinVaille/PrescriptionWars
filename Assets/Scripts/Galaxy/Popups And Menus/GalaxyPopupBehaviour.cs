@@ -304,13 +304,13 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
         //Sets the color of every image that is supposed to be the player empire's color to the player empire's color.
         foreach (Image imageWithEmpireColor in imagesWithEmpireColor)
         {
-            imageWithEmpireColor.color = Empire.empires[GalaxyManager.PlayerID].color;
+            imageWithEmpireColor.color = Empire.empires[GalaxyManager.playerID].color;
         }
 
         //Sets the color of every image that is supposed to be the player empire's label color to the player empire's label color.
         foreach (Image imageWithEmpireLabelColor in imagesWithEmpireLabelColor)
         {
-            imageWithEmpireLabelColor.color = Empire.empires[GalaxyManager.PlayerID].labelColor;
+            imageWithEmpireLabelColor.color = Empire.empires[GalaxyManager.playerID].labelColor;
         }
     }
 

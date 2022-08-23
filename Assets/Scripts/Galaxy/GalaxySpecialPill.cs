@@ -114,7 +114,7 @@ public class GalaxySpecialPill
             galaxyPill.experience = GetExperience(Skill.Soldiering);
             galaxyPill.assignedSquad = new GalaxySquad("Placeholder Squad");
             galaxyPill.assignedSquad.AddPill(galaxyPill);
-            galaxyPill.assignedSquad.assignedArmy = new GalaxyArmy("Placeholder Army", GalaxyManager.PlayerID, skinName);
+            galaxyPill.assignedSquad.assignedArmy = new GalaxyArmy("Placeholder Army", GalaxyManager.playerID, skinName);
             galaxyPill.assignedSquad.assignedArmy.AddSquad(galaxyPill.assignedSquad);
             galaxyPill.specialPill = this;
             return galaxyPill;

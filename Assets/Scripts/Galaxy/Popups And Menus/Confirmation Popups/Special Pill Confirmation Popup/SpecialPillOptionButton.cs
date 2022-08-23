@@ -24,7 +24,7 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
     /// <summary>
     /// Public property that is access only and returns the special pill that the option button is meant to represent (returns null if there is none).
     /// </summary>
-    public GalaxySpecialPill specialPill { get => Empire.empires[GalaxyManager.PlayerID].GetSpecialPill(specialPillID); }
+    public GalaxySpecialPill specialPill { get => Empire.empires[GalaxyManager.playerID].GetSpecialPill(specialPillID); }
     /// <summary>
     /// Public property that should be used both to access and mutate the id of the special pill that the special pill option button is supposed to be representing.
     /// </summary>
@@ -36,7 +36,7 @@ public class SpecialPillOptionButton : MonoBehaviour, ISelectHandler, IPointerEn
             originalNormalButtonColor = gameObject.GetComponent<Button>().colors.normalColor;
             originalHighlightedButtonColor = gameObject.GetComponent<Button>().colors.highlightedColor;
             specialPillIDVar = value;
-            GalaxySpecialPill specialPill = Empire.empires[GalaxyManager.PlayerID].GetSpecialPill(value);
+            GalaxySpecialPill specialPill = Empire.empires[GalaxyManager.playerID].GetSpecialPill(value);
             if(specialPill != null)
             {
                 if (pillView == null)
