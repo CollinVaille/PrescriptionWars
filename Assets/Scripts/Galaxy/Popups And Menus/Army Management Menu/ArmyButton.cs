@@ -132,7 +132,7 @@ public class ArmyButton : ExpandableUnitListButton
             }
         }
         //Removes the army from the list of armies on the selected planet.
-        ArmyManagementMenu.PlanetSelected.RemoveArmy(AssignedArmy);
+        armyManagementMenu.PlanetSelected.RemoveArmy(AssignedArmy);
 
         //Executes the base logic for disbanding a ground unit.
         base.DisbandAssignedGroundUnit();

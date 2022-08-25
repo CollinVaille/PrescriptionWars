@@ -1966,7 +1966,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00006866455}
+  m_AnchoredPosition: {x: 0, y: 0.000038146973}
   m_SizeDelta: {x: 0, y: 240}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3924420936383068959
@@ -2457,20 +2457,20 @@ MonoBehaviour:
   titleText: {fileID: 3924420937322423486}
   unitInspectorGroundUnitTypeText: {fileID: 2388993602855099792}
   unitInspectorGroundUnitNameText: {fileID: 6258816548157819795}
-  unitListVerticalLayoutGroup: {fileID: 3924420936383068959}
-  unitListButtonDestroyer: {fileID: 5187804965532837936}
-  unitListInspectorPillViewRawImage: {fileID: 3280184994136527660}
-  unitListButtonParent: {fileID: 3924420936383068956}
-  buttonsBeingDraggedParent: {fileID: 5227774641074824994}
+  unitListVerticalLayoutGroupVar: {fileID: 3924420936383068959}
+  unitListButtonDestroyerVar: {fileID: 5187804965532837936}
+  unitListInspectorPillViewRawImageVar: {fileID: 3280184994136527660}
+  unitListButtonParentVar: {fileID: 3924420936383068956}
+  buttonsBeingDraggedParentVar: {fileID: 5227774641074824994}
   unitInspectorBaseParent: {fileID: 3941560885718646838}
   unitInspectorArmyParent: {fileID: 4872928876574253624}
   unitInspectorSquadParent: {fileID: 197717789642367564}
   unitInspectorPillParent: {fileID: 3860994727875444827}
   armyButtonPrefab: {fileID: 7189594509333320595, guid: 09165a44ec0e26b49be9108cc684a208,
     type: 3}
-  squadButtonPrefab: {fileID: 5008786522905228974, guid: 94af6ace51ffc924ca734c46053c89d0,
+  squadButtonPrefabVar: {fileID: 5008786522905228974, guid: 94af6ace51ffc924ca734c46053c89d0,
     type: 3}
-  pillButtonPrefab: {fileID: 9045297989145127103, guid: 252c6e684fee9674e8d6c9d83b6d648b,
+  pillButtonPrefabVar: {fileID: 9045297989145127103, guid: 252c6e684fee9674e8d6c9d83b6d648b,
     type: 3}
   expandAllSFX: {fileID: 8300000, guid: bb999d4ee2d18124fabff0c584b7a145, type: 3}
   collapseAllSFX: {fileID: 8300000, guid: c8bfb01d7ff6b204a81b1d35b6b9e703, type: 3}
@@ -2479,11 +2479,11 @@ MonoBehaviour:
   renameGroundUnitSFX: {fileID: 8300000, guid: 7d4b59cd1d9b52245aa6fa6f4a92d91a, type: 3}
   disbandGroundUnitSFX: {fileID: 8300000, guid: 8cc748a0e1e1c8844b2e2f43918445e5,
     type: 3}
-  spacingBetweenUnitListButtonTypes: 3
+  spacingBetweenUnitListButtonTypesVar: 3
   pillViewRotationSpeed: 2.5
   mouseOverPillViewCursor: {fileID: 2800000, guid: bb660b349b2e21440bf5f8a5e63253be,
     type: 3}
-  tooltipsParent: {fileID: 9126194012238597064}
+  tooltipsParentVar: {fileID: 9126194012238597064}
 --- !u!1 &3924420937122188586
 GameObject:
   m_ObjectHideFlags: 0

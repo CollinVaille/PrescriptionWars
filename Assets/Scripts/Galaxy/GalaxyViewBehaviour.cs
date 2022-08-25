@@ -6,14 +6,8 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
 {
     [Header("Galaxy View Galaxy Tooltip Handler")]
 
-    [SerializeField] private Transform tooltipsParent = null;
-    public Transform TooltipsParent
-    {
-        get
-        {
-            return tooltipsParent;
-        }
-    }
+    [SerializeField, LabelOverride("Tooltips Parent")] private Transform tooltipsParentVar = null;
+    public Transform tooltipsParent { get => tooltipsParentVar; }
 
     [Header("Galaxy View Galaxy Popup Handler")]
 

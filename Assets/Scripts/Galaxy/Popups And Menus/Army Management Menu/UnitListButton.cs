@@ -67,20 +67,20 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     //Non-inspector variables.
     //------------------------
 
-    private ArmyManagementMenu armyManagementMenu = null;
+    private ArmyManagementMenu armyManagementMenuVar = null;
     /// <summary>
     /// Indicates the army management menu that the unit list button is attached to (can only be set if the unit list button has no reference).
     /// </summary>
-    public ArmyManagementMenu ArmyManagementMenu
+    public ArmyManagementMenu armyManagementMenu
     {
         get
         {
-            return armyManagementMenu;
+            return armyManagementMenuVar;
         }
         set
         {
             //Sets the unit list button's reference to the army management menu if the there currently is no reference of the army management menu.
-            armyManagementMenu = armyManagementMenu == null ? value : armyManagementMenu;
+            armyManagementMenuVar = armyManagementMenuVar == null ? value : armyManagementMenuVar;
         }
     }
 
@@ -166,7 +166,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     protected void Initialize(ArmyManagementMenu armyManagementMenu)
     {
         //Sets the reference to the attached army management menu.
-        ArmyManagementMenu = armyManagementMenu;
+        this.armyManagementMenu = armyManagementMenu;
     }
 
     // Start is called before the first frame update
@@ -238,7 +238,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     public virtual void OnClickWithoutDrag()
     {
         //Sets the unit list button as the one selected and displayed in the unit inspector.
-        ArmyManagementMenu.UnitListButtonSelected = this;
+        armyManagementMenu.UnitListButtonSelected = this;
 
         //Plays the sound effect for being clicked.
         AudioManager.PlaySFX(clickSFX);
@@ -253,18 +253,18 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         if (pointerEventData.button != PointerEventData.InputButton.Left)
             return;
         //Saves the initial local y position of the actual button component before it begins to be dragged.
-        beginDragLocalYPosition = (gameObject.GetComponent<ExpandableUnitListButton>() != null && gameObject.GetComponent<ExpandableUnitListButton>().Expanded) ? button.transform.localPosition.y - (ArmyManagementMenu.SpacingBetweenUnitListButtonTypes / 2) : button.transform.localPosition.y;
+        beginDragLocalYPosition = (gameObject.GetComponent<ExpandableUnitListButton>() != null && gameObject.GetComponent<ExpandableUnitListButton>().Expanded) ? button.transform.localPosition.y - (armyManagementMenu.spacingBetweenUnitListButtonTypes / 2) : button.transform.localPosition.y;
         //Saves the initial y offset.
         beginDragYOffset = button.transform.position.y - transform.position.y;
         //Sets the parent of the button component to the parent of buttons that are being dragged in order to ensure that the button is on top of all of the other buttons that are not being dragged.
-        button.transform.SetParent(ArmyManagementMenu.ButtonsBeingDraggedParent);
+        button.transform.SetParent(armyManagementMenu.buttonsBeingDraggedParent);
         //Saves the y offset of the button from the mouse's position.
         dragYOffsetFromMouse = button.transform.position.y - Input.mousePosition.y;
         //Logs that the unit list button is being dragged.
         beingDragged = true;
 
         //Sets the unit list button as the one selected and displayed in the unit inspector.
-        ArmyManagementMenu.UnitListButtonSelected = this;
+        armyManagementMenu.UnitListButtonSelected = this;
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         beingDragged = false;
         //Informs the army manaagement menu that the latest unit list button move was successful.
         if (LatestButtonMoveSuccessful)
-            ArmyManagementMenu.OnUnitListButtonMove();
+            armyManagementMenu.OnUnitListButtonMove();
     }
 
     /// <summary>
@@ -409,9 +409,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
             case ButtonType.Army:
                 //Finds the original index the army was at in the list of armies on the planet.
                 int originalArmyIndex = 0;
-                for(int armyIndex = 0; armyIndex < ArmyManagementMenu.PlanetSelected.armyCount; armyIndex++)
+                for(int armyIndex = 0; armyIndex < armyManagementMenu.PlanetSelected.armyCount; armyIndex++)
                 {
-                    if(ArmyManagementMenu.PlanetSelected.GetArmyAt(armyIndex) == gameObject.GetComponent<ArmyButton>().AssignedArmy)
+                    if(armyManagementMenu.PlanetSelected.GetArmyAt(armyIndex) == gameObject.GetComponent<ArmyButton>().AssignedArmy)
                     {
                         originalArmyIndex = armyIndex;
                         break;
@@ -435,7 +435,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
                     }
                 }
                 //Changes the index that the army is placed at in the list of armies on the planet.
-                ArmyManagementMenu.PlanetSelected.ChangeArmyIndex(originalArmyIndex, newArmyIndex);
+                armyManagementMenu.PlanetSelected.ChangeArmyIndex(originalArmyIndex, newArmyIndex);
                 break;
             case ButtonType.Squad:
                 GalaxySquad squad = gameObject.GetComponent<SquadButton>().AssignedSquad;
@@ -602,7 +602,7 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         {
             if (Mathf.Approximately(rectTransform.sizeDelta.y, InitialHeight))
             {
-                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, InitialHeight + ArmyManagementMenu.SpacingBetweenUnitListButtonTypes);
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, InitialHeight + armyManagementMenu.spacingBetweenUnitListButtonTypes);
             }
         }
         else
@@ -611,9 +611,9 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         }
 
         //Weird code essential for preventing a dumb unity bug.
-        float verticalLayoutGroupSpacing = ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing;
-        ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing + 1;
-        ArmyManagementMenu.UnitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing;
+        float verticalLayoutGroupSpacing = armyManagementMenu.unitListVerticalLayoutGroup.spacing;
+        armyManagementMenu.unitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing + 1;
+        armyManagementMenu.unitListVerticalLayoutGroup.spacing = verticalLayoutGroupSpacing;
 
         //Logs that the spacing has been updated.
         spacingUpdateRequiredNextFrame = false;
@@ -635,6 +635,10 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
     /// </summary>
     public virtual void DisbandAssignedGroundUnit()
     {
+        //Finds the button above and the button below.
+        UnitListButton buttonAbove = transform.GetSiblingIndex() > 0 ? armyManagementMenu.unitListButtonParent.GetChild(transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>() : null;
+        UnitListButton buttonBelow = transform.GetSiblingIndex() + 1 < transform.parent.childCount ? armyManagementMenu.unitListButtonParent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>() : null;
+
         //Fills a list with all child buttons in the unit list that need to be destroyed.
         List<UnitListButton> childButtonsToDestroy = new List<UnitListButton>();
         for(int siblingIndex = transform.GetSiblingIndex() + 1; siblingIndex < transform.parent.childCount; siblingIndex++)
@@ -648,13 +652,19 @@ abstract public class UnitListButton : GalaxyTooltipEventsHandler, IBeginDragHan
         //Destroys all neccessary child buttons in the unit list.
         foreach(UnitListButton childButton in childButtonsToDestroy)
         {
-            Destroy(childButton.gameObject);
+            armyManagementMenu.unitListButtonDestroyer.AddUnitListButtonToDestroy(childButton);
         }
 
         //Destroys this unit list button.
-        Destroy(gameObject);
+        armyManagementMenu.unitListButtonDestroyer.AddUnitListButtonToDestroy(this);
 
         //No button in the unit list is selected after the disbanding action is complete.
-        ArmyManagementMenu.UnitListButtonSelected = null;
+        armyManagementMenu.UnitListButtonSelected = null;
+
+        //Spacing update on button above and button below.
+        if (buttonAbove != null)
+            buttonAbove.SpacingUpdateRequiredNextFrame = true;
+        if (buttonBelow != null)
+            buttonBelow.SpacingUpdateRequiredNextFrame = true;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 //This interface exists so that you do not have to specify a parent on each galaxy tooltip component.
 public interface IGalaxyTooltipHandler
 {
-    Transform TooltipsParent { get; }
+    Transform tooltipsParent { get; }
 
     /* Ideal implementation of interface in a class (taken from UnitListButton script):
     [SerializeField] private Transform tooltipsParent = null;

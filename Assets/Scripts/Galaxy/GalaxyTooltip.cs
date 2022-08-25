@@ -378,11 +378,11 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             IGalaxyTooltipHandler nextTransformToCheckTooltipHandler = nextTransformToCheck.GetComponent<IGalaxyTooltipHandler>();
             if (nextTransformToCheckTooltipHandler != null)
             {
-                if (nextTransformToCheckTooltipHandler.TooltipsParent != null)
+                if (nextTransformToCheckTooltipHandler.tooltipsParent != null)
                 {
                     if (!followsMouse || IsTopmostValidParent(nextTransformToCheck))
                     {
-                        currentParent = nextTransformToCheckTooltipHandler.TooltipsParent;
+                        currentParent = nextTransformToCheckTooltipHandler.tooltipsParent;
                         break;
                     }
                 }
@@ -413,7 +413,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             IGalaxyTooltipHandler tooltipHandler = transformToCheck.GetComponent<IGalaxyTooltipHandler>();
             if (tooltipHandler != null)
             {
-                if(tooltipHandler.TooltipsParent != null)
+                if(tooltipHandler.tooltipsParent != null)
                     return false;
             }
         }

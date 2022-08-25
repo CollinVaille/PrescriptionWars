@@ -9,45 +9,27 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     [Header("Text Components")]
 
     [SerializeField] private Text titleText = null;
-    [SerializeField] private Text unitInspectorGroundUnitTypeText;
-    [SerializeField] private Text unitInspectorGroundUnitNameText;
+    [SerializeField] private Text unitInspectorGroundUnitTypeText = null;
+    [SerializeField] private Text unitInspectorGroundUnitNameText = null;
 
     [Header("Other Components")]
 
-    [SerializeField] private VerticalLayoutGroup unitListVerticalLayoutGroup = null;
-    public VerticalLayoutGroup UnitListVerticalLayoutGroup
-    {
-        get
-        {
-            return unitListVerticalLayoutGroup;
-        }
-    }
+    [SerializeField, LabelOverride("Unit List Vertical Layout Group")] private VerticalLayoutGroup unitListVerticalLayoutGroupVar = null;
+    public VerticalLayoutGroup unitListVerticalLayoutGroup { get => unitListVerticalLayoutGroupVar; }
 
-    [SerializeField] private UnitListButtonDestroyer unitListButtonDestroyer = null;
-    public UnitListButtonDestroyer UnitListButtonDestroyer
-    {
-        get
-        {
-            return unitListButtonDestroyer;
-        }
-    }
+    [SerializeField, LabelOverride("Unit List Button Destroyer")] private UnitListButtonDestroyer unitListButtonDestroyerVar = null;
+    public UnitListButtonDestroyer unitListButtonDestroyer { get => unitListButtonDestroyerVar; }
 
-    [SerializeField] private RawImage unitListInspectorPillViewRawImage = null;
-    private RawImage UnitListInspectorPillViewRawImage
-    {
-        get
-        {
-            return unitListInspectorPillViewRawImage;
-        }
-    }
+    [SerializeField, LabelOverride("Unit List Inspector Pill View Raw Image")] private RawImage unitListInspectorPillViewRawImageVar = null;
+    private RawImage unitListInspectorPillViewRawImage { get => unitListInspectorPillViewRawImageVar; }
 
     [Header("Parents")]
 
-    [SerializeField] private Transform unitListButtonParent = null;
-    public Transform UnitListButtonParent { get => unitListButtonParent; }
+    [SerializeField, LabelOverride("Unit List Button Parent")] private Transform unitListButtonParentVar = null;
+    public Transform unitListButtonParent { get => unitListButtonParentVar; }
 
-    [SerializeField] private Transform buttonsBeingDraggedParent = null;
-    public Transform ButtonsBeingDraggedParent { get => buttonsBeingDraggedParent; }
+    [SerializeField, LabelOverride("Buttons Being Dragged Parent")] private Transform buttonsBeingDraggedParentVar = null;
+    public Transform buttonsBeingDraggedParent { get => buttonsBeingDraggedParentVar; }
 
     [SerializeField] private Transform unitInspectorBaseParent = null;
     [SerializeField] private Transform unitInspectorArmyParent = null;
@@ -57,10 +39,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     [Header("Prefabs")]
 
     [SerializeField] private GameObject armyButtonPrefab = null;
-    [SerializeField] private GameObject squadButtonPrefab = null;
-    public GameObject SquadButtonPrefab { get => squadButtonPrefab; }
-    [SerializeField] private GameObject pillButtonPrefab = null;
-    public GameObject PillButtonPrefab { get => pillButtonPrefab; }
+    [SerializeField, LabelOverride("Squad Button Prefab")] private GameObject squadButtonPrefabVar = null;
+    public GameObject squadButtonPrefab { get => squadButtonPrefabVar; }
+    [SerializeField, LabelOverride("Pill Button Prefab")] private GameObject pillButtonPrefabVar = null;
+    public GameObject pillButtonPrefab { get => pillButtonPrefabVar; }
 
     [Header("SFX Options")]
 
@@ -72,22 +54,16 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
 
     [Header("Logic Options")]
 
-    [SerializeField, Tooltip("Specifies the amount of spacing between different unit list button types in the unit list (Ex: spacing between an army button and a squad button).") ] private float spacingBetweenUnitListButtonTypes = 0;
-    public float SpacingBetweenUnitListButtonTypes
-    {
-        get
-        {
-            return spacingBetweenUnitListButtonTypes;
-        }
-    }
+    [SerializeField, LabelOverride("Spacing Between Unit List Button Types"), Tooltip("Specifies the amount of spacing between different unit list button types in the unit list (Ex: spacing between an army button and a squad button).") ] private float spacingBetweenUnitListButtonTypesVar = 0;
+    public float spacingBetweenUnitListButtonTypes { get => spacingBetweenUnitListButtonTypesVar; }
 
     [SerializeField, Tooltip("The speed at which the pill in the unit inspector pill view rotates when the player is dragged on the unit inspector pill view.")] private float pillViewRotationSpeed = 2.5f;
     [SerializeField, Tooltip("The texture that the cursor will be whenever the mouse is over the unit inspector pill view.")] private Texture2D mouseOverPillViewCursor = null;
 
     [Header("Galaxy Tooltips")]
 
-    [SerializeField] private Transform tooltipsParent = null;
-    public Transform TooltipsParent { get => tooltipsParent; }
+    [SerializeField, LabelOverride("Tooltips Parent")] private Transform tooltipsParentVar = null;
+    public Transform tooltipsParent { get => tooltipsParentVar; }
 
     //Non-inspector variables.
 
@@ -176,7 +152,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                 if (unitInspectorPillView != null)
                 {
                     unitInspectorPillView.Delete();
-                    UnitListInspectorPillViewRawImage.texture = null;
+                    unitListInspectorPillViewRawImage.texture = null;
                 }
     
                 return;
@@ -196,25 +172,25 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     if (general == null)
                     {
                         //Deactivates the pill view because there is no pill to display.
-                        UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
+                        unitListInspectorPillViewRawImage.gameObject.SetActive(false);
 
                         if (unitInspectorPillView != null)
                         {
                             unitInspectorPillView.Delete();
-                            UnitListInspectorPillViewRawImage.texture = null;
+                            unitListInspectorPillViewRawImage.texture = null;
                         }
                     }
                     //Displays the general in the unit inspector pill view.
                     else
                     {
                         //Activates the pill view because there is a valid pill (general) to display.
-                        UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+                        unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                         if (unitInspectorPillView == null)
                             unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
                         else
                             unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
-                        UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
                     }
                     break;
                 //Activates the base and squad components of the unit inspector if the unit list button selected is a squad button.
@@ -229,25 +205,25 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     if (squadLeader == null)
                     {
                         //Deactivates the pill view because there is no pill to display.
-                        UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
+                        unitListInspectorPillViewRawImage.gameObject.SetActive(false);
 
                         if(unitInspectorPillView != null)
                         {
                             unitInspectorPillView.Delete();
-                            UnitListInspectorPillViewRawImage.texture = null;
+                            unitListInspectorPillViewRawImage.texture = null;
                         }
                     }
                     //Displays the squad leader in the unit inspector pill view.
                     else
                     {
                         //Activates the pill view because there is a valid pill (squad leader) to display.
-                        UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+                        unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                         if (unitInspectorPillView == null)
                             unitInspectorPillView = PillViewsManager.GetNewPillView(squadLeader);
                         else
                             unitInspectorPillView.DisplayedPill = squadLeader;
-                        UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
                     }
                     break;
                 //Activates the base and pill components of the unit inspector if the unit list button selected is a pill button.
@@ -258,14 +234,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                     unitInspectorPillParent.gameObject.SetActive(true);
 
                     //Activates the pill view because there is a valid pill to display.
-                    UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+                    unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                     //Displays the pill in the unit inspector pill view.
                     if (unitInspectorPillView == null)
                         unitInspectorPillView = PillViewsManager.GetNewPillView(unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill);
                     else
                         unitInspectorPillView.DisplayedPill = unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
-                    UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                    unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
                     break;
 
                 //Deactivates the unit inspector effectively if the button type of the unit list button selected is an unknown type.
@@ -362,6 +338,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         foreach (UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
             armyButton.gameObject.GetComponent<ExpandableUnitListButton>().Collapse(false);
 
+        //Resets the unit list button selected variable so that no unit list button is currently selected.
+        UnitListButtonSelected = null;
+
         //Plays the collapse all sound effect.
         AudioManager.PlaySFX(collapseAllSFX);
     }
@@ -376,7 +355,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Instantiates the army button from the army button prefab.
             GameObject armyButton = Instantiate(armyButtonPrefab);
             //Sets the parent of the army button.
-            armyButton.transform.SetParent(unitListButtonParent);
+            armyButton.transform.SetParent(unitListButtonParentVar);
             //Resets the scale of the army button.
             armyButton.transform.localScale = Vector3.one;
             //Gets the army button script component of the army button in order to edit some values in the script.
@@ -406,9 +385,9 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Creates the list store of the appropriate unit list buttons in.
         List<UnitListButton> buttonsOfButtonType = new List<UnitListButton>();
         //Finds all unit list buttons of the specified button type and adds them to the list.
-        for (int siblingIndex = 0; siblingIndex < unitListButtonParent.childCount; siblingIndex++)
+        for (int siblingIndex = 0; siblingIndex < unitListButtonParentVar.childCount; siblingIndex++)
         {
-            UnitListButton unitListButton = UnitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+            UnitListButton unitListButton = unitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
             if (unitListButton.TypeOfButton == buttonType)
                 buttonsOfButtonType.Add(unitListButton);
         }
@@ -860,7 +839,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             //Instantiates the army button from the army button prefab.
             GameObject armyButton = Instantiate(armyButtonPrefab);
             //Sets the parent of the army button.
-            armyButton.transform.SetParent(unitListButtonParent);
+            armyButton.transform.SetParent(unitListButtonParentVar);
             //Resets the scale of the army button.
             armyButton.transform.localScale = Vector3.one;
             //Gets the army button script component of the army button in order to edit some values in the script.
@@ -869,8 +848,8 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             armyButtonScript.Initialize(this, PlanetSelected.GetArmyAt(PlanetSelected.armyCount - 1));
 
             //Calls for a spacing update on the button above it if such a button exists.
-            if (UnitListButtonParent.childCount > 1)
-                UnitListButtonParent.GetChild(UnitListButtonParent.childCount - 2).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+            if (unitListButtonParent.childCount > 1)
+                unitListButtonParent.GetChild(unitListButtonParent.childCount - 2).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
         }
         else
         {
@@ -927,7 +906,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             SquadButton parentSquadButton = null;
             for(int siblingIndex = UnitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)
             {
-                UnitListButton buttonAtSiblingIndex = UnitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
+                UnitListButton buttonAtSiblingIndex = unitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
                 if(buttonAtSiblingIndex.TypeOfButton == UnitListButton.ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad)
                 {
                     parentSquadButton = buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>();
@@ -978,25 +957,25 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             if (general == null)
             {
                 //Deactivates the pill view because there is no pill to display.
-                UnitListInspectorPillViewRawImage.gameObject.SetActive(false);
+                unitListInspectorPillViewRawImage.gameObject.SetActive(false);
 
                 if (unitInspectorPillView != null)
                 {
                     unitInspectorPillView.Delete();
-                    UnitListInspectorPillViewRawImage.texture = null;
+                    unitListInspectorPillViewRawImage.texture = null;
                 }
             }
             //Displays the general in the unit inspector pill view.
             else
             {
                 //Activates the pill view because there is a valid pill (general) to display.
-                UnitListInspectorPillViewRawImage.gameObject.SetActive(true);
+                unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                 if (unitInspectorPillView == null)
                     unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
                 else
                     unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
-                UnitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
             }
         }
 
@@ -1042,18 +1021,19 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
                 UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.AddPill(galaxyPill);
                 if (UnitListButtonSelected.gameObject.GetComponent<SquadButton>().Expanded)
                 {
-                    GameObject pillButton = Instantiate(pillButtonPrefab);
-                    pillButton.transform.SetParent(unitListButtonParent);
+                    GameObject pillButton = Instantiate(pillButtonPrefabVar);
+                    pillButton.transform.SetParent(unitListButtonParentVar);
                     pillButton.transform.SetSiblingIndex(UnitListButtonSelected.transform.GetSiblingIndex() + UnitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.pillCount);
                     pillButton.transform.localScale = Vector3.one;
                     PillButton pillButtonScript = pillButton.GetComponent<PillButton>();
                     pillButtonScript.Initialize(this, galaxyPill);
-                    unitListButtonParent.GetChild(pillButton.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+                    unitListButtonParentVar.GetChild(pillButton.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
                 }
                 else
                 {
                     UnitListButtonSelected.gameObject.GetComponent<SquadButton>().Expand(false);
                 }
+                UnitListButtonSelected.UpdateInfo();
             }
         }
 
@@ -1101,13 +1081,29 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Assigns the selected pill as the squad leader if needed.
         if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
+            SquadButton squadButton = null;
+            for(int siblingIndex = UnitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)
+            {
+                if(unitListButtonParentVar.GetChild(siblingIndex).gameObject.GetComponent<UnitListButton>().TypeOfButton == UnitListButton.ButtonType.Squad && unitListButtonParentVar.GetChild(siblingIndex).gameObject.GetComponent<SquadButton>().AssignedSquad == UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad)
+                {
+                    squadButton = unitListButtonParentVar.GetChild(siblingIndex).gameObject.GetComponent<SquadButton>();
+                    break;
+                }
+            }
             GalaxySpecialPill specialPill = UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill != null ? UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill : new GalaxySpecialPill(UnitListButtonSelected.GetComponent<PillButton>().AssignedPill);
             UnitListButtonSelected.GetComponent<PillButton>().AssignedPill.assignedSquad.RemovePill(UnitListButtonSelected.GetComponent<PillButton>().AssignedPill);
             specialPill.task = null;
-            UnitListButton buttonAbove = unitListButtonParent.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>(), buttonBelow = unitListButtonParent.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>();
-            Destroy(UnitListButtonSelected.gameObject);
+            UnitListButton buttonAbove = unitListButtonParentVar.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>(), buttonBelow = unitListButtonParentVar.GetChild(UnitListButtonSelected.transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>();
+            unitListButtonDestroyer.AddUnitListButtonToDestroy(UnitListButtonSelected);
             buttonAbove.SpacingUpdateRequiredNextFrame = true;
             buttonBelow.SpacingUpdateRequiredNextFrame = true;
+
+            //Collapses and expands the assigned squad's button in order to update the child buttons.
+            squadButton.Collapse(false);
+            squadButton.Expand(false);
+
+            //Updates the info on the squad button now that a pill has been removed from the assigned squad.
+            squadButton.UpdateInfo();
 
             //No button in the unit list is selected after the promoting action has been completed.
             UnitListButtonSelected = null;

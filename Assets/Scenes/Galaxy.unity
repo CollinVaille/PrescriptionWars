@@ -6925,16 +6925,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062aa6279fbf59c4d9c6289517a018da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipsParent: {fileID: 1097173312}
+  tooltipsParentVar: {fileID: 1097173312}
   popupScreenBounds: {x: 291, y: 99}
   sfxSource: {fileID: 1492085428}
-  cheatConsoleVar: {fileID: 2071409040}
   researchViewVar: {fileID: 1098509857}
   switchToResearchViewSFX: {fileID: 8300000, guid: cb1d7b753a457b044b9a48c683e8b321,
     type: 3}
   techFinishedSFX: {fileID: 8300000, guid: 7b728edab63c7ff4391af73a92e7d038, type: 3}
   endTurnSFX: {fileID: 8300000, guid: c08d86bda65e2124891f83d4be53c0df, type: 3}
   ironpillModeEnabledVar: 0
+  observationModeEnabledVar: 0
+  turnNumberVar: 0
+  playerIDVar: 0
 --- !u!114 &644450517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7193,13 +7195,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: cfd5aad6e6dd20b469573c2c9eb327a3, type: 2}
   - {fileID: 2100000, guid: 39e0cfdfc168f86489e413d713d87560, type: 2}
   - {fileID: 2100000, guid: fb396c0472f60fb44921de350d692745, type: 2}
-  empireMaterials:
-  - {fileID: 2100000, guid: f97325201c08b50459a650febe59afad, type: 2}
-  - {fileID: 2100000, guid: 3075eda53b45f4748bb423158ef9b245, type: 2}
-  - {fileID: 2100000, guid: ceddc292cbdcf0d4090f224a85e48888, type: 2}
-  - {fileID: 2100000, guid: ec880dcad11aaf44691b0c67fbab845c, type: 2}
-  - {fileID: 2100000, guid: 11246b68c6b503f4783a8eb241403a4f, type: 2}
-  - {fileID: 2100000, guid: 8e706ed4166fa4f4cba16068e126d714, type: 2}
+  baseEmpireMaterial: {fileID: 2100000, guid: 8e706ed4166fa4f4cba16068e126d714, type: 2}
   planetPrefab: {fileID: 1186292218765209902, guid: 76664220f7fd7e64e8866fe7034bd57f,
     type: 3}
   planetShipPrefab: {fileID: 186009165389922367, guid: caacb6fada3bfa042b3f3c74d439f4db,
@@ -7234,6 +7230,7 @@ MonoBehaviour:
   hyperspaceLanesManager: {fileID: 291867262}
   planetManagementMenu: {fileID: 325615308}
   pauseMenu: {fileID: 1556183326}
+  cheatConsole: {fileID: 2071409040}
 --- !u!114 &644450518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11955,7 +11952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b0d3f9485df654d861994fae66cb93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipsParent: {fileID: 1603826844}
+  tooltipsParentVar: {fileID: 1603826844}
   popupScreenBounds: {x: 291, y: 99}
   sfxSource: {fileID: 1492085428}
   skyboxMaterial: {fileID: 2100000, guid: 85031a0780356064aa3d727e613dc2da, type: 2}

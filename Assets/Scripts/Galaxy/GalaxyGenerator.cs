@@ -29,14 +29,14 @@ public class GalaxyGenerator : MonoBehaviour
 
     [SerializeField] private Canvas galaxyCanvas = null;
 
-    public Material skyboxMaterial;
+    [SerializeField] private Material skyboxMaterial = null;
 
     [SerializeField] private float leftBoundary = -50;
     [SerializeField] private float rightBoundary = 500;
     [SerializeField] private float topBoundary = 260;
     [SerializeField] private float bottomBoundary = 0;
 
-    [Header("Planet Materials")]
+    [Header("Materials")]
 
     [SerializeField] private List<Material> frozenMaterials = null;
     [SerializeField] private List<Material> spiritMaterials = null;
@@ -47,7 +47,7 @@ public class GalaxyGenerator : MonoBehaviour
 
     [Space]
 
-    [SerializeField] private List<Material> empireMaterials = null;
+    [SerializeField] private Material baseEmpireMaterial = null;
 
     [Header("Prefabs")]
 
@@ -78,6 +78,7 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField] private HyperspaceLanesManager hyperspaceLanesManager = null;
     [SerializeField] private PlanetManagementMenu planetManagementMenu = null;
     [SerializeField] private GalaxyPauseMenu pauseMenu = null;
+    [SerializeField] private CheatConsole cheatConsole = null;
 
     //Non-inspector variables.
 
@@ -88,7 +89,8 @@ public class GalaxyGenerator : MonoBehaviour
     /// <summary>
     /// Indicates whether the galaxy is finished generating or not.
     /// </summary>
-    public static bool galaxyFinishedGenerating { get; private set; }
+    public static bool galaxyFinishedGenerating { get => galaxyGenerator == null; }
+    private static GalaxyGenerator galaxyGenerator = null;
 
     // Start is called before the first frame update
     void Start()
@@ -113,7 +115,23 @@ public class GalaxyGenerator : MonoBehaviour
         {
             planetScripts.Add(planet.transform.GetChild(0).GetComponent<GalaxyPlanet>());
         }
-        GalaxyManager.Initialize(planetScripts, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent, popupsParent);
+
+        //Initializes the galaxy manager.
+        List<Material> empireMaterials = new List<Material>();
+        for(int cultureIndex = 0; cultureIndex < Enum.GetValues(typeof(Empire.Culture)).Length; cultureIndex++)
+        {
+            Material empireMaterial = new Material(baseEmpireMaterial);
+            foreach(Empire empire in Empire.empires)
+            {
+                if(empire.empireCulture == (Empire.Culture)cultureIndex)
+                {
+                    empireMaterial.color = empire.color;
+                    break;
+                }
+            }
+            empireMaterials.Add(empireMaterial);
+        }
+        GalaxyManager.Initialize(planetScripts, galaxyCamera, galaxyCanvas, galaxyConfirmationPopupParent, popupsParent, skyboxMaterial, empireMaterials, cheatConsole);
 
         //Generates the planet's biomes.
         GalaxyBiomeGenerator.galaxyBiomeGenerator.GenerateGalaxyPlanetBiomes(planetScripts);
@@ -127,9 +145,6 @@ public class GalaxyGenerator : MonoBehaviour
         //Clean up section :)
         GeneralHelperMethods.ClearTextFileCache();
 
-        //Indicates that the galaxy has finished generating.
-        galaxyFinishedGenerating = true;
-
         //Updates the resource bar to accurately reflect the player's empire.
         ResourceBar.UpdateAllEmpireDependantComponents();
 
@@ -138,10 +153,17 @@ public class GalaxyGenerator : MonoBehaviour
         {
             empire.OnGalaxyGenerationCompletion();
         }
+
+        //Destroys the galaxy manager script.
+        Destroy(this);
+        galaxyGenerator = null;
     }
 
     private void Awake()
     {
+        //Sets private static reference.
+        galaxyGenerator = this;
+
         //Pill classes.
         PillClass.pillClasses = new Dictionary<string, PillClass>();
         foreach (PillClass pillClass in pillClasses)
@@ -341,12 +363,6 @@ public class GalaxyGenerator : MonoBehaviour
             {
                 Empire.empires[empireID].color = Empire.empires[empireID].flag.symbolColor;
             }
-
-            //----------------------------------------------------------------------------------------------------
-            //Sets the empire's material color.
-            int materialIndex = (int)Empire.empires[empireID].empireCulture;
-            empireMaterials[materialIndex].color = Empire.empires[empireID].color;
-            GalaxyManager.empireMaterials[materialIndex] = empireMaterials[materialIndex];
 
             //----------------------------------------------------------------------------------------------------
             //Generates the empire's planets.

@@ -46,9 +46,9 @@ public class ExpandableUnitListButton : UnitListButton
             switch (TypeOfButton)
             {
                 case ButtonType.Army:
-                    return ArmyManagementMenu.SquadButtonPrefab;
+                    return armyManagementMenu.squadButtonPrefab;
                 case ButtonType.Squad:
-                    return ArmyManagementMenu.PillButtonPrefab;
+                    return armyManagementMenu.pillButtonPrefab;
 
                 default:
                     return null;
@@ -150,7 +150,7 @@ public class ExpandableUnitListButton : UnitListButton
                 //Instantiates a new unit list button from the child unit list button prefab.
                 GameObject childButton = Instantiate(ChildPrefab);
                 //Sets the parent of the child unit list button.
-                childButton.transform.SetParent(ArmyManagementMenu.UnitListButtonParent);
+                childButton.transform.SetParent(armyManagementMenu.unitListButtonParent);
                 //Sets the sibling index of the child unit button.
                 childButton.transform.SetSiblingIndex(transform.GetSiblingIndex() + (childIndex + 1));
                 //Resets the scale of the child unit list button to 1 in order to avoid any unity shenanigans.
@@ -160,11 +160,11 @@ public class ExpandableUnitListButton : UnitListButton
                 {
                     case ButtonType.Army:
                         SquadButton squadButtonScript = childButton.GetComponent<SquadButton>();
-                        squadButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<ArmyButton>().AssignedArmy.GetSquadAt(childIndex));
+                        squadButtonScript.Initialize(armyManagementMenu, gameObject.GetComponent<ArmyButton>().AssignedArmy.GetSquadAt(childIndex));
                         break;
                     case ButtonType.Squad:
                         PillButton pillButtonScript = childButton.GetComponent<PillButton>();
-                        pillButtonScript.Initialize(ArmyManagementMenu, gameObject.GetComponent<SquadButton>().AssignedSquad.GetPillAt(childIndex));
+                        pillButtonScript.Initialize(armyManagementMenu, gameObject.GetComponent<SquadButton>().AssignedSquad.GetPillAt(childIndex));
                         break;
                 }
             }
@@ -236,7 +236,7 @@ public class ExpandableUnitListButton : UnitListButton
         //Destroys all of the unit list buttons that are a result of the expandable unit list button being expanded.
         foreach (UnitListButton childUnitListButton in ChildButtons)
         {
-            ArmyManagementMenu.UnitListButtonDestroyer.AddUnitListButtonToDestroy(childUnitListButton);
+            armyManagementMenu.unitListButtonDestroyer.AddUnitListButtonToDestroy(childUnitListButton);
         }
 
         //Updates the amount of spacing between the squad button and the buttons that follow.

@@ -65,7 +65,7 @@ public class TechTotemsView : GalaxyMenuBehaviour
         base.SwitchToPreviousMenu();
 
         //Changes the skybox of the game back to the galaxy view's skybox.
-        RenderSettings.skybox = GetPreviousMenu().GetComponent<GalaxyGenerator>().skyboxMaterial;
+        RenderSettings.skybox = GalaxyManager.skyboxMaterial;
     }
 
     public void ClickOnTotem(int num)

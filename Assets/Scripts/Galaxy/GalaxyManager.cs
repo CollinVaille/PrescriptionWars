@@ -9,7 +9,6 @@ public class GalaxyManager : GalaxyViewBehaviour
 {
     [Header("Galaxy Manager Components")]
 
-    [SerializeField, LabelOverride("Cheat Console")] private CheatConsole cheatConsoleVar = null;
     [SerializeField, LabelOverride("Research View")] private GameObject researchViewVar = null;
 
     [Header("Galaxy Manager SFX Options")]
@@ -20,11 +19,31 @@ public class GalaxyManager : GalaxyViewBehaviour
 
     [Header("Galaxy Manager Settings")]
 
-    [SerializeField] private bool ironpillModeEnabledVar = false;
+    [SerializeField, LabelOverride("Ironpill Mode Enabled")] private bool ironpillModeEnabledVar = false;
+    [SerializeField, LabelOverride("Observation Mode Enabled")] private bool observationModeEnabledVar = false;
+
+    [Header("Additional Information")]
+
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField, LabelOverride("Turn Number")] private int turnNumberVar = 0;
+    #region Editor
+    #if UNITY_EDITOR
+    [ReadOnly]
+    #endif
+    #endregion
+    [SerializeField, LabelOverride("Player ID")] private int playerIDVar = 0;
 
     //Non-inspector variables.
 
-    public CheatConsole cheatConsole { get => cheatConsoleVar; }
+    /// <summary>
+    /// Public property that should be used to access the cheat console.
+    /// </summary>
+    public static CheatConsole cheatConsole { get => galaxyManager.cheatConsoleVar; }
+    private CheatConsole cheatConsoleVar = null;
 
     public GameObject researchView { get => researchViewVar; }
 
@@ -46,38 +65,52 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
 
-    //Indicates the empire ID of the player's empire.
-    private static int playerIDVar = 0;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the player's empire ID.
+    /// </summary>
     public static int playerID
     {
-        get => playerIDVar;
+        get => galaxyManager.playerIDVar;
         set
         {
             //Sets the variable that indicates the empire ID of the player's empire to the specified value.
-            playerIDVar = value;
+            galaxyManager.playerIDVar = value;
             //Updates the resource bar to accurately reflect the new empire that the player has switched to.
             ResourceBar.UpdateAllEmpireDependantComponents();
             //Logs with the planet ships that the playerID value has been changed and that the visibility of the planet ships might need to be updated.
             PlanetShip.OnPlayerIDChange();
         }
     }
-    //Indicates the turn that the game is on.
+
+    /// <summary>
+    /// Public property that should be accessed in order to determine what turn the game is on (value set privately upon the player ending their turn).
+    /// </summary>
     public static int turnNumber
     {
-        get => turnNumberVar;
+        get => galaxyManager.turnNumberVar;
         private set
         {
             //Sets the variable that indicates what turn the game is on to the specified value.
-            turnNumberVar = value;
+            galaxyManager.turnNumberVar = value;
             //Updates the resource bar to accurately reflect what turn the game is on.
             ResourceBar.UpdateTurnText();
         }
     }
-    private static int turnNumberVar = 0;
 
-    public static List<GalaxyPlanet> planets = null;
+    /// <summary>
+    /// Public property that should be used to access the list of planets in the galaxy.
+    /// </summary>
+    public static List<GalaxyPlanet> planets { get => galaxyManager.planetsVar; }
+    private List<GalaxyPlanet> planetsVar = null;
 
-    public static bool observationModeEnabled = false;
+    /// <summary>
+    /// Public property that should be used both to access and mutate whether or not observation mode is enabled where the player loses control and the bot does everything for them upon the player hitting the end turn button.
+    /// </summary>
+    public static bool observationModeEnabled { get => galaxyManager.observationModeEnabledVar; set => galaxyManager.observationModeEnabledVar = value; }
+
+    /// <summary>
+    /// Public property that should be accessed in order to determine if the galaxy view (excluding research view) is active in the hierarchy of the engine.
+    /// </summary>
     public static bool activeInHierarchy
     {
         get
@@ -88,30 +121,69 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
     }
 
-    public static GalaxyManager galaxyManager = null;
+    /// <summary>
+    /// Public property that should be used to access the static reference of the galaxy manager instance.
+    /// </summary>
+    public static GalaxyManager galaxyManager { get => galaxyManagerVar; }
+    private static GalaxyManager galaxyManagerVar = null;
 
-    public static List<Material> empireMaterials = new List<Material>() { null, null, null, null, null, null };
-    public static Dictionary<Empire.Culture, Material[]> pillMaterials = new Dictionary<Empire.Culture, Material[]>();
+    /// <summary>
+    /// Public property that should be used to access the materials of each empire according to their culture index.
+    /// </summary>
+    public static List<Material> empireMaterials { get => galaxyManager.empireMaterialsVar; }
+    private List<Material> empireMaterialsVar = new List<Material>() { null, null, null, null, null, null };
 
-    public static Camera galaxyCamera { get => galaxyCameraVar; }
-    private static Camera galaxyCameraVar = null;
+    private Dictionary<Empire.Culture, Material[]> pillMaterials = new Dictionary<Empire.Culture, Material[]>();
 
-    public static Canvas galaxyCanvas { get => galaxyCanvasVar; }
-    private static Canvas galaxyCanvasVar = null;
+    /// <summary>
+    /// Public property that should be used to access the camera for the galaxy view.
+    /// </summary>
+    public static Camera galaxyCamera { get => galaxyManager.galaxyCameraVar; }
+    private Camera galaxyCameraVar = null;
 
-    public static Transform galaxyConfirmationPopupParent { get => galaxyConfirmationPopupParentVar; }
-    private static Transform galaxyConfirmationPopupParentVar = null;
+    /// <summary>
+    /// Public property that should be used to access the galaxy view's canvas.
+    /// </summary>
+    public static Canvas galaxyCanvas { get => galaxyManager.galaxyCanvasVar; }
+    private Canvas galaxyCanvasVar = null;
 
-    public static Transform popupsParent { get => popupsParentVar; }
-    private static Transform popupsParentVar = null;
+    /// <summary>
+    /// Public property that should be used to access the parent of all confirmation popups.
+    /// </summary>
+    public static Transform confirmationPopupParent { get => galaxyManager.confirmationPopupParentVar; }
+    private Transform confirmationPopupParentVar = null;
 
-    public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup, Transform parentOfPopups)
+    /// <summary>
+    /// Public property that should be used to access the parent of all regular popups.
+    /// </summary>
+    public static Transform popupsParent { get => galaxyManager.popupsParentVar; }
+    private Transform popupsParentVar = null;
+
+    /// <summary>
+    /// Public property that should be used both to access and mutate the material that is used as the galaxy's skybox.
+    /// </summary>
+    public static Material skyboxMaterial
     {
-        planets = planetList;
-        galaxyCameraVar = galaxyCam;
-        galaxyCanvasVar = canvasOfGalaxy;
-        galaxyConfirmationPopupParentVar = parentOfGalaxyConfirmationPopup;
-        popupsParentVar = parentOfPopups;
+        get => galaxyManager.skyboxMaterialVar;
+        set
+        {
+            galaxyManager.skyboxMaterialVar = value;
+            if (activeInHierarchy)
+                RenderSettings.skybox = skyboxMaterial;
+        }
+    }
+    private Material skyboxMaterialVar = null;
+
+    public static void Initialize(List<GalaxyPlanet> planetList, Camera galaxyCam, Canvas canvasOfGalaxy, Transform parentOfGalaxyConfirmationPopup, Transform parentOfPopups, Material skyboxMaterial, List<Material> empireMaterials, CheatConsole cheatConsole)
+    {
+        galaxyManager.planetsVar = planetList;
+        galaxyManager.galaxyCameraVar = galaxyCam;
+        galaxyManager.galaxyCanvasVar = canvasOfGalaxy;
+        galaxyManager.confirmationPopupParentVar = parentOfGalaxyConfirmationPopup;
+        galaxyManager.popupsParentVar = parentOfPopups;
+        GalaxyManager.skyboxMaterial = skyboxMaterial;
+        galaxyManager.empireMaterialsVar = empireMaterials;
+        galaxyManager.cheatConsoleVar = cheatConsole;
 
         if (NewGameMenu.initialized)
         {
@@ -120,7 +192,7 @@ public class GalaxyManager : GalaxyViewBehaviour
         }
 
         //Loads in all of the materials that will be applied to pills in pill views.
-        if(pillMaterials == null || pillMaterials.Keys.Count == 0)
+        if(galaxyManager.pillMaterials == null || galaxyManager.pillMaterials.Keys.Count == 0)
             galaxyManager.LoadInPillMaterials();
     }
 
@@ -138,7 +210,7 @@ public class GalaxyManager : GalaxyViewBehaviour
         base.Awake();
 
         //Assigns the static reference of galaxy manager.
-        galaxyManager = this;
+        galaxyManagerVar = this;
     }
 
     //This method loads in all of the materials that will be applied to pills in pill views.
@@ -255,16 +327,6 @@ public class GalaxyManager : GalaxyViewBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        playerIDVar = 0;
-        turnNumberVar = 0;
-        planets = null;
-        observationModeEnabled = false;
-        galaxyManager = null;
-        empireMaterials = new List<Material>() { null, null, null, null, null, null };
-        pillMaterials = new Dictionary<Empire.Culture, Material[]>();
-        galaxyCameraVar = null;
-        galaxyCanvasVar = null;
-        galaxyConfirmationPopupParentVar = null;
-        popupsParentVar = null;
+        galaxyManagerVar = null;
     }
 }
