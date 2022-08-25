@@ -414,7 +414,7 @@ public class GalaxyGenerator : MonoBehaviour
             //----------------------------------------------------------------------------------------------------
             //Generate the empire's name.
 
-            if (empireID == GalaxyManager.playerID && NewGameMenu.initialized && !playerEmpireName.Equals(""))
+            if (empireID == GalaxyManager.playerID && playerEmpireName != null && !playerEmpireName.Equals(""))
                 Empire.empires[empireID].name = playerEmpireName;
             else
             {
