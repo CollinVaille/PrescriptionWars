@@ -113,7 +113,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
             IGalaxyPopupBehaviourHandler nextTransformToCheckPopupBehaviourHandler = nextTransformToCheck.GetComponent<IGalaxyPopupBehaviourHandler>();
             if (nextTransformToCheckPopupBehaviourHandler != null)
             {
-                screenBounds = nextTransformToCheckPopupBehaviourHandler.PopupScreenBounds;
+                screenBounds = nextTransformToCheckPopupBehaviourHandler.popupScreenBounds;
                 break;
             }
 
@@ -165,7 +165,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     //Indicates whether the popup should close due to the player pressing escape.
     public virtual bool ShouldClose()
     {
-        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
+        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -238,7 +238,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     public virtual void Close()
     {
         //Logs with the galaxy manager that a popup has been closed on this frame (so that other popups will not close on the same frame because of the escape key being pressed).
-        GalaxyHelperMethods.GetParentGalaxyView(transform).PopupClosedOnFrame = true;
+        GalaxyHelperMethods.GetParentGalaxyView(transform).popupClosedOnFrame = true;
 
         //Resets whether the popup is being dragged by the player.
         OnEndDrag(null);

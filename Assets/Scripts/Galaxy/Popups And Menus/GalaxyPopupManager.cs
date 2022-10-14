@@ -82,7 +82,7 @@ public class GalaxyPopupManager : MonoBehaviour
         popups.RemoveAt(popupIndex);
         Destroy(popup.gameObject);
 
-        GalaxyManager.galaxyManager.PopupClosedOnFrame = true;
+        GalaxyManager.galaxyManager.popupClosedOnFrame = true;
     }
 
     public static bool ContainsNonDismissablePopup()

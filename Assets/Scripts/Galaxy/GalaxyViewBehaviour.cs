@@ -11,14 +11,8 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
 
     [Header("Galaxy View Galaxy Popup Handler")]
 
-    [SerializeField] private Vector2 popupScreenBounds = new Vector2(291, 99);
-    public Vector2 PopupScreenBounds
-    {
-        get
-        {
-            return popupScreenBounds;
-        }
-    }
+    [SerializeField] private Vector2 popupScreenBoundsVar = new Vector2(291, 99);
+    public Vector2 popupScreenBounds { get => popupScreenBoundsVar; }
 
     [Header("Galaxy View Audio Options")]
 
@@ -28,24 +22,14 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
     //Non-inspector variables.
 
     //Indicates whether a popup has been closed on this frame on this view.
-    private bool popupClosedOnFrame = false;
-    public bool PopupClosedOnFrame
-    {
-        get
-        {
-            return popupClosedOnFrame;
-        }
-        set
-        {
-            popupClosedOnFrame = value;
-        }
-    }
+    private bool popupClosedOnFrameVar = false;
+    public bool popupClosedOnFrame { get => popupClosedOnFrameVar; set => popupClosedOnFrameVar = value; }
 
     //Indicates whether the audio sources have been set already on the current frame.
     private bool audioSourcesAlreadySetOnFrame = false;
 
     // Start is called before the first frame update
-    public virtual void Start()
+    protected virtual void Start()
     {
         //Sets the sfx and music audio sources of the view.
         if (!audioSourcesAlreadySetOnFrame)
@@ -55,7 +39,7 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
         }
     }
 
-    public virtual void Awake()
+    protected virtual void Awake()
     {
         //Makes sure that the audio settings have been loaded in.
         if (!AudioSettings.loaded)
@@ -66,13 +50,13 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
     }
 
     // Update is called once per frame
-    public virtual void Update()
+    protected virtual void Update()
     {
         //Resets the variable that indicates whether the audio sources have been set already on the current frame.
         audioSourcesAlreadySetOnFrame = false;
     }
 
-    public virtual void OnEnable()
+    protected virtual void OnEnable()
     {
         //Sets the sfx and music audio sources of the view.
         if (!audioSourcesAlreadySetOnFrame)
@@ -85,6 +69,6 @@ public class GalaxyViewBehaviour: MonoBehaviour, IGalaxyTooltipHandler, IGalaxyP
     //Resets the boolean that indicates whether a popup has been closed on this frame for this view to false.
     public virtual void ResetPopupClosedOnFrame()
     {
-        popupClosedOnFrame = false;
+        popupClosedOnFrameVar = false;
     }
 }

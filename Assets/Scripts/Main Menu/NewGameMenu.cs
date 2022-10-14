@@ -105,6 +105,8 @@ public class NewGameMenu : GalaxyMenuBehaviour
 
     private static NewGameMenu newGameMenu = null;
 
+    public static NewGameData newGameData = null;
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -165,8 +167,10 @@ public class NewGameMenu : GalaxyMenuBehaviour
     {
         EmpireNameGenerator.ResetCache(empireNameInputField.text.Equals(""));
 
+        newGameData = new NewGameData(empireCulture, empireName, empireFlag, NewGalaxyGenerator.defaultSolarSystemCount, numberOfPlanets, numberOfEmpires, ironmanModeEnabled, "Spiral");
+
         //Switches to the galaxy scene.
-        SceneManager.LoadScene(sceneName:"Galaxy");
+        SceneManager.LoadScene(sceneName:"NewGalaxy");
     }
 
     public void OnEndEditNumberOfEmpiresInputField()
@@ -322,4 +326,34 @@ public class NewGameMenu : GalaxyMenuBehaviour
     {
         AudioManager.PlaySFX(mouseEnterButtonSFX);
     }
+}
+
+[System.Serializable]
+public class NewGameData
+{
+    public NewGameData()
+    {
+
+    }
+
+    public NewGameData(Empire.Culture playerEmpireCulture, string playerEmpireName, Flag playerEmpireFlag, int solarSystemCount, int planetCount, int empireCount, bool ironpillModeEnabled, string galaxyShape)
+    {
+        this.playerEmpireCulture = playerEmpireCulture;
+        this.playerEmpireName = playerEmpireName;
+        this.playerEmpireFlag = playerEmpireFlag;
+        this.solarSystemCount = solarSystemCount;
+        this.planetCount = planetCount;
+        this.empireCount = empireCount;
+        this.ironpillModeEnabled = ironpillModeEnabled;
+        this.galaxyShape = galaxyShape;
+    }
+
+    public Empire.Culture playerEmpireCulture = 0;
+    public string playerEmpireName = "Player Empire";
+    public Flag playerEmpireFlag = new Flag();
+    public int solarSystemCount = NewGalaxyGenerator.defaultSolarSystemCount;
+    public int planetCount = NewGalaxyGenerator.GetMaxPlanetsCount("Spiral");
+    public int empireCount = Enum.GetNames(typeof(Empire.Culture)).Length;
+    public bool ironpillModeEnabled = false;
+    public string galaxyShape = "Spiral";
 }

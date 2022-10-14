@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IGalaxyPopupBehaviourHandler
 {
-    Vector2 PopupScreenBounds { get; }
+    Vector2 popupScreenBounds { get; }
 
     /* Ideal implementation of interface in a class:
     [SerializeField] private Vector2 popupScreenBounds = Vector2.zero;

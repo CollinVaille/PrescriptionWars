@@ -197,7 +197,7 @@ public class GalaxyManager : GalaxyViewBehaviour
     }
 
     // Start is called before the first frame update
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
 
@@ -205,7 +205,7 @@ public class GalaxyManager : GalaxyViewBehaviour
             GalaxyGameSettings.LoadSettings();
     }
 
-    public override void Awake()
+    protected override void Awake()
     {
         base.Awake();
 
@@ -223,7 +223,7 @@ public class GalaxyManager : GalaxyViewBehaviour
     }
 
     // Update is called once per frame
-    public override void Update()
+    protected override void Update()
     {
         base.Update();
 
