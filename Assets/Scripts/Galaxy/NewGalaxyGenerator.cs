@@ -31,7 +31,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     /// <summary>
     /// Indicates the default amount of solar systems in the galaxy if the galaxy shape does not specify an amount.
     /// </summary>
-    public static int defaultSolarSystemCount { get => 10; }
+    public static int defaultSolarSystemCount { get => 60; }
 
     private void Awake()
     {
@@ -88,15 +88,54 @@ public class NewGalaxyGenerator : MonoBehaviour
         for(int solarSystemIndex = 0; solarSystemIndex < newGameData.solarSystemCount; solarSystemIndex++)
         {
             //Creates a new solar system by instianiating from the solar system prefab.
-            GameObject solarSystem = Instantiate(solarSystemPrefab);
+            GalaxySolarSystem solarSystem = Instantiate(solarSystemPrefab).GetComponent<GalaxySolarSystem>();
             solarSystem.transform.SetParent(solarSystemsParent);
             solarSystem.transform.localPosition = Vector3.zero;
-            solarSystem.transform.localScale = new Vector3(50, 50, 50);
-            while (!solarSystem.GetComponent<TestSphere>().isFullyWithinImage)
+            while (true)
+            {
+                //Assigns the solar system a random position where it still appears on the screen.
+                solarSystem.transform.localPosition = new Vector3(Random.Range(-1920 + (solarSystem.star.localScale.x / 2), 1921 - (solarSystem.star.localScale.x / 2)), solarSystem.transform.localPosition.y, Random.Range(-1080 + (solarSystem.star.localScale.z / 2), 1081 - (solarSystem.star.localScale.z / 2)));
+                //Array of coordinates that will need to be checked in order to ensure that they are all within the non-transparent parts of the galaxy shape image.
+                Vector2Int[] coordinatesToCheck = new Vector2Int[4];
+                //Left coordinate check.
+                coordinatesToCheck[0] = new Vector2Int((((int)solarSystem.transform.localPosition.x + 1920) - (int)(solarSystem.star.localScale.x / 2)), (int)solarSystem.transform.localPosition.z + 1080);
+                //Upper coordinate check.
+                coordinatesToCheck[1] = new Vector2Int(((int)solarSystem.transform.localPosition.x + 1920), (((int)solarSystem.transform.localPosition.z) + 1080) + (int)(solarSystem.star.localScale.z / 2));
+                //Right coordinate check.
+                coordinatesToCheck[2] = new Vector2Int(((int)solarSystem.transform.localPosition.x + 1920) + (int)(solarSystem.star.localScale.x / 2), (int)solarSystem.transform.localPosition.z + 1080);
+                //Lower coordinate check.
+                coordinatesToCheck[3] = new Vector2Int(((int)solarSystem.transform.localPosition.x + 1920), (((int)solarSystem.transform.localPosition.z) + 1080) - (int)(solarSystem.star.localScale.z / 2));
+                //Loops through the left, upper, right, and lower coordinates to make sure that they are at coordinates that are on the screen and not transparent in the galaxy shape image.
+                bool validCoordinates = true;
+                for (int index = 0; index < coordinatesToCheck.Length; index++)
+                {
+                    if (coordinatesToCheck[index].x < 0 || coordinatesToCheck[index].x >= 3840 || coordinatesToCheck[index].y < 0 || coordinatesToCheck[index].y >= 2160 || galaxyShapeSprite.texture.GetPixel(coordinatesToCheck[index].x, coordinatesToCheck[index].y).a == 0)
+                    {
+                        validCoordinates = false;
+                        break;
+                    }
+                }
+                //Loops through each solar system that has already been validly positioned and ensures that the new position of the new solar is not too close to it.
+                for(int alreadyPositionedSolarSystemIndex = 0; alreadyPositionedSolarSystemIndex < solarSystems.Count; alreadyPositionedSolarSystemIndex++)
+                {
+                    if (solarSystem.transform.localPosition.x + (solarSystem.star.localScale.x / 2) + minimumSpaceBetweenStars >= solarSystems[alreadyPositionedSolarSystemIndex].transform.localPosition.x - (solarSystems[alreadyPositionedSolarSystemIndex].star.localScale.x / 2) && solarSystem.transform.localPosition.x - (solarSystem.star.localScale.x / 2) - minimumSpaceBetweenStars <= solarSystems[alreadyPositionedSolarSystemIndex].transform.localPosition.x + (solarSystems[alreadyPositionedSolarSystemIndex].star.localScale.x / 2) && solarSystem.transform.localPosition.z + (solarSystem.star.localScale.z / 2) + minimumSpaceBetweenStars >= solarSystems[alreadyPositionedSolarSystemIndex].transform.localPosition.z - (solarSystems[alreadyPositionedSolarSystemIndex].star.localScale.z / 2) && solarSystem.transform.localPosition.z - (solarSystem.star.localScale.z / 2) - minimumSpaceBetweenStars <= solarSystems[alreadyPositionedSolarSystemIndex].transform.localPosition.z + (solarSystems[alreadyPositionedSolarSystemIndex].star.localScale.z / 2))
+                    {
+                        validCoordinates = false;
+                        break;
+                    }
+                }
+                //If the coordinates are valid, the solar system is added to the list of solar system in the galaxy and we move on to positioning the next solar system.
+                if (validCoordinates)
+                {
+                    solarSystems.Add(solarSystem);
+                    break;
+                }
+            }
+            /*while (!solarSystem.IsFullyWithinImage(galaxyShapeSprite))
             {
                 solarSystem.transform.localPosition = new Vector3(Random.Range(-1920, 1921), solarSystem.transform.localPosition.y, Random.Range(-1080, 1081));
-            }
-            //solarSystems.Add(solarSystem);
+            }*/
+            solarSystems.Add(solarSystem);
         }
     }
 
