@@ -24,6 +24,11 @@ public class NewGalaxyGenerator : MonoBehaviour
     //Non-inspector variables.
 
     /// <summary>
+    /// Indicates how many failed attempts can be made to place a solar system within the galaxy until any attempts to place any more solar systems will be given up.
+    /// </summary>
+    private int maxFailedSolarSystemPlacementAttemps = 1000;
+
+    /// <summary>
     /// Holds all of the solar systems that have already been fully generated and placed appropriately into the galaxy.
     /// </summary>
     private List<GalaxySolarSystem> solarSystems = null;
@@ -89,10 +94,18 @@ public class NewGalaxyGenerator : MonoBehaviour
         {
             //Creates a new solar system by instianiating from the solar system prefab.
             GalaxySolarSystem solarSystem = Instantiate(solarSystemPrefab).GetComponent<GalaxySolarSystem>();
+            //Sets the solar system's parent to the parent transform of all solar systems.
             solarSystem.transform.SetParent(solarSystemsParent);
+            //Resets the position of the solar system.
             solarSystem.transform.localPosition = Vector3.zero;
+            //Declares and initializes a variable that will be used in order to ensure that not too many failed attempts are made to place the solar system within the galaxy.
+            int solarSystemPlacementAttempsMade = 0;
+            //Loops until either the solar system has been successfully placed or the maximum amount of attempts is reached.
             while (true)
             {
+                //Checks if the maximum amount of attempts allowed to fail validly positioning the solar system within the galaxy has been reached and stops attempting to place the solar system if so.
+                if(solarSystemPlacementAttempsMade >= maxFailedSolarSystemPlacementAttemps)
+                    break;
                 //Assigns the solar system a random position where it still appears on the screen.
                 solarSystem.transform.localPosition = new Vector3(Random.Range(-1920 + (solarSystem.star.localScale.x / 2), 1921 - (solarSystem.star.localScale.x / 2)), solarSystem.transform.localPosition.y, Random.Range(-1080 + (solarSystem.star.localScale.z / 2), 1081 - (solarSystem.star.localScale.z / 2)));
                 //Array of coordinates that will need to be checked in order to ensure that they are all within the non-transparent parts of the galaxy shape image.
@@ -130,11 +143,16 @@ public class NewGalaxyGenerator : MonoBehaviour
                     solarSystems.Add(solarSystem);
                     break;
                 }
+                //Increments the variable that indicates how many attempts have been made to position the current solar system validly.
+                solarSystemPlacementAttempsMade++;
             }
-            /*while (!solarSystem.IsFullyWithinImage(galaxyShapeSprite))
+            //Checks if the maximum amount of attempts allowed to fail validly positioning the solar system within the galaxy has been reached and stops attempting to place any more solar systems if so. Also, a debug warning is put into the console.
+            if (solarSystemPlacementAttempsMade >= maxFailedSolarSystemPlacementAttemps)
             {
-                solarSystem.transform.localPosition = new Vector3(Random.Range(-1920, 1921), solarSystem.transform.localPosition.y, Random.Range(-1080, 1081));
-            }*/
+                Debug.LogWarning("Maximum amount of allowed attempts to fail to validly position a solar system reached. Will stop adding any more solar systems to the galaxy.");
+                break;
+            }
+            //Adds the solar system just worked on to the list of all solar systems within the galaxy.
             solarSystems.Add(solarSystem);
         }
     }
