@@ -252,7 +252,7 @@ MonoBehaviour:
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
-  minimumSpaceBetweenStars: 50
+  minimumSpaceBetweenStars: 80
   solarSystemsParent: {fileID: 1782092161}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
@@ -469,7 +469,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1080}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!199 &660912990
@@ -791,8 +791,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 502
-      minScalar: 500
+      scalar: 1004
+      minScalar: 1000
       maxCurve:
         serializedVersion: 2
         m_Curve:
