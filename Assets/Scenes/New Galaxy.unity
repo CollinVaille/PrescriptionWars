@@ -253,9 +253,19 @@ MonoBehaviour:
     ironpillModeEnabled: 0
     galaxyShape: Spiral
   minimumSpaceBetweenStars: 80
+  starTypeSpawnProbabilities:
+  - 0.7
+  - 0.05
+  - 0.05
+  - 0.2
   solarSystemsParent: {fileID: 1782092161}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
+  starTypePrefabs:
+  - {fileID: 6399751584838204360, guid: 1df345ece04f96844ad476980500850d, type: 3}
+  - {fileID: 6399751584838204360, guid: 4d75bc2f90b85c446854a3742ee35c9b, type: 3}
+  - {fileID: 6399751584838204360, guid: 969907a8b7dba0440bb9468b4e5c0bf3, type: 3}
+  - {fileID: 6399751584838204360, guid: dcfc4321cf8721e41821a7ae242d5389, type: 3}
 --- !u!4 &125864733
 Transform:
   m_ObjectHideFlags: 0

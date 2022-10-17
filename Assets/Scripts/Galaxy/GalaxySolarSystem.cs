@@ -4,43 +4,36 @@ using UnityEngine;
 
 public class GalaxySolarSystem : MonoBehaviour
 {
-    [Header("Components")]
-
-    [SerializeField, LabelOverride("Star"), Tooltip("The script component of the star that is at the center of the solar system. Specified through the inspector.")] private GalaxyStar starVar = null;
-    [SerializeField, Tooltip("The particle sytstem that is responsible for creating space dust around the star of the galaxy.")] private ParticleSystem spaceDustPS = null;
-
     //Non-inspector variables and properties.
 
+    /// <summary>
+    /// Private variable that holds a reference to the star that is at the center of this solar system. Should be accessed from the publicly accessible property.
+    /// </summary>
+    private GalaxyStar starVar = null;
     /// <summary>
     /// Public property that should be used to access the script of the star that is at the center of the solar system.
     /// </summary>
     public GalaxyStar star { get => starVar; }
 
-    /// <summary>
-    /// Private variable that holds the maximum amount of particles for the space dust particle system at full zoom. Set in the start method.
-    /// </summary>
-    private int spaceDustInitialMaxParticles;
-
     // Start is called before the first frame update
     void Start()
     {
-        //Stores the initial max particles of the space dust particle system.
-        spaceDustInitialMaxParticles = spaceDustPS.main.maxParticles;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //UpdateSpaceDustMaxParticles();
+        
     }
 
     /// <summary>
-    /// This private method should be called in order to update the max particles of the space dust particle system according to the galaxy camera's zoom percentage.
+    /// This public method should be called in order to initialize the solar system from the GenerateSolarSystems method in the galaxy generator.
     /// </summary>
-    private void UpdateSpaceDustMaxParticles()
+    /// <param name="star"></param>
+    public void InitializeFromGalaxyGenerator(GalaxyStar star)
     {
-        ParticleSystem.MainModule main = spaceDustPS.main;
-        main.maxParticles = (int)(spaceDustInitialMaxParticles * NewGalaxyCamera.zoomPercentage);
+        starVar = star;
     }
 }
 

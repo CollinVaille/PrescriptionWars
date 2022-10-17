@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,8 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("New Game Data")]
 
     [SerializeField, Tooltip("Holds either the new game data passed from the new game menu or the new game data selected through the inspector.")] private NewGameData newGameData = new NewGameData();
-    [SerializeField] private int minimumSpaceBetweenStars = 0;
+    [SerializeField, Tooltip("The minimum amount of space that must exist between all stars in the galaxy.")] private int minimumSpaceBetweenStars = 0;
+    [SerializeField, Tooltip("Array that contains the probability for each star type to be assigned to a star. The enum index of the star type correlates to the same index in this array.")] private float[] starTypeSpawnProbabilities = new float[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
 
     [Header("Parents")]
 
@@ -20,6 +22,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("Prefabs")]
 
     [SerializeField, Tooltip("The prefab that all solar systems in the galaxy will be instanitated from. Specified through the inspector.")] private GameObject solarSystemPrefab = null;
+    [SerializeField, Tooltip("Array that contains the prefab for each star type where the enum index of the star type correlates to the same index in this array.")] private GameObject[] starTypePrefabs = new GameObject[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
 
     //Non-inspector variables.
 
@@ -86,6 +89,20 @@ public class NewGalaxyGenerator : MonoBehaviour
     {
         //Initializes the list of solar systems.
         solarSystems = new List<GalaxySolarSystem>();
+        //Fills a list with as many star type enum values as there will be stars in the galaxy using the probabilities specified through the inspector.
+        List<GalaxyStar.StarType> starTypesRemaining = new List<GalaxyStar.StarType>();
+        for(int starTypeIndex = 0; starTypeIndex < starTypeSpawnProbabilities.Length; starTypeIndex++)
+        {
+            int numberOfStarsOfType = (int)(newGameData.solarSystemCount * starTypeSpawnProbabilities[starTypeIndex]);
+            for(int amountAdded = 0; amountAdded < numberOfStarsOfType; amountAdded++)
+            {
+                starTypesRemaining.Add((GalaxyStar.StarType)starTypeIndex);
+            }
+        }
+        while (starTypesRemaining.Count < newGameData.solarSystemCount)
+        {
+            starTypesRemaining.Add(0);
+        }
 
         //Loads in the sprite from resources that contains the shape that specifies where stars can and cannot be placed.
         Sprite galaxyShapeSprite = Resources.Load<Sprite>("Galaxy/Galaxy Shapes/" + newGameData.galaxyShape);
@@ -98,6 +115,16 @@ public class NewGalaxyGenerator : MonoBehaviour
             solarSystem.transform.SetParent(solarSystemsParent);
             //Resets the position of the solar system.
             solarSystem.transform.localPosition = Vector3.zero;
+
+            //Instantiates a star from a prefab based on a randomly picked star type from a list of star types that was filled up based on probablities specified in the inspector.
+            int starTypeIndexInList = UnityEngine.Random.Range(0, starTypesRemaining.Count);
+            GalaxyStar star = Instantiate(starTypePrefabs[(int)starTypesRemaining[starTypeIndexInList]]).GetComponent<GalaxyStar>();
+            star.transform.SetParent(solarSystem.transform);
+            star.InitializeFromGalaxyGenerator(starTypesRemaining[starTypeIndexInList]);
+            star.transform.localPosition = Vector3.zero;
+            solarSystem.InitializeFromGalaxyGenerator(star);
+            starTypesRemaining.RemoveAt(starTypeIndexInList);
+
             //Declares and initializes a variable that will be used in order to ensure that not too many failed attempts are made to place the solar system within the galaxy.
             int solarSystemPlacementAttempsMade = 0;
             //Loops until either the solar system has been successfully placed or the maximum amount of attempts is reached.
@@ -107,7 +134,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 if(solarSystemPlacementAttempsMade >= maxFailedSolarSystemPlacementAttemps)
                     break;
                 //Assigns the solar system a random position where it still appears on the screen.
-                solarSystem.transform.localPosition = new Vector3(Random.Range(-1920 + (solarSystem.star.localScale.x / 2), 1921 - (solarSystem.star.localScale.x / 2)), solarSystem.transform.localPosition.y, Random.Range(-1080 + (solarSystem.star.localScale.z / 2), 1081 - (solarSystem.star.localScale.z / 2)));
+                solarSystem.transform.localPosition = new Vector3(UnityEngine.Random.Range(-1920 + (solarSystem.star.localScale.x / 2), 1921 - (solarSystem.star.localScale.x / 2)), solarSystem.transform.localPosition.y, UnityEngine.Random.Range(-1080 + (solarSystem.star.localScale.z / 2), 1081 - (solarSystem.star.localScale.z / 2)));
                 //Array of coordinates that will need to be checked in order to ensure that they are all within the non-transparent parts of the galaxy shape image.
                 Vector2Int[] coordinatesToCheck = new Vector2Int[4];
                 //Left coordinate check.
