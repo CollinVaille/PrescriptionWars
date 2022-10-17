@@ -21,3 +21,16 @@ public class GalaxyStar : MonoBehaviour
         
     }
 }
+
+[System.Serializable]
+public class GalaxyStarData
+{
+    public float[] localScale = new float[3];
+
+    public GalaxyStarData(GalaxyStar star)
+    {
+        localScale[0] = star.localScale.x;
+        localScale[1] = star.localScale.y;
+        localScale[2] = star.localScale.z;
+    }
+}

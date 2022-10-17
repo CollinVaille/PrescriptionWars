@@ -7,6 +7,7 @@ public class GalaxySolarSystem : MonoBehaviour
     [Header("Components")]
 
     [SerializeField, LabelOverride("Star"), Tooltip("The script component of the star that is at the center of the solar system. Specified through the inspector.")] private GalaxyStar starVar = null;
+    [SerializeField, Tooltip("The particle sytstem that is responsible for creating space dust around the star of the galaxy.")] private ParticleSystem spaceDustPS = null;
 
     //Non-inspector variables and properties.
 
@@ -15,30 +16,46 @@ public class GalaxySolarSystem : MonoBehaviour
     /// </summary>
     public GalaxyStar star { get => starVar; }
 
+    /// <summary>
+    /// Private variable that holds the maximum amount of particles for the space dust particle system at full zoom. Set in the start method.
+    /// </summary>
+    private int spaceDustInitialMaxParticles;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //Stores the initial max particles of the space dust particle system.
+        spaceDustInitialMaxParticles = spaceDustPS.main.maxParticles;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(IsFullyWithinImage(Resources.Load<Sprite>("Galaxy/Galaxy Shapes/Spiral")));
+        //UpdateSpaceDustMaxParticles();
     }
 
-    public bool IsFullyWithinImage(Sprite sprite)
+    /// <summary>
+    /// This private method should be called in order to update the max particles of the space dust particle system according to the galaxy camera's zoom percentage.
+    /// </summary>
+    private void UpdateSpaceDustMaxParticles()
     {
-        Vector2Int[] coordinatesToCheck = new Vector2Int[4];
-        coordinatesToCheck[0] = new Vector2Int((((int)transform.localPosition.x + 1920) - (int)(star.localScale.x / 2)), (int)transform.localPosition.z + 1080);
-        coordinatesToCheck[1] = new Vector2Int(((int)transform.localPosition.x + 1920), (((int)transform.localPosition.z) + 1080) + (int)(star.localScale.z / 2));
-        coordinatesToCheck[2] = new Vector2Int(((int)transform.localPosition.x + 1920) + (int)(star.localScale.x / 2), (int)transform.localPosition.z + 1080);
-        coordinatesToCheck[3] = new Vector2Int(((int)transform.localPosition.x + 1920), (((int)transform.localPosition.z) + 1080) - (int)(star.localScale.z / 2));
-        for (int index = 0; index < coordinatesToCheck.Length; index++)
-        {
-            if (coordinatesToCheck[index].x < 0 || coordinatesToCheck[index].x >= 3840 || coordinatesToCheck[index].y < 0 || coordinatesToCheck[index].y >= 2160 || sprite.texture.GetPixel(coordinatesToCheck[index].x, coordinatesToCheck[index].y).a == 0)
-                return false;
-        }
-        return true;
+        ParticleSystem.MainModule main = spaceDustPS.main;
+        main.maxParticles = (int)(spaceDustInitialMaxParticles * NewGalaxyCamera.zoomPercentage);
+    }
+}
+
+[System.Serializable]
+public class GalaxySolarSystemData
+{
+    public float[] localPosition = new float[3];
+    public GalaxyStarData star = null;
+
+    public GalaxySolarSystemData(GalaxySolarSystem solarSystem)
+    {
+        localPosition[0] = solarSystem.transform.localPosition.x;
+        localPosition[1] = solarSystem.transform.localPosition.y;
+        localPosition[2] = solarSystem.transform.localPosition.z;
+
+        star = new GalaxyStarData(solarSystem.star);
     }
 }

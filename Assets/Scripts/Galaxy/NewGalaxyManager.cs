@@ -32,6 +32,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static string saveName { get => galaxyManager.saveNameVar; set => galaxyManager.saveNameVar = value; }
 
     /// <summary>
+    /// Private holder variable for the list of solar systems that are in the galaxy.
+    /// </summary>
+    private static List<GalaxySolarSystem> solarSystemsVar = null;
+    /// <summary>
+    /// Publicly accessible property that returns a list that contains of the solar systems existing within the galaxy.
+    /// </summary>
+    public static List<GalaxySolarSystem> solarSystems { get => solarSystemsVar; }
+
+    /// <summary>
     /// Private holder variable of a galaxy manager instance.
     /// </summary>
     private static NewGalaxyManager galaxyManagerVar = null;
@@ -43,13 +52,16 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
 
         //Sets the value of the variable that holds the skybox material of the galaxy.
         galaxyManager.skyboxMaterialVar = skyboxMaterial;
+
+        //Sets the value of the variable that contains all of the solar systems existing within the galaxy.
+        solarSystemsVar = solarSystems;
     }
 
     protected override void Awake()
