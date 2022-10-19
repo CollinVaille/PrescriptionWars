@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6399751584838204360}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_LocalScale: {x: 0.625, y: 0.625, z: 0.625}
   m_Children:
   - {fileID: 6399751585854065622}
   - {fileID: 8732587088615989884}
@@ -111,6 +111,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc5d290bd60ec0243a01392dfaa78d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minimumParticlePercentage: 0.2
+  maxParticlesZoomPercentage: 0.8
+  surfacePS: {fileID: 6399751585854065616}
+  coronaPS: {fileID: 6399751585019376083}
+  loopsPS: {fileID: 6399751585019376083}
 --- !u!1 &6399751585019376086
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,8 +400,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 3.125
-      minScalar: 1.5625
+      scalar: 1.5625
+      minScalar: 0.78125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -779,7 +784,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 0.0625, y: 0.0625, z: 0.0625}
+    m_Scale: {x: 0.03125, y: 0.03125, z: 0.03125}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -5201,8 +5206,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 6.25
-      minScalar: 0.9375
+      scalar: 3.125
+      minScalar: 0.46875
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5585,7 +5590,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 0.0625, y: 0.0625, z: 0.0625}
+    m_Scale: {x: 0.03125, y: 0.03125, z: 0.03125}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -9735,7 +9740,7 @@ GameObject:
   - component: {fileID: 6399751585854065616}
   - component: {fileID: 6399751585854065617}
   m_Layer: 1
-  m_Name: Star Surface PS
+  m_Name: Surface PS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10009,8 +10014,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 1.5625
-      minScalar: 0.625
+      scalar: 0.78125
+      minScalar: 0.3125
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -10393,7 +10398,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 0.0625, y: 0.0625, z: 0.0625}
+    m_Scale: {x: 0.03125, y: 0.03125, z: 0.03125}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0

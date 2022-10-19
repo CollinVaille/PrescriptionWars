@@ -24,7 +24,7 @@ public static class GalaxySaveSystem
         FileStream stream = new FileStream(path, FileMode.Create);
 
         //Creates the galaxy data object that will be saved using the galaxy manager.
-        GalaxyData data = new GalaxyData();
+        GalaxyData data = new GalaxyData(NewGalaxyManager.galaxyManager);
 
         //Saves the data and closes the file stream in order to avoid any errors.
         formatter.Serialize(stream, data);

@@ -8,14 +8,10 @@ public class GalaxyData
 {
     public List<GalaxySolarSystemData> solarSystems = null;
 
-    public GalaxyData()
+    public GalaxyData(NewGalaxyManager galaxyManager)
     {
-        //Checks if the scene currently open is the galaxy and logs an error and returns if not.
-        if(!SceneManager.GetActiveScene().name.Equals("New Galaxy"))
-        {
-            Debug.LogError("Galaxy save data object cannot be created since the galaxy scene itself isn't even open.");
-            return;
-        }
+        if (galaxyManager == null)
+            Debug.LogError("Galaxy save data cannot be created without a valid non-null galaxy manager passed into the constructor.");
 
         solarSystems = new List<GalaxySolarSystemData>();
         foreach(GalaxySolarSystem solarSystem in NewGalaxyManager.solarSystems)

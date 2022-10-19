@@ -48,6 +48,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// Publicly accessible property that returns an instance of a galaxy manager.
     /// </summary>
     public static NewGalaxyManager galaxyManager { get => galaxyManagerVar; }
+    /// <summary>
+    /// Publicly accessible property that returns a boolean that indicates whether or not the player is inside of the galaxy scene and the galaxy manager static instance has been initialized.
+    /// </summary>
+    public static bool sceneActive { get => galaxyManager != null; }
+
+    /// <summary>
+    /// Publicly accessible property that indicates whether the game object that the galaxy manager script is attached to is active in the hierarchy. In other words, it indicates whether the visible galaxy itself is visible in the hierarchy.
+    /// </summary>
+    public static bool activeInHierarchy { get => galaxyManager != null && galaxyManager.gameObject.activeInHierarchy; }
 
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
@@ -79,5 +88,14 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     protected override void Update()
     {
         base.Update();
+    }
+
+    /// <summary>
+    /// This method should be called whenever the galaxy game object that the galaxy manager script is attached to is destroyed, which effectively means that the scene has been changed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        //Resets the static galaxy manager instance variable to null.
+        galaxyManagerVar = null;
     }
 }
