@@ -14,6 +14,12 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("Holds either the new game data passed from the new game menu or the new game data selected through the inspector.")] private NewGameData newGameData = new NewGameData();
     [SerializeField, Tooltip("The minimum amount of space that must exist between all stars in the galaxy.")] private int minimumSpaceBetweenStars = 0;
     [SerializeField, Tooltip("Array that contains the probability for each star type to be assigned to a star. The enum index of the star type correlates to the same index in this array.")] private float[] starTypeSpawnProbabilities = new float[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
+    [SerializeField, Tooltip("Indicates the amount of space between the star and the first planetary orbit in the solar system that may or may not have a planet on it.")] private float spaceBetweenStarAndPlanetaryOrbits = 10;
+    [SerializeField, Tooltip("Indicates the amount of space between each planetary orbit in the solar system that may or may not have a planet on it.")] private float spaceBetweenPlanetaryOrbits = 5;
+
+    [Header("Biome Options")]
+
+    [SerializeField, Tooltip("List that specifies the data for every biome.")] private List<NewGalaxyBiome> biomes = new List<NewGalaxyBiome>();
 
     [Header("Parents")]
 
@@ -23,6 +29,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
     [SerializeField, Tooltip("The prefab that all solar systems in the galaxy will be instanitated from. Specified through the inspector.")] private GameObject solarSystemPrefab = null;
     [SerializeField, Tooltip("Array that contains the prefab for each star type where the enum index of the star type correlates to the same index in this array.")] private GameObject[] starTypePrefabs = new GameObject[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
+    [SerializeField, Tooltip("The prefab that all planets in every solar system in the galaxy will be instantiated from.")] private GameObject planetPrefab = null;
 
     //Non-inspector variables.
 
@@ -155,7 +162,16 @@ public class NewGalaxyGenerator : MonoBehaviour
 
             //Loads in the sprite from resources that contains the shape that specifies where stars can and cannot be placed.
             Sprite galaxyShapeSprite = Resources.Load<Sprite>("Galaxy/Galaxy Shapes/" + newGameData.galaxyShape);
+            //Declares and initializes a variable that indicates how many planets are still left to be generated and placed within a solar system within the galaxy.
+            int numberOfPlanetsRemaining = newGameData.planetCount;
+            //Declares and initializes a list that contains the number of planets generated for each biome.
+            List<int> planetsOfBiomeCount = new List<int>();
+            for(int biomeIndex = 0; biomeIndex < biomes.Count; biomeIndex++)
+            {
+                planetsOfBiomeCount.Add(0);
+            }
             //Loops that creates all of the solar systems in the galaxy.
+            int remainderPlanets = newGameData.planetCount - ((newGameData.planetCount / newGameData.solarSystemCount) * newGameData.solarSystemCount);
             for (int solarSystemIndex = 0; solarSystemIndex < newGameData.solarSystemCount; solarSystemIndex++)
             {
                 //Creates a new solar system by instianiating from the solar system prefab.
@@ -173,8 +189,67 @@ public class NewGalaxyGenerator : MonoBehaviour
                 star.transform.localPosition = Vector3.zero;
                 starTypesRemaining.RemoveAt(starTypeIndexInList);
 
+                //Loop that generates the planets of the solar system.
+                List<NewGalaxyPlanet> planets = new List<NewGalaxyPlanet>();
+                for(int planetIndex = 0; planetIndex < (newGameData.planetCount / newGameData.solarSystemCount) + 1; planetIndex++)
+                {
+                    //Breaks out of the loop if there are no more remainder planets left to place and the required ones in this solar system have already been placed.
+                    if(planetIndex >= newGameData.planetCount / newGameData.solarSystemCount && remainderPlanets <= 0)
+                        break;
+
+                    //Generates a biome for the planet.
+                    int biomeIndexWithLowestPlanetCount = -1;
+                    List<int> biomeIndexs = new List<int>();
+                    for(int biomeIndex = 0; biomeIndex < planetsOfBiomeCount.Count; biomeIndex++)
+                    {
+                        biomeIndexs.Add(biomeIndex);
+                    }
+                    while(biomeIndexs.Count > 0)
+                    {
+                        int biomeIndexIndex = UnityEngine.Random.Range(0, biomeIndexs.Count);
+                        int biomeIndex = biomeIndexs[biomeIndexIndex];
+                        bool planetaryOrbitAvailable = true;
+                        for(int planetsAlreadyAddedIndex = 0; planetsAlreadyAddedIndex < planets.Count; planetsAlreadyAddedIndex++)
+                        {
+                            if(biomes[biomeIndex].planetaryOrbitProximityToStar == GetBiomeOfType(planets[planetsAlreadyAddedIndex].biomeType).planetaryOrbitProximityToStar)
+                            {
+                                planetaryOrbitAvailable = false;
+                                break;
+                            }
+                        }
+                        if (!planetaryOrbitAvailable)
+                        {
+                            biomeIndexs.RemoveAt(biomeIndexIndex);
+                            continue;
+                        }
+                        if(biomeIndexWithLowestPlanetCount < 0)
+                        {
+                            biomeIndexWithLowestPlanetCount = biomeIndex;
+                            biomeIndexs.RemoveAt(biomeIndexIndex);
+                            continue;
+                        }
+
+                        if (planetsOfBiomeCount[biomeIndex] < planetsOfBiomeCount[biomeIndexWithLowestPlanetCount])
+                            biomeIndexWithLowestPlanetCount = biomeIndex;
+                        biomeIndexs.RemoveAt(biomeIndexIndex);
+                    }
+                    planetsOfBiomeCount[biomeIndexWithLowestPlanetCount] += 1;
+                    NewGalaxyBiome biome = biomes[biomeIndexWithLowestPlanetCount];
+
+                    GameObject planetaryOrbit = Instantiate(new GameObject());
+                    planetaryOrbit.transform.SetParent(solarSystem.planetaryOrbitsParent);
+                    planetaryOrbit.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+
+                    NewGalaxyPlanet planet = Instantiate(planetPrefab).transform.GetChild(0).gameObject.GetComponent<NewGalaxyPlanet>();
+                    planet.transform.SetParent(planetaryOrbit.transform);
+                    planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + spaceBetweenStarAndPlanetaryOrbits + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
+                    planet.InitializeFromGalaxyGenerator(biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, star.starLight);
+
+                    planets.Add(planet);
+                }
+
                 //Initializes the variables in the solar system.
-                solarSystem.InitializeFromGalaxyGenerator(star);
+                solarSystem.InitializeFromGalaxyGenerator(star, planets);
 
                 //Declares and initializes a variable that will be used in order to ensure that not too many failed attempts are made to place the solar system within the galaxy.
                 int solarSystemPlacementAttempsMade = 0;
@@ -228,12 +303,30 @@ public class NewGalaxyGenerator : MonoBehaviour
                 if (solarSystemPlacementAttempsMade >= maxFailedSolarSystemPlacementAttemps)
                 {
                     Debug.LogWarning("Maximum amount of allowed attempts to fail to validly position a solar system reached. Will stop adding any more solar systems to the galaxy.");
+                    Destroy(solarSystem.gameObject);
                     break;
                 }
                 //Adds the solar system just worked on to the list of all solar systems within the galaxy.
                 solarSystems.Add(solarSystem);
+                //Decrements the number of remainder planets.
+                remainderPlanets--;
             }
         }
+    }
+
+    /// <summary>
+    /// Private function that returns the biome of the specified biome type.
+    /// </summary>
+    /// <param name="biomeType"></param>
+    /// <returns></returns>
+    private NewGalaxyBiome GetBiomeOfType(Planet.Biome biomeType)
+    {
+        foreach(NewGalaxyBiome biome in biomes)
+        {
+            if (biome.biome == biomeType)
+                return biome;
+        }
+        return null;
     }
 
     /// <summary>
@@ -248,4 +341,93 @@ public class NewGalaxyGenerator : MonoBehaviour
         Debug.LogWarning("Specified galaxy type does not have an assigned max planets count. Will return default value of 60.");
         return 60;
     }
+}
+
+[System.Serializable]
+public class NewGalaxyBiome
+{
+    [SerializeField, LabelOverride("Biome"), Tooltip("Specifies the type of biome.")] private Planet.Biome biomeVar = Planet.Biome.Unknown;
+    [SerializeField, LabelOverride("Planetary Ring Chance"), Tooltip("The chance that a planet of this biome will spawn with a ring (Range: 0-1).")] private float planetaryRingChanceVar = 0.2f;
+    [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can have its rings be.")] private Vector2 planetaryRingSizeRange = new Vector2(0.25f, 0.69f);
+    [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can be.")] private Vector2 planetarySizeRange = new Vector2(0.2f, 0.3f);
+    [SerializeField, Tooltip("The minimum (x) and maximum (y) speeds that a planet of this biome can have clouds moving.")] private Vector2 cloudSpeedRange = new Vector2(15, 40);
+    [SerializeField, Tooltip("The list of names of planet materials that can be used on planets that belong to this biome.")] private List<string> planetMaterialNames = new List<string>();
+    [SerializeField, Tooltip("The first color in each set is the color of the clouds and the second color in each set is the color of their shadow.")] private List<DualColorSet> cloudColorCombos = new List<DualColorSet>();
+    [SerializeField, Tooltip("List of colors that could possibly be applied to cities on planets of this biome.")] private List<Color> cityColors = new List<Color>();
+    [SerializeField, Tooltip("List of dual color sets that could possibly be applied to rings of planets of this biome.")] private List<DualColorSet> ringColorCombos = new List<DualColorSet>();
+    [SerializeField, LabelOverride("Planetary Orbit Proximity To Star"), Tooltip("Specifies what planetary orbit of the solar system the planet will be on (0-1 with 0 being the closest to the sun).")] private int planetaryOrbitProximityToStarVar = 0;
+
+    //Non-inspector variables.
+
+    private List<string> planetMaterialNamesUsed = new List<string>();
+
+    /// <summary>
+    /// Public property that should be used to access the type of biome.
+    /// </summary>
+    public Planet.Biome biome { get => biomeVar; }
+
+    /// <summary>
+    /// Public property that should be used to access the percentage chance (0-1) for each planet of this biome to have a ring.
+    /// </summary>
+    public float planetaryRingChance { get => planetaryRingChanceVar; }
+
+    /// <summary>
+    /// Public property that should be used to access a random planetary material name of the biome.
+    /// </summary>
+    public string randomMaterialName
+    {
+        get
+        {
+            //Clones planet material names list.
+            List<string> localPlanetMaterialNames = new List<string>(planetMaterialNames);
+            if (localPlanetMaterialNames.Count <= planetMaterialNamesUsed.Count)
+                planetMaterialNamesUsed.Clear();
+            else if (planetMaterialNamesUsed.Count > 0)
+            {
+                //Removes each planet material name already used.
+                foreach (string planetMaterialName in planetMaterialNamesUsed)
+                    localPlanetMaterialNames.Remove(planetMaterialName);
+            }
+            //Gets a random planet material name not already used.
+            string randomPlanetMaterialName = localPlanetMaterialNames[UnityEngine.Random.Range(0, localPlanetMaterialNames.Count)];
+            //Marks the random planet material name as used.
+            planetMaterialNamesUsed.Add(randomPlanetMaterialName);
+            return randomPlanetMaterialName;
+        }
+    }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random ring size from the range of valid ring sizes for the biome.
+    /// </summary>
+    public float randomRingSize { get => UnityEngine.Random.Range(planetaryRingSizeRange.x, planetaryRingSizeRange.y); }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random planetary size from the range of valid planetary sizes for the biome.
+    /// </summary>
+    public float randomPlanetarySize { get => UnityEngine.Random.Range(planetarySizeRange.x, planetarySizeRange.y); }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random cloud speed from the range of valid cloud speeds for the biome.
+    /// </summary>
+    public float randomCloudSpeed { get => UnityEngine.Random.Range(cloudSpeedRange.x, cloudSpeedRange.y); }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random cloud color combo from the list of valid cloud color combos for the biome.
+    /// </summary>
+    public DualColorSet randomCloudColorCombo { get => cloudColorCombos[UnityEngine.Random.Range(0, cloudColorCombos.Count)]; }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random city color from the list of valid city colors for the biome.
+    /// </summary>
+    public Color randomCityColor { get => cityColors[UnityEngine.Random.Range(0, cityColors.Count)]; }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random ring color combo from the list of valid ring color combos for the biome.
+    /// </summary>
+    public DualColorSet randomRingColorCombo { get => ringColorCombos[UnityEngine.Random.Range(0, ringColorCombos.Count)]; }
+
+    /// <summary>
+    /// Public property that should be used in order to access how close the planetary orbit of planet's of this biome are to the star of the solar system.
+    /// </summary>
+    public int planetaryOrbitProximityToStar { get => planetaryOrbitProximityToStarVar; }
 }

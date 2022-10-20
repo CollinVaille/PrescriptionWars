@@ -15,6 +15,10 @@ public class GalaxyStar : MonoBehaviour
     [SerializeField, Tooltip("The particle system responsible for emitting the particles that make up the corona of the star.")] private ParticleSystem coronaPS = null;
     [SerializeField, Tooltip("The particle system responsible for emitting the particles that make up the loops of the star.")] private ParticleSystem loopsPS = null;
 
+    [Header("Light Components")]
+
+    [SerializeField, LabelOverride("Star Light"), Tooltip("The light component that emits light out of the star.")] private Light starLightVar = null;
+
     //Non-inspector variables and properties.
 
     /// <summary>
@@ -46,6 +50,11 @@ public class GalaxyStar : MonoBehaviour
     /// Public property that should be used in order to access the type of star this star is.
     /// </summary>
     public StarType type { get => typeVar; }
+
+    /// <summary>
+    /// Public property that should be used to access the light component that emits light out of the star.
+    /// </summary>
+    public Light starLight { get => starLightVar; }
 
     /// <summary>
     /// Public property that should be used in order to access the local scale of the star.
