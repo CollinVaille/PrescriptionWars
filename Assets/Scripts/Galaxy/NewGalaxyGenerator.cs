@@ -134,6 +134,33 @@ public class NewGalaxyGenerator : MonoBehaviour
                 GalaxyStar star = Instantiate(starTypePrefabs[(int)saveGameData.solarSystems[solarSystemIndex].star.starType]).GetComponent<GalaxyStar>();
                 star.transform.SetParent(solarSystem.transform);
                 star.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].star);
+                star.transform.localPosition = Vector3.zero;
+
+                //Loop that instantiates the planets of the solar system using the list of planet data of the current solar system in the galaxy save data loaded in.
+                List<NewGalaxyPlanet> planets = new List<NewGalaxyPlanet>();
+                for (int planetIndex = 0; planetIndex < saveGameData.solarSystems[solarSystemIndex].planets.Count; planetIndex++)
+                {
+                    //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
+                    GameObject planetaryOrbit = Instantiate(new GameObject());
+                    //Names the planetary orbit based on how far it is from the star.
+                    planetaryOrbit.name = "Planetary Orbit " + (saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].planetaryOrbitProximityToStar + 1);
+                    //Sets the parent of the planetary orbit.
+                    planetaryOrbit.transform.SetParent(solarSystem.planetaryOrbitsParent);
+                    //Randomly sets the y rotation of the planetary orbit in order to give the planet a random rotation around the star.
+                    planetaryOrbit.transform.localRotation = Quaternion.Euler(0, saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].planetaryOrbitRotation, 0);
+
+                    //Instantiates a new planet from the planet prefab.
+                    NewGalaxyPlanet planet = Instantiate(planetPrefab).transform.GetChild(0).gameObject.GetComponent<NewGalaxyPlanet>();
+                    //Parents the planet under its previously created planetary orbit.
+                    planet.transform.parent.SetParent(planetaryOrbit.transform);
+                    //Sets the planet's distance from the star based on the biome's specified proximity to the star.
+                    planet.transform.parent.localPosition = new Vector3(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[0], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[1], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[2]);
+                    //Initializes all needed variables of the planet.
+                    planet.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex], star.starLight);
+
+                    //Adds the planet to the list of planets that will belong to the current solar system.
+                    planets.Add(planet);
+                }
 
                 //Initializes the solar system using the saved data of the solar system and the star that was just instantiated from the same save data.
                 solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star);
@@ -236,15 +263,25 @@ public class NewGalaxyGenerator : MonoBehaviour
                     planetsOfBiomeCount[biomeIndexWithLowestPlanetCount] += 1;
                     NewGalaxyBiome biome = biomes[biomeIndexWithLowestPlanetCount];
 
+                    //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
                     GameObject planetaryOrbit = Instantiate(new GameObject());
+                    //Names the planetary orbit based on how far it is from the star.
+                    planetaryOrbit.name = "Planetary Orbit " + (biome.planetaryOrbitProximityToStar + 1);
+                    //Sets the parent of the planetary orbit.
                     planetaryOrbit.transform.SetParent(solarSystem.planetaryOrbitsParent);
+                    //Randomly sets the y rotation of the planetary orbit in order to give the planet a random rotation around the star.
                     planetaryOrbit.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
+                    //Instantiates a new planet from the planet prefab.
                     NewGalaxyPlanet planet = Instantiate(planetPrefab).transform.GetChild(0).gameObject.GetComponent<NewGalaxyPlanet>();
-                    planet.transform.SetParent(planetaryOrbit.transform);
+                    //Parents the planet under its previously created planetary orbit.
+                    planet.transform.parent.SetParent(planetaryOrbit.transform);
+                    //Sets the planet's distance from the star based on the biome's specified proximity to the star.
                     planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + spaceBetweenStarAndPlanetaryOrbits + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
-                    planet.InitializeFromGalaxyGenerator(biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, star.starLight);
+                    //Initializes all needed variables of the planet.
+                    planet.InitializeFromGalaxyGenerator(biome, star.starLight);
 
+                    //Adds the planet to the list of planets that will belong to the current solar system.
                     planets.Add(planet);
                 }
 
@@ -346,16 +383,16 @@ public class NewGalaxyGenerator : MonoBehaviour
 [System.Serializable]
 public class NewGalaxyBiome
 {
-    [SerializeField, LabelOverride("Biome"), Tooltip("Specifies the type of biome.")] private Planet.Biome biomeVar = Planet.Biome.Unknown;
-    [SerializeField, LabelOverride("Planetary Ring Chance"), Tooltip("The chance that a planet of this biome will spawn with a ring (Range: 0-1).")] private float planetaryRingChanceVar = 0.2f;
+    [SerializeField, Tooltip("Specifies the type of biome.")] private Planet.Biome _biome = Planet.Biome.Unknown;
+    [SerializeField, Tooltip("The chance that a planet of this biome will spawn with a ring (Range: 0-1).")] private float _planetaryRingChance = 0.2f;
     [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can have its rings be.")] private Vector2 planetaryRingSizeRange = new Vector2(0.25f, 0.69f);
     [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can be.")] private Vector2 planetarySizeRange = new Vector2(0.2f, 0.3f);
     [SerializeField, Tooltip("The minimum (x) and maximum (y) speeds that a planet of this biome can have clouds moving.")] private Vector2 cloudSpeedRange = new Vector2(15, 40);
+    [SerializeField, Tooltip("Specifies what planetary orbit of the solar system the planet will be on (0-1 with 0 being the closest to the sun).")] private int _planetaryOrbitProximityToStar = 0;
     [SerializeField, Tooltip("The list of names of planet materials that can be used on planets that belong to this biome.")] private List<string> planetMaterialNames = new List<string>();
     [SerializeField, Tooltip("The first color in each set is the color of the clouds and the second color in each set is the color of their shadow.")] private List<DualColorSet> cloudColorCombos = new List<DualColorSet>();
     [SerializeField, Tooltip("List of colors that could possibly be applied to cities on planets of this biome.")] private List<Color> cityColors = new List<Color>();
     [SerializeField, Tooltip("List of dual color sets that could possibly be applied to rings of planets of this biome.")] private List<DualColorSet> ringColorCombos = new List<DualColorSet>();
-    [SerializeField, LabelOverride("Planetary Orbit Proximity To Star"), Tooltip("Specifies what planetary orbit of the solar system the planet will be on (0-1 with 0 being the closest to the sun).")] private int planetaryOrbitProximityToStarVar = 0;
 
     //Non-inspector variables.
 
@@ -364,12 +401,12 @@ public class NewGalaxyBiome
     /// <summary>
     /// Public property that should be used to access the type of biome.
     /// </summary>
-    public Planet.Biome biome { get => biomeVar; }
+    public Planet.Biome biome { get => _biome; }
 
     /// <summary>
     /// Public property that should be used to access the percentage chance (0-1) for each planet of this biome to have a ring.
     /// </summary>
-    public float planetaryRingChance { get => planetaryRingChanceVar; }
+    public float planetaryRingChance { get => _planetaryRingChance; }
 
     /// <summary>
     /// Public property that should be used to access a random planetary material name of the biome.
@@ -429,5 +466,5 @@ public class NewGalaxyBiome
     /// <summary>
     /// Public property that should be used in order to access how close the planetary orbit of planet's of this biome are to the star of the solar system.
     /// </summary>
-    public int planetaryOrbitProximityToStar { get => planetaryOrbitProximityToStarVar; }
+    public int planetaryOrbitProximityToStar { get => _planetaryOrbitProximityToStar; }
 }

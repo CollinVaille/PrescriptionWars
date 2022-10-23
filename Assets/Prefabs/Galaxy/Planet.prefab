@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 7754509651115582446}
   - component: {fileID: 2340353356848955181}
   - component: {fileID: 2055847337847332917}
-  - component: {fileID: 8116206156461116811}
+  - component: {fileID: 1918911872045426608}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -339,7 +339,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 34.900005
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8116206156461116811
+--- !u!114 &1918911872045426608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -348,14 +348,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 8250479721080119727}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 605e8ca0772a76b4eb7a053cd5bd8ff5, type: 3}
+  m_Script: {fileID: 11500000, guid: cd9a1d931f4d31543b5b910a1275b1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameLabel: {fileID: 0}
-  biome: 0
-  culture: 0
-  rotationSpeed: 0
-  ownerID: -1
-  planetID: -1
-  isCapital: 0
-  materialName: 
+  atmosphere: {fileID: 3006551125390571615}
+  rings: {fileID: 1161356137666159977}

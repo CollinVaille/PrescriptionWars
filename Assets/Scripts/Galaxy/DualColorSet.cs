@@ -6,6 +6,12 @@ public struct DualColorSet
     public Color colorOne;
     public Color colorTwo;
 
+    public DualColorSet(Color colorOne, Color colorTwo)
+    {
+        this.colorOne = colorOne;
+        this.colorTwo = colorTwo;
+    }
+
     public Color this[int index]
     {
         get => GetColor(index);

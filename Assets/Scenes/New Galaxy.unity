@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.27251267, g: 0.25873548, b: 0.27501735, a: 1}
+  m_IndirectSpecularColor: {r: 0.19677055, g: 0.14825502, b: 0.13063303, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -248,7 +248,7 @@ MonoBehaviour:
     playerEmpireCulture: 0
     playerEmpireName: Player Empire
     solarSystemCount: 120
-    planetCount: 60
+    planetCount: 120
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
@@ -258,6 +258,32 @@ MonoBehaviour:
   - 0.05
   - 0.05
   - 0.2
+  spaceBetweenStarAndPlanetaryOrbits: 7.5
+  spaceBetweenPlanetaryOrbits: 5
+  biomes:
+  - _biome: 1
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 0
+    planetMaterialNames:
+    - Hoth
+    - Jaspet
+    - Sugah
+    - Gataca
+    - Gerta
+    - Tokcitee
+    cloudColorCombos:
+    - colorOne: {r: 1, g: 1, b: 1, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.1882353, b: 0.11764706, a: 0.5019608}
+    ringColorCombos:
+    - colorOne: {r: 0.30980393, g: 1, b: 0.9882353, a: 0}
+      colorTwo: {r: 0.7921569, g: 0.7921569, b: 0.7921569, a: 0}
+    - colorOne: {r: 0, g: 0.27058825, b: 0.6901961, a: 0}
+      colorTwo: {r: 0.627451, g: 0.7764706, b: 1, a: 1}
   solarSystemsParent: {fileID: 1782092161}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
@@ -266,6 +292,8 @@ MonoBehaviour:
   - {fileID: 6399751584838204360, guid: 4d75bc2f90b85c446854a3742ee35c9b, type: 3}
   - {fileID: 6399751584838204360, guid: 969907a8b7dba0440bb9468b4e5c0bf3, type: 3}
   - {fileID: 6399751584838204360, guid: dcfc4321cf8721e41821a7ae242d5389, type: 3}
+  planetPrefab: {fileID: 1186292218765209902, guid: 9b8f2abbe920a4f47957bd30c79db6c3,
+    type: 3}
 --- !u!4 &125864733
 Transform:
   m_ObjectHideFlags: 0
@@ -5859,5 +5887,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 30
-  zoomRange: {x: 1654, y: 20}
-  dragSpeed: 50
+  zoomRange: {x: 1654, y: 5}
+  dragSpeed: 30
