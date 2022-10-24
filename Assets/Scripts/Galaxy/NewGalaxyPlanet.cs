@@ -66,6 +66,15 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
+    /// Private variable that holds the amount of degrees that the planet rotates on its own axis every second.
+    /// </summary>
+    private float rotationSpeedVar = 0;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the amount of degrees that the planet rotates on its own axis every second.
+    /// </summary>
+    public float rotationSpeed { get => rotationSpeedVar; set => rotationSpeedVar = value; }
+
+    /// <summary>
     /// Public property that should be used both to access and mutate the speed of the clouds that are moving in the planet's atmosphere.
     /// </summary>
     public float cloudSpeed
@@ -154,7 +163,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        transform.parent.localRotation = Quaternion.Euler(transform.parent.localRotation.eulerAngles.x, transform.parent.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), transform.parent.localRotation.eulerAngles.z);
     }
 
     /// <summary>
@@ -170,7 +179,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="cityColor"></param>
     /// <param name="ringColorCombo"></param>
     /// <param name="starLight"></param>
-    private void Initialize(Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
+    private void Initialize(Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
     {
         //Initializes the biome type.
         biomeTypeVar = biomeType;
@@ -182,6 +191,8 @@ public class NewGalaxyPlanet : MonoBehaviour
         this.ringSize = ringSize;
         //Initializes the size of the planet.
         this.planetarySize = planetarySize;
+        //Initializes the rotation speed of the planet.
+        rotationSpeed = planetaryRotationSpeed;
         //Initializes the speed of the clouds on the planet.
         this.cloudSpeed = cloudSpeed;
         //Initializes the color of the planet's clouds and cloud shadow.
@@ -203,7 +214,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="starLight"></param>
     public void InitializeFromSaveData(GalaxyPlanetData planetData, Light starLight)
     {
-        Initialize(planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
+        Initialize(planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
     }
 
     /// <summary>
@@ -213,7 +224,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="starLight"></param>
     public void InitializeFromGalaxyGenerator(NewGalaxyBiome biome, Light starLight)
     {
-        Initialize(biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
+        Initialize(biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
     }
 }
 
@@ -226,6 +237,7 @@ public class GalaxyPlanetData
     public bool hasRings = false;
     public float ringSize = 0;
     public float planetarySize = 0;
+    public float planetaryRotationSpeed = 0;
     public float cloudSpeed = 0;
     public DualColorSet cloudColorCombo;
     public Color cityColor;
@@ -243,6 +255,7 @@ public class GalaxyPlanetData
         hasRings = planet.hasRings;
         ringSize = planet.ringSize;
         planetarySize = planet.planetarySize;
+        planetaryRotationSpeed = planet.rotationSpeed;
         cloudSpeed = planet.cloudSpeed;
         cloudColorCombo = new DualColorSet(planet.cloudColor, planet.cloudShadowColor);
         cityColor = planet.cityColor;

@@ -387,6 +387,7 @@ public class NewGalaxyBiome
     [SerializeField, Tooltip("The chance that a planet of this biome will spawn with a ring (Range: 0-1).")] private float _planetaryRingChance = 0.2f;
     [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can have its rings be.")] private Vector2 planetaryRingSizeRange = new Vector2(0.25f, 0.69f);
     [SerializeField, Tooltip("The minimum (x) and maximum (y) size that a planet of this biome can be.")] private Vector2 planetarySizeRange = new Vector2(0.2f, 0.3f);
+    [SerializeField, Tooltip("The minimum (x) and maximum (y) amount of degrees that the planet can rotate on its axis every second.")] private Vector2 planetaryRotationSpeedRange = new Vector2(3, 5);
     [SerializeField, Tooltip("The minimum (x) and maximum (y) speeds that a planet of this biome can have clouds moving.")] private Vector2 cloudSpeedRange = new Vector2(15, 40);
     [SerializeField, Tooltip("Specifies what planetary orbit of the solar system the planet will be on (0-1 with 0 being the closest to the sun).")] private int _planetaryOrbitProximityToStar = 0;
     [SerializeField, Tooltip("The list of names of planet materials that can be used on planets that belong to this biome.")] private List<string> planetMaterialNames = new List<string>();
@@ -442,6 +443,11 @@ public class NewGalaxyBiome
     /// Public property that should be used in order to access a new random planetary size from the range of valid planetary sizes for the biome.
     /// </summary>
     public float randomPlanetarySize { get => UnityEngine.Random.Range(planetarySizeRange.x, planetarySizeRange.y); }
+
+    /// <summary>
+    /// Public property that should be used in order to access a new random amount of degrees for a planet of the biome to rotate on its own axis every second.
+    /// </summary>
+    public float randomPlanetaryRotationSpeed { get => UnityEngine.Random.Range(planetaryRotationSpeedRange.x, planetaryRotationSpeedRange.y); }
 
     /// <summary>
     /// Public property that should be used in order to access a new random cloud speed from the range of valid cloud speeds for the biome.

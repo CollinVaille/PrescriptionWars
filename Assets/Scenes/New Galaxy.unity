@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19677055, g: 0.14825502, b: 0.13063303, a: 1}
+  m_IndirectSpecularColor: {r: 0.27251267, g: 0.25873548, b: 0.27501735, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -247,26 +247,27 @@ MonoBehaviour:
   newGameData:
     playerEmpireCulture: 0
     playerEmpireName: Player Empire
-    solarSystemCount: 120
-    planetCount: 120
+    solarSystemCount: 100
+    planetCount: 300
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
-  minimumSpaceBetweenStars: 80
+  minimumSpaceBetweenStars: 100
   starTypeSpawnProbabilities:
   - 0.7
   - 0.05
   - 0.05
   - 0.2
-  spaceBetweenStarAndPlanetaryOrbits: 7.5
-  spaceBetweenPlanetaryOrbits: 5
+  spaceBetweenStarAndPlanetaryOrbits: 3.5
+  spaceBetweenPlanetaryOrbits: 2.5
   biomes:
   - _biome: 1
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
     planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
-    _planetaryOrbitProximityToStar: 0
+    _planetaryOrbitProximityToStar: 4
     planetMaterialNames:
     - Hoth
     - Jaspet
@@ -284,6 +285,132 @@ MonoBehaviour:
       colorTwo: {r: 0.7921569, g: 0.7921569, b: 0.7921569, a: 0}
     - colorOne: {r: 0, g: 0.27058825, b: 0.6901961, a: 0}
       colorTwo: {r: 0.627451, g: 0.7764706, b: 1, a: 1}
+  - _biome: 6
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 0
+    planetMaterialNames:
+    - Amerald
+    - Bistar
+    cloudColorCombos:
+    - colorOne: {r: 1, g: 0, b: 0, a: 0.5882353}
+      colorTwo: {r: 1, g: 0, b: 0, a: 0.5882353}
+    - colorOne: {r: 0, g: 0, b: 0, a: 0.5882353}
+      colorTwo: {r: 0, g: 0, b: 0, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0.5019608}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 1, b: 1, a: 1}
+    - colorOne: {r: 0, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 1, b: 1, a: 1}
+  - _biome: 3
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 1
+    planetMaterialNames:
+    - Netou
+    cloudColorCombos:
+    - colorOne: {r: 0.74509805, g: 0.4862745, b: 0, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0.5019608}
+    ringColorCombos:
+    - colorOne: {r: 0.74509805, g: 0.4862745, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+    - colorOne: {r: 0.74509805, g: 0.4862745, b: 0, a: 0}
+      colorTwo: {r: 0.5176471, g: 0.3372549, b: 0, a: 1}
+  - _biome: 4
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 1
+    planetMaterialNames:
+    - Teratoma
+    cloudColorCombos:
+    - colorOne: {r: 0.7647059, g: 0.35686275, b: 0, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0.5019608}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - _biome: 5
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 2
+    planetMaterialNames:
+    - Hypatia
+    - Tadmor
+    cloudColorCombos:
+    - colorOne: {r: 0.19607843, g: 0.6313726, b: 0.0627451, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0.5019608}
+    ringColorCombos:
+    - colorOne: {r: 0.11764706, g: 0.67058825, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+    - colorOne: {r: 0.11764706, g: 0.67058825, b: 0, a: 0}
+      colorTwo: {r: 0, g: 0.41568628, b: 0.019607844, a: 1}
+  - _biome: 2
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 3
+    planetMaterialNames:
+    - Wadow
+    - Vendara
+    - Titawin
+    - Huazes
+    - Dagon
+    cloudColorCombos:
+    - colorOne: {r: 1, g: 1, b: 1, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    - colorOne: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 0.5882353}
+      colorTwo: {r: 0.5764706, g: 0.5764706, b: 0.5764706, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.16862746, b: 0.078431375, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0, g: 1, b: 0.83137256, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+    - colorOne: {r: 0.06666667, g: 0.6509804, b: 0.02745098, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
+  - _biome: 7
+    _planetaryRingChance: 0.2
+    planetaryRingSizeRange: {x: 0.25, y: 0.69}
+    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetaryRotationSpeedRange: {x: 3, y: 5}
+    cloudSpeedRange: {x: 15, y: 40}
+    _planetaryOrbitProximityToStar: 5
+    planetMaterialNames:
+    - Xagobah
+    - Gataca
+    - Sugah
+    cloudColorCombos:
+    - colorOne: {r: 1, g: 1, b: 1, a: 0.5882353}
+      colorTwo: {r: 1, g: 1, b: 1, a: 0.5882353}
+    - colorOne: {r: 1, g: 0.4392157, b: 0.8666667, a: 0.5882353}
+      colorTwo: {r: 1, g: 0.44313726, b: 0.87058824, a: 0.5882353}
+    - colorOne: {r: 0.78431374, g: 0, b: 0.59607846, a: 0.5882353}
+      colorTwo: {r: 0.78431374, g: 0, b: 0.59607846, a: 0.5882353}
+    cityColors:
+    - {r: 0.7490196, g: 0.2509804, b: 0.11764706, a: 0}
+    ringColorCombos:
+    - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
+      colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
   solarSystemsParent: {fileID: 1782092161}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
@@ -5888,4 +6015,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollSpeed: 30
   zoomRange: {x: 1654, y: 5}
-  dragSpeed: 30
+  dragSpeed: 10
