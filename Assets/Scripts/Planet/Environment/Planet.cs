@@ -13,6 +13,7 @@ public class Planet : MonoBehaviour
     public static Planet planet;
     public static bool newPlanet = true;
     private static string jsonString = "";
+    public static float seaLevel = -1;
 
     //General
     [HideInInspector] public string planetName = "";
@@ -159,6 +160,7 @@ public class Planet : MonoBehaviour
         Vector3 newPosition = oceanTransform.position;
         newPosition.y = height;
         oceanTransform.position = newPosition;
+        seaLevel = height;
 
         //Set enabled
         hasOcean = oceanTransform.position.y > 0;
