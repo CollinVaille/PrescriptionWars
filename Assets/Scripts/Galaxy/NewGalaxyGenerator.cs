@@ -53,6 +53,22 @@ public class NewGalaxyGenerator : MonoBehaviour
     /// </summary>
     public static int defaultSolarSystemCount { get => 60; }
 
+    /// <summary>
+    /// Private property that should be used to specifically access the prefab of the default yellow dwarf star.
+    /// </summary>
+    private GameObject yellowDwarfStarPrefab
+    {
+        get
+        {
+            foreach(GameObject starTypePrefab in starTypePrefabs)
+            {
+                if (starTypePrefab.name.Contains("Yellow Dwarf"))
+                    return starTypePrefab;
+            }
+            return null;
+        }
+    }
+
     private void Awake()
     {
         //LoadGameMenu.saveGameData = GalaxySaveSystem.LoadGalaxy("Test Save");
@@ -264,7 +280,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                     NewGalaxyBiome biome = biomes[biomeIndexWithLowestPlanetCount];
 
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
-                    GameObject planetaryOrbit = Instantiate(new GameObject());
+                    GameObject planetaryOrbit = new GameObject();
                     //Names the planetary orbit based on how far it is from the star.
                     planetaryOrbit.name = "Planetary Orbit " + (biome.planetaryOrbitProximityToStar + 1);
                     //Sets the parent of the planetary orbit.
@@ -277,7 +293,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //Parents the planet under its previously created planetary orbit.
                     planet.transform.parent.SetParent(planetaryOrbit.transform);
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
-                    planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + spaceBetweenStarAndPlanetaryOrbits + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
+                    planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
                     //Initializes all needed variables of the planet.
                     planet.InitializeFromGalaxyGenerator(biome, star.starLight);
 

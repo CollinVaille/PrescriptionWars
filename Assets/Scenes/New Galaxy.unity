@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.27251267, g: 0.25873548, b: 0.27501735, a: 1}
+  m_IndirectSpecularColor: {r: 0.19677055, g: 0.14825502, b: 0.13063303, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -248,7 +248,7 @@ MonoBehaviour:
     playerEmpireCulture: 0
     playerEmpireName: Player Empire
     solarSystemCount: 100
-    planetCount: 300
+    planetCount: 600
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
@@ -258,13 +258,13 @@ MonoBehaviour:
   - 0.05
   - 0.05
   - 0.2
-  spaceBetweenStarAndPlanetaryOrbits: 3.5
-  spaceBetweenPlanetaryOrbits: 2.5
+  spaceBetweenStarAndPlanetaryOrbits: 4
+  spaceBetweenPlanetaryOrbits: 2
   biomes:
   - _biome: 1
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 4
@@ -288,7 +288,7 @@ MonoBehaviour:
   - _biome: 6
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 0
@@ -310,7 +310,7 @@ MonoBehaviour:
   - _biome: 3
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 1
@@ -329,7 +329,7 @@ MonoBehaviour:
   - _biome: 4
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 1
@@ -346,7 +346,7 @@ MonoBehaviour:
   - _biome: 5
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 2
@@ -366,7 +366,7 @@ MonoBehaviour:
   - _biome: 2
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 3
@@ -391,7 +391,7 @@ MonoBehaviour:
   - _biome: 7
     _planetaryRingChance: 0.2
     planetaryRingSizeRange: {x: 0.25, y: 0.69}
-    planetarySizeRange: {x: 0.0033333334, y: 0.005}
+    planetarySizeRange: {x: 0.0016666665, y: 0.0025}
     planetaryRotationSpeedRange: {x: 3, y: 5}
     cloudSpeedRange: {x: 15, y: 40}
     _planetaryOrbitProximityToStar: 5
@@ -6014,5 +6014,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollSpeed: 30
-  zoomRange: {x: 1654, y: 5}
-  dragSpeed: 10
+  zoomRange: {x: 1654, y: 3}
+  dragSpeed: 5
