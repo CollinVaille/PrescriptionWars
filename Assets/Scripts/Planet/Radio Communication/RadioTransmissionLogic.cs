@@ -36,8 +36,10 @@ public class RadioTransmissionLogic
 
                 break;
 
+
+
             case TransmissionType.Pronouncing:
-                string input = "This is Warpig Squad. Requesting backup now.";
+                string input = "We are under fire. Requesting backup now please.";
                 radioClips.AddRange(RadioWordPronounciation.PronounceWords(input));
                 rt.subtitle += input;
                 //audioClips.AddRange(RadioNumericalPronounciation.PronounceNumber(3000));

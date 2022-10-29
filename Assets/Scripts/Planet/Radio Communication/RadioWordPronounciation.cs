@@ -140,11 +140,18 @@ public class RadioWordPronounciation : MonoBehaviour
             case "ALK":
             case "AWK":
                 return "ALK";
+            case "ALL":
+            case "AUL":
+            case "AWL":
+                return "ALL";
             case "ANG":
             case "AIN":
                 return "ANG";
             case "ANK":
                 return "ANK";
+            case "BEE":
+            case "BE":
+                return "BEE";
             case "B":
             case "BUH":
                 return "BUH";
@@ -163,6 +170,9 @@ public class RadioWordPronounciation : MonoBehaviour
             case "D":
             case "DUH":
                 return "DUH";
+            case "DER":
+            case "DUR":
+                return "DUR";
             case "EA":
             case "EE":
             case "EI":
@@ -203,6 +213,9 @@ public class RadioWordPronounciation : MonoBehaviour
             case "ION":
             case "TION":
                 return "ION";
+            case "IRE":
+            case "EIRE":
+                return "IRE";
             case "IT":
             case "ET":
                 return "IT";
@@ -266,6 +279,8 @@ public class RadioWordPronounciation : MonoBehaviour
             case "U":
             case "UH":
                 return "UH";
+            case "UN":
+                return "UN";
             case "V":
                 return "VVV";
             case "W":

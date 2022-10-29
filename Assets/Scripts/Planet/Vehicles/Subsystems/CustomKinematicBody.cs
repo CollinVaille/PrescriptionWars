@@ -7,20 +7,26 @@ public class CustomKinematicBody : MonoBehaviour
     //Customization
     [HideInInspector] public float airResistance = 4.0f;
 
+    //References
+    private Rigidbody rBody;
+    private Collider boundaryCollider;
+    private Transform spotter;
+
     //Status variables
     private Vector3 globalVelocity = Vector3.zero;
-    private Rigidbody rBody;
     private float verticalMaxSpeed = 50.0f;
 
     private void Start()
     {
         rBody = GetComponent<Rigidbody>();
+        boundaryCollider = GetComponent<Collider>();
+        spotter = transform.Find("Spotter");
     }
 
     private void FixedUpdate()
     {
         //Apply velocity to position
-        rBody.MovePosition(rBody.position + globalVelocity * Time.fixedDeltaTime);
+        TryToTranslate();
 
         ApplyAirResistance();
     }
@@ -60,5 +66,42 @@ public class CustomKinematicBody : MonoBehaviour
             globalVelocity -= airResistanceVector;
         else
             globalVelocity = Vector3.zero;
+    }
+
+    //Try to translate the body per the velocity, but look for a collision and if there is one, stop at point of contact and trigger collision logic and effects
+    private void TryToTranslate()
+    {
+        //If it's not moving, then we don't need to check
+        if (globalVelocity.sqrMagnitude < 0.001)
+        {
+            if (globalVelocity != Vector3.zero)
+                globalVelocity = Vector3.zero;
+
+            return;
+        }
+
+        Vector3 attemptedTranslation = globalVelocity * Time.fixedDeltaTime;
+        //Vector3 newTargetPosition = rBody.position + globalVelocity * Time.fixedDeltaTime;
+        Vector3 closestPoint = boundaryCollider.ClosestPoint(rBody.position + (attemptedTranslation * 1000));
+        spotter.position = closestPoint;
+
+        if (Physics.Raycast(closestPoint, attemptedTranslation.normalized, out RaycastHit hit, attemptedTranslation.magnitude, ~0, QueryTriggerInteraction.Ignore))
+        {
+            //Something in the way... oooo-oooo...
+            //Time to deliver some justice!
+
+            Vector3 deltaOfClosestPointAndHit = hit.point - closestPoint;
+
+            //Move up until the very point where we hit
+            //rBody.MovePosition(rBody.position + deltaOfClosestPointAndHit);
+
+            //Bounce with some energy loss
+            globalVelocity  = -globalVelocity * 0.5f;
+        }
+        else
+        {
+            //Nothing in the way, complete the full translation
+            rBody.MovePosition(rBody.position + attemptedTranslation);
+        }
     }
 }
