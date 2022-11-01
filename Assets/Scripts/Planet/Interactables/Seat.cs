@@ -60,7 +60,7 @@ public class Seat : Interactable
         occupant.OverrideControl(this);
 
         if (controls)
-            controls.SetPower(true);
+            controls.UpdateDriverStatus(true);
     }
 
     public override void ReleaseControl(bool voluntary)
@@ -75,8 +75,8 @@ public class Seat : Interactable
         if (!occupant)
             return;
 
-        if (controls && !controls.CruiseControlActivated())
-            controls.SetPower(false);
+        if (controls)
+            controls.UpdateDriverStatus(false);
 
         if (voluntary)
             occupant.GetAudioSource().PlayOneShot(getUp);
@@ -89,6 +89,10 @@ public class Seat : Interactable
             Rigidbody occupantRBody = occupant.GetRigidbody();
             occupantRBody.isKinematic = false;
             occupantRBody.collisionDetectionMode = occupantsPriorMode;
+
+            Rigidbody vehicleRBody = belongsTo.GetRBody();
+            if(vehicleRBody)
+                occupantRBody.velocity = vehicleRBody.velocity;
 
             belongsTo.SetPassengerCollisionRecursive(occupant.transform, false);
         }

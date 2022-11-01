@@ -33,7 +33,7 @@ public class Vehicle : MonoBehaviour
     }
 
     //Power
-    protected bool on = false;
+    protected bool on = false, hasDriverCurrently = false;
     public AudioClip powerOn, powerOff;
 
     //References
@@ -426,9 +426,9 @@ public class Vehicle : MonoBehaviour
             engine.UpdateEngineEffects(backwardThrusting, currentSpeed, absoluteMaxSpeed, ForwardEngineAudioCoefficient());
     }
 
-    public bool CruiseControlActivated() { return cruiseControl; }
+    private bool CruiseControlActivated() { return cruiseControl; }
 
-    public void SetCruiseControl(bool turnCruiseControlOn) { cruiseControl = turnCruiseControlOn; }
+    public virtual void SetCruiseControl(bool turnCruiseControlOn) { cruiseControl = turnCruiseControlOn; }
 
     public void SetGasPedal(float gasPedal)
     {
@@ -471,4 +471,19 @@ public class Vehicle : MonoBehaviour
     public void CoupleSpeedometerToVehicle(Speedometer speedometer) { this.speedometer = speedometer; }
 
     public float ForwardEngineAudioCoefficient() { return 1.0f + ((1.0f * currentSpeed) / absoluteMaxSpeed); }
+
+    public void UpdateDriverStatus(bool hasDriverNow)
+    {
+        if (hasDriverCurrently == hasDriverNow)
+            return;
+
+        hasDriverCurrently = hasDriverNow;
+
+        if (hasDriverNow)
+            SetPower(true);
+        else if (!CruiseControlActivated())
+            SetPower(false);
+    }
+
+    public Rigidbody GetRBody() { return rBody; }
 }

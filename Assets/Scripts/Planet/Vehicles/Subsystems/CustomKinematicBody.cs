@@ -16,9 +16,10 @@ public class CustomKinematicBody : MonoBehaviour
 
     //Status variables
     private Vector3 globalVelocity = Vector3.zero;
-    private float verticalMaxSpeed = 50.0f, absoluteMaxSpeed = 150.0f;
+    private float verticalMaxSpeed = 50.0f, absoluteMaxSpeed = 130.0f;
     private RaycastHit[] possibleHits;
     private RaycastHit hit;
+    private bool safelyGrounded = false;
 
     private void Start()
     {
@@ -142,7 +143,10 @@ public class CustomKinematicBody : MonoBehaviour
         {
             for(int hitIndex = 0; hitIndex < numberOfHits; hitIndex++)
             {
-                if(!possibleHits[hitIndex].collider.transform.IsChildOf(transform))
+                Transform t = possibleHits[hitIndex].collider.transform;
+
+                //Don't collide with any objects that are a part of the ship or are resting inside the ship
+                if (!t.IsChildOf(transform) && !t.GetComponentInParent<Rigidbody>())
                 {
                     hit = possibleHits[hitIndex];
                     return true; //hit something that is not part of the ship
@@ -157,8 +161,8 @@ public class CustomKinematicBody : MonoBehaviour
     {
         ChangeVelocityAndPositionBasedOnCollision();
 
-        //Debug.Log(hit.collider.transform.root.name);
-        //Debug.Log(hit.collider.name);
+        Debug.Log(hit.collider.transform.root.name);
+        Debug.Log(hit.collider.name);
 
         //Move up until the very point where we hit
         //rBody.MovePosition(rBody.position + deltaOfClosestPointAndHit * 0.2f);
@@ -195,4 +199,6 @@ public class CustomKinematicBody : MonoBehaviour
         //Update position per velocity
         rBody.MovePosition(rBody.position + (globalVelocity * Time.fixedDeltaTime));
     }
+
+    public bool IsSafelyGrounded() { return safelyGrounded; }
 }

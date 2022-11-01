@@ -80,7 +80,7 @@ public class Aircraft : Vehicle
             if (!MovingBackward() || rBody.velocity.magnitude < currentMaxSpeed)
                 customBody.AddForce(Vector3.back * brakePower * Time.fixedDeltaTime, Space.Self);
         }
-        else if(!MovingBackward() && rBody.velocity.magnitude < currentMaxSpeed) //Cruise control
+        else if(!MovingBackward() && rBody.velocity.magnitude < currentMaxSpeed) //Keep current forward momentum going
             customBody.AddForce(Vector3.forward * rBody.mass * Time.fixedDeltaTime * customBody.airResistance, Space.Self);
     }
 
@@ -132,5 +132,15 @@ public class Aircraft : Vehicle
     public void SetAltitudeController(VehicleAltitudeController altitudeController)
     {
         this.altitudeController = altitudeController;
+    }
+
+    public override void SetCruiseControl(bool turnCruiseControlOn)
+    {
+        base.SetCruiseControl(turnCruiseControlOn);
+
+        if (turnCruiseControlOn && altitudeController.IsOffline())
+            altitudeController.SetOffline(false);
+        else if (!turnCruiseControlOn && !hasDriverCurrently)
+            altitudeController.SetOffline(true);
     }
 }

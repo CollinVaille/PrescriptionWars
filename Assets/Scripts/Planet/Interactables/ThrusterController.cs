@@ -53,7 +53,7 @@ public class ThrusterController : Interactable
     private IEnumerator ThrustingSequence()
     {
         List<Engine> engines = vehicle.GetForwardEngines();
-        if(engines == null || engines.Count == 0)
+        if(engines == null || engines.Count == 0 || !vehicle.PoweredOn())
         {
             currentState = ThrustingState.EnginesOffline;
             yield break;
@@ -74,7 +74,7 @@ public class ThrusterController : Interactable
 
         //Wait for thrusting to be over
         float startTimeOfThrust = Time.timeSinceLevelLoad;
-        for (; activated && stateCooldown > 0; stateCooldown -= Time.deltaTime * vehicle.ForwardEngineAudioCoefficient())
+        for (; activated && vehicle.PoweredOn() && stateCooldown > 0; stateCooldown -= Time.deltaTime * vehicle.ForwardEngineAudioCoefficient())
             yield return null;
 
         //RESETTING PHASE------------------------------------------------------------------------------------------------------------
