@@ -446,24 +446,6 @@ public class Pill : MonoBehaviour, Damageable
             mainAudioSource.Play();
     }
 
-    public Vector3 GetRootGlobalVelocity()
-    {
-        Rigidbody rootRBody = GetRigidbody();
-        Transform t = transform;
-        while(t != null)
-        {
-            if (t.GetComponent<Rigidbody>())
-                rootRBody = t.GetComponent<Rigidbody>();
-
-            t = t.parent;
-        }
-
-        if (rootRBody)
-            return rootRBody.velocity;
-        else
-            return Vector3.zero;
-    }
-
     public void ChangeVehicleZone(VehicleZone theZone, bool entering)
     {
         if(entering)

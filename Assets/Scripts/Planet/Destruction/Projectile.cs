@@ -23,7 +23,9 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
     private Rigidbody rBody;
     private AudioSource sfxSource;
 
-    private float distanceCovered = 0.0f, actualLaunchSpeed = 0.0f;
+    //Status variables
+    private float distanceCovered = 0.0f;
+    private Vector3 actualLaunchVelocity; //In global space
 
     public void OneTimeSetUp()
     {
@@ -68,10 +70,14 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
             }
 
             //Raahhhhhhhh
-            float transitiveVelocity = transform.InverseTransformVector(launcher.GetRootGlobalVelocity()).z;
-            actualLaunchSpeed = transitiveVelocity <= 0 ? launchSpeed : launchSpeed + transitiveVelocity;
+            actualLaunchVelocity = transform.TransformVector(Vector3.forward * launchSpeed); //Start with velocity that would be correct if the launcher was standing still
+
+            Rigidbody referenceRBody = launcher.GetComponentInParent<Rigidbody>(); //Then add on the velocity that we transitively get from the launcher
+            if (referenceRBody)
+                actualLaunchVelocity += referenceRBody.velocity;
+
             if (rBody)
-                rBody.AddRelativeForce(Vector3.forward * actualLaunchSpeed, ForceMode.VelocityChange);
+                rBody.AddForce(actualLaunchVelocity, ForceMode.VelocityChange);
             else
                 God.god.ManageVolatileObject(this);
         }
@@ -80,29 +86,33 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
     //Used to update the collision detection, movement, etc...
     public void UpdateActiveStatus(float stepTime)
     {
-        float stepDistance = actualLaunchSpeed * stepTime;
+        Vector3 stepDelta = actualLaunchVelocity * stepTime;
 
         //Check for collision
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, stepDistance, ~0, QueryTriggerInteraction.Ignore))
-            Impact(hit.collider.transform);
+        if (Physics.Raycast(transform.position, stepDelta, out RaycastHit hit, stepDelta.magnitude, ~0, QueryTriggerInteraction.Ignore))
+        {
+            Damageable victim = hit.collider.GetComponentInParent<Damageable>();
+
+            if (victim == null || victim as Pill != launcher) //Make sure we don't collide with the very pill that launched us
+                Impact(victim);
+        }
 
         //Spin for cool effect
         transform.Rotate(Vector3.forward * stepTime * 720, Space.Self);
 
         //Move forward
         if(!rBody)
-            transform.Translate(Vector3.forward * stepDistance, Space.Self);
+            transform.Translate(stepDelta, Space.World);
 
         //Time to put to pasture?
-        distanceCovered += stepDistance;
+        distanceCovered += stepDelta.magnitude;
         if (distanceCovered > range)
             Decommission();
     }
 
     //Called when the projectile hits something
-    private void Impact(Transform hit)
+    private void Impact(Damageable victim)
     {
-        Damageable victim = hit.GetComponentInParent<Damageable>();
         if (victim != null)
         {
             victim.Damage(damage, knockback, transform.position, DamageType.Projectile, launcher.team);

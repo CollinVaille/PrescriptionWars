@@ -15,7 +15,7 @@ public class CustomKinematicBody : MonoBehaviour
     private Collider boundaryCollider;
 
     //Status variables
-    private Vector3 globalVelocity = Vector3.zero;
+    private Vector3 globalTargetVelocity = Vector3.zero;
     private float verticalMaxSpeed = 50.0f, absoluteMaxSpeed = 130.0f;
     private RaycastHit[] possibleHits;
     private RaycastHit hit;
@@ -37,14 +37,17 @@ public class CustomKinematicBody : MonoBehaviour
         TryToTranslate();
 
         ApplyAirResistance();
+
+        if(!safelyGrounded)
+            CheckIfSafelyGrounded();
     }
 
     public void AddForce(Vector3 force, Space space)
     {
         if (space == Space.World)
-            globalVelocity += force / rBody.mass;
+            globalTargetVelocity += force / rBody.mass;
         else
-            globalVelocity += transform.TransformVector(force) / rBody.mass;
+            globalTargetVelocity += transform.TransformVector(force) / rBody.mass;
 
         //After changing velocity, make sure we are still within limits
         ApplyLimitsToVelocity();
@@ -53,21 +56,21 @@ public class CustomKinematicBody : MonoBehaviour
     private void ApplyLimitsToVelocity()
     {
         //Vertical max speed
-        if (Mathf.Abs(globalVelocity.y) > verticalMaxSpeed)
+        if (Mathf.Abs(globalTargetVelocity.y) > verticalMaxSpeed)
         {
-            if (globalVelocity.y < 0)
-                globalVelocity.y = -verticalMaxSpeed;
+            if (globalTargetVelocity.y < 0)
+                globalTargetVelocity.y = -verticalMaxSpeed;
             else
-                globalVelocity.y = verticalMaxSpeed;
+                globalTargetVelocity.y = verticalMaxSpeed;
         }
 
         //Absolute max speed
-        if (globalVelocity.magnitude > absoluteMaxSpeed)
-            globalVelocity = globalVelocity.normalized * absoluteMaxSpeed;
+        if (globalTargetVelocity.magnitude > absoluteMaxSpeed)
+            globalTargetVelocity = globalTargetVelocity.normalized * absoluteMaxSpeed;
 
         //Don't push downward when at water level (this is how we are giving the illusion of buoyancy)
-        if (rBody.position.y + localSeaLevel < Planet.seaLevel + 0.1f && globalVelocity.y < 0.0f)
-            globalVelocity.y = 0.0f;
+        if (rBody.position.y + localSeaLevel < Planet.seaLevel + 0.1f && globalTargetVelocity.y < 0.0f)
+            globalTargetVelocity.y = 0.0f;
     }
 
     public void SetVerticalMaxSpeed(float verticalMaxSpeed) { this.verticalMaxSpeed = verticalMaxSpeed; }
@@ -84,25 +87,32 @@ public class CustomKinematicBody : MonoBehaviour
     {
         Vector3 airResistanceVector = rBody.velocity.normalized * airResistance * Time.fixedDeltaTime;
 
-        if (airResistanceVector.sqrMagnitude < globalVelocity.sqrMagnitude)
-            globalVelocity -= airResistanceVector;
+        if (airResistanceVector.sqrMagnitude < globalTargetVelocity.sqrMagnitude)
+            globalTargetVelocity -= airResistanceVector;
         else
-            globalVelocity = Vector3.zero;
+            globalTargetVelocity = Vector3.zero;
     }
 
     //Try to translate the body per the velocity, but look for a collision and if there is one, abort translation and trigger collision logic and effects
     private void TryToTranslate()
     {
         //If it's not moving, then we don't need to check
-        if (globalVelocity.sqrMagnitude < 0.001)
+        if (globalTargetVelocity.sqrMagnitude < 0.001)
         {
-            if (globalVelocity != Vector3.zero)
-                globalVelocity = Vector3.zero;
+            if (globalTargetVelocity != Vector3.zero)
+            {
+                globalTargetVelocity = Vector3.zero;
+                rBody.velocity = Vector3.zero;
+            }
 
             return;
         }
 
-        Vector3 translationToAttempt = globalVelocity * Time.fixedDeltaTime;
+        //There's real attempts at movement again, so set this to false for now
+        safelyGrounded = false;
+
+        //Now, attempt the movement
+        Vector3 translationToAttempt = globalTargetVelocity * Time.fixedDeltaTime;
         if (DidWeRunIntoSomething(translationToAttempt, rBody.rotation)) //This will set the member variable called "hit" as a side effect
         {
             //Something in the way, abort translation and handle collision
@@ -116,8 +126,8 @@ public class CustomKinematicBody : MonoBehaviour
             rBody.position = newPos;
 
             //Make sure we don't continue to try and go down
-            if(globalVelocity.y < 0.0f)
-                globalVelocity.y = 0.0f;
+            if(globalTargetVelocity.y < 0.0f)
+                globalTargetVelocity.y = 0.0f;
         }
         else
         {
@@ -161,8 +171,8 @@ public class CustomKinematicBody : MonoBehaviour
     {
         ChangeVelocityAndPositionBasedOnCollision();
 
-        Debug.Log(hit.collider.transform.root.name);
-        Debug.Log(hit.collider.name);
+        //Debug.Log(hit.collider.transform.root.name);
+        //Debug.Log(hit.collider.name);
 
         //Move up until the very point where we hit
         //rBody.MovePosition(rBody.position + deltaOfClosestPointAndHit * 0.2f);
@@ -180,25 +190,35 @@ public class CustomKinematicBody : MonoBehaviour
         Vector3 deltaOfClosestPointAndHit = hit.point - closestPoint;
 
         //Calculate tentative new velocity
-        globalVelocity = (globalVelocity.normalized - deltaOfClosestPointAndHit.normalized) * globalVelocity.magnitude;
+        globalTargetVelocity = (globalTargetVelocity.normalized - deltaOfClosestPointAndHit.normalized) * globalTargetVelocity.magnitude;
         ApplyLimitsToVelocity();
 
         //If moving slow, gently decelerate to stop
-        if (globalVelocity.magnitude < 20)
+        if (globalTargetVelocity.magnitude < 20)
         {
-            if (globalVelocity.magnitude < 1)
-                globalVelocity = Vector3.zero;
+            if (globalTargetVelocity.magnitude < 1)
+                globalTargetVelocity = Vector3.zero;
             else
-                globalVelocity = globalVelocity.normalized * 0.5f;
+                globalTargetVelocity = globalTargetVelocity.normalized * 0.5f;
         }
 
         //If hit something below, zap any further downward movement to prevent the stupid sinking problem
-        if (deltaOfClosestPointAndHit.y < 0.0f && globalVelocity.y < 0.0f)
-            globalVelocity.y = 0.0f;
+        if (deltaOfClosestPointAndHit.y < 0.0f && globalTargetVelocity.y < 0.0f)
+            globalTargetVelocity.y = 0.0f;
 
         //Update position per velocity
-        rBody.MovePosition(rBody.position + (globalVelocity * Time.fixedDeltaTime));
+        rBody.MovePosition(rBody.position + (globalTargetVelocity * Time.fixedDeltaTime));
     }
 
     public bool IsSafelyGrounded() { return safelyGrounded; }
+
+    //This function assumes the bool safelyGrounded is currently false and we are just trying to determine if we should flip that flag.
+    private void CheckIfSafelyGrounded()
+    {
+        if (rBody.velocity.sqrMagnitude > 0.01)
+            return;
+
+        if (DidWeRunIntoSomething(Vector3.down * 15.0f, rBody.rotation) || rBody.position.y + localSeaLevel < Planet.seaLevel + 0.2f)
+            safelyGrounded = true;
+    }
 }

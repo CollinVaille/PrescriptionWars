@@ -85,6 +85,10 @@ public class Ladder : Interactable
         occupantRBody.isKinematic = false;
         occupantRBody.collisionDetectionMode = occupantsPriorMode;
 
+        Rigidbody referenceRBody = transform.GetComponentInParent<Rigidbody>();
+        if (referenceRBody)
+            occupantRBody.velocity = referenceRBody.velocity;
+
         occupant.ReleaseOverride();
         occupantCode++;
         occupant = null;
