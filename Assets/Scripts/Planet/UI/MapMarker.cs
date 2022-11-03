@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class MapMarker : MonoBehaviour, IPointerUpHandler
+public class MapMarker : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public enum MarkerType { Player, City, Squad }
+    public enum MarkerType { Background, Player, City, Squad }
 
     //Type
     public MarkerType markerType;
@@ -41,7 +41,7 @@ public class MapMarker : MonoBehaviour, IPointerUpHandler
         }
 
         //Get other references
-        mapCamera = PlanetPauseMenu.pauseMenu.mapCamera;
+        mapCamera = PlanetMapManager.mapManager.GetMapCamera();
         scaleVector = transform.localScale * 1000;
     }
 
@@ -73,9 +73,30 @@ public class MapMarker : MonoBehaviour, IPointerUpHandler
             transform.localScale = scaleVector / mapCamera.orthographicSize;
     }
 
-    public void OnPointerUp (PointerEventData eventData)
+    public void OnPointerClick (PointerEventData eventData)
     {
-        if(eventData.button == PointerEventData.InputButton.Right)
-            Debug.Log("Clicked " + name);
+        if (eventData.button == PointerEventData.InputButton.Left && eventData.clickCount == 2)
+        {
+            if (markerType == MarkerType.Background)
+                PlanetMapManager.mapManager.ResetMapCamera();
+            else
+                PlanetMapManager.mapManager.ZoomInOnMarker(this);
+        }
+    }
+
+    public void OnPointerEnter (PointerEventData eventData)
+    {
+        if (markerType == MarkerType.Background)
+            return;
+
+        PlanetMapManager.mapManager.HighlightMapMarker(this);
+    }
+
+    public void OnPointerExit (PointerEventData eventData)
+    {
+        if (markerType == MarkerType.Background)
+            return;
+
+        PlanetMapManager.mapManager.RemoveHighlighting();
     }
 }

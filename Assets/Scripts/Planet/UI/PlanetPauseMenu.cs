@@ -41,15 +41,7 @@ public class PlanetPauseMenu : MonoBehaviour
     private bool commandsMenuInitialized = false, resumeAfterCommandsMenu = false;
 
     //Map
-    private bool mapOpen = false;
-    public Material mapWater;
-    private Material realWater;
-    [HideInInspector] public Camera mapCamera;
-    private float realDeltaTime = 0.0f, lastFrameTime = 0.0f;
-    private float mapZoom = 0.0f;
-    private Vector3 movementVector = Vector3.zero;
-    private Vector3 previousMousePosition = Vector3.zero;
-    private Vector3 mapPosition = Vector3.zero;
+    private PlanetMapManager mapManager;
 
     private void Awake()
     {
@@ -58,7 +50,8 @@ public class PlanetPauseMenu : MonoBehaviour
         //Variable initialization
         currentScreen = MenuScreen.SituationMenu;
         oneShotAudioSource = GetComponent<AudioSource>();
-        mapCamera = God.god.GetComponent<Camera>();
+        mapManager = GetComponent<PlanetMapManager>();
+        mapManager.PerformSetUp(HUD, pauseMenus[(int)PlanetPauseMenu.MenuScreen.MapMenu]);
 
         //Set up other UI managers
         DurabilityTextManager.SetUp(HUD);
@@ -127,34 +120,8 @@ public class PlanetPauseMenu : MonoBehaviour
             }
         }
 
-        //Update map
-        if (mapOpen)
-        {
-            realDeltaTime = Time.realtimeSinceStartup - lastFrameTime;
-
-            //Map zoom
-            mapZoom -= Input.GetAxis("Mouse ScrollWheel") * realDeltaTime * 20000;
-            mapZoom = Mathf.Clamp(mapZoom, 100, 1000);
-            mapCamera.orthographicSize = mapZoom;
-
-            //Map click and drag movement
-            if (Input.GetMouseButton(0))
-            {
-                //Get movement
-                movementVector.x = (previousMousePosition.x - Input.mousePosition.x) * mapZoom / 10.0f;
-                movementVector.z = (previousMousePosition.y - Input.mousePosition.y) * mapZoom / 10.0f;
-
-                //Apply movement with boundaries in mind
-                mapPosition += movementVector * realDeltaTime;
-                mapPosition.x = Mathf.Clamp(mapPosition.x, -480, 1520);
-                mapPosition.z = Mathf.Clamp(mapPosition.z, -480, 1520);
-                God.god.transform.position = mapPosition;
-            }
-
-            //Update info for next frame
-            previousMousePosition = Input.mousePosition;
-            lastFrameTime = Time.realtimeSinceStartup;
-        }
+        //Update the information on the map (only updates if the map is open)
+        mapManager.UpdateMap();
 
         /*
         //Allow scrolling up/down member list in squad menu
@@ -247,7 +214,7 @@ public class PlanetPauseMenu : MonoBehaviour
     private void OnMenuScreenUnload(MenuScreen oldScreen)
     {
         if (oldScreen == MenuScreen.MapMenu)
-            SwitchToFromMap(false);
+            mapManager.SwitchToFromMap(false);
         else if (oldScreen == MenuScreen.SquadMenu)
             UpdateSquadMemberCamera(null);
         else if(oldScreen == MenuScreen.CommandsMenu)
@@ -307,7 +274,7 @@ public class PlanetPauseMenu : MonoBehaviour
             qualityDropdown.value = VideoSettings.quality;
         }
         else if (newScreen == MenuScreen.MapMenu)
-            SwitchToFromMap(true);
+            mapManager.SwitchToFromMap(true);
         else if (newScreen == MenuScreen.SquadMenu)
             UpdateSquadMenu();
         else if (newScreen == MenuScreen.CommandsMenu)
@@ -496,43 +463,6 @@ public class PlanetPauseMenu : MonoBehaviour
             return true;
         else
             return false;
-    }
-
-    private void SwitchToFromMap(bool toMap)
-    {
-        Transform mapScreen = pauseMenus[(int)MenuScreen.MapMenu];
-
-        //Toggle views
-        God.god.SetActiveCamera(toMap ? mapCamera : Player.player.GetCamera(), false);
-
-        if (toMap)
-        {
-            //Load map
-            if (!mapOpen)
-            {
-                //Update status
-                mapZoom = mapCamera.orthographicSize;
-                lastFrameTime = Time.realtimeSinceStartup;
-                mapPosition = God.god.transform.position;
-
-                //Update water
-                if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
-                {
-                    realWater = Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial;
-                    mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
-                    Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = mapWater;
-                }
-            }
-        }
-        else if(mapOpen) //Unload map
-        {
-            //Update water
-            if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
-                Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = realWater;
-        }
-
-        //Finish toggling views
-        mapOpen = toMap;
     }
 
     private void ReadInSettingsFromDisplay()
