@@ -34,11 +34,20 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Private holder variable for the list of solar systems that are in the galaxy.
     /// </summary>
-    private static List<GalaxySolarSystem> solarSystemsVar = null;
+    private List<GalaxySolarSystem> solarSystemsVar = null;
     /// <summary>
-    /// Publicly accessible property that returns a list that contains of the solar systems existing within the galaxy.
+    /// Publicly accessible property that returns a list that contains the solar systems existing within the galaxy.
     /// </summary>
-    public static List<GalaxySolarSystem> solarSystems { get => solarSystemsVar; }
+    public static List<GalaxySolarSystem> solarSystems { get => galaxyManager.solarSystemsVar; }
+
+    /// <summary>
+    /// Private holder variable for the list of empires that exist within the galaxy.
+    /// </summary>
+    private List<NewEmpire> empiresVar = null;
+    /// <summary>
+    /// Publicly accessible property that returns a list that contains the empires existing within the galaxy.
+    /// </summary>
+    public static List<NewEmpire> empires { get => galaxyManager.empiresVar; }
 
     /// <summary>
     /// Private holder variable of a galaxy manager instance.
@@ -70,7 +79,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager.skyboxMaterialVar = skyboxMaterial;
 
         //Sets the value of the variable that contains all of the solar systems existing within the galaxy.
-        solarSystemsVar = solarSystems;
+        galaxyManager.solarSystemsVar = solarSystems;
     }
 
     protected override void Awake()

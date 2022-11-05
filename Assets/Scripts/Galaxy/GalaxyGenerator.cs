@@ -288,7 +288,7 @@ public class GalaxyGenerator : MonoBehaviour
             Empire.empires[empireID].empireCulture = new Empire.Culture();
             Empire.Culture empireCulture = new Empire.Culture();
             if (empireID == GalaxyManager.playerID && NewGameMenu.initialized)
-                empireCulture = NewGameMenu.EmpireCulture;
+                empireCulture = (Empire.Culture)((int)NewGameMenu.EmpireCulture);
             else
             {
                 while (true)

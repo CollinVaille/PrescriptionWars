@@ -154,6 +154,33 @@ public class NewGalaxyPlanet : MonoBehaviour
         set => transform.parent.localPosition = value;
     }
 
+    /// <summary>
+    /// Private variable that holds the id of the empire that controls the planet (-1 if the planet is unowned).
+    /// </summary>
+    private int ownerIDVar = -1;
+    /// <summary>
+    /// Public property that should be used both to access and mutate which empire controls the planet.
+    /// </summary>
+    public NewEmpire owner
+    {
+        get => ownerIDVar == -1 ? null : NewGalaxyManager.empires[ownerIDVar];
+        set
+        {
+            ownerIDVar = value == null ? -1 : value.ID;
+        }
+    }
+    /// <summary>
+    /// Public property that should be used both to access and mutate the empire that controls the planet via ID, though it might be more intuitive usually to use the owner property instead.
+    /// </summary>
+    public int ownerID
+    {
+        get => ownerIDVar;
+        set
+        {
+            ownerIDVar = value;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {

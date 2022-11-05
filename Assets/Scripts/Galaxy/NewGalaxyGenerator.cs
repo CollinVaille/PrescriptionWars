@@ -69,6 +69,11 @@ public class NewGalaxyGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Private variable that holds all of the empires that have been fully generated and positioned within the galaxy.
+    /// </summary>
+    private List<NewEmpire> empires = null;
+
     private void Awake()
     {
         //LoadGameMenu.saveGameData = GalaxySaveSystem.LoadGalaxy("Test Save");
@@ -83,8 +88,11 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Loads in any new game data that might be coming from the new game menu.
         LoadInNewGameData();
 
-        //Generates the systems of the galaxy.
-        GenerateSolarSystems();
+        //Generates the celestial bodies of the galaxy.
+        GenerateCelestialBodies();
+
+        //Generates the empires of the galaxy.
+        GenerateEmpires();
 
         //Sets the material of the galaxy scene's skybox.
         RenderSettings.skybox = skyboxMaterial;
@@ -129,9 +137,93 @@ public class NewGalaxyGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Private method that should be called in the start method and generates the systems of the galaxy.
+    /// Private method that should be called in the start method after the celestial bodies have been generated and generates the empires of the galaxy.
     /// </summary>
-    private void GenerateSolarSystems()
+    private void GenerateEmpires()
+    {
+        //Initializes the list of empires.
+        empires = new List<NewEmpire>();
+        //Generates the empires of the galaxy based on save data if any exists.
+        if(saveGameData != null)
+        {
+
+        }
+        //Generates the empires based on the new game settings if there is no save game data.
+        else
+        {
+            //Fills a list with valid cultures for an empire while attempting to keep as much uniqueness as possible.
+            List<NewEmpire.Culture> cultures = new List<NewEmpire.Culture>();
+            while (cultures.Count < newGameData.empireCount)
+            {
+                List<NewEmpire.Culture> tempCultures = new List<NewEmpire.Culture>();
+                for(int cultureIndex = 0; cultureIndex < NewEmpire.cultureCount; cultureIndex++)
+                    tempCultures.Add((NewEmpire.Culture)cultureIndex);
+                while(tempCultures.Count > 0)
+                {
+                    if (cultures.Count >= newGameData.empireCount)
+                        break;
+                    int randomTempCultureIndex = UnityEngine.Random.Range(0, tempCultures.Count);
+                    cultures.Add(tempCultures[randomTempCultureIndex]);
+                    tempCultures.RemoveAt(randomTempCultureIndex);
+                }
+            }
+            //Removes one instance of the player's chosen empire culture from the list of chooseable cultures still remaining to even out the odds.
+            for(int cultureListIndex = 0; cultureListIndex < cultures.Count; cultureListIndex++)
+            {
+                if(cultures[cultureListIndex] == newGameData.playerEmpireCulture)
+                {
+                    cultures.RemoveAt(cultureListIndex);
+                    break;
+                }
+            }
+            //Generates the empires and adds them to the list of empires within the galaxy.
+            for(int empireIndex = 0; empireIndex < newGameData.empireCount; empireIndex++)
+            {
+                //Generates the culture of the empire.
+                NewEmpire.Culture empireCulture = newGameData.playerEmpireCulture;
+                if (empireIndex != 0)
+                {
+                    int culturesListIndex = UnityEngine.Random.Range(0, cultures.Count);
+                    empireCulture = cultures[culturesListIndex];
+                    cultures.RemoveAt(culturesListIndex);
+                }
+
+                //Generates the name of the empire.
+                string empireName = empireIndex == 0 ? newGameData.playerEmpireName : empireCulture + " Empire";
+
+                //Randomly picks a system that is still unowned up until now to be this empire's capital system.
+                int capitalSystemID = -1;
+                for(int solarSystemIndex = 0; solarSystemIndex < solarSystems.Count; solarSystemIndex++)
+                {
+                    bool solarSystemOwned = false;
+                    for(int alreadyGeneratedEmpireIndex = 0; alreadyGeneratedEmpireIndex < empires.Count; alreadyGeneratedEmpireIndex++)
+                    {
+                        if (empires[alreadyGeneratedEmpireIndex].solarSystemIDs.Contains(solarSystemIndex))
+                        {
+                            solarSystemOwned = true;
+                            break;
+                        }
+                    }
+                    if (!solarSystemOwned)
+                    {
+                        capitalSystemID = solarSystemIndex;
+                        break;
+                    }
+                }
+
+                List<int> empireSolarSystemIDs = new List<int>();
+                empireSolarSystemIDs.Add(capitalSystemID);
+
+                //Adds the new empire to the list of empires existing within the galaxy.
+                empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, null));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Private method that should be called in the start method and generates the celestial bodies of the galaxy.
+    /// </summary>
+    private void GenerateCelestialBodies()
     {
         //Initializes the list of solar systems.
         solarSystems = new List<GalaxySolarSystem>();

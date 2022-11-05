@@ -34,6 +34,28 @@ public class GalaxySolarSystem : MonoBehaviour
     /// </summary>
     public List<NewGalaxyPlanet> planets { get => planetsVar; }
 
+    /// <summary>
+    /// Private variable that holds the index of the planet in the system's list of planets that is the capital planet of the system.
+    /// </summary>
+    private int capitalPlanetIndexVar = 0;
+    /// <summary>
+    /// Public property that should be used to access the index of the solar system's capital planet in the list of planets in the solar system.
+    /// </summary>
+    public int capitalPlanetIndex { get => capitalPlanetIndexVar; }
+    /// <summary>
+    /// Public property that should be used to access the planet that serves as the capital planet of the solar system.
+    /// </summary>
+    public NewGalaxyPlanet capitalPlanet { get => planets[capitalPlanetIndexVar]; }
+
+    /// <summary>
+    /// Public property that should be used to access the empire that controls the solar system, which is actually just the empire that controls the capital planet of the solar system.
+    /// </summary>
+    public NewEmpire owner { get => capitalPlanet.owner; }
+    /// <summary>
+    /// Public property that should be used to access the ID of the empire that controls the solar system, which is actually just the empire that controls the capital planet of the solar system, though it might be more intuitive usually to use the owner property directly.
+    /// </summary>
+    public int ownerID { get => capitalPlanet.ownerID; }
+
     private void Awake()
     {
         
@@ -61,6 +83,8 @@ public class GalaxySolarSystem : MonoBehaviour
         starVar = star;
         //Initializes the planets list variable.
         planetsVar = planets;
+        //Initializes the int that indicates which planet in the solar system serves as the capital planet of the system.
+        capitalPlanetIndexVar = 0;
     }
 
     /// <summary>
@@ -73,6 +97,8 @@ public class GalaxySolarSystem : MonoBehaviour
         transform.localPosition = new Vector3(solarSystemData.localPosition[0], solarSystemData.localPosition[1], solarSystemData.localPosition[2]);
         //Sets the star variable to the star that has already been loaded in from the solar system save data.
         starVar = star;
+        //Sets the variable that indicates the index of the system's capital planet in the list of planets in the solar system.
+        capitalPlanetIndexVar = solarSystemData.capitalPlanetIndex;
     }
 }
 
@@ -82,6 +108,7 @@ public class GalaxySolarSystemData
     public float[] localPosition = new float[3];
     public GalaxyStarData star = null;
     public List<GalaxyPlanetData> planets = null;
+    public int capitalPlanetIndex = 0;
 
     public GalaxySolarSystemData(GalaxySolarSystem solarSystem)
     {
@@ -94,5 +121,7 @@ public class GalaxySolarSystemData
         planets = new List<GalaxyPlanetData>();
         for(int planetIndex = 0; planetIndex < solarSystem.planets.Count; planetIndex++)
             planets.Add(new GalaxyPlanetData(solarSystem.planets[planetIndex]));
+
+        capitalPlanetIndex = solarSystem.capitalPlanetIndex;
     }
 }

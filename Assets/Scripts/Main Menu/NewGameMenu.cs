@@ -61,8 +61,8 @@ public class NewGameMenu : GalaxyMenuBehaviour
 
     //Non-inspector variables.
 
-    private static Empire.Culture empireCulture = Empire.Culture.Red;
-    public static Empire.Culture EmpireCulture
+    private static NewEmpire.Culture empireCulture = 0;
+    public static NewEmpire.Culture EmpireCulture
     {
         get
         {
@@ -149,13 +149,13 @@ public class NewGameMenu : GalaxyMenuBehaviour
     private void UpdateEmpireCultureDropdownValues()
     {
         empireCultureDropdown.options.Clear();
-        for(int cultureIndex = 0; cultureIndex < Enum.GetNames(typeof(Empire.Culture)).Length; cultureIndex++)
+        for(int cultureIndex = 0; cultureIndex < NewEmpire.cultureCount; cultureIndex++)
         {
             Dropdown.OptionData empireCultureDropdownOptionData = new Dropdown.OptionData();
-            empireCultureDropdownOptionData.text = ((Empire.Culture)cultureIndex).ToString();
+            empireCultureDropdownOptionData.text = ((NewEmpire.Culture)cultureIndex).ToString();
             empireCultureDropdown.options.Add(empireCultureDropdownOptionData);
         }
-        empireCultureDropdown.captionText.text = ((Empire.Culture)0).ToString();
+        empireCultureDropdown.captionText.text = ((NewEmpire.Culture)0).ToString();
     }
 
     private void UpdateAchievementsStatusText()
@@ -255,7 +255,7 @@ public class NewGameMenu : GalaxyMenuBehaviour
 
     public void OnEmpireCultureDropdownValueChange()
     {
-        EmpireCulture = (Empire.Culture)empireCultureDropdown.value;
+        EmpireCulture = (NewEmpire.Culture)empireCultureDropdown.value;
     }
 
     public void OnIronmanModeToggleChangeValue()
@@ -336,7 +336,7 @@ public class NewGameData
 
     }
 
-    public NewGameData(Empire.Culture playerEmpireCulture, string playerEmpireName, Flag playerEmpireFlag, int solarSystemCount, int planetCount, int empireCount, bool ironpillModeEnabled, string galaxyShape)
+    public NewGameData(NewEmpire.Culture playerEmpireCulture, string playerEmpireName, Flag playerEmpireFlag, int solarSystemCount, int planetCount, int empireCount, bool ironpillModeEnabled, string galaxyShape)
     {
         this.playerEmpireCulture = playerEmpireCulture;
         this.playerEmpireName = playerEmpireName;
@@ -348,7 +348,7 @@ public class NewGameData
         this.galaxyShape = galaxyShape;
     }
 
-    public Empire.Culture playerEmpireCulture = 0;
+    public NewEmpire.Culture playerEmpireCulture = 0;
     public string playerEmpireName = "Player Empire";
     public Flag playerEmpireFlag = new Flag();
     public int solarSystemCount = NewGalaxyGenerator.defaultSolarSystemCount;

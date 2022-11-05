@@ -1,17 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NewEmpire
 {
+    public enum Culture
+    {
+        Red,
+        Green,
+        Blue,
+        Purple,
+        Gold,
+        Silver
+    }
+
     /// <summary>
     /// Private variable used to hold the name of the empire, but the name should ideally be accessed and mutated through the public property.
     /// </summary>
     private string nameVar = null;
     /// <summary>
-    /// Publicly property that should be used both to access and mutate the name of the empire.
+    /// Public property that should be used both to access and mutate the name of the empire.
     /// </summary>
     public string name { get => nameVar; set => nameVar = value; }
+
+    /// <summary>
+    /// Private variable used to hold the culture of the empire, but the culture should ideally be accessed and mutated through the public property.
+    /// </summary>
+    private Culture cultureVar;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the culture of the empire.
+    /// </summary>
+    public Culture culture { get => cultureVar; set => cultureVar = value; }
+
+    /// <summary>
+    /// Public static property that returns an int that indicates the total amount of valid cultures that an empire could possibly be.
+    /// </summary>
+    public static int cultureCount { get => Enum.GetNames(typeof(Culture)).Length; }
 
     /// <summary>
     /// Private variable used to hold the id (owned index in the list of empires) of the empire.
@@ -58,14 +83,16 @@ public class NewEmpire
     public NewEmpire(EmpireData empireData)
     {
         nameVar = empireData.name;
+        cultureVar = empireData.culture;
         IDVar = empireData.ID;
         solarSystemIDsVar = empireData.solarSystemIDs;
         planetIDsVar = empireData.planetIDs;
     }
 
-    public NewEmpire(string name, int ID, List<int> solarSystemIDs, List<int> planetIDs)
+    public NewEmpire(string name, Culture culture, int ID, List<int> solarSystemIDs, List<int> planetIDs)
     {
         nameVar = name;
+        cultureVar = culture;
         IDVar = ID;
         solarSystemIDsVar = solarSystemIDs;
         planetIDsVar = planetIDs;
@@ -76,6 +103,7 @@ public class NewEmpire
 public class EmpireData
 {
     public string name;
+    public NewEmpire.Culture culture;
     public int ID;
     public List<int> solarSystemIDs = null;
     public List<int> planetIDs = null;
@@ -83,6 +111,7 @@ public class EmpireData
     public EmpireData(NewEmpire empire)
     {
         name = empire.name;
+        culture = empire.culture;
         ID = empire.ID;
         solarSystemIDs = empire.solarSystemIDs;
         planetIDs = empire.planetIDs;
