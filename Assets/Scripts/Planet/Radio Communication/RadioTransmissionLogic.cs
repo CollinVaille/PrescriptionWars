@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TransmissionType { ReportingIn, Pronouncing }
+public enum TransmissionType { CustomMessage, ReportingIn }
 
 public class RadioTransmissionLogic
 {
@@ -15,6 +15,16 @@ public class RadioTransmissionLogic
         //Play series of clips based on the type of transmission
         switch (rt.transmissionType)
         {
+            case TransmissionType.CustomMessage:
+                CustomTransmission customRT = rt as CustomTransmission;
+
+                radioClips.AddRange(RadioWordPronounciation.PronounceWords(customRT.customMessage));
+                rt.subtitle += customRT.customMessage;
+
+                break;
+
+
+
             case TransmissionType.ReportingIn:
                 if (Random.Range(0, 2) == 0)
                 {
@@ -34,15 +44,6 @@ public class RadioTransmissionLogic
                 radioClips.Add(new RadioClip("Planet/Radio/Reporting In/Reporting In " + Random.Range(1, reportingInClipCount + 1), false));
                 rt.subtitle += "reporting in.";
 
-                break;
-
-
-
-            case TransmissionType.Pronouncing:
-                string input = "We are under fire. Requesting backup now please.";
-                radioClips.AddRange(RadioWordPronounciation.PronounceWords(input));
-                rt.subtitle += input;
-                //audioClips.AddRange(RadioNumericalPronounciation.PronounceNumber(3000));
                 break;
         }
 

@@ -385,6 +385,20 @@ public class PlanetPauseMenu : MonoBehaviour
             //Clicked on squad overview button, so display overview info like objective and orders
             else if (buttonName.Equals("Overview Button"))
                 BlankSquadMemberDisplay(Player.player.squad);
+
+            //Take what is written in the transmission text box and send it over the airwaves as a radio transmission
+            else if(buttonName.Equals("Send Transmission Button"))
+            {
+                InputField customMessageInputField = pauseMenus[(int)MenuScreen.SquadMenu].Find("Send Transmission Input Field").GetComponent<InputField>();
+                string customMessage = customMessageInputField.text;
+                
+                if(customMessage?.Length > 0)
+                {
+                    customMessageInputField.text = "";
+                    Squad playersSquad = Player.player.squad;
+                    playersSquad.GetArmy().Comms().Send(new CustomTransmission(playersSquad, customMessage));
+                }
+            }
         }
         else if(currentScreen == MenuScreen.CommandsMenu)
         {
@@ -685,12 +699,18 @@ public class PlanetPauseMenu : MonoBehaviour
             squadMenu.Find("Member Role").GetComponent<Text>().text = "Squad Leader";
             squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
             squadMenu.Find("Member Role").GetComponent<Text>().fontStyle = FontStyle.Bold;
+
+            squadMenu.Find("Send Transmission Input Field").gameObject.SetActive(true);
+            squadMenu.Find("Send Transmission Button").gameObject.SetActive(true);
         }
         else
         {
             squadMenu.Find("Member Role").GetComponent<Text>().text = "Squadling";
             squadMenu.Find("Member Role").GetComponent<Text>().color = squad.GetArmy().color;
             squadMenu.Find("Member Role").GetComponent<Text>().fontStyle = FontStyle.Normal;
+
+            squadMenu.Find("Send Transmission Input Field").gameObject.SetActive(false);
+            squadMenu.Find("Send Transmission Button").gameObject.SetActive(false);
         }
         
         //Set details
@@ -732,9 +752,11 @@ public class PlanetPauseMenu : MonoBehaviour
         squadMenu.Find("Member Role").GetComponent<Text>().text = "";
         squadMenu.Find("Member Role").GetComponent<Text>().color = Color.white;
         squadMenu.Find("Member Details").GetComponent<Text>().text = "";
+        squadMenu.Find("Send Transmission Input Field").gameObject.SetActive(false);
+        squadMenu.Find("Send Transmission Button").gameObject.SetActive(false);
 
         //Display squad overview if we have a squad, otherwise indicate lack of a squad
-        if(squad) //Show squad overview details
+        if (squad) //Show squad overview details
         {
             //Show squad overview
             squadMenu.Find("Squad Details").GetComponent<Text>().text =

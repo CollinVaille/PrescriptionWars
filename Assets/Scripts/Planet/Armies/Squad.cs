@@ -264,7 +264,6 @@ public class Squad : MonoBehaviour
             if (squadType == SquadType.Mobilized)
             {
                 army.Comms().Send(new RadioTransmission(this, TransmissionType.ReportingIn));
-                army.Comms().Send(new RadioTransmission(this, TransmissionType.Pronouncing));
             }
 
             //Start leader AI
