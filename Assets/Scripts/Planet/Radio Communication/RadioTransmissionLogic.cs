@@ -18,7 +18,13 @@ public class RadioTransmissionLogic
             case TransmissionType.CustomMessage:
                 CustomTransmission customRT = rt as CustomTransmission;
 
-                radioClips.AddRange(RadioWordPronounciation.PronounceWords(customRT.customMessage));
+                radioClips.AddRange(RadioWordPronounciation.PronounceWords(customRT.customMessage, out int totalPhoeneticDifficulty));
+
+                if (totalPhoeneticDifficulty == 1)
+                    rt.subtitle += "... ";
+                else if (totalPhoeneticDifficulty > 1)
+                    rt.subtitle += "... ... ";
+
                 rt.subtitle += customRT.customMessage;
 
                 break;

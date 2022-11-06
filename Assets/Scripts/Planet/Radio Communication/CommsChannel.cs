@@ -135,7 +135,7 @@ public class CommsChannel : MonoBehaviour
 
         //Name of corresponder
         SetSubtitleText("Voicemail: " + rt.squad.Pronounce() + " is not available to complete the call. This transmission will now end. Thank you for your patience.");
-        List<RadioClip> radioClips = RadioWordPronounciation.PronounceWords(rt.squad.name);
+        List<RadioClip> radioClips = RadioWordPronounciation.PronounceWords(rt.squad.name, out _);
         foreach(RadioClip radioClip in radioClips)
         {
             duration = PlayClip(radioClip.audioClip);

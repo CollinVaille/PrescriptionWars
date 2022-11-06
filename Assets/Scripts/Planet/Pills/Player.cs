@@ -886,13 +886,13 @@ public class Player : Pill
         }
     }
 
-    private void UpdateGearVisibility ()
+    public void UpdateGearVisibility (bool forceShow = false)
     {
         if (headGear)
-            headGear.SetActive(pov != POV.FirstPerson);
+            headGear.SetActive(pov != POV.FirstPerson || forceShow);
 
         if (bodyGear)
-            bodyGear.SetActive(pov != POV.FirstPerson);
+            bodyGear.SetActive(pov != POV.FirstPerson || forceShow);
     }
 
     public void BulletRicochet (RaycastHit hit)

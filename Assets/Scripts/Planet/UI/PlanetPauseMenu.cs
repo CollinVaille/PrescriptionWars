@@ -702,6 +702,9 @@ public class PlanetPauseMenu : MonoBehaviour
 
             squadMenu.Find("Send Transmission Input Field").gameObject.SetActive(true);
             squadMenu.Find("Send Transmission Button").gameObject.SetActive(true);
+            bool leaderIsPlayer = (squad.leader == Player.player);
+            squadMenu.Find("Send Transmission Input Field").GetComponent<InputField>().enabled = leaderIsPlayer;
+            squadMenu.Find("Send Transmission Button").GetComponent<Button>().enabled = leaderIsPlayer;
         }
         else
         {
@@ -789,6 +792,10 @@ public class PlanetPauseMenu : MonoBehaviour
 
         //Switch to squad member camera if valid squad member, else switch back
         God.god.SetActiveCamera(member ? squadMemberCamera.GetComponent<Camera>() : Player.player.GetCamera(), true);
+
+        //When we view the player through the squad menu camera, we want to see his gear. But, we also need to rehide it if applicable when done
+        if (Player.player)
+            Player.player.UpdateGearVisibility(member == Player.player.transform);
 
         //We're done here if not a valid squad member
         if (!member)

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class RadioWordPronounciation : MonoBehaviour
 {
-    const int mispronounciationClipCount = 4;
+    const int minorMispronounciationClipCount = 5, majorMispronounciationClipCount = 6;
 
-    public static List<RadioClip> PronounceWords(string words)
+    public static List<RadioClip> PronounceWords(string words, out int totalPhoeneticDifficulty)
     {
         //Make it all upper case first of all
         words = words.ToUpper();
@@ -18,20 +18,20 @@ public class RadioWordPronounciation : MonoBehaviour
         string[] wordList = words.Split(wordSeparators, System.StringSplitOptions.RemoveEmptyEntries);
 
         //Pronounce word by word
-        bool pronounicationChallenges = false;
+        totalPhoeneticDifficulty = 0;
         foreach(string word in wordList)
         {
-            RadioClip.Combine(radioClips, PronounceWord(word, out bool hadToSoundItOut));
-            if (hadToSoundItOut)
-                pronounicationChallenges = true;
+            RadioClip.Combine(radioClips, PronounceWord(word, out int phoeneticDifficulty));
+            if (phoeneticDifficulty > totalPhoeneticDifficulty)
+                totalPhoeneticDifficulty = phoeneticDifficulty;
         }
 
         //Artistic touch ups before we return our pronounication
         if(radioClips.Count > 0)
         {
             //Add bit asking audience to be kind to us
-            if (pronounicationChallenges)
-                radioClips.Insert(0, LoadMispronounceClip());
+            if (totalPhoeneticDifficulty > 0)
+                radioClips.Insert(0, LoadMispronounceClip(totalPhoeneticDifficulty > 1));
 
             //By default, all clips produced in this class will have a pause of zero. But, we don't want any pausing after the last clip because that's the end of the sentence
             radioClips[radioClips.Count - 1].pauseDurationAfter = RadioClip.StandardPauseLength();
@@ -40,10 +40,10 @@ public class RadioWordPronounciation : MonoBehaviour
         return radioClips;
     }
 
-    private static List<RadioClip> PronounceWord(string word, out bool hadToSoundItOut)
+    private static List<RadioClip> PronounceWord(string word, out int phoeneticDifficulty)
     {
         //Let's see if there's an easy way to handle this word first
-        hadToSoundItOut = false;
+        phoeneticDifficulty = 0;
 
         //If it's a predefined word, just grab it
         RadioClip predefinedWordClip = LoadPredefinedWordClip(word);
@@ -55,12 +55,18 @@ public class RadioWordPronounciation : MonoBehaviour
             return RadioNumericalPronounciation.PronounceNumber(number);
 
         //Else, sound out the syllables with massive margin of error
-        hadToSoundItOut = true;
         List<RadioClip> radioClips = SoundItOut(word);
 
         //By default, all clips produced in this class will have a pause of zero. But, we don't want any pausing after the last clip because that's the end of the word
         if (radioClips.Count > 0)
+        {
             radioClips[radioClips.Count - 1].pauseDurationAfter = Random.Range(0.3f, 0.5f);
+
+            if (radioClips.Count > 2)
+                phoeneticDifficulty = 2;
+            else
+                phoeneticDifficulty = 1;
+        }
 
         return radioClips;
     }
@@ -192,6 +198,7 @@ public class RadioWordPronounciation : MonoBehaviour
                 return "FUH";
             case "G":
             case "GU":
+            case "GA":
                 return "GUH";
             case "H":
             case "HOO":
@@ -304,9 +311,12 @@ public class RadioWordPronounciation : MonoBehaviour
 
     private static RadioClip LoadPhoeneticSyllableClip(string syllable) { return new RadioClip("Planet/Radio/Syllables/" + syllable, false, 0.0f); }
 
-    private static RadioClip LoadMispronounceClip()
+    private static RadioClip LoadMispronounceClip(bool major)
     {
-        return new RadioClip("Planet/Radio/Mispronounce/Mispronounce " + Random.Range(1, mispronounciationClipCount + 1), false, Random.Range(0.3f, 0.5f));
+        if(major)
+            return new RadioClip("Planet/Radio/Mispronounce/Major/" + Random.Range(1, majorMispronounciationClipCount + 1), false, Random.Range(0.3f, 0.5f));
+        else
+            return new RadioClip("Planet/Radio/Mispronounce/Minor/" + Random.Range(1, minorMispronounciationClipCount + 1), false, Random.Range(0.3f, 0.5f));
     }
 
     private static RadioClip LoadPredefinedWordClip(string word)
