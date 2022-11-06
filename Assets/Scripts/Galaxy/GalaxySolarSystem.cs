@@ -56,6 +56,15 @@ public class GalaxySolarSystem : MonoBehaviour
     /// </summary>
     public int ownerID { get => capitalPlanet.ownerID; }
 
+    /// <summary>
+    /// Private variable that holds the ID of the solar system (index in the list of solar systems in the galaxy).
+    /// </summary>
+    private int IDVar = -1;
+    /// <summary>
+    /// Public property that should be used to access the ID of the solar system (index in the list of solar systems in the galaxy).
+    /// </summary>
+    public int ID { get => IDVar; }
+
     private void Awake()
     {
         
@@ -77,7 +86,7 @@ public class GalaxySolarSystem : MonoBehaviour
     /// This public method should be called in order to initialize the solar system from the GenerateSolarSystems method in the galaxy generator.
     /// </summary>
     /// <param name="star"></param>
-    public void InitializeFromGalaxyGenerator(GalaxyStar star, List<NewGalaxyPlanet> planets)
+    public void InitializeFromGalaxyGenerator(GalaxyStar star, List<NewGalaxyPlanet> planets, int ID)
     {
         //Initializes the star variable.
         starVar = star;
@@ -85,13 +94,15 @@ public class GalaxySolarSystem : MonoBehaviour
         planetsVar = planets;
         //Initializes the int that indicates which planet in the solar system serves as the capital planet of the system.
         capitalPlanetIndexVar = 0;
+        //Initializes the ID of the solar system.
+        IDVar = ID;
     }
 
     /// <summary>
     /// This public method should be called by the GenerateSolarSystems method in the galaxy generator in order to initialize the solar system from save data that has been statically passed over from the load game menu.
     /// </summary>
     /// <param name="solarSystemData"></param>
-    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star)
+    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star, int ID)
     {
         //Loads in the local position from the solar system save data.
         transform.localPosition = new Vector3(solarSystemData.localPosition[0], solarSystemData.localPosition[1], solarSystemData.localPosition[2]);
@@ -99,6 +110,18 @@ public class GalaxySolarSystem : MonoBehaviour
         starVar = star;
         //Sets the variable that indicates the index of the system's capital planet in the list of planets in the solar system.
         capitalPlanetIndexVar = solarSystemData.capitalPlanetIndex;
+        //Sets the variable that indicates the ID of the solar system.
+        IDVar = ID;
+    }
+
+    /// <summary>
+    /// Public function that should be called by the script of the empire's capital planet whenever its owner changes.
+    /// </summary>
+    public void UpdateOwner()
+    {
+        //Updates the color of the solar system's space dust particle system.
+        ParticleSystem.MainModule spaceDustPSMain = spaceDustPS.main;
+        spaceDustPSMain.startColor = new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a);
     }
 }
 

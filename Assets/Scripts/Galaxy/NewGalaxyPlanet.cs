@@ -166,7 +166,7 @@ public class NewGalaxyPlanet : MonoBehaviour
         get => ownerIDVar == -1 ? null : NewGalaxyManager.empires[ownerIDVar];
         set
         {
-            ownerIDVar = value == null ? -1 : value.ID;
+            ownerID = value == null ? -1 : value.ID;
         }
     }
     /// <summary>
@@ -177,9 +177,33 @@ public class NewGalaxyPlanet : MonoBehaviour
         get => ownerIDVar;
         set
         {
+            if (ownerIDVar != -1 && NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
+                NewGalaxyManager.empires[ownerIDVar].planetIDs.Remove(ID);
             ownerIDVar = value;
+            if (!NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
+                NewGalaxyManager.empires[ownerIDVar].planetIDs.Add(ID);
+            if (solarSystem.capitalPlanet == this)
+                solarSystem.UpdateOwner();
         }
     }
+
+    /// <summary>
+    /// Private variable that holds the ID of the planet (which is the planet's index in the list of planets within the galaxy).
+    /// </summary>
+    private int IDVar = -1;
+    /// <summary>
+    /// Public property that should be used to access the ID of the planet (which is the planet's index in the list of planets within the galaxy).
+    /// </summary>
+    public int ID { get => IDVar; }
+
+    /// <summary>
+    /// Private variable that holds a reference to the solar system that the planet belongs to.
+    /// </summary>
+    private GalaxySolarSystem solarSystemVar = null;
+    /// <summary>
+    /// This public property should be used in order to access the solar system that the planet belongs to.
+    /// </summary>
+    public GalaxySolarSystem solarSystem { get => solarSystemVar; }
 
     // Start is called before the first frame update
     void Start()
@@ -206,8 +230,12 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="cityColor"></param>
     /// <param name="ringColorCombo"></param>
     /// <param name="starLight"></param>
-    private void Initialize(Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
+    private void Initialize(GalaxySolarSystem solarSystem, int ID, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
     {
+        //Initializes the reference of the solar system that the planet belongs to.
+        solarSystemVar = solarSystem;
+        //Initializes the ID of the planet.
+        IDVar = ID;
         //Initializes the biome type.
         biomeTypeVar = biomeType;
         //Initializes the material of the planet.
@@ -232,6 +260,9 @@ public class NewGalaxyPlanet : MonoBehaviour
         secondaryRingColor = ringColorCombo[1];
         //Initializes the light source of the planet to the light being emitted from the star in the solar system.
         transform.parent.gameObject.GetComponent<LightSource>().Sun = starLight.gameObject;
+
+        //Adds the OnGalaxyGenerationCompletion function to the list of functions to be executed once the galaxy has completely finished generating.
+        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion);
     }
 
     /// <summary>
@@ -239,9 +270,10 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     /// <param name="planetData"></param>
     /// <param name="starLight"></param>
-    public void InitializeFromSaveData(GalaxyPlanetData planetData, Light starLight)
+    public void InitializeFromSaveData(GalaxyPlanetData planetData, GalaxySolarSystem solarSystem, int ID, Light starLight)
     {
-        Initialize(planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
+        Initialize(solarSystem, ID, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
+        ownerIDVar = planetData.ownerID;
     }
 
     /// <summary>
@@ -249,9 +281,32 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     /// <param name="biome"></param>
     /// <param name="starLight"></param>
-    public void InitializeFromGalaxyGenerator(NewGalaxyBiome biome, Light starLight)
+    public void InitializeFromGalaxyGenerator(GalaxySolarSystem solarSystem, int ID, NewGalaxyBiome biome, Light starLight)
     {
-        Initialize(biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
+        Initialize(solarSystem, ID, biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
+    }
+
+    /// <summary>
+    /// This function should be added to the list of functions to be executed once the galaxy has fully finished generating.
+    /// </summary>
+    private void OnGalaxyGenerationCompletion()
+    {
+        //Sets the owner of the planet.
+        if (ownerIDVar == -1)
+        {
+            for (int empireID = 0; empireID < NewGalaxyManager.empires.Count; empireID++)
+            {
+                if (NewGalaxyManager.empires[empireID].solarSystemIDs.Contains(solarSystem.ID))
+                {
+                    ownerID = empireID;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            ownerID = ownerIDVar;
+        }
     }
 }
 
@@ -274,6 +329,8 @@ public class GalaxyPlanetData
     public float planetaryOrbitRotation = 0;
     public float[] localPosition = new float[3];
 
+    public int ownerID = -1;
+
     public GalaxyPlanetData(NewGalaxyPlanet planet)
     {
         biomeType = planet.biomeType;
@@ -293,5 +350,7 @@ public class GalaxyPlanetData
         localPosition[0] = planet.localPosition.x;
         localPosition[1] = planet.localPosition.y;
         localPosition[2] = planet.localPosition.z;
+
+        ownerID = planet.ownerID;
     }
 }

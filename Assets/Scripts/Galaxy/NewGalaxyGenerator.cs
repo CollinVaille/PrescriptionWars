@@ -44,6 +44,11 @@ public class NewGalaxyGenerator : MonoBehaviour
     private List<GalaxySolarSystem> solarSystems = null;
 
     /// <summary>
+    /// Holds all of the planets that have already been fully generated and placed appropriately into the galaxy.
+    /// </summary>
+    private List<NewGalaxyPlanet> planets = null;
+
+    /// <summary>
     /// Private variable that holds any save game data that might be passed over statically from the load game menu.
     /// </summary>
     private GalaxyData saveGameData = null;
@@ -74,9 +79,19 @@ public class NewGalaxyGenerator : MonoBehaviour
     /// </summary>
     private List<NewEmpire> empires = null;
 
+    /// <summary>
+    /// Private variable that holds a list of functions to be executed once the galaxy has finished generating completely.
+    /// </summary>
+    private List<Action> galaxyGenerationCompletionFunctions = new List<Action>();
+
+    /// <summary>
+    /// Private static galaxy generator instance.
+    /// </summary>
+    private static NewGalaxyGenerator galaxyGenerator = null;
+
     private void Awake()
     {
-        //LoadGameMenu.saveGameData = GalaxySaveSystem.LoadGalaxy("Test Save");
+        galaxyGenerator = this;
     }
 
     // Start is called before the first frame update
@@ -98,11 +113,14 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems);
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires);
 
         //NewGalaxyManager.saveName = "Test Save";
         //GalaxySaveSystem.SaveGalaxy();
         //Debug.Log("Saved");
+
+        //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
+        OnGalaxyGenerationCompletion();
 
         //Destroys the galaxy generator script after galaxy generation completion.
         Destroy(this);
@@ -210,12 +228,23 @@ public class NewGalaxyGenerator : MonoBehaviour
                         break;
                     }
                 }
-
+                //Initializes the list of solar systems owned by the empire.
                 List<int> empireSolarSystemIDs = new List<int>();
+                //Adds the capital system to the list of systems owned by the empire.
                 empireSolarSystemIDs.Add(capitalSystemID);
 
+                //Initializes the list of planets owned by the empire.
+                List<int> empirePlanetIDs = new List<int>();
+                for(int empireSolarSystemIndex = 0; empireSolarSystemIndex < empireSolarSystemIDs.Count; empireSolarSystemIndex++)
+                {
+                    for(int planetIndex = 0; planetIndex < solarSystems[empireSolarSystemIDs[empireSolarSystemIndex]].planets.Count; planetIndex++)
+                    {
+                        empirePlanetIDs.Add(solarSystems[empireSolarSystemIDs[empireSolarSystemIndex]].planets[planetIndex].ID);
+                    }
+                }
+
                 //Adds the new empire to the list of empires existing within the galaxy.
-                empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, null));
+                empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
             }
         }
     }
@@ -227,6 +256,8 @@ public class NewGalaxyGenerator : MonoBehaviour
     {
         //Initializes the list of solar systems.
         solarSystems = new List<GalaxySolarSystem>();
+        //Initializes the list of planets.
+        planets = new List<NewGalaxyPlanet>();
         //Generates the solar systems of the galaxy from the galaxy save game data that has been loaded in from the load game menu if it exists.
         if (saveGameData != null)
         {
@@ -245,7 +276,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 star.transform.localPosition = Vector3.zero;
 
                 //Loop that instantiates the planets of the solar system using the list of planet data of the current solar system in the galaxy save data loaded in.
-                List<NewGalaxyPlanet> planets = new List<NewGalaxyPlanet>();
+                List<NewGalaxyPlanet> solarSystemPlanets = new List<NewGalaxyPlanet>();
                 for (int planetIndex = 0; planetIndex < saveGameData.solarSystems[solarSystemIndex].planets.Count; planetIndex++)
                 {
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
@@ -264,14 +295,16 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
                     planet.transform.parent.localPosition = new Vector3(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[0], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[1], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[2]);
                     //Initializes all needed variables of the planet.
-                    planet.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex], star.starLight);
+                    planet.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex], solarSystem, planets.Count, star.starLight);
 
                     //Adds the planet to the list of planets that will belong to the current solar system.
+                    solarSystemPlanets.Add(planet);
+                    //Adds the planet to the list of planets within the galaxy.
                     planets.Add(planet);
                 }
 
                 //Initializes the solar system using the saved data of the solar system and the star that was just instantiated from the same save data.
-                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star);
+                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystems.Count);
 
                 //Adds the solar system to the list of solar systems within the galaxy.
                 solarSystems.Add(solarSystem);
@@ -325,7 +358,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 starTypesRemaining.RemoveAt(starTypeIndexInList);
 
                 //Loop that generates the planets of the solar system.
-                List<NewGalaxyPlanet> planets = new List<NewGalaxyPlanet>();
+                List<NewGalaxyPlanet> solarSystemPlanets = new List<NewGalaxyPlanet>();
                 for(int planetIndex = 0; planetIndex < (newGameData.planetCount / newGameData.solarSystemCount) + 1; planetIndex++)
                 {
                     //Breaks out of the loop if there are no more remainder planets left to place and the required ones in this solar system have already been placed.
@@ -344,9 +377,9 @@ public class NewGalaxyGenerator : MonoBehaviour
                         int biomeIndexIndex = UnityEngine.Random.Range(0, biomeIndexs.Count);
                         int biomeIndex = biomeIndexs[biomeIndexIndex];
                         bool planetaryOrbitAvailable = true;
-                        for(int planetsAlreadyAddedIndex = 0; planetsAlreadyAddedIndex < planets.Count; planetsAlreadyAddedIndex++)
+                        for(int planetsAlreadyAddedIndex = 0; planetsAlreadyAddedIndex < solarSystemPlanets.Count; planetsAlreadyAddedIndex++)
                         {
-                            if(biomes[biomeIndex].planetaryOrbitProximityToStar == GetBiomeOfType(planets[planetsAlreadyAddedIndex].biomeType).planetaryOrbitProximityToStar)
+                            if(biomes[biomeIndex].planetaryOrbitProximityToStar == GetBiomeOfType(solarSystemPlanets[planetsAlreadyAddedIndex].biomeType).planetaryOrbitProximityToStar)
                             {
                                 planetaryOrbitAvailable = false;
                                 break;
@@ -387,14 +420,16 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
                     planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
                     //Initializes all needed variables of the planet.
-                    planet.InitializeFromGalaxyGenerator(biome, star.starLight);
+                    planet.InitializeFromGalaxyGenerator(solarSystem, planets.Count, biome, star.starLight);
 
                     //Adds the planet to the list of planets that will belong to the current solar system.
+                    solarSystemPlanets.Add(planet);
+                    //Adds the planet to the list of planets that are in the galaxy.
                     planets.Add(planet);
                 }
 
                 //Initializes the variables in the solar system.
-                solarSystem.InitializeFromGalaxyGenerator(star, planets);
+                solarSystem.InitializeFromGalaxyGenerator(star, solarSystemPlanets, solarSystems.Count);
 
                 //Declares and initializes a variable that will be used in order to ensure that not too many failed attempts are made to place the solar system within the galaxy.
                 int solarSystemPlacementAttempsMade = 0;
@@ -485,6 +520,40 @@ public class NewGalaxyGenerator : MonoBehaviour
             return 60;
         Debug.LogWarning("Specified galaxy type does not have an assigned max planets count. Will return default value of 60.");
         return 60;
+    }
+
+    /// <summary>
+    /// Adds the specified function to the list of functions to be executed once the galaxy has completely finished generating.
+    /// </summary>
+    /// <param name="function"></param>
+    public static void ExecuteFunctionOnGalaxyGenerationCompletion(Action function)
+    {
+        if(galaxyGenerator == null)
+        {
+            Debug.LogWarning("Cannot execute function on galaxy generation completion because the galaxy has already finished generating.");
+            return;
+        }
+        galaxyGenerator.galaxyGenerationCompletionFunctions.Add(function);
+    }
+
+    /// <summary>
+    /// Private function that is executed once the galaxy has completely finished generating and the galaxy manager has been initialized.
+    /// </summary>
+    private void OnGalaxyGenerationCompletion()
+    {
+        //Executes each function that is supposed to be executed upon the galaxy finishing generating.
+        foreach(Action galaxyGenerationCompletionFunction in galaxyGenerationCompletionFunctions)
+        {
+            galaxyGenerationCompletionFunction();
+        }
+    }
+
+    /// <summary>
+    /// Private method that is called whenever the galaxy generator object is destroyed after the galaxy has finished generating and resets the static galaxy generator instance to null.
+    /// </summary>
+    private void OnDestroy()
+    {
+        galaxyGenerator = null;
     }
 }
 

@@ -41,6 +41,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static List<GalaxySolarSystem> solarSystems { get => galaxyManager.solarSystemsVar; }
 
     /// <summary>
+    /// Private holder variable for the list of planets that are in the galaxy.
+    /// </summary>
+    private List<NewGalaxyPlanet> planetsVar = null;
+    /// <summary>
+    /// Publicly accessible property that returns a list that contains the planets existing within the galaxy.
+    /// </summary>
+    public static List<NewGalaxyPlanet> planets { get => galaxyManager.planetsVar; }
+
+    /// <summary>
     /// Private holder variable for the list of empires that exist within the galaxy.
     /// </summary>
     private List<NewEmpire> empiresVar = null;
@@ -70,7 +79,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -80,6 +89,12 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains all of the solar systems existing within the galaxy.
         galaxyManager.solarSystemsVar = solarSystems;
+
+        //Sets the value of the variable that contains all of the planets existing within the galaxy.
+        galaxyManager.planetsVar = planets;
+
+        //Sets the value of the variable that contains all of the empires existing within the galaxy.
+        galaxyManager.empiresVar = empires;
     }
 
     protected override void Awake()

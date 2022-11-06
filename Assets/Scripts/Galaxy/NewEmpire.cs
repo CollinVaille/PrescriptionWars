@@ -39,6 +39,34 @@ public class NewEmpire
     public static int cultureCount { get => Enum.GetNames(typeof(Culture)).Length; }
 
     /// <summary>
+    /// Private variable that holds the color of the empire.
+    /// </summary>
+    private Color colorVar = Color.white;
+    /// <summary>
+    /// Public property that should be used to access the color of the empire.
+    /// </summary>
+    public Color color { get => colorVar; }
+    /// <summary>
+    /// Public property that should be used to access the label color of the empire which is a potentially brighter version of the empire's color that looks prettier for labels.
+    /// </summary>
+    public Color labelColor
+    {
+        get
+        {
+            Color labelColor = colorVar;
+
+            if (culture == Culture.Red || culture == Culture.Green || culture == Culture.Blue)
+            {
+                labelColor.r += 0.3f;
+                labelColor.g += 0.3f;
+                labelColor.b += 0.3f;
+            }
+
+            return labelColor;
+        }
+    }
+
+    /// <summary>
     /// Private variable used to hold the id (owned index in the list of empires) of the empire.
     /// </summary>
     private int IDVar = -1;
@@ -84,6 +112,7 @@ public class NewEmpire
     {
         nameVar = empireData.name;
         cultureVar = empireData.culture;
+        colorVar = empireData.color;
         IDVar = empireData.ID;
         solarSystemIDsVar = empireData.solarSystemIDs;
         planetIDsVar = empireData.planetIDs;
@@ -93,9 +122,59 @@ public class NewEmpire
     {
         nameVar = name;
         cultureVar = culture;
+        colorVar = GetRandomColorBasedOnCulture(culture);
         IDVar = ID;
         solarSystemIDsVar = solarSystemIDs;
         planetIDsVar = planetIDs;
+    }
+
+    /// <summary>
+    /// Public static function that returns a random empire color based on the specified empire culture.
+    /// </summary>
+    /// <param name="culture"></param>
+    /// <returns></returns>
+    private static Color GetRandomColorBasedOnCulture(Culture culture)
+    {
+        switch (culture)
+        {
+            case Culture.Red:
+                return new Color(UnityEngine.Random.Range(0.25f, 1.0f), 0, 0, 1);
+            case Culture.Green:
+                return new Color(0, UnityEngine.Random.Range(0.25f, 1.0f), 0, 1);
+            case Culture.Blue:
+                return new Color(0, 0, UnityEngine.Random.Range(0.25f, 1.0f), 1);
+            case Culture.Purple:
+                List<Color> purpleColors = new List<Color>();
+                purpleColors.Add(new Color(186.0f / 255, 85.0f / 255, 211.0f / 255, 1));         //Medium Orchid
+                purpleColors.Add(new Color(147.0f / 255, 112.0f / 255, 219.0f / 255, 1));        //Medium Purple
+                purpleColors.Add(new Color(138.0f / 255, 43.0f / 255, 226.0f / 255, 1));         //Blue Violet
+                purpleColors.Add(new Color(148.0f / 255, 0.0f / 255, 211.0f / 255, 1));          //Dark Violet
+                purpleColors.Add(new Color(153.0f / 255, 50.0f / 255, 204.0f / 255, 1));         //Dark Orchid
+                purpleColors.Add(new Color(139.0f / 255, 0.0f / 255, 139.0f / 255, 1));          //Dark Magenta
+                purpleColors.Add(new Color(128.0f / 255, 0.0f / 255, 128.0f / 255, 1));          //Purple
+                int random = UnityEngine.Random.Range(0, purpleColors.Count);
+                return purpleColors[random];
+            case Culture.Gold:
+                List<Color> goldColors = new List<Color>();
+                goldColors.Add(new Color(238.0f / 255, 232.0f / 255, 170.0f / 255, 1));          //Pale Golden Rod
+                goldColors.Add(new Color(240.0f / 255, 230.0f / 255, 140.0f / 255, 1));          //Khaki
+                goldColors.Add(new Color(255.0f / 255, 215.0f / 255, 0.0f / 255, 1));            //Gold
+                goldColors.Add(new Color(255.0f / 255, 223.0f / 255, 0.0f / 255, 1));            //Golden Yellow
+                goldColors.Add(new Color(212.0f / 255, 175.0f / 255, 55.0f / 255, 1));           //Metallic Gold
+                goldColors.Add(new Color(207.0f / 255, 181.0f / 255, 59.0f / 255, 1));           //Old Gold
+                goldColors.Add(new Color(197.0f / 255, 179.0f / 255, 88.0f / 255, 1));           //Vegas Gold
+                int randomIndex = UnityEngine.Random.Range(0, goldColors.Count);
+                return goldColors[randomIndex];
+            case Culture.Silver:
+                List<Color> silverColors = new List<Color>();
+                silverColors.Add(new Color(211.0f / 255, 211.0f / 255, 211.0f / 255, 1));
+                silverColors.Add(new Color(192.0f / 255, 192.0f / 255, 192.0f / 255, 1));
+                silverColors.Add(new Color(169.0f / 255, 169.0f / 255, 169.0f / 255, 1));
+                int silverRandomIndex = UnityEngine.Random.Range(0, silverColors.Count);
+                return silverColors[silverRandomIndex];
+            default:
+                return new Color(1, 1, 1, 1);
+        }
     }
 }
 
@@ -104,6 +183,7 @@ public class EmpireData
 {
     public string name;
     public NewEmpire.Culture culture;
+    public Color color;
     public int ID;
     public List<int> solarSystemIDs = null;
     public List<int> planetIDs = null;
@@ -112,6 +192,7 @@ public class EmpireData
     {
         name = empire.name;
         culture = empire.culture;
+        color = empire.color;
         ID = empire.ID;
         solarSystemIDs = empire.solarSystemIDs;
         planetIDs = empire.planetIDs;
