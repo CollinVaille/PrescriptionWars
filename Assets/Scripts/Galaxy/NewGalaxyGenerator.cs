@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class NewGalaxyGenerator : MonoBehaviour
 {
@@ -169,6 +170,20 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Generates the empires based on the new game settings if there is no save game data.
         else
         {
+            //Declares and initializes a list that will eventually filled with the IDs of the empires that will get a bonus leftover solar system.
+            List<int> empiresGettingBonusSolarSystem = new List<int>();
+            //Fills a list with every possible empire ID that could get a bonus leftover solar system.
+            List<int> empireIDsRemainingForBonusSolarSystem = new List<int>();
+            for(int empireID = 0; empireID < newGameData.empireCount; empireID++)
+                empireIDsRemainingForBonusSolarSystem.Add(empireID);
+            //Loops through each leftover solar system remaining and assigns it to an empire ID.
+            for(int leftOverPlanetIndex = 0; leftOverPlanetIndex < solarSystems.Count % newGameData.empireCount; leftOverPlanetIndex++)
+            {
+                int empireIDRemainingIndexChosen = UnityEngine.Random.Range(0, empireIDsRemainingForBonusSolarSystem.Count);
+                empiresGettingBonusSolarSystem.Add(empireIDsRemainingForBonusSolarSystem[empireIDRemainingIndexChosen]);
+                empireIDsRemainingForBonusSolarSystem.RemoveAt(empireIDRemainingIndexChosen);
+            }
+
             //Fills a list with valid cultures for an empire while attempting to keep as much uniqueness as possible.
             List<NewEmpire.Culture> cultures = new List<NewEmpire.Culture>();
             while (cultures.Count < newGameData.empireCount)
@@ -233,6 +248,34 @@ public class NewGalaxyGenerator : MonoBehaviour
                 //Adds the capital system to the list of systems owned by the empire.
                 empireSolarSystemIDs.Add(capitalSystemID);
 
+                //Declares and initializes a list that will contain the distance of each unowned solar system to the empire's capital system in ascending sorted order.
+                List<KeyValuePair<int, float>> solarSystemDistanceFromCapital = new List<KeyValuePair<int, float>>();
+                //Loops through each solar system to see if it is still unowned and if so then it adds the solar system and its distance from the empire's capital system to the list.
+                for (int solarSystemIndex = 1; solarSystemIndex < solarSystems.Count; solarSystemIndex++)
+                {
+                    bool solarSystemOwned = false;
+                    for (int alreadyGeneratedEmpireIndex = 0; alreadyGeneratedEmpireIndex < empires.Count; alreadyGeneratedEmpireIndex++)
+                    {
+                        if (empires[alreadyGeneratedEmpireIndex].solarSystemIDs.Contains(solarSystemIndex) || capitalSystemID == solarSystemIndex)
+                        {
+                            solarSystemOwned = true;
+                            break;
+                        }
+                    }
+                    if (!solarSystemOwned)
+                    {
+                        solarSystemDistanceFromCapital.Add(new KeyValuePair<int, float>(solarSystemIndex, Vector2.Distance(new Vector2(solarSystems[solarSystemIndex].transform.localPosition.x, solarSystems[solarSystemIndex].transform.localPosition.z), new Vector2(solarSystems[capitalSystemID].transform.localPosition.x, solarSystems[capitalSystemID].transform.localPosition.z))));
+                    }
+                }
+                //Sorts the list into ascending distance from the empire's capital system order.
+                solarSystemDistanceFromCapital.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                //Adds the closest unowned solar system to the empire's capital solar system until enough solar systems have been added to the empire's control, possibly including a bonus leftover solar system.
+                for(int solarSystemNumber = 1; solarSystemNumber < (empiresGettingBonusSolarSystem.Contains(empireIndex) ? (solarSystems.Count / newGameData.empireCount) + 1 : solarSystems.Count / newGameData.empireCount); solarSystemNumber++)
+                {
+                    empireSolarSystemIDs.Add(solarSystemDistanceFromCapital[solarSystemNumber - 1].Key);
+                }
+
                 //Initializes the list of planets owned by the empire.
                 List<int> empirePlanetIDs = new List<int>();
                 for(int empireSolarSystemIndex = 0; empireSolarSystemIndex < empireSolarSystemIDs.Count; empireSolarSystemIndex++)
@@ -242,7 +285,6 @@ public class NewGalaxyGenerator : MonoBehaviour
                         empirePlanetIDs.Add(solarSystems[empireSolarSystemIDs[empireSolarSystemIndex]].planets[planetIndex].ID);
                     }
                 }
-
                 //Adds the new empire to the list of empires existing within the galaxy.
                 empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
             }
@@ -473,7 +515,10 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //If the coordinates are valid, the solar system is added to the list of solar system in the galaxy and we move on to positioning the next solar system.
                     if (validCoordinates)
                     {
+                        //Adds the solar system just worked on to the list of all solar systems within the galaxy.
                         solarSystems.Add(solarSystem);
+                        //Decrements the number of remainder planets.
+                        remainderPlanets--;
                         break;
                     }
                     //Increments the variable that indicates how many attempts have been made to position the current solar system validly.
@@ -486,10 +531,6 @@ public class NewGalaxyGenerator : MonoBehaviour
                     Destroy(solarSystem.gameObject);
                     break;
                 }
-                //Adds the solar system just worked on to the list of all solar systems within the galaxy.
-                solarSystems.Add(solarSystem);
-                //Decrements the number of remainder planets.
-                remainderPlanets--;
             }
         }
     }

@@ -121,7 +121,8 @@ public class GalaxySolarSystem : MonoBehaviour
     {
         //Updates the color of the solar system's space dust particle system.
         ParticleSystem.MainModule spaceDustPSMain = spaceDustPS.main;
-        spaceDustPSMain.startColor = new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a);
+        spaceDustPSMain.startColor = Color.Lerp(spaceDustPSMain.startColor.color, new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a), 0.09f);
+        //spaceDustPSMain.startColor = new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a);
     }
 }
 
