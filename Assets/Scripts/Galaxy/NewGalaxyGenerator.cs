@@ -165,7 +165,9 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Generates the empires of the galaxy based on save data if any exists.
         if(saveGameData != null)
         {
-
+            //Loops through each empire in the save game data and recreates it and adds it to the list of empires.
+            foreach(EmpireData empireData in saveGameData.empires)
+                empires.Add(new NewEmpire(empireData));
         }
         //Generates the empires based on the new game settings if there is no save game data.
         else

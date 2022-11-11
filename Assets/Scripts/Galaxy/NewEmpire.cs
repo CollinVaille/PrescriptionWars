@@ -176,6 +176,82 @@ public class NewEmpire
                 return new Color(1, 1, 1, 1);
         }
     }
+
+    /// <summary>
+    /// Public method that should be called in order to add a planet to the empire's control via the planet's ID.
+    /// </summary>
+    /// <param name="planetID"></param>
+    public void AddPlanet(int planetID)
+    {
+        //Logs a warning and returns if an invalid planet ID is specified.
+        if(planetID < 0 || planetID >= NewGalaxyManager.planets.Count)
+        {
+            Debug.LogWarning("Cannot add planet with ID: " + planetID + " to empire with ID: " + ID + "'s control, invalid planet ID given.");
+            return;
+        }
+        //Adds the planet ID to the list of planet IDs of planets that are controlled by the empire.
+        planetIDsVar.Add(planetID);
+        //Informs the planet itself of the owner change if it is unaware.
+        if (NewGalaxyManager.planets[planetID].ownerID != ID)
+            NewGalaxyManager.planets[planetID].owner = this;
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to add a planet to the empire's control via an object reference.
+    /// </summary>
+    /// <param name="planet"></param>
+    public void AddPlanet(NewGalaxyPlanet planet)
+    {
+        //Logs a warning and returns if a null planet reference is specified.
+        if(planet == null)
+        {
+            Debug.Log("Cannot add a null planet to empire of ID: " + ID + "'s control.");
+            return;
+        }
+        //Adds the planet to the list of planets under the empire's control via the ID of the specified planet.
+        AddPlanet(planet.ID);
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to remove a planet from the empire's control via the planet's ID.
+    /// </summary>
+    /// <param name="planetID"></param>
+    public void RemovePlanet(int planetID)
+    {
+        //Logs a warning and returns if an invalid planet ID is specified.
+        if (planetID < 0 || planetID >= NewGalaxyManager.planets.Count)
+        {
+            Debug.LogWarning("Cannot remove planet with ID: " + planetID + " to empire with ID: " + ID + "'s control, invalid planet ID given.");
+            return;
+        }
+        //Logs a warning and returns if the empire does not own the specified planet.
+        if (!planetIDsVar.Contains(planetID))
+        {
+            Debug.LogWarning("Cannot remove planet with ID: " + planetID + " from empire with ID: " + ID + "'s control, the empire does not control the specified planet.");
+            return;
+        }
+        //Removes the planet from the list of planets under the empire's control.
+        planetIDsVar.Remove(planetID);
+        //Informs the planet itself of the owner change if it is unaware.
+        if (NewGalaxyManager.planets[planetID].ownerID == ID)
+            NewGalaxyManager.planets[planetID].owner = null;
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to remove a planet from the empire's control via an object reference.
+    /// </summary>
+    /// <param name="planet"></param>
+    public void RemovePlanet(NewGalaxyPlanet planet)
+    {
+        //Logs a warning and returns if a null planet reference is specified.
+        if (planet == null)
+        {
+            Debug.Log("Cannot remove a null planet from empire of ID: " + ID + "'s control.");
+            return;
+        }
+        //Removes the planet from the list of planets under the empire's control via the ID of the specified planet.
+        RemovePlanet(planet.ID);
+    }
 }
 
 [System.Serializable]

@@ -177,13 +177,19 @@ public class NewGalaxyPlanet : MonoBehaviour
         get => ownerIDVar;
         set
         {
-            if (ownerIDVar != -1 && NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
-                NewGalaxyManager.empires[ownerIDVar].planetIDs.Remove(ID);
-            ownerIDVar = value;
-            if (!NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
-                NewGalaxyManager.empires[ownerIDVar].planetIDs.Add(ID);
+            //Stores the previous owner ID of the planet.
+            int previousOwnerID = ownerIDVar;
+            //Updates the owner ID to the specified value.
+            ownerIDVar = value < 0 || value >= NewGalaxyManager.empires.Count ? -1 : value;
+            //Removes the planet from the list of planets controlled by the previous owning empire if needed.
+            if (previousOwnerID != -1 && NewGalaxyManager.empires[previousOwnerID].planetIDs.Contains(ID))
+                NewGalaxyManager.empires[previousOwnerID].planetIDs.Remove(ID);
+            //Adds the planet to the list of planets controlled by the newly specified empire if needed.
+            if (ownerIDVar != -1 && !NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
+                NewGalaxyManager.empires[ownerIDVar].AddPlanet(ownerIDVar);
+            //Executes the needed logic for when the planet's solar system changes owner if the planet is indeed the capital planet of its solar system.
             if (solarSystem.capitalPlanet == this)
-                solarSystem.UpdateOwner();
+                solarSystem.OnOwnerChange(previousOwnerID);
         }
     }
 

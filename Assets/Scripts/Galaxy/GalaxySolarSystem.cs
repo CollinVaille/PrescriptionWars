@@ -57,6 +57,11 @@ public class GalaxySolarSystem : MonoBehaviour
     public int ownerID { get => capitalPlanet.ownerID; }
 
     /// <summary>
+    /// Public property that should be used in order to access the color of the empire that owns the solar system. Returns white if no empire controls the solar system.
+    /// </summary>
+    public Color ownerColor { get => owner == null ? Color.white : owner.color; }
+
+    /// <summary>
     /// Private variable that holds the ID of the solar system (index in the list of solar systems in the galaxy).
     /// </summary>
     private int IDVar = -1;
@@ -117,12 +122,18 @@ public class GalaxySolarSystem : MonoBehaviour
     /// <summary>
     /// Public function that should be called by the script of the empire's capital planet whenever its owner changes.
     /// </summary>
-    public void UpdateOwner()
+    public void OnOwnerChange(int previousOwnerID)
     {
+        //Removes the solar system from the list of solar systems controlled by the previous owning empire if needed.
+        if(previousOwnerID >= 0 && previousOwnerID < NewGalaxyManager.empires.Count)
+            NewGalaxyManager.empires[previousOwnerID].solarSystemIDs.Remove(ID);
+        //Adds the solar system to the list of solar systems controlled by the new owner empire if needed.
+        if (owner != null)
+            owner.solarSystemIDs.Add(ID);
+
         //Updates the color of the solar system's space dust particle system.
         ParticleSystem.MainModule spaceDustPSMain = spaceDustPS.main;
-        spaceDustPSMain.startColor = Color.Lerp(spaceDustPSMain.startColor.color, new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a), 0.09f);
-        //spaceDustPSMain.startColor = new Color(owner.color.r, owner.color.g, owner.color.b, spaceDustPSMain.startColor.color.a);
+        spaceDustPSMain.startColor = Color.Lerp(spaceDustPSMain.startColor.color, new Color(ownerColor.r, ownerColor.g, ownerColor.b, spaceDustPSMain.startColor.color.a), 0.09f);
     }
 }
 

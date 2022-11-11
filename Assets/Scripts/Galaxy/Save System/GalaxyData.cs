@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GalaxyData
 {
     public List<GalaxySolarSystemData> solarSystems = null;
+    public List<EmpireData> empires = null;
 
     public GalaxyData(NewGalaxyManager galaxyManager)
     {
@@ -16,5 +17,9 @@ public class GalaxyData
         solarSystems = new List<GalaxySolarSystemData>();
         foreach(GalaxySolarSystem solarSystem in NewGalaxyManager.solarSystems)
             solarSystems.Add(new GalaxySolarSystemData(solarSystem));
+
+        empires = new List<EmpireData>();
+        foreach (NewEmpire empire in NewGalaxyManager.empires)
+            empires.Add(new EmpireData(empire));
     }
 }
