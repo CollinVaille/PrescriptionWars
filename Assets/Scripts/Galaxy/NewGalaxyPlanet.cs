@@ -12,6 +12,15 @@ public class NewGalaxyPlanet : MonoBehaviour
     //Non-inspector variables.
 
     /// <summary>
+    /// Private holder variable for the name of the planet.
+    /// </summary>
+    private string planetNameVar;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the name of the planet.
+    /// </summary>
+    public string planetName { get => planetNameVar; set => planetNameVar = value; }
+
+    /// <summary>
     /// Private variable that holds what type of biome the planet belongs to.
     /// </summary>
     private Planet.Biome biomeTypeVar = Planet.Biome.Unknown;
@@ -214,7 +223,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log(planetName);
     }
 
     // Update is called once per frame
@@ -236,12 +245,14 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="cityColor"></param>
     /// <param name="ringColorCombo"></param>
     /// <param name="starLight"></param>
-    private void Initialize(GalaxySolarSystem solarSystem, int ID, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
+    private void Initialize(GalaxySolarSystem solarSystem, int ID, string planetName, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
     {
         //Initializes the reference of the solar system that the planet belongs to.
         solarSystemVar = solarSystem;
         //Initializes the ID of the planet.
         IDVar = ID;
+        //Initializes the name of the planet.
+        this.planetName = planetName;
         //Initializes the biome type.
         biomeTypeVar = biomeType;
         //Initializes the material of the planet.
@@ -278,7 +289,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="starLight"></param>
     public void InitializeFromSaveData(GalaxyPlanetData planetData, GalaxySolarSystem solarSystem, int ID, Light starLight)
     {
-        Initialize(solarSystem, ID, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
+        Initialize(solarSystem, ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
         ownerIDVar = planetData.ownerID;
     }
 
@@ -287,9 +298,9 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     /// <param name="biome"></param>
     /// <param name="starLight"></param>
-    public void InitializeFromGalaxyGenerator(GalaxySolarSystem solarSystem, int ID, NewGalaxyBiome biome, Light starLight)
+    public void InitializeFromGalaxyGenerator(GalaxySolarSystem solarSystem, int ID, string planetName, NewGalaxyBiome biome, Light starLight)
     {
-        Initialize(solarSystem, ID, biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
+        Initialize(solarSystem, ID, planetName, biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
     }
 
     /// <summary>
@@ -319,6 +330,7 @@ public class NewGalaxyPlanet : MonoBehaviour
 [System.Serializable]
 public class GalaxyPlanetData
 {
+    public string planetName;
     public Planet.Biome biomeType = Planet.Biome.Unknown;
     public string materialName = null;
 
@@ -339,6 +351,7 @@ public class GalaxyPlanetData
 
     public GalaxyPlanetData(NewGalaxyPlanet planet)
     {
+        planetName = planet.planetName;
         biomeType = planet.biomeType;
         materialName = planet.materialName;
 

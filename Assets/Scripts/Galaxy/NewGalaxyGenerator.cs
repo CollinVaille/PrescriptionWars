@@ -104,6 +104,9 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Loads in any new game data that might be coming from the new game menu.
         LoadInNewGameData();
 
+        //Resets any static helper functions that need to be reset.
+        ResetHelperFunctions();
+
         //Generates the celestial bodies of the galaxy.
         GenerateCelestialBodies();
 
@@ -223,9 +226,6 @@ public class NewGalaxyGenerator : MonoBehaviour
                     cultures.RemoveAt(culturesListIndex);
                 }
 
-                //Generates the name of the empire.
-                string empireName = empireIndex == 0 ? newGameData.playerEmpireName : empireCulture + " Empire";
-
                 //Randomly picks a system that is still unowned up until now to be this empire's capital system.
                 int capitalSystemID = -1;
                 for(int solarSystemIndex = 0; solarSystemIndex < solarSystems.Count; solarSystemIndex++)
@@ -287,6 +287,10 @@ public class NewGalaxyGenerator : MonoBehaviour
                         empirePlanetIDs.Add(solarSystems[empireSolarSystemIDs[empireSolarSystemIndex]].planets[planetIndex].ID);
                     }
                 }
+
+                //Generates the name of the empire.
+                string empireName = empireIndex == 0 ? newGameData.playerEmpireName : EmpireNameGenerator.GenerateEmpireName();
+
                 //Adds the new empire to the list of empires existing within the galaxy.
                 empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
             }
@@ -464,7 +468,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
                     planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
                     //Initializes all needed variables of the planet.
-                    planet.InitializeFromGalaxyGenerator(solarSystem, planets.Count, biome, star.starLight);
+                    planet.InitializeFromGalaxyGenerator(solarSystem, planets.Count, PlanetNameGenerator.GeneratePlanetName(), biome, star.starLight);
 
                     //Adds the planet to the list of planets that will belong to the current solar system.
                     solarSystemPlanets.Add(planet);
@@ -589,6 +593,14 @@ public class NewGalaxyGenerator : MonoBehaviour
         {
             galaxyGenerationCompletionFunction();
         }
+    }
+
+    /// <summary>
+    /// Private void that should be called before the galaxy is generated, after the new game data and save game data has been loaded in, and resets all needed static helper functions.
+    /// </summary>
+    private void ResetHelperFunctions()
+    {
+        PlanetNameGenerator.ResetPlanetNamesGenerated(saveGameData);
     }
 
     /// <summary>
