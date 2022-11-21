@@ -247,8 +247,8 @@ MonoBehaviour:
   newGameData:
     playerEmpireCulture: 0
     playerEmpireName: Player Empire
-    solarSystemCount: 600
-    planetCount: 100
+    solarSystemCount: 100
+    planetCount: 600
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
@@ -6013,6 +6013,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f954a7662bedb1f4ea1f0774ad429246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 30
-  zoomRange: {x: 1654, y: 3}
-  dragSpeed: 5
+  zoomSpeedRange: {x: 2, y: 50}
+  zoomRange: {x: 1654, y: 0.5}
+  dragSpeedRange: {x: 2, y: 30}
+  planetsVisibleZoomPercentage: 0.95

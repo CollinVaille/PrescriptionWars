@@ -6,6 +6,7 @@ public class NewGalaxyPlanet : MonoBehaviour
 {
     [Header("Components")]
 
+    [SerializeField, Tooltip("The game object that has the planet renderer applied to it.")] private GameObject planet = null;
     [SerializeField, Tooltip("The game object that has the atmosphere renderer applied to it.")] private GameObject atmosphere = null;
     [SerializeField, Tooltip("The game object that has the rings renderer applied to it.")] private GameObject rings = null;
 
@@ -41,19 +42,23 @@ public class NewGalaxyPlanet : MonoBehaviour
         get => materialNameVar;
         set
         {
-            GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + value);
+            planet.GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + value);
             atmosphere.GetComponent<Renderer>().material = Resources.Load<Material>("Galaxy/Planet Materials/" + value + " Atmosphere");
             materialNameVar = value;
         }
     }
 
     /// <summary>
+    /// Private variable that holds a boolean value that indictates whether or not the planet has visible rings.
+    /// </summary>
+    private bool hasRingsVar = false;
+    /// <summary>
     /// Public property that should be used both to access and mutate whether the planet has visible rings or not.
     /// </summary>
     public bool hasRings
     {
-        get => rings.activeSelf;
-        set => rings.SetActive(value);
+        get => hasRingsVar;
+        set { hasRingsVar = value; rings.SetActive(value); }
     }
 
     /// <summary>
@@ -70,8 +75,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public float planetarySize
     {
-        get => transform.parent.localScale.x;
-        set => transform.parent.localScale = Vector3.one * value;
+        get => transform.localScale.x;
+        set => transform.localScale = Vector3.one * value;
     }
 
     /// <summary>
@@ -88,8 +93,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public float cloudSpeed
     {
-        get => GetComponent<Renderer>().material.GetFloat("_CloudSpeed");
-        set => GetComponent<Renderer>().material.SetFloat("_CloudSpeed", value);
+        get => planet.GetComponent<Renderer>().material.GetFloat("_CloudSpeed");
+        set => planet.GetComponent<Renderer>().material.SetFloat("_CloudSpeed", value);
     }
 
     /// <summary>
@@ -97,8 +102,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public Color cloudColor
     {
-        get => GetComponent<Renderer>().material.GetColor("_ColorA");
-        set => GetComponent<Renderer>().material.SetColor("_ColorA", value);
+        get => planet.GetComponent<Renderer>().material.GetColor("_ColorA");
+        set => planet.GetComponent<Renderer>().material.SetColor("_ColorA", value);
     }
 
     /// <summary>
@@ -106,8 +111,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public Color cloudShadowColor
     {
-        get => GetComponent<Renderer>().material.GetColor("_ShadowColorA");
-        set => GetComponent<Renderer>().material.SetColor("_ShadowColorA", value);
+        get => planet.GetComponent<Renderer>().material.GetColor("_ShadowColorA");
+        set => planet.GetComponent<Renderer>().material.SetColor("_ShadowColorA", value);
     }
 
     /// <summary>
@@ -115,8 +120,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public Color cityColor
     {
-        get => GetComponent<Renderer>().material.GetColor("_Citiescolor");
-        set => GetComponent<Renderer>().material.SetColor("_Citiescolor", value);
+        get => planet.GetComponent<Renderer>().material.GetColor("_Citiescolor");
+        set => planet.GetComponent<Renderer>().material.SetColor("_Citiescolor", value);
     }
 
     /// <summary>
@@ -142,7 +147,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public int planetaryOrbitProximityToStar
     {
-        get => int.Parse(transform.parent.parent.gameObject.name.Substring(16, transform.parent.parent.gameObject.name.Length - 16)) - 1;
+        get => int.Parse(transform.parent.gameObject.name.Substring(16, transform.parent.parent.gameObject.name.Length - 16)) - 1;
     }
 
     /// <summary>
@@ -150,8 +155,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public float planetaryOrbitRotation
     {
-        get => transform.parent.parent.localRotation.eulerAngles.y;
-        set => transform.parent.parent.localRotation = Quaternion.Euler(transform.parent.parent.localRotation.eulerAngles.x, value, transform.parent.parent.localRotation.eulerAngles.z);
+        get => transform.parent.localRotation.eulerAngles.y;
+        set => transform.parent.localRotation = Quaternion.Euler(transform.parent.localRotation.eulerAngles.x, value, transform.parent.localRotation.eulerAngles.z);
     }
 
     /// <summary>
@@ -159,8 +164,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public Vector3 localPosition
     {
-        get => transform.parent.localPosition;
-        set => transform.parent.localPosition = value;
+        get => transform.localPosition;
+        set => transform.localPosition = value;
     }
 
     /// <summary>
@@ -223,13 +228,16 @@ public class NewGalaxyPlanet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(planetName);
+        //Adds the OnZoomChangeFunction of the planet to the list of functions to be executed by the galaxy camera whenever the camera's zoom percentage meaningfully changes.
+        NewGalaxyCamera.AddZoomFunction(OnZoomPercentageChange);
+        //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
+        OnZoomPercentageChange();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.parent.localRotation = Quaternion.Euler(transform.parent.localRotation.eulerAngles.x, transform.parent.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), transform.parent.localRotation.eulerAngles.z);
+        transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), transform.localRotation.eulerAngles.z);
     }
 
     /// <summary>
@@ -276,7 +284,7 @@ public class NewGalaxyPlanet : MonoBehaviour
         primaryRingColor = ringColorCombo[0];
         secondaryRingColor = ringColorCombo[1];
         //Initializes the light source of the planet to the light being emitted from the star in the solar system.
-        transform.parent.gameObject.GetComponent<LightSource>().Sun = starLight.gameObject;
+        gameObject.GetComponent<LightSource>().Sun = starLight.gameObject;
 
         //Adds the OnGalaxyGenerationCompletion function to the list of functions to be executed once the galaxy has completely finished generating.
         NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion);
@@ -324,6 +332,29 @@ public class NewGalaxyPlanet : MonoBehaviour
         {
             ownerID = ownerIDVar;
         }
+    }
+
+    /// <summary>
+    /// Private function that should be added to the list of functions to be called by the galaxy camera whenever the zoom percentage of the camera changes and updates the planet's visibility to optimize performance among other things.
+    /// </summary>
+    private void OnZoomPercentageChange()
+    {
+        //Updates the activation state of the renderer game objects of the planet in order to optimize the game's performance if the camera is too zoomed out and wouldn't even see the planet anyway.
+        if(planet.activeSelf != NewGalaxyCamera.planetsVisible)
+        {
+            planet.SetActive(NewGalaxyCamera.planetsVisible);
+            atmosphere.SetActive(NewGalaxyCamera.planetsVisible);
+            rings.SetActive(hasRings && NewGalaxyCamera.planetsVisible);
+        }
+    }
+
+    /// <summary>
+    /// This function is called whenever the planet is destroyed and removes the planet's OnZoomPercentageChange function from the list of functions to be executed once the galaxy camera's zoom percentage meaningfully changes.
+    /// </summary>
+    private void OnDestroy()
+    {
+        //Removes the planet's OnZoomPercentageChange function from the list of functions to be executed by the galaxy camera whenever the camera's zoom percentage meaningfully changes.
+        NewGalaxyCamera.RemoveZoomFunction(OnZoomPercentageChange);
     }
 }
 

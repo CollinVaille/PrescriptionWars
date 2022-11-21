@@ -92,6 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3289941708542254167}
   - component: {fileID: 7594124281106213699}
+  - component: {fileID: 6883947325676799879}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -129,6 +130,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sun: {fileID: 0}
+--- !u!114 &6883947325676799879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186292218765209902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd9a1d931f4d31543b5b910a1275b1a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planet: {fileID: 8250479721080119727}
+  atmosphere: {fileID: 3006551125390571615}
+  rings: {fileID: 1161356137666159977}
 --- !u!1 &3006551125390571615
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +239,6 @@ GameObject:
   - component: {fileID: 7754509651115582446}
   - component: {fileID: 2340353356848955181}
   - component: {fileID: 2055847337847332917}
-  - component: {fileID: 1918911872045426608}
   m_Layer: 0
   m_Name: Planet
   m_TagString: Untagged
@@ -308,17 +323,3 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 34.900005
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1918911872045426608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8250479721080119727}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd9a1d931f4d31543b5b910a1275b1a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  atmosphere: {fileID: 3006551125390571615}
-  rings: {fileID: 1161356137666159977}

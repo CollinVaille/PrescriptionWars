@@ -7,9 +7,10 @@ public class NewGalaxyCamera : MonoBehaviour
 {
     [Header("Settings")]
 
-    [SerializeField, Tooltip("Multiplier of the speed at which the camera zooms into the galaxy.")] private float scrollSpeed = 30;
-    [SerializeField, Tooltip("Indictates what the minimum and maximum amounts are that the player can zoom.")] private Vector2Int zoomRange = new Vector2Int(1654, 20);
-    [SerializeField, Tooltip("Multiplier of the speed at which the camera can be dragged by the mouse.")]private float dragSpeed = 50;
+    [SerializeField, Tooltip("Indicates the minimum (x) and maximum (y) speeds at which the player can scroll and zoom in the camera into the galaxy.")] private Vector2Int zoomSpeedRange = new Vector2Int(2, 50);
+    [SerializeField, Tooltip("Indictates what the minimum (x) and maximum (y) amounts (camera y position) are that the player can zoom.")] private Vector2 zoomRange = new Vector2(1654, 0.5f);
+    [SerializeField, Tooltip("Indicates the minimum (x) and maximum (y) speeds at which the player can drag the camera within the galaxy, which scales down with the zoom percentage.")] private Vector2Int dragSpeedRange = new Vector2Int(2, 30);
+    [SerializeField, Tooltip("Indicates the zoom percentage at which the planets should become visible to the player.")] private float planetsVisibleZoomPercentage = 0.95f;
 
     //Non-inspector variables.
 
@@ -35,6 +36,21 @@ public class NewGalaxyCamera : MonoBehaviour
     /// Public static property that should be accessed in order to determine how far, percentage wise (0-1 with 0 representing fully zoomed out), the galaxy camera is zoomed in.
     /// </summary>
     public static float zoomPercentage { get => galaxyCamera == null ? 0 : 1 - ((galaxyCamera.transform.localPosition.y - galaxyCamera.zoomRange.y) / (galaxyCamera.zoomRange.x - galaxyCamera.zoomRange.y));}
+
+    /// <summary>
+    /// Private float property that should be accessed in order to determine the speed at which the camera is able to be zoomed in and out by the player scrolling, which depends on the zoom percentage and the allowed zoom speed range.
+    /// </summary>
+    private float zoomSpeed { get => zoomSpeedRange.y - (zoomPercentage * (zoomSpeedRange.y - zoomSpeedRange.x)); }
+
+    /// <summary>
+    /// Private float property that should be accessed in order to determine the speed at which the camera is able to be dragged by the mouse, which depends on the zoom percentage and the allowed drag speed range.
+    /// </summary>
+    private float dragSpeed { get => dragSpeedRange.y - (zoomPercentage * (dragSpeedRange.y - dragSpeedRange.x)); }
+
+    /// <summary>
+    /// Public static property that should be accessed in order to determine if the planets in the galaxy are visible to the player based on the zoom percentage of the galaxy camera.
+    /// </summary>
+    public static bool planetsVisible { get => galaxyCamera == null ? false : zoomPercentage >= galaxyCamera.planetsVisibleZoomPercentage; }
 
     /// <summary>
     /// Private list of functions to execute whenever the zoom percentage changes.
@@ -115,7 +131,7 @@ public class NewGalaxyCamera : MonoBehaviour
         //Stores the initial zoom percentage.
         float initialZoomPercentage = zoomPercentage;
         //Updates the zoom amount based on the mouse wheel.
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - (Input.mouseScrollDelta.y * scrollSpeed), transform.localPosition.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - (Input.mouseScrollDelta.y * zoomSpeed), transform.localPosition.z);
         //Ensures that the camera is not too zoomed out.
         if (transform.localPosition.y > zoomRange.x)
             transform.localPosition = new Vector3(transform.localPosition.x, zoomRange.x, transform.localPosition.z);

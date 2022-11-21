@@ -462,11 +462,11 @@ public class NewGalaxyGenerator : MonoBehaviour
                     planetaryOrbit.transform.localRotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
 
                     //Instantiates a new planet from the planet prefab.
-                    NewGalaxyPlanet planet = Instantiate(planetPrefab).transform.GetChild(0).gameObject.GetComponent<NewGalaxyPlanet>();
+                    NewGalaxyPlanet planet = Instantiate(planetPrefab).GetComponent<NewGalaxyPlanet>();
                     //Parents the planet under its previously created planetary orbit.
-                    planet.transform.parent.SetParent(planetaryOrbit.transform);
+                    planet.transform.SetParent(planetaryOrbit.transform);
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
-                    planet.transform.parent.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.parent.localPosition.y, planet.transform.parent.localPosition.z);
+                    planet.transform.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.localPosition.y, planet.transform.localPosition.z);
                     //Initializes all needed variables of the planet.
                     planet.InitializeFromGalaxyGenerator(solarSystem, planets.Count, PlanetNameGenerator.GeneratePlanetName(), biome, star.starLight);
 
