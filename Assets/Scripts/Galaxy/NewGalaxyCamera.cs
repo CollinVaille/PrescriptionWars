@@ -11,6 +11,7 @@ public class NewGalaxyCamera : MonoBehaviour
     [SerializeField, Tooltip("Indictates what the minimum (x) and maximum (y) amounts (camera y position) are that the player can zoom.")] private Vector2 zoomRange = new Vector2(1654, 0.5f);
     [SerializeField, Tooltip("Indicates the minimum (x) and maximum (y) speeds at which the player can drag the camera within the galaxy, which scales down with the zoom percentage.")] private Vector2Int dragSpeedRange = new Vector2Int(2, 30);
     [SerializeField, Tooltip("Indicates the zoom percentage at which the planets should become visible to the player.")] private float planetsVisibleZoomPercentage = 0.95f;
+    [SerializeField, Tooltip("Indicates the zoom percentage at which the planetary orbit outlines become visible to the player.")] private float planetaryOrbitOutlinesVisibleZoomPercentage = 0.90f;
 
     //Non-inspector variables.
 
@@ -51,6 +52,11 @@ public class NewGalaxyCamera : MonoBehaviour
     /// Public static property that should be accessed in order to determine if the planets in the galaxy are visible to the player based on the zoom percentage of the galaxy camera.
     /// </summary>
     public static bool planetsVisible { get => galaxyCamera == null ? false : zoomPercentage >= galaxyCamera.planetsVisibleZoomPercentage; }
+
+    /// <summary>
+    /// Public static property that should be accessed in order to determine if the planetary orbit outlines in the galaxy are visible to the player based on the zoom percentage of the galaxy camera.
+    /// </summary>
+    public static bool planetaryOrbitOutlinesVisible { get => galaxyCamera == null ? false : zoomPercentage >= galaxyCamera.planetaryOrbitOutlinesVisibleZoomPercentage; }
 
     /// <summary>
     /// Private list of functions to execute whenever the zoom percentage changes.
