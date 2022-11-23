@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class GalaxySolarSystem : MonoBehaviour
 
     [SerializeField, Tooltip("The particle system that creates the space dust clouds that encompass the solar system.")] private ParticleSystem spaceDustPS = null;
     [SerializeField, LabelOverride("Planetary Orbits Parent"), Tooltip("The transform of the game object that serves as the parent of all planet orbits in the solar system.")] private Transform planetaryOrbitsParentVar = null;
+    [SerializeField, Tooltip("The visibility plane of the solar system that triggers needed functions whenever the solar system becomes either visible or invisibile to the main galaxy camera.")] private VisibilityPlane visibilityPlane = null;
 
     //Non-inspector variables and properties.
 
@@ -70,9 +72,32 @@ public class GalaxySolarSystem : MonoBehaviour
     /// </summary>
     public int ID { get => IDVar; }
 
+    /// <summary>
+    /// Private variable that holds a boolean value that indicates whether or not the visibility plane of the solar system is visible to the main camera.
+    /// </summary>
+    private bool visibleVar = false;
+    /// <summary>
+    /// Public property that should be accessed in order to determine if the visibility plane of the solar system is visible to the main galaxy camera or not.
+    /// </summary>
+    public bool visible
+    {
+        get => visibleVar;
+    }
+
+    /// <summary>
+    /// Private list that holds all of the functions that need to be executed whenever the visibility plane of the solar system becomes visible to the main galaxy camera.
+    /// </summary>
+    private List<Action> onBecameVisibleFunctions = null;
+    /// <summary>
+    /// Private list that holds all of the functions that need to be executed whenever the visibility plane of the solar system becomes invisible to the main galaxy camera.
+    /// </summary>
+    private List<Action> onBecameInvisibleFunctions = null;
+
     private void Awake()
     {
-        
+        //Informs the solar system's visibility plane of the functions that need to be executed once the visibility plane becomes either visible or invisible.
+        visibilityPlane.AddOnBecameVisibleFunction(OnVisibilityPlaneBecameVisible);
+        visibilityPlane.AddOnBecameInvisibleFunction(OnVisibilityPlaneBecameInvisible);
     }
 
     // Start is called before the first frame update
@@ -134,6 +159,84 @@ public class GalaxySolarSystem : MonoBehaviour
         //Updates the color of the solar system's space dust particle system.
         ParticleSystem.MainModule spaceDustPSMain = spaceDustPS.main;
         spaceDustPSMain.startColor = Color.Lerp(spaceDustPSMain.startColor.color, new Color(ownerColor.r, ownerColor.g, ownerColor.b, spaceDustPSMain.startColor.color.a), 0.09f);
+    }
+
+    /// <summary>
+    /// Private method that should be called by the visibility plane of the solar system whenever it becomes visible to the main galaxy camera.
+    /// </summary>
+    private void OnVisibilityPlaneBecameVisible()
+    {
+        //Stores that the solar system should now be considered visible to the main galaxy camera.
+        visibleVar = true;
+
+        //Executes each function that was added to the list of functions that need to be executed whenever the visibility plane of the solar system becomes visible to the main galaxy camera.
+        if(onBecameVisibleFunctions != null)
+            foreach (Action onBecameVisibleFunction in onBecameVisibleFunctions)
+                onBecameVisibleFunction();
+    }
+
+    /// <summary>
+    /// Private method that should be called by the visibility plane of the solar system whenever it becomes invisible to the main galaxy camera.
+    /// </summary>
+    private void OnVisibilityPlaneBecameInvisible()
+    {
+        //Stores that the solar system should now be considered invisible to the main galaxy camera.
+        visibleVar = false;
+
+        //Executes each function that was added to the list of functions that need to be executed whenever the visibility plane of the solar system becomes invisible to the main galaxy camera.
+        if (onBecameInvisibleFunctions != null)
+            foreach (Action onBecameInvisibleFunction in onBecameInvisibleFunctions)
+                onBecameInvisibleFunction();
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to add a function to the list of functions to be executed whenever the visibility plane of the solar system becomes visible to the main galaxy camera.
+    /// </summary>
+    /// <param name="onBecameVisibleFunction"></param>
+    public void AddOnBecameVisibleFunction(Action onBecameVisibleFunction)
+    {
+        if (onBecameVisibleFunctions == null)
+            onBecameVisibleFunctions = new List<Action>();
+        onBecameVisibleFunctions.Add(onBecameVisibleFunction);
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to add a function to the list of functions to be executed whenever the visibility plane becomes invisible to the main camera.
+    /// </summary>
+    /// <param name="onBecameInvisibleFunction"></param>
+    public void AddOnBecameInvisibleFunction(Action onBecameInvisibleFunction)
+    {
+        if (onBecameInvisibleFunctions == null)
+            onBecameInvisibleFunctions = new List<Action>();
+        onBecameInvisibleFunctions.Add(onBecameInvisibleFunction);
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to remove a function from the list of functions to be executed whenever the visibility plane becomes visible to the main camera.
+    /// </summary>
+    /// <param name="onBecameVisibleFunction"></param>
+    public void RemoveOnBecameVisibleFunction(Action onBecameVisibleFunction)
+    {
+        if (onBecameVisibleFunctions != null && onBecameVisibleFunctions.Contains(onBecameVisibleFunction))
+        {
+            onBecameVisibleFunctions.Remove(onBecameVisibleFunction);
+            if (onBecameVisibleFunctions.Count == 0)
+                onBecameVisibleFunctions = null;
+        }
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to remove a function from the list of functions to be executed whenever the visibility plane becomes invisible to the main camera.
+    /// </summary>
+    /// <param name="onBecameInvisibleFunction"></param>
+    public void RemoveOnBecameInvisibleFunction(Action onBecameInvisibleFunction)
+    {
+        if (onBecameInvisibleFunctions != null && onBecameInvisibleFunctions.Contains(onBecameInvisibleFunction))
+        {
+            onBecameInvisibleFunctions.Remove(onBecameInvisibleFunction);
+            if (onBecameInvisibleFunctions.Count == 0)
+                onBecameInvisibleFunctions = null;
+        }
     }
 }
 

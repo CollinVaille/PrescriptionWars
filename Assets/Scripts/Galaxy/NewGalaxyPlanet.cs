@@ -262,6 +262,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     {
         //Initializes the reference of the solar system that the planet belongs to.
         solarSystemVar = solarSystem;
+        solarSystemVar.AddOnBecameVisibleFunction(OnSolarSystemBecameVisible);
+        solarSystemVar.AddOnBecameInvisibleFunction(OnSolarSystemBecameInvisible);
         //Initializes the ID of the planet.
         IDVar = ID;
         //Initializes the name of the planet.
@@ -345,29 +347,53 @@ public class NewGalaxyPlanet : MonoBehaviour
     private void OnZoomPercentageChange()
     {
         //Updates the activation state of the renderer game objects of the planet in order to optimize the game's performance if the camera is too zoomed out and wouldn't even see the planet anyway.
-        if(planet.activeSelf != NewGalaxyCamera.planetsVisible)
+        if(planet.activeSelf != solarSystem.visible && NewGalaxyCamera.planetsVisible)
         {
-            planet.SetActive(NewGalaxyCamera.planetsVisible);
-            atmosphere.SetActive(NewGalaxyCamera.planetsVisible);
-            rings.SetActive(hasRings && NewGalaxyCamera.planetsVisible);
+            planet.SetActive(solarSystem.visible && NewGalaxyCamera.planetsVisible);
+            atmosphere.SetActive(solarSystem.visible && NewGalaxyCamera.planetsVisible);
+            rings.SetActive(solarSystem.visible && hasRings && NewGalaxyCamera.planetsVisible);
         }
 
         //Instantiates a planetary orbit outline if the player is now zoomed far enough into the galaxy to see it.
-        if(planetaryOrbitOutline == null && NewGalaxyCamera.planetaryOrbitOutlinesVisible)
+        if(planetaryOrbitOutline == null && NewGalaxyCamera.planetaryOrbitOutlinesVisible && solarSystem.visible)
         {
-            planetaryOrbitOutline = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Planetary Orbit Outline"));
-            planetaryOrbitOutline.transform.SetParent(transform.parent);
-            planetaryOrbitOutline.transform.localPosition = new Vector3(0, (-0.003f * planetaryOrbitProximityToStar), 0);
-            planetaryOrbitOutline.transform.localScale = Vector3.one;
-            planetaryOrbitOutline.transform.GetChild(1).localScale = new Vector3((localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2 * 50) - (planetaryOrbitOutline.transform.GetChild(0).localScale.x - planetaryOrbitOutline.transform.GetChild(1).localScale.x), (localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2 * 50) - (planetaryOrbitOutline.transform.GetChild(0).localScale.y - planetaryOrbitOutline.transform.GetChild(1).localScale.y), planetaryOrbitOutline.transform.GetChild(1).localScale.z);
-            planetaryOrbitOutline.transform.GetChild(0).localScale = new Vector3(localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2 * 50, localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2 * 50, planetaryOrbitOutline.transform.GetChild(0).localScale.z);
+            CreatePlanetaryOrbitOutline();
         }
         //Destroys the previously created planetary orbit outine if the player is now too far zoomed out to see it.
-        else if (planetaryOrbitOutline != null && !NewGalaxyCamera.planetaryOrbitOutlinesVisible)
+        else if (planetaryOrbitOutline != null && (!NewGalaxyCamera.planetaryOrbitOutlinesVisible || !solarSystem.visible))
         {
             Destroy(planetaryOrbitOutline);
             planetaryOrbitOutline = null;
         }
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to create a visible outline of the planet's orbit for the player to see.
+    /// </summary>
+    private void CreatePlanetaryOrbitOutline()
+    {
+        planetaryOrbitOutline = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Planetary Orbit Outline"));
+        planetaryOrbitOutline.transform.SetParent(transform.parent);
+        planetaryOrbitOutline.transform.localPosition = new Vector3(0, (-0.003f * planetaryOrbitProximityToStar), 0);
+        planetaryOrbitOutline.transform.localScale = Vector3.one;
+        planetaryOrbitOutline.transform.GetChild(1).localScale = new Vector3((localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2) - (planetaryOrbitOutline.transform.GetChild(0).localScale.x - planetaryOrbitOutline.transform.GetChild(1).localScale.x), (localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2) - (planetaryOrbitOutline.transform.GetChild(0).localScale.y - planetaryOrbitOutline.transform.GetChild(1).localScale.y), planetaryOrbitOutline.transform.GetChild(1).localScale.z);
+        planetaryOrbitOutline.transform.GetChild(0).localScale = new Vector3(localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2, localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2, planetaryOrbitOutline.transform.GetChild(0).localScale.z);
+    }
+
+    /// <summary>
+    /// This method is added to the list of functions to be called by the solar system once it becomes visible to the main galaxy camera.
+    /// </summary>
+    private void OnSolarSystemBecameVisible()
+    {
+        OnZoomPercentageChange();
+    }
+
+    /// <summary>
+    /// This method is added to the list of functions to be called by the solar system once it becomes invisible to the main galaxy camera.
+    /// </summary>
+    private void OnSolarSystemBecameInvisible()
+    {
+        OnZoomPercentageChange();
     }
 
     /// <summary>

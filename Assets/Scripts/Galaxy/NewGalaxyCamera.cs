@@ -80,7 +80,7 @@ public class NewGalaxyCamera : MonoBehaviour
     /// <summary>
     /// Indicates whether the mouse is in the viewport of the screen and therefore visible to the player.
     /// </summary>
-    public static bool isMouseInViewport { get => Input.mousePosition.x >= 0 && Input.mousePosition.x <= galaxyCamera.cameraComponent.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= galaxyCamera.cameraComponent.pixelHeight; }
+    public static bool isMouseInViewport { get => galaxyCamera == null ? false : Input.mousePosition.x >= 0 && Input.mousePosition.x <= galaxyCamera.cameraComponent.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= galaxyCamera.cameraComponent.pixelHeight; }
 
     private void Awake()
     {
@@ -160,7 +160,8 @@ public class NewGalaxyCamera : MonoBehaviour
     /// <param name="zoomFunction"></param>
     public static void AddZoomFunction(Action zoomFunction)
     {
-        galaxyCamera.zoomFunctions.Add(zoomFunction);
+        if(galaxyCamera != null)
+            galaxyCamera.zoomFunctions.Add(zoomFunction);
     }
 
     /// <summary>
@@ -169,6 +170,15 @@ public class NewGalaxyCamera : MonoBehaviour
     /// <param name="zoomFunction"></param>
     public static void RemoveZoomFunction(Action zoomFunction)
     {
-        galaxyCamera.zoomFunctions.Remove(zoomFunction);
+        if(galaxyCamera != null && galaxyCamera.zoomFunctions.Contains(zoomFunction))
+            galaxyCamera.zoomFunctions.Remove(zoomFunction);
+    }
+
+    /// <summary>
+    /// This private method is called whenever the galaxy camera instance is destroyed and resets all neeeded static variables.
+    /// </summary>
+    private void OnDestroy()
+    {
+        galaxyCamera = null;
     }
 }
