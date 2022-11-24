@@ -77,9 +77,27 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static bool activeInHierarchy { get => galaxyManager != null && galaxyManager.gameObject.activeInHierarchy; }
 
     /// <summary>
+    /// Private holder variable that indicates the name of the shape that the galaxy was made from.
+    /// </summary>
+    private string galaxyShapeVar = null;
+    /// <summary>
+    /// Public static property that should be used to access the name of the shape that the galaxy was generated to fit.
+    /// </summary>
+    public static string galaxyShape { get => galaxyManager == null ? null : galaxyManager.galaxyShapeVar; }
+
+    /// <summary>
+    /// Private holder variable for the player's empire ID (index in the list of empires within the galaxy).
+    /// </summary>
+    private int playerIDVar = -1;
+    /// <summary>
+    /// Public static property that should be used to access the player's empire ID (index in the list of empires within the galaxy).
+    /// </summary>
+    public static int playerID { get => galaxyManager == null ? -1 : galaxyManager.playerIDVar; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, string galaxyShape, int playerID)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -95,6 +113,12 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains all of the empires existing within the galaxy.
         galaxyManager.empiresVar = empires;
+
+        //Sets the value of the variable that contains the name of the shape that the galaxy was generated to fit.
+        galaxyManager.galaxyShapeVar = galaxyShape;
+
+        //Sets the value of the variable that contains the player's empire ID (index in the list of empires within the galaxy).
+        galaxyManager.playerIDVar = playerID;
     }
 
     protected override void Awake()

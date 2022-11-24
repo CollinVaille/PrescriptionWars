@@ -112,7 +112,7 @@ public class NewEmpire
     {
         nameVar = empireData.name;
         cultureVar = empireData.culture;
-        colorVar = empireData.color;
+        colorVar = new Color(empireData.color[0], empireData.color[1], empireData.color[2], empireData.color[3]);
         IDVar = empireData.ID;
         solarSystemIDsVar = empireData.solarSystemIDs;
         planetIDsVar = empireData.planetIDs;
@@ -259,7 +259,7 @@ public class EmpireData
 {
     public string name;
     public NewEmpire.Culture culture;
-    public Color color;
+    public float[] color;
     public int ID;
     public List<int> solarSystemIDs = null;
     public List<int> planetIDs = null;
@@ -268,7 +268,7 @@ public class EmpireData
     {
         name = empire.name;
         culture = empire.culture;
-        color = empire.color;
+        color = new float[4] { empire.color.r, empire.color.g, empire.color.b, empire.color.a };
         ID = empire.ID;
         solarSystemIDs = empire.solarSystemIDs;
         planetIDs = empire.planetIDs;

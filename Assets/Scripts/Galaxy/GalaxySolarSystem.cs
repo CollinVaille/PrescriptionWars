@@ -132,7 +132,7 @@ public class GalaxySolarSystem : MonoBehaviour
     /// This public method should be called by the GenerateSolarSystems method in the galaxy generator in order to initialize the solar system from save data that has been statically passed over from the load game menu.
     /// </summary>
     /// <param name="solarSystemData"></param>
-    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star, int ID)
+    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star, List<NewGalaxyPlanet> planets, int ID)
     {
         //Loads in the local position from the solar system save data.
         transform.localPosition = new Vector3(solarSystemData.localPosition[0], solarSystemData.localPosition[1], solarSystemData.localPosition[2]);
@@ -140,6 +140,8 @@ public class GalaxySolarSystem : MonoBehaviour
         starVar = star;
         //Sets the variable that indicates the index of the system's capital planet in the list of planets in the solar system.
         capitalPlanetIndexVar = solarSystemData.capitalPlanetIndex;
+        //Initializes the planets list variable.
+        planetsVar = planets;
         //Sets the variable that indicates the ID of the solar system.
         IDVar = ID;
     }

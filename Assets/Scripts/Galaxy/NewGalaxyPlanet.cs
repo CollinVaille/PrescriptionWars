@@ -304,7 +304,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="starLight"></param>
     public void InitializeFromSaveData(GalaxyPlanetData planetData, GalaxySolarSystem solarSystem, int ID, Light starLight)
     {
-        Initialize(solarSystem, ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, planetData.cloudColorCombo, planetData.cityColor, planetData.ringColorCombo, starLight);
+        Initialize(solarSystem, ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, new DualColorSet(new Color(planetData.cloudColorCombo[0], planetData.cloudColorCombo[1], planetData.cloudColorCombo[2], planetData.cloudColorCombo[3]), new Color(planetData.cloudColorCombo[4], planetData.cloudColorCombo[5], planetData.cloudColorCombo[6], planetData.cloudColorCombo[7])), new Color(planetData.cityColor[0], planetData.cityColor[1], planetData.cityColor[2], planetData.cityColor[3]), new DualColorSet(new Color(planetData.ringColorCombo[0], planetData.ringColorCombo[1], planetData.ringColorCombo[2], planetData.ringColorCombo[3]), new Color(planetData.ringColorCombo[4], planetData.ringColorCombo[5], planetData.ringColorCombo[6], planetData.ringColorCombo[7])), starLight);
         ownerIDVar = planetData.ownerID;
     }
 
@@ -418,9 +418,9 @@ public class GalaxyPlanetData
     public float planetarySize = 0;
     public float planetaryRotationSpeed = 0;
     public float cloudSpeed = 0;
-    public DualColorSet cloudColorCombo;
-    public Color cityColor;
-    public DualColorSet ringColorCombo;
+    public float[] cloudColorCombo;
+    public float[] cityColor;
+    public float[] ringColorCombo;
 
     public int planetaryOrbitProximityToStar = 0;
     public float planetaryOrbitRotation = 0;
@@ -439,9 +439,9 @@ public class GalaxyPlanetData
         planetarySize = planet.planetarySize;
         planetaryRotationSpeed = planet.rotationSpeed;
         cloudSpeed = planet.cloudSpeed;
-        cloudColorCombo = new DualColorSet(planet.cloudColor, planet.cloudShadowColor);
-        cityColor = planet.cityColor;
-        ringColorCombo = new DualColorSet(planet.primaryRingColor, planet.secondaryRingColor);
+        cloudColorCombo = new float[8] { planet.cloudColor.r, planet.cloudColor.g, planet.cloudColor.b, planet.cloudColor.a, planet.cloudShadowColor.r, planet.cloudShadowColor.g, planet.cloudShadowColor.b, planet.cloudShadowColor.a };
+        cityColor = new float[4] { planet.cityColor.r, planet.cityColor.g, planet.cityColor.b, planet.cityColor.a };
+        ringColorCombo = new float[8] { planet.primaryRingColor.r, planet.primaryRingColor.g, planet.primaryRingColor.b, planet.primaryRingColor.a, planet.secondaryRingColor.r, planet.secondaryRingColor.g, planet.secondaryRingColor.b, planet.secondaryRingColor.a };
 
         planetaryOrbitProximityToStar = planet.planetaryOrbitProximityToStar;
         planetaryOrbitRotation = planet.planetaryOrbitRotation;

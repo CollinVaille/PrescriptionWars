@@ -117,14 +117,14 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires);
-
-        //NewGalaxyManager.saveName = "Test Save";
-        //GalaxySaveSystem.SaveGalaxy();
-        //Debug.Log("Saved");
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
+
+        NewGalaxyManager.saveName = "Test Save";
+        GalaxySaveSystem.SaveGalaxy();
+        Debug.Log("Saved");
 
         //Destroys the galaxy generator script after galaxy generation completion.
         Destroy(this);
@@ -337,11 +337,11 @@ public class NewGalaxyGenerator : MonoBehaviour
                     planetaryOrbit.transform.localRotation = Quaternion.Euler(0, saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].planetaryOrbitRotation, 0);
 
                     //Instantiates a new planet from the planet prefab.
-                    NewGalaxyPlanet planet = Instantiate(planetPrefab).transform.GetChild(0).gameObject.GetComponent<NewGalaxyPlanet>();
+                    NewGalaxyPlanet planet = Instantiate(planetPrefab).GetComponent<NewGalaxyPlanet>();
                     //Parents the planet under its previously created planetary orbit.
-                    planet.transform.parent.SetParent(planetaryOrbit.transform);
+                    planet.transform.SetParent(planetaryOrbit.transform);
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
-                    planet.transform.parent.localPosition = new Vector3(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[0], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[1], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[2]);
+                    planet.transform.localPosition = new Vector3(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[0], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[1], saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].localPosition[2]);
                     //Initializes all needed variables of the planet.
                     planet.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].planets[planetIndex], solarSystem, planets.Count, star.starLight);
 
@@ -352,7 +352,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 }
 
                 //Initializes the solar system using the saved data of the solar system and the star that was just instantiated from the same save data.
-                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystems.Count);
+                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystemPlanets, solarSystems.Count);
 
                 //Adds the solar system to the list of solar systems within the galaxy.
                 solarSystems.Add(solarSystem);
