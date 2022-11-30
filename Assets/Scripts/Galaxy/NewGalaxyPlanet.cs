@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewGalaxyPlanet : MonoBehaviour
 {
@@ -19,7 +20,11 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <summary>
     /// Public property that should be used both to access and mutate the name of the planet.
     /// </summary>
-    public string planetName { get => planetNameVar; set => planetNameVar = value; }
+    public string planetName { get => planetNameVar; set { planetNameVar = value; gameObject.name = value; } }
+    /// <summary>
+    /// Private holder variable for the text object that display's the planet's name to the player.
+    /// </summary>
+    private Text planetNameLabel = null;
 
     /// <summary>
     /// Private variable that holds what type of biome the planet belongs to.
@@ -235,14 +240,17 @@ public class NewGalaxyPlanet : MonoBehaviour
     {
         //Adds the OnZoomChangeFunction of the planet to the list of functions to be executed by the galaxy camera whenever the camera's zoom percentage meaningfully changes.
         NewGalaxyCamera.AddZoomFunction(OnZoomPercentageChange);
-        //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
-        OnZoomPercentageChange();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Updates the planet's rotation.
         transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), transform.localRotation.eulerAngles.z);
+
+        //Updates the planet name label's position.
+        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
     }
 
     /// <summary>
@@ -339,6 +347,18 @@ public class NewGalaxyPlanet : MonoBehaviour
         {
             ownerID = ownerIDVar;
         }
+
+        //Instantiates the planet's name label.
+        planetNameLabel = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Planet Label")).GetComponent<Text>();
+        planetNameLabel.transform.SetParent(NewGalaxyManager.planetLabelsParent);
+        planetNameLabel.transform.localScale = Vector3.one;
+        planetNameLabel.text = planetName;
+        planetNameLabel.gameObject.name = planetName + " Label";
+        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
+
+        //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
+        OnZoomPercentageChange();
     }
 
     /// <summary>
@@ -347,11 +367,13 @@ public class NewGalaxyPlanet : MonoBehaviour
     private void OnZoomPercentageChange()
     {
         //Updates the activation state of the renderer game objects of the planet in order to optimize the game's performance if the camera is too zoomed out and wouldn't even see the planet anyway.
-        if(planet.activeSelf != solarSystem.visible && NewGalaxyCamera.planetsVisible)
+        bool planetsVisible = NewGalaxyCamera.planetsVisible;
+        if (planet.activeSelf != (solarSystem.visible && planetsVisible))
         {
-            planet.SetActive(solarSystem.visible && NewGalaxyCamera.planetsVisible);
-            atmosphere.SetActive(solarSystem.visible && NewGalaxyCamera.planetsVisible);
-            rings.SetActive(solarSystem.visible && hasRings && NewGalaxyCamera.planetsVisible);
+            planet.SetActive(solarSystem.visible && planetsVisible);
+            atmosphere.SetActive(solarSystem.visible && planetsVisible);
+            rings.SetActive(solarSystem.visible && hasRings && planetsVisible);
+            planetNameLabel.gameObject.SetActive(solarSystem.visible && planetsVisible);
         }
 
         //Instantiates a planetary orbit outline if the player is now zoomed far enough into the galaxy to see it.

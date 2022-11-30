@@ -25,6 +25,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("Parents")]
 
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the solar systems in the galaxy. Specified through the inspector.")] private Transform solarSystemsParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the planet labels in the galaxy. Specified through the inspector.")] private Transform planetLabelsParent = null;
 
     [Header("Prefabs")]
 
@@ -117,7 +118,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0);
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent });
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();

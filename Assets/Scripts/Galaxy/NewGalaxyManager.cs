@@ -95,9 +95,18 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static int playerID { get => galaxyManager == null ? -1 : galaxyManager.playerIDVar; }
 
     /// <summary>
+    /// Private holder variable for the transform of the game object that serves as the parent object for all planet labels within the galaxy.
+    /// </summary>
+    private Transform planetLabelsParentVar = null;
+    /// <summary>
+    /// Public static property that should be used to access the transform of the game object that serves as the parent object for all planet labels within the galaxy.
+    /// </summary>
+    public static Transform planetLabelsParent { get => galaxyManager == null ? null : galaxyManager.planetLabelsParentVar; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, string galaxyShape, int playerID)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, string galaxyShape, int playerID, List<Transform> parents)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -119,6 +128,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains the player's empire ID (index in the list of empires within the galaxy).
         galaxyManager.playerIDVar = playerID;
+
+        //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all planet labels within the galaxy.
+        galaxyManager.planetLabelsParentVar = parents[0];
     }
 
     protected override void Awake()

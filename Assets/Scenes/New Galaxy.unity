@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.19677055, g: 0.14825502, b: 0.13063303, a: 1}
+  m_IndirectSpecularColor: {r: 0.27251267, g: 0.25873548, b: 0.27501735, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -412,6 +412,7 @@ MonoBehaviour:
     - colorOne: {r: 0.76862746, g: 0, b: 0, a: 0}
       colorTwo: {r: 1, g: 0.91764706, b: 0.9882353, a: 1}
   solarSystemsParent: {fileID: 1782092161}
+  planetLabelsParent: {fileID: 758454756}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
   starTypePrefabs:
@@ -466,7 +467,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1422864699}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5411,6 +5412,36 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &758454755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 758454756}
+  m_Layer: 5
+  m_Name: Planet Labels
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &758454756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758454755}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1422864699}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1088114869
 GameObject:
   m_ObjectHideFlags: 0
@@ -5644,6 +5675,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 97379202}
+  - {fileID: 758454756}
   - {fileID: 536733924}
   m_Father: {fileID: 125864733}
   m_RootOrder: 2
@@ -6017,3 +6049,4 @@ MonoBehaviour:
   zoomRange: {x: 1654, y: 0.5}
   dragSpeedRange: {x: 2, y: 30}
   planetsVisibleZoomPercentage: 0.95
+  planetaryOrbitOutlinesVisibleZoomPercentage: 0.9
