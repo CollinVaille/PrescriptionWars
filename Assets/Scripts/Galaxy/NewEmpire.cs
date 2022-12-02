@@ -57,9 +57,9 @@ public class NewEmpire
 
             if (culture == Culture.Red || culture == Culture.Green || culture == Culture.Blue)
             {
-                labelColor.r += 0.3f;
-                labelColor.g += 0.3f;
-                labelColor.b += 0.3f;
+                labelColor.r += 0.35f;
+                labelColor.g += 0.35f;
+                labelColor.b += 0.35f;
             }
 
             return labelColor;

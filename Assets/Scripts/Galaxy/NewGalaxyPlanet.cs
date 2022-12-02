@@ -10,6 +10,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     [SerializeField, Tooltip("The game object that has the planet renderer applied to it.")] private GameObject planet = null;
     [SerializeField, Tooltip("The game object that has the atmosphere renderer applied to it.")] private GameObject atmosphere = null;
     [SerializeField, Tooltip("The game object that has the rings renderer applied to it.")] private GameObject rings = null;
+    [SerializeField, Tooltip("The transform that marks the location at which the planet label should be placed.")] private Transform planetLabelLocation = null;
 
     //Non-inspector variables.
 
@@ -206,6 +207,9 @@ public class NewGalaxyPlanet : MonoBehaviour
             //Adds the planet to the list of planets controlled by the newly specified empire if needed.
             if (ownerIDVar != -1 && !NewGalaxyManager.empires[ownerIDVar].planetIDs.Contains(ID))
                 NewGalaxyManager.empires[ownerIDVar].AddPlanet(ownerIDVar);
+            //Updates the color of the planet's name label if it has been created already.
+            if(planetNameLabel != null)
+                planetNameLabel.color = owner == null ? Color.white : owner.labelColor;
             //Executes the needed logic for when the planet's solar system changes owner if the planet is indeed the capital planet of its solar system.
             if (solarSystem.capitalPlanet == this)
                 solarSystem.OnOwnerChange(previousOwnerID);
@@ -246,10 +250,10 @@ public class NewGalaxyPlanet : MonoBehaviour
     void Update()
     {
         //Updates the planet's rotation.
-        transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), transform.localRotation.eulerAngles.z);
+        planet.transform.localRotation = Quaternion.Euler(planet.transform.localRotation.eulerAngles.x, planet.transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), planet.transform.localRotation.eulerAngles.z);
 
         //Updates the planet name label's position.
-        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
         planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
     }
 
@@ -353,8 +357,9 @@ public class NewGalaxyPlanet : MonoBehaviour
         planetNameLabel.transform.SetParent(NewGalaxyManager.planetLabelsParent);
         planetNameLabel.transform.localScale = Vector3.one;
         planetNameLabel.text = planetName;
+        planetNameLabel.color = owner == null ? Color.white : owner.labelColor;
         planetNameLabel.gameObject.name = planetName + " Label";
-        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
         planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
 
         //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
