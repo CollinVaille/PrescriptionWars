@@ -602,6 +602,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     private void ResetHelperFunctions()
     {
         PlanetNameGenerator.ResetPlanetNamesGenerated(saveGameData);
+        StarNameGenerator.ResetStarNamesGenerated(saveGameData);
     }
 
     /// <summary>
