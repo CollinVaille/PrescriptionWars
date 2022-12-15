@@ -104,6 +104,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static Transform planetLabelsParent { get => galaxyManager == null ? null : galaxyManager.planetLabelsParentVar; }
 
     /// <summary>
+    /// Private holder variable for the transform of the game object that serves as the parent object for all star labels within the galaxy.
+    /// </summary>
+    private Transform starLabelsParentVar = null;
+    /// <summary>
+    /// Public static property that should be used to access the transform of the game object that serves as the parent object for all star labels within the galaxy.
+    /// </summary>
+    public static Transform starLabelsParent { get => galaxyManager == null ? null : galaxyManager.starLabelsParentVar; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
     public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, string galaxyShape, int playerID, List<Transform> parents)
@@ -131,6 +140,8 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all planet labels within the galaxy.
         galaxyManager.planetLabelsParentVar = parents[0];
+        //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all star labels within the galaxy.
+        galaxyManager.starLabelsParentVar = parents[1];
     }
 
     protected override void Awake()

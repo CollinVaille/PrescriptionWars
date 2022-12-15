@@ -258,7 +258,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
-    /// Private method that should be universally (aka regardless of whether starting a new game or loading an old game) called in order to initialize all needed data members of thr planet.
+    /// Private method that should be universally (aka regardless of whether starting a new game or loading an old game) called in order to initialize all needed data members of the planet.
     /// </summary>
     /// <param name="biomeType"></param>
     /// <param name="materialName"></param>
@@ -306,7 +306,7 @@ public class NewGalaxyPlanet : MonoBehaviour
         gameObject.GetComponent<LightSource>().Sun = starLight.gameObject;
 
         //Adds the OnGalaxyGenerationCompletion function to the list of functions to be executed once the galaxy has completely finished generating.
-        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion);
+        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
     }
 
     /// <summary>

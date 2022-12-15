@@ -26,6 +26,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the solar systems in the galaxy. Specified through the inspector.")] private Transform solarSystemsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the planet labels in the galaxy. Specified through the inspector.")] private Transform planetLabelsParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the star labels in the galaxy. Specified through the inspector.")] private Transform starLabelsParent = null;
 
     [Header("Prefabs")]
 
@@ -82,9 +83,9 @@ public class NewGalaxyGenerator : MonoBehaviour
     private List<NewEmpire> empires = null;
 
     /// <summary>
-    /// Private variable that holds a list of functions to be executed once the galaxy has finished generating completely.
+    /// Private variable that holds a dictionary of functions to be executed once the galaxy has finished generating completely with the int indicating each function's execution order number.
     /// </summary>
-    private List<Action> galaxyGenerationCompletionFunctions = new List<Action>();
+    private Dictionary<int, List<Action>> galaxyGenerationCompletionFunctions = new Dictionary<int, List<Action>>();
 
     /// <summary>
     /// Private static galaxy generator instance.
@@ -118,7 +119,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent });
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent });
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -321,7 +322,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 //Instantiates a star using the star data of the current solar system in the galaxy save data loaded in.
                 GalaxyStar star = Instantiate(starTypePrefabs[(int)saveGameData.solarSystems[solarSystemIndex].star.starType]).GetComponent<GalaxyStar>();
                 star.transform.SetParent(solarSystem.transform);
-                star.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex].star);
+                star.InitializeFromSaveData(solarSystem, saveGameData.solarSystems[solarSystemIndex].star);
                 star.transform.localPosition = Vector3.zero;
 
                 //Loop that instantiates the planets of the solar system using the list of planet data of the current solar system in the galaxy save data loaded in.
@@ -402,7 +403,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 int starTypeIndexInList = UnityEngine.Random.Range(0, starTypesRemaining.Count);
                 GalaxyStar star = Instantiate(starTypePrefabs[(int)starTypesRemaining[starTypeIndexInList]]).GetComponent<GalaxyStar>();
                 star.transform.SetParent(solarSystem.transform);
-                star.InitializeFromGalaxyGenerator(starTypesRemaining[starTypeIndexInList]);
+                star.InitializeFromGalaxyGenerator(solarSystem, starTypesRemaining[starTypeIndexInList], StarNameGenerator.GenerateStarName());
                 star.transform.localPosition = Vector3.zero;
                 starTypesRemaining.RemoveAt(starTypeIndexInList);
 
@@ -571,28 +572,38 @@ public class NewGalaxyGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Adds the specified function to the list of functions to be executed once the galaxy has completely finished generating.
+    /// Adds the specified function to the list of functions to be executed once the galaxy has completely finished generating and the execution order number indicates when the function will be executed with the execution numbers starting at 0 and going until the first value where there are no functions with the execution number.
     /// </summary>
     /// <param name="function"></param>
-    public static void ExecuteFunctionOnGalaxyGenerationCompletion(Action function)
+    public static void ExecuteFunctionOnGalaxyGenerationCompletion(Action function, int executionOrderNumber)
     {
         if(galaxyGenerator == null)
         {
             Debug.LogWarning("Cannot execute function on galaxy generation completion because the galaxy has already finished generating.");
             return;
         }
-        galaxyGenerator.galaxyGenerationCompletionFunctions.Add(function);
+
+        if (!galaxyGenerator.galaxyGenerationCompletionFunctions.ContainsKey(executionOrderNumber))
+            galaxyGenerator.galaxyGenerationCompletionFunctions.Add(executionOrderNumber, new List<Action>());
+        galaxyGenerator.galaxyGenerationCompletionFunctions[executionOrderNumber].Add(function);
     }
 
     /// <summary>
-    /// Private function that is executed once the galaxy has completely finished generating and the galaxy manager has been initialized.
+    /// Private function that is executed once the galaxy has completely finished generating and the galaxy manager has been initialized and executes all needed functions in the correct order starting with execution number 0 and going until there are no more functions with the current execution number.
     /// </summary>
     private void OnGalaxyGenerationCompletion()
     {
-        //Executes each function that is supposed to be executed upon the galaxy finishing generating.
-        foreach(Action galaxyGenerationCompletionFunction in galaxyGenerationCompletionFunctions)
+        int executionOrderNumber = 0;
+        while (true)
         {
-            galaxyGenerationCompletionFunction();
+            if (!galaxyGenerationCompletionFunctions.ContainsKey(executionOrderNumber))
+                break;
+            List<Action> galaxyGenerationCompletionFunctionsWithExecutionOrderNumber = galaxyGenerationCompletionFunctions[executionOrderNumber];
+            foreach (Action galaxyGenerationCompletionFunctionWithExecutionOrderNumber in galaxyGenerationCompletionFunctionsWithExecutionOrderNumber)
+            {
+                galaxyGenerationCompletionFunctionWithExecutionOrderNumber();
+            }
+            executionOrderNumber++;
         }
     }
 

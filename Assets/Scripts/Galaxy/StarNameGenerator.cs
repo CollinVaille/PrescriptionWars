@@ -123,8 +123,7 @@ public class StarNameGenerator : MonoBehaviour
         {
             foreach (GalaxySolarSystemData solarSystemData in saveGameData.solarSystems)
             {
-                //TODO
-                //starNamesGenerated.Add(solarSystemData.star.???STARNAME???);
+                starNamesGenerated.Add(solarSystemData.star.starName);
             }
         }
     }

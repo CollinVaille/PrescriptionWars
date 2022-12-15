@@ -31,6 +31,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.625, y: 0.625, z: 0.625}
   m_Children:
+  - {fileID: 8845475901339594270}
   - {fileID: 6399751585854065622}
   - {fileID: 8732587088615989884}
   m_Father: {fileID: 0}
@@ -115,8 +116,9 @@ MonoBehaviour:
   maxParticlesZoomPercentage: 0.8
   surfacePS: {fileID: 6399751585854065616}
   coronaPS: {fileID: 6399751585019376083}
-  loopsPS: {fileID: 6399751585019376083}
+  loopsPS: {fileID: 6399751585672985482}
   starLightVar: {fileID: 9174256562534168859}
+  starLabelLocation: {fileID: 8845475901339594270}
 --- !u!1 &6399751585019376086
 GameObject:
   m_ObjectHideFlags: 0
@@ -9761,7 +9763,7 @@ Transform:
   - {fileID: 6399751585019376081}
   - {fileID: 6399751585672985480}
   m_Father: {fileID: 6399751584838204363}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &6399751585854065616
 ParticleSystem:
@@ -14566,7 +14568,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6399751584838204363}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &9174256562534168859
 Light:
@@ -14630,3 +14632,33 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &7990174439317140689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8845475901339594270}
+  m_Layer: 0
+  m_Name: Star Label Location
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8845475901339594270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990174439317140689}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6399751584838204363}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
