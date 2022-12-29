@@ -74,7 +74,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Reserve terrain location
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
-        radius = Random.Range(70, 110);
+        //radius = Random.Range(70, 110); //Normal size
+        radius = Random.Range(150, 300);
         InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
