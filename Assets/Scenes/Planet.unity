@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.20245346, g: 0.326593, b: 0.4543758, a: 1}
+  m_IndirectSpecularColor: {r: 0.69286525, g: 0.5892735, b: 0.4469033, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 6
+  biome: 3
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -21615,6 +21615,7 @@ MonoBehaviour:
     - Slum/Appartment Complex 1
     - Slum/Appartment Complex 2
     - Slum/Appartment Complex 3
+    - Slum/Small Industrial Plant
     prescriptor: Slum/Prescriptor
     depot: Slum/Depot
     researchFacility: Slum/Research Facility
@@ -21623,12 +21624,13 @@ MonoBehaviour:
     - Slum/Wall Slab
     - Slum/Half Slab Half Bars
     gates:
-    - Slum/Gate
-    - Slum/Gate 2
-    - Slum/Gate 3
-    - Slum/Gate 4
-    - Slum/Anti-Gate
-    - Slum/Anti-Gate 2
+    - Slum/Closed Gate 1
+    - Slum/Closed Gate 2
+    - Slum/Closed Gate 3
+    - Slum/Closed Gate 4
+    - Slum/Open Gate 1
+    - Slum/Open Gate 2
+    - Slum/Open Gate 3
     fencePostChance: 0.5
     fencePosts:
     - Slum/Fence Post Slab

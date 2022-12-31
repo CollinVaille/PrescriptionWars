@@ -33,6 +33,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     //Area system (how city is subdivided and organized)
     private int areaSize = 5;
     private AreaReservationType[,] areaTaken;
+    private List<CityBlock> availableCityBlocks;
 
     //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     private List<int> horizontalRoads, verticalRoads;
@@ -74,8 +75,9 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Reserve terrain location
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
-        //radius = Random.Range(70, 110); //Normal size
-        radius = Random.Range(150, 300);
+        //radius = Random.Range(70, 110); //Small city
+        radius = Random.Range(80, 130);
+        //radius = Random.Range(150, 300); //Huge city
         InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
@@ -83,17 +85,21 @@ public class City : MonoBehaviour, INavZoneUpdater
         //what buildings and building materials are used etc...
         CityGenerator.generator.CustomizeCity(this);
 
-        //Generate roads
-        GenerateRoads();
+        //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for GenerateRoads())
+        LoadBuildingPrototypes();
 
-        for (int x = 0; x < Random.Range(0, radius / 40); x++)
-            ReserveSector();
+        //Generate roads (and city blocks)
+        GenerateRoads();
+        availableCityBlocks.Sort(); //Sort the city blocks, smallest to largest
+        int avgBlockLength = GetAverageLengthOfCityBlockInLocalUnits();
+
+        //for (int x = 0; x < Random.Range(0, radius / 40); x++)
+        //    ReserveSector();
 
         //Generate buildings
         buildings = new List<Building>();
-        LoadBuildingPrototypes();
         GenerateSpecialBuildings();
-        GenerateGenericBuildings();
+        GenerateGenericBuildings(avgBlockLength);
 
         //Generate walls
         if (wallSectionPrefab)
@@ -137,18 +143,45 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     private void GenerateRoads()
     {
+        int maxLengthBetweenRoads = GetMaxLengthBetweenRoadsInLocalUnits();
+        List<CityBlock> horizontalStrips = new List<CityBlock>();
+
         //Horizontal roads
         horizontalRoads = new List<int>();
-        for (int z = 0; z < areaTaken.GetLength(1); z += Mathf.Max(Random.Range(40, 70) / areaSize, 1))
-            GenerateRoad(true, z);
+        for (int z = 0; z < areaTaken.GetLength(1);)
+        {
+            int roadWidth = GenerateRoad(true, z);
+
+            CityBlock newHorizontalStrip = new CityBlock();
+            newHorizontalStrip.coords.y = z + roadWidth;
+            newHorizontalStrip.dimensions.y = Mathf.Max(Random.Range(40, maxLengthBetweenRoads) / areaSize, 1);
+            horizontalStrips.Add(newHorizontalStrip);
+
+            z += newHorizontalStrip.dimensions.y;
+        }
 
         //Vertical roads
         verticalRoads = new List<int>();
-        for (int x = 0; x < areaTaken.GetLength(0); x += Mathf.Max(Random.Range(40, 70) / areaSize, 1))
-            GenerateRoad(false, x);
+        availableCityBlocks = new List<CityBlock>();
+        for (int x = 0; x < areaTaken.GetLength(0);)
+        {
+            int roadWidth = GenerateRoad(false, x);
+            int nextGap = Mathf.Max(Random.Range(40, maxLengthBetweenRoads) / areaSize, 1);
+
+            foreach(CityBlock horizontalStrip in horizontalStrips)
+            {
+                CityBlock newBlock = new CityBlock(horizontalStrip);
+                newBlock.coords.x = x + roadWidth;
+                //Debug.Log(newBlock.coords.x);
+                newBlock.dimensions.x = nextGap;
+                availableCityBlocks.Add(newBlock);
+            }
+
+            x += nextGap;
+        }
     }
 
-    private void GenerateRoad(bool horizontal, int startCoord)
+    private int GenerateRoad(bool horizontal, int startCoord)
     {
         int areasWide = Mathf.Max(1, Random.Range(5, 20) / areaSize);
 
@@ -180,6 +213,43 @@ public class City : MonoBehaviour, INavZoneUpdater
                 }
             }
         }
+
+        return areasWide;
+    }
+
+    private int GetMaxLengthBetweenRoadsInLocalUnits()
+    {
+        int longestBuildingLength = 0;
+        foreach(Building building in buildingPrototypes)
+        {
+            if (longestBuildingLength < building.length)
+                longestBuildingLength = building.length;
+        }
+
+        return Mathf.Max(70, (int)(longestBuildingLength * 1.5f));
+    }
+    
+    private int GetAverageLengthOfCityBlockInLocalUnits()
+    {
+        int avgLength = 0;
+        for (int x = 0; x < availableCityBlocks.Count; x++)
+        {
+            /* //For debugging where the city blocks are and what their dimensions are. Just add "GameObject doodad;" at the top of the file and assign it
+            Vector3 areaCoord = Vector3.zero;
+            areaCoord.x = availableCityBlocks[x].coords.x;
+            areaCoord.z = availableCityBlocks[x].coords.y;
+            GameObject dud = Instantiate(doodad, transform);
+            dud.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            dud.transform.localPosition = AreaCoordToLocalCoord(areaCoord);
+            dud.name = "Block " + (x + 1);
+            Debug.Log(dud.name + " - " + availableCityBlocks[x].dimensions * areaSize);
+            */
+
+            avgLength += availableCityBlocks[x].GetSmallestDimension();
+        }
+
+        avgLength /= availableCityBlocks.Count;
+        return avgLength * areaSize;
     }
 
     private void GenerateSpecialBuildings()
@@ -192,43 +262,87 @@ public class City : MonoBehaviour, INavZoneUpdater
                 //Keep trying to generate it until we succeed or hit 50 attempts
                 for(int attempt = 1; attempt <= 50; attempt++)
                 {
-                    if (GenerateBuilding(x, true))
+                    if (GenerateBuilding(x, true, true))
                         break;
                 }
             }
         }
     }
 
-    private void GenerateGenericBuildings()
+    private void GenerateGenericBuildings(int averageBlockLength)
     {
+        //Go through all the large generic buildings and give each once chance to spawn early (so they doesn't get crowded out by a bunch of small buildings)
+        for(int x = 0; x < buildingPrototypes.Length; x++)
+        {
+            if (buildingPrototypes[x].CompareTag("Special Building"))
+                continue;
+
+            if (buildingPrototypes[x].length > averageBlockLength)
+                GenerateBuilding(x, true, false);
+        }
+
+        int buildingIndex = -1;
         for (int x = 0; x < 400; x++)
-            GenerateBuilding();
+        {
+            //Randomly pick a model to build
+            buildingIndex = SelectGenericBuildingPrototype();
+
+            //Attempt to place it somewhere
+            GenerateBuilding(buildingIndex, buildingPrototypes[buildingIndex].length > averageBlockLength, false);
+        }
     }
 
-    //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected. Specify aggressive placement to ignore roads during placement.
+    //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
+    //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
     //Returns whether building was successfully generated.
-    private bool GenerateBuilding(int buildingIndex = -1, bool aggressiveBuildingPlacement = false)
+    private bool GenerateBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
     {
-        //If the choice has not been already made, then randomly pick a model
-        if(buildingIndex == -1)
-            buildingIndex = SelectGenericBuildingPrototype();
 
         //Find place that can fit model...
 
         int newX = 0, newZ = 0;
         int areaLength = Mathf.CeilToInt(buildingPrototypes[buildingIndex].length * 1.0f / areaSize);
-
         bool foundPlace = false;
 
-        for (int attempt = 1; attempt <= 50; attempt++)
+        //Placement strategy #1: Center on the largest available city block
+        if (placeInLargestAvailableBlock)
         {
-            newX = Random.Range(0, areaTaken.GetLength(0));
-            newZ = Random.Range(0, areaTaken.GetLength(1));
-
-            if (SafeToGenerate(newX, newZ, areaLength, aggressiveBuildingPlacement))
+            while(availableCityBlocks.Count > 0)
             {
-                foundPlace = true;
-                break;
+                int indexToPop = availableCityBlocks.Count - 1;
+                CityBlock possibleLocation = availableCityBlocks[indexToPop];
+                availableCityBlocks.RemoveAt(indexToPop);
+
+                //The largest city block left is not big enough, so resort to random placement
+                //Keep the >= because same size generates will fail SafeToGenerate (tested)
+                if (areaLength >= possibleLocation.GetSmallestDimension())
+                    break;
+
+                //Block is large enough for the building, but is there something already in it?
+                newX = possibleLocation.coords.x;
+                newZ = possibleLocation.coords.y;
+                if (SafeToGenerate(newX, newZ, areaLength, false))
+                {
+                    foundPlace = true;
+                    break;
+                }
+            }
+        }
+
+        //Placement strategy #2: Random placement
+        if (!foundPlace)
+        {
+            int maxAttempts = overrideRoadsIfNeeded ? 100 : 50;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                newX = Random.Range(0, areaTaken.GetLength(0));
+                newZ = Random.Range(0, areaTaken.GetLength(1));
+
+                if (SafeToGenerate(newX, newZ, areaLength, maxAttempts > 50))
+                {
+                    foundPlace = true;
+                    break;
+                }
             }
         }
 
@@ -390,6 +504,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         building.localEulerAngles = newRotation;
     }
 
+    //This may have a bug  where it doesn't check the whole sector before reserving it, just the corner.
+    //Please fix before using.
     private Vector3 ReserveSector()
     {
         //Default case where there are not multiple roads to form sectors with (return center of city, no reservations)
@@ -711,6 +827,50 @@ public class City : MonoBehaviour, INavZoneUpdater
         //materialToUpdate.
         //DynamicGI.UpdateEnvironment();
     }
+}
+
+//Class for encapsulating the coordinates and dimensions of each city block. The dimensions could be wrong for the blocks on the edge of the city.
+//Thus, you would need to check the area coordinate system with the SafeToGenerate method before taking anything for granted.
+public class CityBlock : System.IComparable<CityBlock>
+{
+    public Vector2Int coords = Vector2Int.zero;
+    public Vector2Int dimensions = Vector2Int.zero;
+
+    public CityBlock() { }
+
+    public CityBlock(CityBlock other)
+    {
+        coords = other.coords;
+        dimensions = other.dimensions;
+    }
+
+    //Order the city blocks smallest to largest
+    public int CompareTo(CityBlock other)
+    {
+        int mySmallest = GetSmallestDimension();
+        int otherSmallest = other.GetSmallestDimension();
+
+        if (mySmallest < otherSmallest)
+            return -1;
+        else if (mySmallest > otherSmallest)
+            return 1;
+        else
+        {
+            int myLargest = GetLargestDimension();
+            int otherLargest = other.GetLargestDimension();
+
+            if (myLargest < otherLargest)
+                return -1;
+            else if (myLargest > otherLargest)
+                return 1;
+            else
+                return 0;
+        }
+
+    }
+
+    public int GetSmallestDimension() { return dimensions.x < dimensions.y ? dimensions.x : dimensions.y; }
+    private int GetLargestDimension() { return dimensions.x < dimensions.y ? dimensions.y : dimensions.x; }
 }
 
 [System.Serializable]

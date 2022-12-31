@@ -213,6 +213,7 @@ MonoBehaviour:
   walls: {fileID: 0}
   wallMaterialIndex: 0
   cityWallMaterial: {fileID: 2100000, guid: 0cfca54f750c17845bb45f8af6fceeff, type: 2}
+  doodad: {fileID: 567683109591036116, guid: 6686e16ab14fa874e9121c32b118383e, type: 3}
 --- !u!114 &6564999988731377981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,25 +237,18 @@ MonoBehaviour:
   - className: Guard
     classType: 0
     initialPillType: 0
-    headGear: {fileID: 3220553974313793524, guid: a86dbc820e9c6024ebb3eed4fb08895a,
-      type: 3}
-    bodyGear: {fileID: 0}
-    primary: {fileID: 1531228171902997540, guid: a9890956da5d1424490029c56c34e078,
-      type: 3}
-    secondary: {fileID: 5968027895846996904, guid: efa2947546b2b834abd2ed4214eb1dcf,
-      type: 3}
+    headGearName: 
+    bodyGearName: 
+    primaryName: 
+    secondaryName: 
     probability: 0.9
   - className: Riot Personnel
     classType: 0
     initialPillType: 0
-    headGear: {fileID: 5347536055362246905, guid: 27d03f13c49a4b045a7f1ec115f575b4,
-      type: 3}
-    bodyGear: {fileID: 4934690952432774333, guid: 8a00b5c7764aa9e4a99b08f5d8daef97,
-      type: 3}
-    primary: {fileID: 5561473365579642321, guid: 17cc735c0c0214645a35e677a3a9f913,
-      type: 3}
-    secondary: {fileID: 1531228171902997540, guid: a9890956da5d1424490029c56c34e078,
-      type: 3}
+    headGearName: 
+    bodyGearName: 
+    primaryName: 
+    secondaryName: 
     probability: 0.1
   atOnce: 10
   prescriptions: 100
@@ -282,13 +276,10 @@ MonoBehaviour:
   - className: Night Owl
     classType: 0
     initialPillType: 0
-    headGear: {fileID: 5347536055362246905, guid: 27d03f13c49a4b045a7f1ec115f575b4,
-      type: 3}
-    bodyGear: {fileID: 1435025089649330390, guid: 48845aafa58af034bb30ec3b501ddbf3,
-      type: 3}
-    primary: {fileID: 5968027895846996904, guid: efa2947546b2b834abd2ed4214eb1dcf,
-      type: 3}
-    secondary: {fileID: 0}
+    headGearName: 
+    bodyGearName: 
+    primaryName: 
+    secondaryName: 
     probability: 1
   atOnce: 10
   prescriptions: 100
