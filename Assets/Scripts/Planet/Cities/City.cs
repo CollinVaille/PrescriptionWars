@@ -30,13 +30,12 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public int wallMaterialIndex;
     public Material cityWallMaterial;
 
-    //Area system (how city is subdivided and organized)
+    //Area/zoning system (how city is subdivided and organized)
     private int areaSize = 5;
     private AreaReservationType[,] areaTaken;
     private List<CityBlock> availableCityBlocks;
-
-    //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
-    private List<int> horizontalRoads, verticalRoads;
+    private List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
+    [HideInInspector] public bool circularCity = false;
 
     //Called after city has been generated or regenerated
     public void OnCityStart()
@@ -420,10 +419,21 @@ public class City : MonoBehaviour, INavZoneUpdater
                 //Occupation check
                 if (areaTaken[x, z] == AreaReservationType.ReservedByBuilding || (!overrideRoads && areaTaken[x, z] == AreaReservationType.ReservedByRoad))
                     return false;
+
+                //Circular boundary
+                if (circularCity && !PassesCircularCityRequirement(x, z))
+                    return false;
             }
         }
 
         return true;
+    }
+
+    //Usually cities are a rectangle where building placement is restricted by a city width and height.
+    //This adds another requirement that buildings be within a certain radius from the city center.
+    private bool PassesCircularCityRequirement(int x, int z)
+    {
+        return AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < radius;
     }
 
     private void ReserveAreas(int startX, int startZ, int areasLong, AreaReservationType reservationType)
@@ -504,7 +514,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         building.localEulerAngles = newRotation;
     }
 
-    //This may have a bug  where it doesn't check the whole sector before reserving it, just the corner.
+    //This may have a bug where it doesn't check the whole sector before reserving it, just the corner.
     //Please fix before using.
     private Vector3 ReserveSector()
     {
@@ -648,6 +658,58 @@ public class City : MonoBehaviour, INavZoneUpdater
         float placementHeight = 0.0f;
         //float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;
 
+        if (circularCity)
+            GenerateCircularWalls(wallLength, placementHeight);
+        else
+            GenerateSquareWalls(wallLength, placementHeight);
+    }
+
+    private void GenerateCircularWalls(float wallLength, float placementHeight)
+    {
+        Transform temporaryRotatingBase = new GameObject("Temp - Delete After City Generation").transform;
+        temporaryRotatingBase.parent = walls.parent;
+        temporaryRotatingBase.localPosition = walls.localPosition + Vector3.up * placementHeight;
+        temporaryRotatingBase.localRotation = walls.localRotation;
+
+        Vector3 fenceOffsetFromBase = Vector3.forward * radius;
+        float circumference = 2 * Mathf.PI * radius;
+        int targetWallCount = (int)(circumference / wallLength);
+        float currentEulerAngle = 0.0f;
+        float eulerAngleStep = 360.0f / targetWallCount;
+
+        int wallsSinceLastGate = 9000;
+        for (int wallsPlaced = 0; wallsPlaced < targetWallCount; wallsPlaced++)
+        {
+            //Compute the new fence location
+            Vector3 newFenceLocation = temporaryRotatingBase.TransformPoint(fenceOffsetFromBase);
+            newFenceLocation = walls.InverseTransformPoint(newFenceLocation);
+
+            //Determine its angle and whether it should be a gate
+            int fencePostRotation = (int)(currentEulerAngle + eulerAngleStep / 2.0f);
+            bool isGate = (wallsPlaced % (targetWallCount / 4) == 0) && wallsSinceLastGate != 0;
+
+            //Place it
+            PlaceWallSection(isGate, wallsSinceLastGate == 0,
+                newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
+                (int)temporaryRotatingBase.localEulerAngles.y,
+                fencePostRotation);
+
+            //Rotate the base for the next iteration
+            currentEulerAngle -= eulerAngleStep;
+            temporaryRotatingBase.localEulerAngles = Vector3.up * currentEulerAngle;
+
+            //Other preparation for next iteration
+            if (isGate)
+                wallsSinceLastGate = 0;
+            else
+                wallsSinceLastGate++;
+        }
+
+        Destroy(temporaryRotatingBase.gameObject);
+    }
+
+    private void GenerateSquareWalls(float wallLength, float placementHeight)
+    {
         float cityWidth = areaSize * areaTaken.GetLength(0);
 
         float startX = -cityWidth / 2.0f + 5;
@@ -694,6 +756,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Now that the wall section locations have been determined, place them
         float minZ = startZ - wallLength / 2.0f;
         float maxZ = startZ + verticalSections * wallLength - wallLength / 2.0f;
+        bool previousWasGate = false;
         for (int x = 0; x < skipWallSection.Length; x++)
         {
             bool nextIsGate = false;
@@ -701,13 +764,14 @@ public class City : MonoBehaviour, INavZoneUpdater
                 nextIsGate = skipWallSection[x + 1];
 
             //Front walls
-            PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, minZ, 0);
+            PlaceWallSection(skipWallSection[x], previousWasGate,
+                startX + x * wallLength, placementHeight, minZ, 180);
 
             //Back walls
-            PlaceWallSection(skipWallSection[x], nextIsGate || x == horizontalSections - 1,
-                startX + x * wallLength, placementHeight,
-                maxZ, 0);
+            PlaceWallSection(skipWallSection[x], nextIsGate,
+                startX + x * wallLength, placementHeight, maxZ, 0);
+
+            previousWasGate = skipWallSection[x];
         }
 
         bool firstHorSectionIsGate = skipWallSection[0];
@@ -749,6 +813,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Now that the wall section locations have been determined, place them
         float minX = startX - wallLength / 2.0f;
         float maxX = startX + horizontalSections * wallLength - wallLength / 2.0f;
+        previousWasGate = false;
         for (int z = 0; z < skipWallSection.Length; z++)
         {
             bool nextIsGate = false;
@@ -756,13 +821,16 @@ public class City : MonoBehaviour, INavZoneUpdater
                 nextIsGate = skipWallSection[z + 1];
 
             PlaceWallSection(skipWallSection[z], nextIsGate,
-                minX, placementHeight, startZ + z * wallLength, 90);
+                minX, placementHeight, startZ + z * wallLength, -90);
 
-            PlaceWallSection(skipWallSection[z], nextIsGate || z == verticalSections - 1,
+            PlaceWallSection(skipWallSection[z], previousWasGate,
                 maxX, placementHeight, startZ + z * wallLength, 90);
+
+            previousWasGate = skipWallSection[z];
         }
 
         //Place fence post at near corner if no fence gates there
+        /*
         if (fencePostPrefab && !firstHorSectionIsGate && !skipWallSection[0])
             PlaceFencePost(new Vector3(
                 startX - wallLength / 2.0f, placementHeight, startZ - wallLength / 2.0f), 90);
@@ -770,13 +838,14 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Place fence post at far corner if no fence gates there
         if (fencePostPrefab && !lastHorSectionIsGate && !skipWallSection[verticalSections - 1])
             PlaceFencePost(new Vector3(startX + (verticalSections - 1) * wallLength + wallLength / 2.0f,
-                placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);
+                placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);    */
     }
 
-    public void PlaceWallSection(bool gate, bool nextIsGate, float x, float y, float z, int rotation)
+    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, int fencePostRotation = 9000)
     {
-        bool horizontalSection = Mathf.Abs(rotation) < 1;
-
+        int absRotation = Mathf.Abs(rotation);
+        bool horizontalSection = (absRotation == 0 || absRotation == 180);
+        
         //Place wall section
         Transform newWallSection;
         if (gate)
@@ -790,15 +859,18 @@ public class City : MonoBehaviour, INavZoneUpdater
         newWallSection.localPosition = wallPosition;
 
         //Place fence post correlating to wall section
-        if (fencePostPrefab && !gate && !nextIsGate)
+        if (fencePostPrefab && !gate && !skipFencePost)
         {
-            Vector3 fencePostPosition = newWallSection.localPosition;
+            Vector3 fencePostPosition = newWallSection.TransformPoint(new Vector3(0.5f, 0.0f, 0.0f));
+            fencePostPosition = walls.InverseTransformPoint(fencePostPosition);
+
+            /*
             if (horizontalSection)
                 fencePostPosition.x += newWallSection.localScale.x / 2.0f;
             else
-                fencePostPosition.z += newWallSection.localScale.x / 2.0f;
+                fencePostPosition.z += newWallSection.localScale.x / 2.0f;  */
 
-            PlaceFencePost(fencePostPosition, newWallSection.localEulerAngles.y);
+            PlaceFencePost(fencePostPosition, fencePostRotation < 9000 ? fencePostRotation : newWallSection.localEulerAngles.y);
         }
     }
 

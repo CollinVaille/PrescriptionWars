@@ -74,6 +74,10 @@ public class CityGenerator : MonoBehaviour
                 city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + fencePost);
             }
         }
+
+        //City shape
+        if(city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
+            city.circularCity = true;
     }
 
     private CityType SelectCityType()
