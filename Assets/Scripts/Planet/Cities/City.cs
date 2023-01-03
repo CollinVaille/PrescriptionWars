@@ -75,8 +75,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
-        radius = Random.Range(80, 130);
-        //radius = Random.Range(150, 300); //Huge city
+        //radius = Random.Range(80, 130);
+        radius = Random.Range(150, 300); //Huge city
         InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
@@ -142,30 +142,98 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     private void GenerateRoads()
     {
-        int maxLengthBetweenRoads = GetMaxLengthBetweenRoadsInLocalUnits();
+        //Needed set up regardless of what kind of roads we want to generate
+        horizontalRoads = new List<int>();
+        verticalRoads = new List<int>();
+        availableCityBlocks = new List<CityBlock>();
+        Vector2Int roadWidthRange = new Vector2Int(5, 20);
+        Vector2Int roadSpacingRange = new Vector2Int(40, GetMaxLengthBetweenRoadsInLocalUnits());
+
+        //Choose and execute specific kind of road generation
+        if (circularCity)
+            GenerateConcentricCircleRoads(roadWidthRange, roadSpacingRange);
+        else
+            GenerateCrosshatchRoads(roadWidthRange, roadSpacingRange);
+    }
+
+    private void GenerateConcentricCircleRoads(Vector2Int roadWidthRange, Vector2Int roadSpacingRange)
+    {
+        //Make some precomputations
+        int cityRadiusInAreas = areaTaken.GetLength(0) / 2;
+
+        roadWidthRange /= areaSize;
+        if (roadWidthRange.x < 1)
+            roadWidthRange.x = 1;
+        if (roadWidthRange.y < 1)
+            roadWidthRange.y = 1;
+
+        roadSpacingRange /= areaSize;
+        if (roadSpacingRange.x < 1)
+            roadSpacingRange.x = 1;
+        if (roadSpacingRange.y < 1)
+            roadSpacingRange.y = 1;
+
+        //Make a single, centered road for both the horizontal and vertical directions that cuts through the diameter of the city
+        GenerateStraightLineRoad(true, cityRadiusInAreas, roadWidthRange * areaSize, true);
+        GenerateStraightLineRoad(false, cityRadiusInAreas, roadWidthRange * areaSize, true);
+
+        //Make a series of concentric circle roads separate by concentric circle blocks. If the city is small enough, don't make any such roads (all will be buildings)
+        if (roadWidthRange.y + roadSpacingRange.x >= cityRadiusInAreas)
+            return;
+
+        for(int areasOut = Random.Range(roadSpacingRange.x, roadSpacingRange.y); areasOut < cityRadiusInAreas;)
+        {
+            //Generate a layer of road
+            int newRoadWidth = Random.Range(roadWidthRange.x, roadWidthRange.y);
+            GenerateConcentricCircleRoad(cityRadiusInAreas, areasOut, areasOut + newRoadWidth);
+            areasOut += newRoadWidth;
+
+            //Generate a layer of buildings -- a block
+            areasOut += Random.Range(roadSpacingRange.x, roadSpacingRange.y);
+        }
+
+    }
+
+    //Generates a single road that is a concentric circle around the center of the city.
+    //The road is defined by the min (inclusive) and max (exclusive) radii passed in as parameters.
+    private void GenerateConcentricCircleRoad(int cityRadiusInAreas, int minRadiusInAreas, int maxRadiusInAreas)
+    {
+        for(int x = 0, xDistanceFromCenter = 0; x < areaTaken.GetLength(0); x++)
+        {
+            xDistanceFromCenter = Mathf.Abs(cityRadiusInAreas - x);
+            for(int z = 0, zDistanceFromCenter = 0; z < areaTaken.GetLength(1); z++)
+            {
+                zDistanceFromCenter = Mathf.Abs(cityRadiusInAreas - z);
+                float pointRadius = Mathf.Sqrt(xDistanceFromCenter * xDistanceFromCenter + zDistanceFromCenter * zDistanceFromCenter);
+
+                if(pointRadius >= minRadiusInAreas && pointRadius < maxRadiusInAreas)
+                    areaTaken[x, z] = AreaReservationType.ReservedByRoad;
+            }
+        }
+    }
+
+    private void GenerateCrosshatchRoads(Vector2Int roadWidthRange, Vector2Int roadSpacingRange)
+    {
         List<CityBlock> horizontalStrips = new List<CityBlock>();
 
         //Horizontal roads
-        horizontalRoads = new List<int>();
         for (int z = 0; z < areaTaken.GetLength(1);)
         {
-            int roadWidth = GenerateRoad(true, z);
+            int roadWidth = GenerateStraightLineRoad(true, z, roadWidthRange, false);
 
             CityBlock newHorizontalStrip = new CityBlock();
             newHorizontalStrip.coords.y = z + roadWidth;
-            newHorizontalStrip.dimensions.y = Mathf.Max(Random.Range(40, maxLengthBetweenRoads) / areaSize, 1);
+            newHorizontalStrip.dimensions.y = Mathf.Max(Random.Range(roadSpacingRange.x, roadSpacingRange.y) / areaSize, 1);
             horizontalStrips.Add(newHorizontalStrip);
 
             z += newHorizontalStrip.dimensions.y;
         }
 
         //Vertical roads
-        verticalRoads = new List<int>();
-        availableCityBlocks = new List<CityBlock>();
         for (int x = 0; x < areaTaken.GetLength(0);)
         {
-            int roadWidth = GenerateRoad(false, x);
-            int nextGap = Mathf.Max(Random.Range(40, maxLengthBetweenRoads) / areaSize, 1);
+            int roadWidth = GenerateStraightLineRoad(false, x, roadWidthRange, false);
+            int nextGap = Mathf.Max(Random.Range(roadSpacingRange.x, roadSpacingRange.y) / areaSize, 1);
 
             foreach(CityBlock horizontalStrip in horizontalStrips)
             {
@@ -180,9 +248,12 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
     }
 
-    private int GenerateRoad(bool horizontal, int startCoord)
+    //The start coord will represent the edge of the road unless the parameter centerOnStartCoord is true.
+    private int GenerateStraightLineRoad(bool horizontal, int startCoord, Vector2Int roadWidthRange, bool centerOnStartCoord)
     {
-        int areasWide = Mathf.Max(1, Random.Range(5, 20) / areaSize);
+        int areasWide = Mathf.Max(1, Random.Range(roadWidthRange.x, roadWidthRange.y) / areaSize);
+        if (centerOnStartCoord)
+            startCoord -= areasWide / 2;
 
         if (horizontal) //Horizontal road
         {
@@ -230,6 +301,9 @@ public class City : MonoBehaviour, INavZoneUpdater
     
     private int GetAverageLengthOfCityBlockInLocalUnits()
     {
+        if (availableCityBlocks.Count == 0)
+            return 0;
+
         int avgLength = 0;
         for (int x = 0; x < availableCityBlocks.Count; x++)
         {
@@ -421,7 +495,7 @@ public class City : MonoBehaviour, INavZoneUpdater
                     return false;
 
                 //Circular boundary
-                if (circularCity && !PassesCircularCityRequirement(x, z))
+                if (circularCity && !IsWithinCircularCityWalls(x, z))
                     return false;
             }
         }
@@ -431,7 +505,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     //Usually cities are a rectangle where building placement is restricted by a city width and height.
     //This adds another requirement that buildings be within a certain radius from the city center.
-    private bool PassesCircularCityRequirement(int x, int z)
+    private bool IsWithinCircularCityWalls(int x, int z)
     {
         return AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < radius;
     }
