@@ -278,4 +278,22 @@ public class God : MonoBehaviour
     public GameObject InstantiateSomeShit(GameObject somePrefab) { return Instantiate(somePrefab); }
 
     public void DestroySomeShit(GameObject toDestroy) { Destroy(toDestroy); }
+
+    public static void SnapToGround(Transform transformToSnap)
+    {
+        Vector3 newTransformPosition = transformToSnap.position;
+        transformToSnap.position = Vector3.one * 9000.0f;
+        transformToSnap.gameObject.SetActive(false);
+
+        if (Physics.Raycast(newTransformPosition + Vector3.up * 9000.0f, Vector3.down, out RaycastHit hitInfo, 20000.0f, ~0, QueryTriggerInteraction.Ignore))
+        {
+            Debug.Log("HIT " + hitInfo.collider.name);
+            newTransformPosition.y = hitInfo.point.y;
+        }
+        else
+            Debug.Log("MISS");
+
+        transformToSnap.position = newTransformPosition;
+        transformToSnap.gameObject.SetActive(true);
+    }
 }

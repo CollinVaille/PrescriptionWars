@@ -36,6 +36,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     private List<CityBlock> availableCityBlocks;
     private List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     [HideInInspector] public bool circularCity = false;
+    [HideInInspector] public bool elevatedCity = false;
 
     //Called after city has been generated or regenerated
     public void OnCityStart()
@@ -75,8 +76,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
-        //radius = Random.Range(80, 130);
-        radius = Random.Range(150, 300); //Huge city
+        radius = Random.Range(80, 130);
+        //radius = Random.Range(150, 300); //Huge city
         InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
@@ -94,6 +95,10 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //for (int x = 0; x < Random.Range(0, radius / 40); x++)
         //    ReserveSector();
+
+        //Generate foundations
+        if(elevatedCity)
+            GenerateCityFoundations();
 
         //Generate buildings
         buildings = new List<Building>();
@@ -174,8 +179,9 @@ public class City : MonoBehaviour, INavZoneUpdater
             roadSpacingRange.y = 1;
 
         //Make a single, centered road for both the horizontal and vertical directions that cuts through the diameter of the city
-        GenerateStraightLineRoad(true, cityRadiusInAreas, roadWidthRange * areaSize, true);
-        GenerateStraightLineRoad(false, cityRadiusInAreas, roadWidthRange * areaSize, true);
+        Vector2Int cardinalRoadWidths = new Vector2Int(roadWidthRange.y, roadWidthRange.y) * areaSize;
+        GenerateStraightCardinalRoad(true, cityRadiusInAreas, cardinalRoadWidths, true);
+        GenerateStraightCardinalRoad(false, cityRadiusInAreas, cardinalRoadWidths, true);
 
         //Make a series of concentric circle roads separate by concentric circle blocks. If the city is small enough, don't make any such roads (all will be buildings)
         if (roadWidthRange.y + roadSpacingRange.x >= cityRadiusInAreas)
@@ -219,7 +225,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Horizontal roads
         for (int z = 0; z < areaTaken.GetLength(1);)
         {
-            int roadWidth = GenerateStraightLineRoad(true, z, roadWidthRange, false);
+            int roadWidth = GenerateStraightCardinalRoad(true, z, roadWidthRange, false);
 
             CityBlock newHorizontalStrip = new CityBlock();
             newHorizontalStrip.coords.y = z + roadWidth;
@@ -232,7 +238,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Vertical roads
         for (int x = 0; x < areaTaken.GetLength(0);)
         {
-            int roadWidth = GenerateStraightLineRoad(false, x, roadWidthRange, false);
+            int roadWidth = GenerateStraightCardinalRoad(false, x, roadWidthRange, false);
             int nextGap = Mathf.Max(Random.Range(roadSpacingRange.x, roadSpacingRange.y) / areaSize, 1);
 
             foreach(CityBlock horizontalStrip in horizontalStrips)
@@ -248,8 +254,9 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
     }
 
-    //The start coord will represent the edge of the road unless the parameter centerOnStartCoord is true.
-    private int GenerateStraightLineRoad(bool horizontal, int startCoord, Vector2Int roadWidthRange, bool centerOnStartCoord)
+    //The start coord will represent the left/bottom edge of the road unless the parameter centerOnStartCoord is true.
+    //These roads are straight lines that going in the cardinal directions. Either up/down (north/south) or east/west (left/right).
+    private int GenerateStraightCardinalRoad(bool horizontal, int startCoord, Vector2Int roadWidthRange, bool centerOnStartCoord)
     {
         int areasWide = Mathf.Max(1, Random.Range(roadWidthRange.x, roadWidthRange.y) / areaSize);
         if (centerOnStartCoord)
@@ -323,6 +330,20 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         avgLength /= availableCityBlocks.Count;
         return avgLength * areaSize;
+    }
+
+    private void GenerateCityFoundations()
+    {
+        GameObject foundationPrefab;
+        if (circularCity)
+            foundationPrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Circular Foundation");
+        else
+            foundationPrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Rectangular Foundation");
+
+        Transform foundation = Instantiate(foundationPrefab, transform).transform;
+        foundation.localRotation = Quaternion.Euler(0, 0, 0);
+        foundation.localPosition = Vector3.zero;
+        foundation.localScale = Vector3.one * radius * 2.1f;
     }
 
     private void GenerateSpecialBuildings()
@@ -405,13 +426,13 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Placement strategy #2: Random placement
         if (!foundPlace)
         {
-            int maxAttempts = overrideRoadsIfNeeded ? 100 : 50;
+            int maxAttempts = overrideRoadsIfNeeded ? 200 : 50;
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 newX = Random.Range(0, areaTaken.GetLength(0));
                 newZ = Random.Range(0, areaTaken.GetLength(1));
 
-                if (SafeToGenerate(newX, newZ, areaLength, maxAttempts > 50))
+                if (SafeToGenerate(newX, newZ, areaLength, maxAttempts > 150))
                 {
                     foundPlace = true;
                     break;
@@ -438,6 +459,8 @@ public class City : MonoBehaviour, INavZoneUpdater
             buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
             newBuilding.localPosition = buildingPosition;
+
+            God.SnapToGround(newBuilding);
 
             //Rotate it
             SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
@@ -745,25 +768,44 @@ public class City : MonoBehaviour, INavZoneUpdater
         temporaryRotatingBase.localPosition = walls.localPosition + Vector3.up * placementHeight;
         temporaryRotatingBase.localRotation = walls.localRotation;
 
+        //Determine how many wall sections to place, the spacing, the angular math...
         Vector3 fenceOffsetFromBase = Vector3.forward * radius;
         float circumference = 2 * Mathf.PI * radius;
         int targetWallCount = (int)(circumference / wallLength);
         float currentEulerAngle = 0.0f;
         float eulerAngleStep = 360.0f / targetWallCount;
 
-        int wallsSinceLastGate = 9000;
+        //Precalculations for when to make the wall section a gate
+        //The algorithm is to make a section a gate when its rotation is within 7.5 degrees of a cardinal direction (up, down, left, right)
+        float eulerAngleGateThreshold = 7.5f;
+        float[] gateAngles = new float[5];
+        for (int x = 0; x < gateAngles.Length; x++)
+            gateAngles[x] = x * (360.0f / 4.0f);
+
+        //Place the wall sections, one section per iteration
+        bool lastWasGate = false;
         for (int wallsPlaced = 0; wallsPlaced < targetWallCount; wallsPlaced++)
         {
             //Compute the new fence location
             Vector3 newFenceLocation = temporaryRotatingBase.TransformPoint(fenceOffsetFromBase);
             newFenceLocation = walls.InverseTransformPoint(newFenceLocation);
 
-            //Determine its angle and whether it should be a gate
+            //Determine its angle
             int fencePostRotation = (int)(currentEulerAngle + eulerAngleStep / 2.0f);
-            bool isGate = (wallsPlaced % (targetWallCount / 4) == 0) && wallsSinceLastGate != 0;
+
+            //Determine whether it should be a gate
+            bool isGate = false;
+            for(int x = 0; x < gateAngles.Length; x++)
+            {
+                if(Mathf.Abs(gateAngles[x] + currentEulerAngle) < eulerAngleGateThreshold)
+                {
+                    isGate = true;
+                    break;
+                }
+            }
 
             //Place it
-            PlaceWallSection(isGate, wallsSinceLastGate == 0,
+            PlaceWallSection(isGate, lastWasGate,
                 newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
                 (int)temporaryRotatingBase.localEulerAngles.y,
                 fencePostRotation);
@@ -773,10 +815,7 @@ public class City : MonoBehaviour, INavZoneUpdater
             temporaryRotatingBase.localEulerAngles = Vector3.up * currentEulerAngle;
 
             //Other preparation for next iteration
-            if (isGate)
-                wallsSinceLastGate = 0;
-            else
-                wallsSinceLastGate++;
+            lastWasGate = isGate;
         }
 
         Destroy(temporaryRotatingBase.gameObject);

@@ -78,6 +78,7 @@ public class CityGenerator : MonoBehaviour
         //City shape
         if(city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
             city.circularCity = true;
+        city.elevatedCity = true;
     }
 
     private CityType SelectCityType()
