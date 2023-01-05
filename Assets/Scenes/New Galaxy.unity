@@ -252,6 +252,7 @@ MonoBehaviour:
     empireCount: 6
     ironpillModeEnabled: 0
     galaxyShape: Spiral
+    hyperspaceLaneCheckingRadius: 200
   minimumSpaceBetweenStars: 100
   starTypeSpawnProbabilities:
   - 0.7
@@ -414,6 +415,7 @@ MonoBehaviour:
   solarSystemsParent: {fileID: 1782092161}
   planetLabelsParent: {fileID: 758454756}
   starLabelsParent: {fileID: 1811397256}
+  hyperspaceLanesParent: {fileID: 299827072}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
   starTypePrefabs:
@@ -422,6 +424,8 @@ MonoBehaviour:
   - {fileID: 6399751584838204360, guid: 969907a8b7dba0440bb9468b4e5c0bf3, type: 3}
   - {fileID: 6399751584838204360, guid: dcfc4321cf8721e41821a7ae242d5389, type: 3}
   planetPrefab: {fileID: 1186292218765209902, guid: 9b8f2abbe920a4f47957bd30c79db6c3,
+    type: 3}
+  hyperspaceLanePrefab: {fileID: 3218432236788720050, guid: 8ed1dbdf125dae04a869092034e094d7,
     type: 3}
 --- !u!4 &125864733
 Transform:
@@ -435,10 +439,41 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 660912989}
+  - {fileID: 299827072}
   - {fileID: 1782092161}
   - {fileID: 1422864699}
   m_Father: {fileID: 0}
   m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &299827071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 299827072}
+  m_Layer: 0
+  m_Name: Hyperspace Lanes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &299827072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299827071}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 125864733}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &536733923
 GameObject:
@@ -5680,7 +5715,7 @@ RectTransform:
   - {fileID: 1811397256}
   - {fileID: 536733924}
   m_Father: {fileID: 125864733}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5776,7 +5811,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 125864733}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1811397255
 GameObject:

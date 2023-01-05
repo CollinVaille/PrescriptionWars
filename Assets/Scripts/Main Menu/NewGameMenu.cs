@@ -167,7 +167,7 @@ public class NewGameMenu : GalaxyMenuBehaviour
     {
         EmpireNameGenerator.ResetCache(empireNameInputField.text.Equals(""));
 
-        newGameData = new NewGameData(empireCulture, empireName, empireFlag, NewGalaxyGenerator.defaultSolarSystemCount, numberOfPlanets, numberOfEmpires, ironmanModeEnabled, "Spiral");
+        newGameData = new NewGameData(empireCulture, empireName, empireFlag, NewGalaxyGenerator.defaultSolarSystemCount, numberOfPlanets, numberOfEmpires, ironmanModeEnabled, "Spiral", 60);
 
         //Switches to the galaxy scene.
         SceneManager.LoadScene(sceneName:"NewGalaxy");
@@ -336,7 +336,7 @@ public class NewGameData
 
     }
 
-    public NewGameData(NewEmpire.Culture playerEmpireCulture, string playerEmpireName, Flag playerEmpireFlag, int solarSystemCount, int planetCount, int empireCount, bool ironpillModeEnabled, string galaxyShape)
+    public NewGameData(NewEmpire.Culture playerEmpireCulture, string playerEmpireName, Flag playerEmpireFlag, int solarSystemCount, int planetCount, int empireCount, bool ironpillModeEnabled, string galaxyShape, float hyperspaceLaneCheckingRadius)
     {
         this.playerEmpireCulture = playerEmpireCulture;
         this.playerEmpireName = playerEmpireName;
@@ -346,6 +346,7 @@ public class NewGameData
         this.empireCount = empireCount;
         this.ironpillModeEnabled = ironpillModeEnabled;
         this.galaxyShape = galaxyShape;
+        this.hyperspaceLaneCheckingRadius = hyperspaceLaneCheckingRadius;
     }
 
     public NewEmpire.Culture playerEmpireCulture = 0;
@@ -356,4 +357,5 @@ public class NewGameData
     public int empireCount = Enum.GetNames(typeof(Empire.Culture)).Length;
     public bool ironpillModeEnabled = false;
     public string galaxyShape = "Spiral";
+    public float hyperspaceLaneCheckingRadius = 60; 
 }

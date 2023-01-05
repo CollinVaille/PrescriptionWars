@@ -13,7 +13,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("New Game Data")]
 
     [SerializeField, Tooltip("Holds either the new game data passed from the new game menu or the new game data selected through the inspector.")] private NewGameData newGameData = new NewGameData();
-    [SerializeField, Tooltip("The minimum amount of space that must exist between all stars in the galaxy.")] private int minimumSpaceBetweenStars = 0;
+    [SerializeField, Tooltip("The minimum amount of space that must exist between all stars in the galaxy.")] private int minimumSpaceBetweenStars = 100;
     [SerializeField, Tooltip("Array that contains the probability for each star type to be assigned to a star. The enum index of the star type correlates to the same index in this array.")] private float[] starTypeSpawnProbabilities = new float[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
     [SerializeField, Tooltip("Indicates the amount of space between the star and the first planetary orbit in the solar system that may or may not have a planet on it.")] private float spaceBetweenStarAndPlanetaryOrbits = 10;
     [SerializeField, Tooltip("Indicates the amount of space between each planetary orbit in the solar system that may or may not have a planet on it.")] private float spaceBetweenPlanetaryOrbits = 5;
@@ -27,12 +27,14 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the solar systems in the galaxy. Specified through the inspector.")] private Transform solarSystemsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the planet labels in the galaxy. Specified through the inspector.")] private Transform planetLabelsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the star labels in the galaxy. Specified through the inspector.")] private Transform starLabelsParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the hyperspace lanes within the galaxy. Specified through the inspector.")] private Transform hyperspaceLanesParent = null;
 
     [Header("Prefabs")]
 
     [SerializeField, Tooltip("The prefab that all solar systems in the galaxy will be instanitated from. Specified through the inspector.")] private GameObject solarSystemPrefab = null;
     [SerializeField, Tooltip("Array that contains the prefab for each star type where the enum index of the star type correlates to the same index in this array.")] private GameObject[] starTypePrefabs = new GameObject[Enum.GetNames(typeof(GalaxyStar.StarType)).Length];
     [SerializeField, Tooltip("The prefab that all planets in every solar system in the galaxy will be instantiated from.")] private GameObject planetPrefab = null;
+    [SerializeField, Tooltip("The prefab that all hyperspace lanes connecting solar systems within the galaxy will be instantiated from.")] private GameObject hyperspaceLanePrefab = null;
 
     //Non-inspector variables.
 
@@ -50,6 +52,11 @@ public class NewGalaxyGenerator : MonoBehaviour
     /// Holds all of the planets that have already been fully generated and placed appropriately into the galaxy.
     /// </summary>
     private List<NewGalaxyPlanet> planets = null;
+
+    /// <summary>
+    /// Holds all of the hyperspace lanes that have already been fully generated and placed appropriately within the galaxy.
+    /// </summary>
+    private List<HyperspaceLane> hyperspaceLanes = null;
 
     /// <summary>
     /// Private variable that holds any save game data that might be passed over statically from the load game menu.
@@ -114,6 +121,9 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Generates the empires of the galaxy.
         GenerateEmpires();
+
+        //Generates the hyperspace lanes of the galaxy.
+        GenerateHyperspaceLanes();
 
         //Sets the material of the galaxy scene's skybox.
         RenderSettings.skybox = skyboxMaterial;
@@ -544,6 +554,127 @@ public class NewGalaxyGenerator : MonoBehaviour
     }
 
     /// <summary>
+    /// Private method that should be called in the start method after the celestial bodies have been generated and generates the hyperspace lanes connecting solar systems within the galaxy.
+    /// </summary>
+    private void GenerateHyperspaceLanes()
+    {
+        //Initializes the list of hyperspace lanes.
+        hyperspaceLanes = new List<HyperspaceLane>();
+        //Generates the hyperspace lanes of the galaxy from the galaxy save game data that has been loaded in from the load game menu if it exists.
+        if (saveGameData != null)
+        {
+
+        }
+        else
+        {
+            //----------------------------------------------------------------------------------------------------
+            //FIRST, PERFORM SOME SET UP
+
+            //Get solar system positions.
+            Vector3[] solarSystemPositions = new Vector3[solarSystems.Count];
+            for (int x = 0; x < solarSystemPositions.Length; x++)
+                solarSystemPositions[x] = solarSystems[x].transform.localPosition;
+
+            //----------------------------------------------------------------------------------------------------
+            //THEN, PERFORM KRUSKAL'S MINIMUM SPANNING TREE TO ENSURE CONNECTEDNESS OF ENTIRE GALAXY!!!!!!
+
+            //Get all possible lanes and their weights, i.e. distances
+            NewPossibleHyperspaceLane[] possibleLanes = new NewPossibleHyperspaceLane[solarSystems.Count * solarSystems.Count];
+            int nextWeightIndex = 0;
+            for (int x = 0; x < solarSystems.Count; x++)
+            {
+                for (int y = 0; y < solarSystems.Count; y++)
+                {
+                    if (x == y) //Do not allow self-loops
+                        possibleLanes[nextWeightIndex++] = new NewPossibleHyperspaceLane(Mathf.Infinity, x, y);
+                    else
+                        possibleLanes[nextWeightIndex++] = new NewPossibleHyperspaceLane(Vector3.Distance(solarSystemPositions[x], solarSystemPositions[y]), x, y);
+                }
+            }
+
+            //Sort possible lanes by weight, i.e. distance
+            //This ensures that we try to add the shortest hyperspace lanes first
+            System.Array.Sort(possibleLanes);
+
+            //Initially, each solar system is it's own tree
+            List<HashSet<int>> indexTrees = new List<HashSet<int>>();
+            for (int x = 0; x < solarSystems.Count; x++)
+            {
+                HashSet<int> newTree = new HashSet<int>();
+                newTree.Add(x);
+                indexTrees.Add(newTree);
+            }
+
+            //Add hyperspace lanes until all solar systems are in a single connected tree
+            //But only add a lane if it serves to connect two trees
+            int possibleLaneIndex = 0;
+            while (indexTrees.Count > 1)
+            {
+                NewPossibleHyperspaceLane possibleLane = possibleLanes[possibleLaneIndex++];
+
+                //Determine which tree each solar system belongs to
+                int solarSystem1Tree = -1;
+                int solarSystem2Tree = -1;
+                for (int x = 0; x < indexTrees.Count; x++)
+                {
+                    if (indexTrees[x].Contains(possibleLane.solarSystem1Index))
+                        solarSystem1Tree = x;
+
+                    if (indexTrees[x].Contains(possibleLane.solarSystem2Index))
+                        solarSystem2Tree = x;
+                }
+
+                //Disjoint trees, so include hyperspace line
+                if (solarSystem1Tree != solarSystem2Tree)
+                {
+                    //Merge trees
+                    indexTrees[solarSystem1Tree].UnionWith(indexTrees[solarSystem2Tree]); //1 becomes union of 1 and 2
+                    indexTrees.RemoveAt(solarSystem2Tree); //2 gets discarded
+
+                    //Include hyperspace lane
+                    CreateHyperspaceLane(possibleLane.solarSystem1Index, possibleLane.solarSystem2Index);
+                }
+            }
+            //----------------------------------------------------------------------------------------------------
+            //FINALLY, ENSURE ALL LANES ARE ADDED WITHIN CERTAIN DISTANCE THRESHOLD (CIARAN'S ALGORITHM)
+
+            //Add hyperspace lanes for planets within certain distance of each other, regardless of connectedness
+            for (int x = 0; x < solarSystems.Count; x++)
+            {
+                for (int y = 0; y < solarSystems.Count; y++)
+                {
+                    if (x != y && Vector3.Distance(solarSystems[x].transform.localPosition, solarSystems[y].transform.localPosition) <= newGameData.hyperspaceLaneCheckingRadius)
+                    {
+                        CreateHyperspaceLane(x, y);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to create a new hyperspace lane between two solar systems.
+    /// </summary>
+    /// <param name="solarSystem1Index"></param>
+    /// <param name="solarSystem2Index"></param>
+    private void CreateHyperspaceLane(int solarSystem1Index, int solarSystem2Index)
+    {
+        //Loops through each existing hyperspace lane to determine if the new one would be a duplicate and returns out of the function if so.
+        foreach(HyperspaceLane existingHyperspaceLane in hyperspaceLanes)
+            if (existingHyperspaceLane.solarSystems.Contains(solarSystems[solarSystem1Index]) && existingHyperspaceLane.solarSystems.Contains(solarSystems[solarSystem2Index]))
+                return;
+
+        //Instantiates a new hyperspace lane from the hyperspace lane prefab.
+        HyperspaceLane hyperspaceLane = Instantiate(hyperspaceLanePrefab).GetComponent<HyperspaceLane>();
+        //Sets the parent of the hyperspace lane.
+        hyperspaceLane.transform.SetParent(hyperspaceLanesParent);
+        hyperspaceLane.transform.localPosition = Vector3.zero;
+        hyperspaceLane.transform.localScale = Vector3.one;
+        //Initializes the hyperspace lane with the specified solar systems and appropriate starting and ending colors.
+        hyperspaceLane.Initialize(new List<GalaxySolarSystem>() { solarSystems[solarSystem1Index], solarSystems[solarSystem2Index] }, Color.yellow, Color.yellow);
+    }
+
+    /// <summary>
     /// Private function that returns the biome of the specified biome type.
     /// </summary>
     /// <param name="biomeType"></param>
@@ -718,4 +849,27 @@ public class NewGalaxyBiome
     /// Public property that should be used in order to access how close the planetary orbit of planet's of this biome are to the star of the solar system.
     /// </summary>
     public int planetaryOrbitProximityToStar { get => _planetaryOrbitProximityToStar; }
+}
+
+class NewPossibleHyperspaceLane : System.IComparable
+{
+    public float weight;
+    public int solarSystem1Index, solarSystem2Index;
+
+    public NewPossibleHyperspaceLane(float weight, int solarSystem1Index, int solarSystem2Index)
+    {
+        this.weight = weight;
+        this.solarSystem1Index = solarSystem1Index;
+        this.solarSystem2Index = solarSystem2Index;
+    }
+
+    public int CompareTo(object other)
+    {
+        NewPossibleHyperspaceLane otherLane = other as NewPossibleHyperspaceLane;
+
+        if (weight < otherLane.weight)
+            return -1;
+        else
+            return 1;
+    }
 }
