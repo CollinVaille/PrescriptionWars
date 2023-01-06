@@ -129,7 +129,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent });
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent });
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -340,7 +340,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 for (int planetIndex = 0; planetIndex < saveGameData.solarSystems[solarSystemIndex].planets.Count; planetIndex++)
                 {
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
-                    GameObject planetaryOrbit = Instantiate(new GameObject());
+                    GameObject planetaryOrbit = new GameObject();
                     //Names the planetary orbit based on how far it is from the star.
                     planetaryOrbit.name = "Planetary Orbit " + (saveGameData.solarSystems[solarSystemIndex].planets[planetIndex].planetaryOrbitProximityToStar + 1);
                     //Sets the parent of the planetary orbit.
@@ -563,7 +563,9 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Generates the hyperspace lanes of the galaxy from the galaxy save game data that has been loaded in from the load game menu if it exists.
         if (saveGameData != null)
         {
-
+            //Loops through each hyperspace lane that had its data stored in the save game file and creates a new replica hyperspace lane.
+            foreach (HyperspaceLaneData hyperspaceLaneData in saveGameData.hyperspaceLanes)
+                CreateHyperspaceLane(hyperspaceLaneData.solarSystemIDs[0], hyperspaceLaneData.solarSystemIDs[1]);
         }
         else
         {
@@ -672,6 +674,11 @@ public class NewGalaxyGenerator : MonoBehaviour
         hyperspaceLane.transform.localScale = Vector3.one;
         //Initializes the hyperspace lane with the specified solar systems and appropriate starting and ending colors.
         hyperspaceLane.Initialize(new List<GalaxySolarSystem>() { solarSystems[solarSystem1Index], solarSystems[solarSystem2Index] }, Color.yellow, Color.yellow);
+        //Logs in the two solar systems via ID (index) that this hyperspace lane is directly connecting that solar system with another solar system.
+        solarSystems[solarSystem1Index].AddHyperspaceLaneIDLog(hyperspaceLanes.Count);
+        solarSystems[solarSystem2Index].AddHyperspaceLaneIDLog(hyperspaceLanes.Count);
+        //Adds the hyperspace lane to the list of hyperspace lanes.
+        hyperspaceLanes.Add(hyperspaceLane);
     }
 
     /// <summary>

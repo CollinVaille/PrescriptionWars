@@ -69,7 +69,7 @@ public class GalaxyStar : MonoBehaviour
     /// <summary>
     /// Public property that should be used both to access and mutate the name of the star.
     /// </summary>
-    public string starName { get => starNameVar; set { starNameVar = value; starNameLabel.text = value; starNameLabel.gameObject.name = value + " Label"; } }
+    public string starName { get => starNameVar; set { starNameVar = value; name = value + " Star"; if(solarSystem != null) solarSystem.name = value + " Solar System"; if (starNameLabel != null) { starNameLabel.text = value; starNameLabel.gameObject.name = value + " Label"; } } }
     /// <summary>
     /// Private holder variable for the name of the star.
     /// </summary>
@@ -126,7 +126,7 @@ public class GalaxyStar : MonoBehaviour
         solarSystemVar.AddOnBecameVisibleFunction(OnSolarSystemBecameVisible);
         solarSystemVar.AddOnBecameInvisibleFunction(OnSolarSystemBecameInvisible);
         typeVar = starType;
-        starNameVar = starName;
+        this.starName = starName;
 
         //Adds the OnGalaxyGenerationCompletion function to the list of functions to be executed once the galaxy has completely finished generating.
         NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 1);

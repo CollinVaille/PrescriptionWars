@@ -93,6 +93,32 @@ public class GalaxySolarSystem : MonoBehaviour
     /// </summary>
     private List<Action> onBecameInvisibleFunctions = null;
 
+    /// <summary>
+    /// Private list that holds the ID of all of the hyperspace lanes that directly connect this solar system with another solar system.
+    /// </summary>
+    private List<int> hyperspaceLaneIDsVar = null;
+    /// <summary>
+    /// Publicly accessible property that returns a list that contains the ID of all of the hyperspace lanes that directly connect this solar system with another solar system (never returns null, will return an empty list if no connections but the underlying private list is null).
+    /// </summary>
+    public List<int> hyperspaceLaneIDs { get => hyperspaceLaneIDsVar == null ? new List<int>() : hyperspaceLaneIDsVar; }
+    /// <summary>
+    /// Publicly accessible property that contains all of the hyperspace lanes that directly connect this solar system with another solar system.
+    /// </summary>
+    public List<HyperspaceLane> hyperspaceLanes
+    {
+        get
+        {
+            //Initializes an empty list of hyperspace lanes.
+            List<HyperspaceLane> hyperspaceLanesTemp = new List<HyperspaceLane>();
+            //Loops through each hyperspace lane id and uses it to obtain the correct hyperspace lane objects from the galaxy manager (if the galaxy manager's hyperspace lanes list has been initialized) and adds said hyperspace lane objects to the list previously initialized.
+            if(NewGalaxyManager.hyperspaceLanes != null)
+                foreach(int hyperspaceLaneID in hyperspaceLaneIDsVar)
+                    hyperspaceLanesTemp.Add(NewGalaxyManager.hyperspaceLanes[hyperspaceLaneID]);
+            //Returns the list of hyperspace lanes.
+            return hyperspaceLanesTemp;
+        }
+    }
+
     private void Awake()
     {
         //Informs the solar system's visibility plane of the functions that need to be executed once the visibility plane becomes either visible or invisible.
@@ -144,6 +170,8 @@ public class GalaxySolarSystem : MonoBehaviour
         planetsVar = planets;
         //Sets the variable that indicates the ID of the solar system.
         IDVar = ID;
+        //Initializes the hyperspace lane IDs list.
+        hyperspaceLaneIDsVar = solarSystemData.hyperspaceLaneIDs;
     }
 
     /// <summary>
@@ -240,6 +268,30 @@ public class GalaxySolarSystem : MonoBehaviour
                 onBecameInvisibleFunctions = null;
         }
     }
+
+    /// <summary>
+    /// Public method that should be called mainly by the galaxy generator in order to log in the solar system that the specified hyperspace lane ID belongs to a hyperspace lane that connects this specific solar system to another solar system directly.
+    /// </summary>
+    /// <param name="hyperspaceLaneID"></param>
+    public void AddHyperspaceLaneIDLog(int hyperspaceLaneID)
+    {
+        if (hyperspaceLaneIDsVar == null)
+            hyperspaceLaneIDsVar = new List<int>();
+        if (!hyperspaceLaneIDsVar.Contains(hyperspaceLaneID))
+            hyperspaceLaneIDsVar.Add(hyperspaceLaneID);
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to log in the solar system that the specified hyperspace lane ID no longer belongs to a hyperspace lane that connects this specific solar system to another solar system directly.
+    /// </summary>
+    /// <param name="hyperspaceLaneID"></param>
+    public void RemoveHyperspaceLaneIDLog(int hyperspaceLaneID)
+    {
+        if (hyperspaceLaneIDsVar == null)
+            return;
+        if (hyperspaceLaneIDsVar.Contains(hyperspaceLaneID))
+            hyperspaceLaneIDsVar.Remove(hyperspaceLaneID);
+    }
 }
 
 [System.Serializable]
@@ -249,6 +301,7 @@ public class GalaxySolarSystemData
     public GalaxyStarData star = null;
     public List<GalaxyPlanetData> planets = null;
     public int capitalPlanetIndex = 0;
+    public List<int> hyperspaceLaneIDs = null;
 
     public GalaxySolarSystemData(GalaxySolarSystem solarSystem)
     {
@@ -263,5 +316,7 @@ public class GalaxySolarSystemData
             planets.Add(new GalaxyPlanetData(solarSystem.planets[planetIndex]));
 
         capitalPlanetIndex = solarSystem.capitalPlanetIndex;
+
+        hyperspaceLaneIDs = solarSystem.hyperspaceLaneIDs.Count == 0 ? null : solarSystem.hyperspaceLaneIDs;
     }
 }

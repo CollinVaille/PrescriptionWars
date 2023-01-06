@@ -157,6 +157,22 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
+    /// Publicly accessible property that returns a boolean that indicates whether or not the planet and its respective orbit are the farthest away from the star in its solar system.
+    /// </summary>
+    public bool farthestPlanetFromTheStar
+    {
+        get
+        {
+            if (solarSystem == null || solarSystem.planets == null)
+                return false;
+            foreach(NewGalaxyPlanet planet in solarSystem.planets)
+                if (planet.planetaryOrbitProximityToStar > planetaryOrbitProximityToStar)
+                    return false;
+            return true;
+        }
+    }
+
+    /// <summary>
     /// Public property that should be used both to access and mutate the rotation of the planet's orbit.
     /// </summary>
     public float planetaryOrbitRotation
@@ -391,6 +407,9 @@ public class NewGalaxyPlanet : MonoBehaviour
         {
             Destroy(planetaryOrbitOutline);
             planetaryOrbitOutline = null;
+            if (farthestPlanetFromTheStar)
+                foreach (HyperspaceLane hyperspaceLane in solarSystem.hyperspaceLanes)
+                    hyperspaceLane.SetSolarSystemPosition(solarSystem, solarSystem.transform.position);
         }
     }
 
@@ -405,6 +424,15 @@ public class NewGalaxyPlanet : MonoBehaviour
         planetaryOrbitOutline.transform.localScale = Vector3.one;
         planetaryOrbitOutline.transform.GetChild(1).localScale = new Vector3((localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2) - (planetaryOrbitOutline.transform.GetChild(0).localScale.x - planetaryOrbitOutline.transform.GetChild(1).localScale.x), (localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2) - (planetaryOrbitOutline.transform.GetChild(0).localScale.y - planetaryOrbitOutline.transform.GetChild(1).localScale.y), planetaryOrbitOutline.transform.GetChild(1).localScale.z);
         planetaryOrbitOutline.transform.GetChild(0).localScale = new Vector3(localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2, localPosition.x * (1.005f + (0.0008f * planetaryOrbitProximityToStar)) * 2, planetaryOrbitOutline.transform.GetChild(0).localScale.z);
+        if (farthestPlanetFromTheStar)
+        {
+            Physics.SyncTransforms();
+            foreach(HyperspaceLane hyperspaceLane in solarSystem.hyperspaceLanes)
+            {
+                GalaxySolarSystem connectingSolarSystem = hyperspaceLane.solarSystems[0] == solarSystem ? hyperspaceLane.solarSystems[1] : hyperspaceLane.solarSystems[0];
+                hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutline.transform.GetChild(0).GetComponent<SphereCollider>().ClosestPoint(connectingSolarSystem.transform.position));
+            }
+        }
     }
 
     /// <summary>

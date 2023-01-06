@@ -9,6 +9,7 @@ public class GalaxyData
     //Necessary data.
     public List<GalaxySolarSystemData> solarSystems = null;
     public List<EmpireData> empires = null;
+    public List<HyperspaceLaneData> hyperspaceLanes = null;
     public int playerID = -1;
 
     //Info.
@@ -29,6 +30,10 @@ public class GalaxyData
         empires = new List<EmpireData>();
         foreach (NewEmpire empire in NewGalaxyManager.empires)
             empires.Add(new EmpireData(empire));
+
+        hyperspaceLanes = new List<HyperspaceLaneData>();
+        foreach (HyperspaceLane hyperspaceLane in NewGalaxyManager.hyperspaceLanes)
+            hyperspaceLanes.Add(new HyperspaceLaneData(hyperspaceLane));
 
         galaxyShape = NewGalaxyManager.galaxyShape;
 

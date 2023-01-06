@@ -92,6 +92,9 @@ public class HyperspaceLane : MonoBehaviour
             if (solarSystem == null)
                 return;
 
+        //Names the game object after the solar systems it connects.
+        name = solarSystems[0].star.starName + "-" + solarSystems[1].star.starName + " Hyperspace Lane";
+
         //Add a Line Renderer to the GameObject.
         line = gameObject.AddComponent<LineRenderer>();
 
@@ -111,5 +114,36 @@ public class HyperspaceLane : MonoBehaviour
         {
             line.SetPosition(solarSystemIndex, solarSystems[solarSystemIndex].transform.position);
         }
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to set the position of the hyperspace lane line for the specified solar system.
+    /// </summary>
+    /// <param name="solarSystem"></param>
+    /// <param name="position"></param>
+    public void SetSolarSystemPosition(GalaxySolarSystem solarSystem, Vector3 position)
+    {
+        for(int solarSystemIndex = 0; solarSystemIndex < solarSystems.Count; solarSystemIndex++)
+        {
+            if(solarSystems[solarSystemIndex] == solarSystem)
+            {
+                line.SetPosition(solarSystemIndex, position);
+                return;
+            }
+        }
+        Debug.LogWarning("Cannot set a solar system's hyperspace lane position because the hyperspace lane does not belong to the specified solar system.");
+    }
+}
+
+[System.Serializable]
+public class HyperspaceLaneData
+{
+    public int[] solarSystemIDs = null;
+
+    public HyperspaceLaneData(HyperspaceLane hyperspaceLane)
+    {
+        solarSystemIDs = new int[hyperspaceLane.solarSystems.Count];
+        for (int index = 0; index < solarSystemIDs.Length; index++)
+            solarSystemIDs[index] = hyperspaceLane.solarSystems[index].ID;
     }
 }

@@ -59,6 +59,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static List<NewEmpire> empires { get => galaxyManager.empiresVar; }
 
     /// <summary>
+    /// Private holder variable for the list of hyperspace lanes that exist to connect solar systems within the galaxy.
+    /// </summary>
+    private List<HyperspaceLane> hyperspaceLanesVar = null;
+    /// <summary>
+    /// Publicly accessible property that returns a list that contains the hyperspace lanes that exist to connect solar systems within the galaxy.
+    /// </summary>
+    public static List<HyperspaceLane> hyperspaceLanes { get => galaxyManager.hyperspaceLanesVar; }
+
+    /// <summary>
     /// Private holder variable of a galaxy manager instance.
     /// </summary>
     private static NewGalaxyManager galaxyManagerVar = null;
@@ -115,7 +124,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, string galaxyShape, int playerID, List<Transform> parents)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -131,6 +140,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains all of the empires existing within the galaxy.
         galaxyManager.empiresVar = empires;
+
+        //Sets the value of the variable that contains all the hyperspace lanes that exist to connect solar systems within the galaxy.
+        galaxyManager.hyperspaceLanesVar = hyperspaceLanes;
 
         //Sets the value of the variable that contains the name of the shape that the galaxy was generated to fit.
         galaxyManager.galaxyShapeVar = galaxyShape;
