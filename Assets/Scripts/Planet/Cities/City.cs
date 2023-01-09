@@ -20,9 +20,13 @@ public class City : MonoBehaviour, INavZoneUpdater
     private int nextAvailableBed = -1;
     [HideInInspector] public List<Building> buildings;
 
-    //HOA rules
-    public Material defaultWallMaterial, defaultFloorMaterial;
+    //Materials
+    public Material defaultWallMaterial, defaultFloorMaterial, slabMaterial, groundMaterial;
     public Material[] wallMaterials, floorMaterials;
+
+    //Foundations
+    public List<FoundationJSON> foundations;
+    public List<Collider> foundationColliders;
 
     //Walls
     public GameObject wallSectionPrefab, horGatePrefab, verGatePrefab, fencePostPrefab;
@@ -36,7 +40,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     private List<CityBlock> availableCityBlocks;
     private List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     [HideInInspector] public bool circularCity = false;
-    [HideInInspector] public bool elevatedCity = false;
+    [HideInInspector] public bool raisedCity = false;
 
     //Called after city has been generated or regenerated
     public void OnCityStart()
@@ -97,8 +101,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //    ReserveSector();
 
         //Generate foundations
-        if(elevatedCity)
-            GenerateCityFoundations();
+        if(raisedCity)
+            GenerateFoundationsToRaiseCity();
 
         //Generate buildings
         buildings = new List<Building>();
@@ -332,18 +336,27 @@ public class City : MonoBehaviour, INavZoneUpdater
         return avgLength * areaSize;
     }
 
-    private void GenerateCityFoundations()
+    private void GenerateFoundationsToRaiseCity()
     {
-        GameObject foundationPrefab;
-        if (circularCity)
-            foundationPrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Circular Foundation");
-        else
-            foundationPrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Rectangular Foundation");
+        //Take notes so we can save and restore the foundation later
+        foundations = new List<FoundationJSON>();
+        FoundationJSON foundation = new FoundationJSON();
+        foundations.Add(foundation);
 
-        Transform foundation = Instantiate(foundationPrefab, transform).transform;
-        foundation.localRotation = Quaternion.Euler(0, 0, 0);
+        //Customize the foundation
+        if (circularCity)
+            foundation.prefab = "Planet/City/Miscellaneous/Circular Foundation";
+        else
+            foundation.prefab = "Planet/City/Miscellaneous/Rectangular Foundation";
+
+        //Instantiate and place the foundation using the customization
         foundation.localPosition = Vector3.zero;
         foundation.localScale = Vector3.one * radius * 2.1f;
+        foundation.GenerateFoundation(this, slabMaterial, groundMaterial);
+
+        //Updates the physics colliders based on changes to transforms.
+        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        Physics.SyncTransforms();
     }
 
     private void GenerateSpecialBuildings()
@@ -459,8 +472,7 @@ public class City : MonoBehaviour, INavZoneUpdater
             buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
             newBuilding.localPosition = buildingPosition;
-
-            God.SnapToGround(newBuilding);
+            God.SnapToGround(newBuilding, collidersToCheckAgainst:foundationColliders);
 
             //Rotate it
             SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
@@ -807,8 +819,7 @@ public class City : MonoBehaviour, INavZoneUpdater
             //Place it
             PlaceWallSection(isGate, lastWasGate,
                 newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
-                (int)temporaryRotatingBase.localEulerAngles.y,
-                fencePostRotation);
+                (int)temporaryRotatingBase.localEulerAngles.y, true, fencePostRotation);
 
             //Rotate the base for the next iteration
             currentEulerAngle -= eulerAngleStep;
@@ -878,11 +889,11 @@ public class City : MonoBehaviour, INavZoneUpdater
 
             //Front walls
             PlaceWallSection(skipWallSection[x], previousWasGate,
-                startX + x * wallLength, placementHeight, minZ, 180);
+                startX + x * wallLength, placementHeight, minZ, 180, true);
 
             //Back walls
             PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, maxZ, 0);
+                startX + x * wallLength, placementHeight, maxZ, 0, true);
 
             previousWasGate = skipWallSection[x];
         }
@@ -934,10 +945,10 @@ public class City : MonoBehaviour, INavZoneUpdater
                 nextIsGate = skipWallSection[z + 1];
 
             PlaceWallSection(skipWallSection[z], nextIsGate,
-                minX, placementHeight, startZ + z * wallLength, -90);
+                minX, placementHeight, startZ + z * wallLength, -90, true);
 
             PlaceWallSection(skipWallSection[z], previousWasGate,
-                maxX, placementHeight, startZ + z * wallLength, 90);
+                maxX, placementHeight, startZ + z * wallLength, 90, true);
 
             previousWasGate = skipWallSection[z];
         }
@@ -954,7 +965,7 @@ public class City : MonoBehaviour, INavZoneUpdater
                 placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);    */
     }
 
-    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, int fencePostRotation = 9000)
+    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, bool snapToGround, int fencePostRotation = 9000)
     {
         int absRotation = Mathf.Abs(rotation);
         bool horizontalSection = (absRotation == 0 || absRotation == 180);
@@ -970,6 +981,8 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
+        if (snapToGround)
+            God.SnapToGround(newWallSection, collidersToCheckAgainst:foundationColliders);
 
         //Place fence post correlating to wall section
         if (fencePostPrefab && !gate && !skipFencePost)
@@ -1067,10 +1080,6 @@ public class CityJSON
 
         radius = city.radius;
 
-        buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
-        foreach (GameObject buildingPrefab in city.buildingPrefabs)
-            buildingPrefabs.Add(buildingPrefab.name);
-
         wallMaterials = new string[city.wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
             wallMaterials[x] = city.wallMaterials[x].name;
@@ -1078,6 +1087,15 @@ public class CityJSON
         floorMaterials = new string[city.floorMaterials.Length];
         for (int x = 0; x < floorMaterials.Length; x++)
             floorMaterials[x] = city.floorMaterials[x].name;
+
+        slabMaterial = city.slabMaterial.name;
+        groundMaterial = city.groundMaterial.name;
+
+        foundations = city.foundations;
+
+        buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
+        foreach (GameObject buildingPrefab in city.buildingPrefabs)
+            buildingPrefabs.Add(buildingPrefab.name);
 
         buildings = new List<BuildingJSON>(city.buildings.Count);
         for (int x = 0; x < city.buildings.Count; x++)
@@ -1132,17 +1150,25 @@ public class CityJSON
 
         city.ReserveTerrainLocation();
 
-        city.buildingPrefabs = new List<GameObject>();
-        for (int x = 0; x < buildingPrefabs.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]));
-
         city.wallMaterials = new Material[wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + wallMaterials[x]);
+            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMaterials[x]);
 
         city.floorMaterials = new Material[floorMaterials.Length];
         for (int x = 0; x < floorMaterials.Length; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + floorMaterials[x]);
+            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMaterials[x]);
+
+        city.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMaterial);
+        city.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMaterial);
+
+        city.foundations = foundations;
+        foreach (FoundationJSON foundation in foundations)
+            foundation.GenerateFoundation(city, city.slabMaterial, city.groundMaterial);
+        Physics.SyncTransforms();
+
+        city.buildingPrefabs = new List<GameObject>();
+        for (int x = 0; x < buildingPrefabs.Count; x++)
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]));
 
         city.buildings = new List<Building>(buildings.Count);
         for (int x = 0; x < buildings.Count; x++)
@@ -1173,7 +1199,7 @@ public class CityJSON
                     //We want to place the fence posts manually, so just always say next section is gate
                     //so it won't place them for us
                     city.PlaceWallSection(wallSectionTypes[x].Equals("Gate"), true,
-                        location.x, location.y, location.z, wallSectionRotations[x]);
+                        location.x, location.y, location.z, wallSectionRotations[x], false);
             }
         }
 
@@ -1187,9 +1213,15 @@ public class CityJSON
     public string name;
     public int radius;
 
+    //Materials
+    public string[] wallMaterials, floorMaterials;
+    public string slabMaterial, groundMaterial;
+
+    //Foundations
+    public List<FoundationJSON> foundations;
+
     //Buildings
     public List<string> buildingPrefabs;
-    public string[] wallMaterials, floorMaterials;
     public List<BuildingJSON> buildings;
 
     //City walls

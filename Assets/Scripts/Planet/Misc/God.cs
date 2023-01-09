@@ -279,19 +279,38 @@ public class God : MonoBehaviour
 
     public void DestroySomeShit(GameObject toDestroy) { Destroy(toDestroy); }
 
-    public static void SnapToGround(Transform transformToSnap)
+    public static void SnapToGround(Transform transformToSnap, float startSearchFromHeight = 9000.0f, List<Collider> collidersToCheckAgainst = null)
     {
         Vector3 newTransformPosition = transformToSnap.position;
         transformToSnap.position = Vector3.one * 9000.0f;
         transformToSnap.gameObject.SetActive(false);
 
-        if (Physics.Raycast(newTransformPosition + Vector3.up * 9000.0f, Vector3.down, out RaycastHit hitInfo, 20000.0f, ~0, QueryTriggerInteraction.Ignore))
+        Ray ray = new Ray(newTransformPosition + Vector3.up * startSearchFromHeight, Vector3.down);
+
+        if(collidersToCheckAgainst == null) //Check against all colliders in the scene
         {
-            Debug.Log("HIT " + hitInfo.collider.name);
-            newTransformPosition.y = hitInfo.point.y;
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore))
+                newTransformPosition.y = hitInfo.point.y;
         }
-        else
-            Debug.Log("MISS");
+        else //Check against the specific list of colliders provided
+        {
+            float highestContactHeight = Mathf.NegativeInfinity;
+            bool hitSomething = false;
+            foreach(Collider collider in collidersToCheckAgainst)
+            {
+                if(collider.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+                {
+                    if (hitInfo.point.y > highestContactHeight)
+                    {
+                        hitSomething = true;
+                        highestContactHeight = hitInfo.point.y;
+                    }
+                }
+            }
+
+            if (hitSomething)
+                newTransformPosition.y = highestContactHeight;
+        }
 
         transformToSnap.position = newTransformPosition;
         transformToSnap.gameObject.SetActive(true);

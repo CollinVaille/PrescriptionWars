@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.70128655, g: 0.6452593, b: 0.3916945, a: 1}
+  m_IndirectSpecularColor: {r: 0.7885646, g: 0.71180546, b: 0.6032642, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21578,6 +21578,11 @@ MonoBehaviour:
     - Concrete/Concrete Wall 2
     floorMaterials:
     - Concrete/Concrete Floor
+    slabMaterials:
+    - Concrete Wall
+    - Concrete Wall 2
+    groundMaterials:
+    - Concrete Floor
   - name: Temperate
     wallMaterials:
     - Village/Brick Wall
@@ -21585,6 +21590,10 @@ MonoBehaviour:
     floorMaterials:
     - Village/Wood Floor
     - Desert/Slate Tile Floor
+    slabMaterials:
+    - Sandy Desert/Cobblestone Wall
+    groundMaterials:
+    - Sandy Desert/Slate Tile Floor
   - name: SandyDesert
     wallMaterials:
     - Sandy Desert/Sand Wall
@@ -21594,11 +21603,22 @@ MonoBehaviour:
     - Sandy Desert/Sand Wall
     - Sandy Desert/Sand Wall 2
     - Sandy Desert/Slate Tile Floor
+    - Sandy Desert/Rusted Deck Plates Metal
+    slabMaterials:
+    - Sandy Desert/Sand Wall
+    - Sandy Desert/Cobblestone Wall
+    groundMaterials:
+    - Sandy Desert/Slate Tile Floor
+    - Sandy Desert/Rusted Deck Plates Metal
   - name: Spirit
     wallMaterials:
     - Shiny Metal/Metal Wall Panel
     floorMaterials:
-    - Shiny Metal/Fabric SciFi 7
+    - Shiny Metal/Fabric SciFi 7 Metal
+    slabMaterials:
+    - Shiny Metal/Metal Wall Panel
+    groundMaterials:
+    - Shiny Metal/Fabric SciFi 7 Metal
   cityTypes:
   - name: Slum
     spawnChance: 1

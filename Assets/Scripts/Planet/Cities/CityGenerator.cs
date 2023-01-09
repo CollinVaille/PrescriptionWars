@@ -15,20 +15,20 @@ public class CityGenerator : MonoBehaviour
     {
         CityType cityType = SelectCityType();
 
-        //Buildings
+        //Buildings--------------------------------------------------------------------------------------------------------------
         List<string> genericBuildings = new List<string>(cityType.buildings);
         TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
         city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
             city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + genericBuildings[x]));
 
-        //Special buildings
+        //Special buildings--------------------------------------------------------------------------------------------------------------
         AddSpecialBuilding(cityType.prescriptor, city);
         AddSpecialBuilding(cityType.depot, city);
         AddSpecialBuilding(cityType.researchFacility, city);
         AddSpecialBuilding(cityType.tradePost, city);
 
-        //Wall materials
+        //Wall materials--------------------------------------------------------------------------------------------------------------
         List<string> wallMats;
         if (cityType.wallMaterials != null && cityType.wallMaterials.Length != 0)
             wallMats = new List<string>(cityType.wallMaterials);
@@ -38,9 +38,9 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(wallMats, Random.Range(3, 6));
         city.wallMaterials = new Material[wallMats.Count];
         for (int x = 0; x < wallMats.Count; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + wallMats[x]);
+            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMats[x]);
 
-        //Floor materials
+        //Floor materials--------------------------------------------------------------------------------------------------------------
         List<string> floorMats;
         if (cityType.floorMaterials != null && cityType.floorMaterials.Length != 0)
             floorMats = new List<string>(cityType.floorMaterials);
@@ -50,9 +50,17 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(floorMats, Random.Range(2, 5));
         city.floorMaterials = new Material[floorMats.Count];
         for (int x = 0; x < floorMats.Count; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Building Materials/" + floorMats[x]);
+            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMats[x]);
 
-        //Customize walls
+        //Slab materials--------------------------------------------------------------------------------------------------------------
+        List<string> slabMats = new List<string>(GetBiomeMaterials().slabMaterials);
+        city.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMats[Random.Range(0, slabMats.Count)]);
+
+        //Ground materials--------------------------------------------------------------------------------------------------------------
+        List<string> groundMats = new List<string>(GetBiomeMaterials().groundMaterials);
+        city.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
+
+        //Customize walls--------------------------------------------------------------------------------------------------------------
         if (Random.Range(0, 90) < city.radius && cityType.wallSections.Length > 0)
         {
             //Wall section
@@ -75,10 +83,10 @@ public class CityGenerator : MonoBehaviour
             }
         }
 
-        //City shape
-        if(city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
+        //City shape--------------------------------------------------------------------------------------------------------------
+        if (city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
             city.circularCity = true;
-        city.elevatedCity = true;
+        city.raisedCity = true;
     }
 
     private CityType SelectCityType()
@@ -318,6 +326,8 @@ public class BiomeMaterials
     public string name = "New Biome Materials"; //Name of the biome these building materials are for
     public string[] wallMaterials;
     public string[] floorMaterials;
+    public string[] slabMaterials;
+    public string[] groundMaterials;
 }
 
 [System.Serializable]
@@ -343,7 +353,7 @@ public class CityType
     public float fencePostChance = 0.5f; //0 = 0% spawn chance, 1 = 100% spawn chance
     public string[] fencePosts;
 
-    //Building materials
+    //Materials
     public string[] wallMaterials;
     public string[] floorMaterials;
 }
