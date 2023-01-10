@@ -54,11 +54,11 @@ public class CityGenerator : MonoBehaviour
 
         //Slab materials--------------------------------------------------------------------------------------------------------------
         List<string> slabMats = new List<string>(GetBiomeMaterials().slabMaterials);
-        city.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMats[Random.Range(0, slabMats.Count)]);
+        city.foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMats[Random.Range(0, slabMats.Count)]);
 
         //Ground materials--------------------------------------------------------------------------------------------------------------
         List<string> groundMats = new List<string>(GetBiomeMaterials().groundMaterials);
-        city.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
+        city.foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
         if (Random.Range(0, 90) < city.radius && cityType.wallSections.Length > 0)
@@ -86,7 +86,7 @@ public class CityGenerator : MonoBehaviour
         //City shape--------------------------------------------------------------------------------------------------------------
         if (city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
             city.circularCity = true;
-        city.raisedCity = true;
+        city.foundationManager.foundationType = FoundationManager.FoundationType.SingularSlab;
     }
 
     private CityType SelectCityType()

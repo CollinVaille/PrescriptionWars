@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.7885646, g: 0.71180546, b: 0.6032642, a: 1}
+  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 3
+  biome: 6
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -21574,10 +21574,10 @@ MonoBehaviour:
   biomeMaterials:
   - name: Frozen
     wallMaterials:
-    - Concrete/Concrete Wall
-    - Concrete/Concrete Wall 2
+    - Concrete Wall
+    - Concrete Wall 2
     floorMaterials:
-    - Concrete/Concrete Floor
+    - Concrete Floor
     slabMaterials:
     - Concrete Wall
     - Concrete Wall 2
@@ -21585,40 +21585,40 @@ MonoBehaviour:
     - Concrete Floor
   - name: Temperate
     wallMaterials:
-    - Village/Brick Wall
-    - Village/Plaster Wall
+    - Brick Wall
+    - Plaster Wall
     floorMaterials:
-    - Village/Wood Floor
-    - Desert/Slate Tile Floor
+    - Wood Floor
+    - Slate Tile Floor
     slabMaterials:
-    - Sandy Desert/Cobblestone Wall
+    - Cobblestone Wall
     groundMaterials:
-    - Sandy Desert/Slate Tile Floor
+    - Slate Tile Floor
   - name: SandyDesert
     wallMaterials:
-    - Sandy Desert/Sand Wall
-    - Sandy Desert/Sand Wall 2
-    - Sandy Desert/Cobblestone Wall
+    - Sand Wall
+    - Sand Wall 2
+    - Cobblestone Wall
     floorMaterials:
-    - Sandy Desert/Sand Wall
-    - Sandy Desert/Sand Wall 2
-    - Sandy Desert/Slate Tile Floor
-    - Sandy Desert/Rusted Deck Plates Metal
+    - Sand Wall
+    - Sand Wall 2
+    - Slate Tile Floor
+    - Rusted Deck Plates Metal
     slabMaterials:
-    - Sandy Desert/Sand Wall
-    - Sandy Desert/Cobblestone Wall
+    - Sand Wall
+    - Cobblestone Wall
     groundMaterials:
-    - Sandy Desert/Slate Tile Floor
-    - Sandy Desert/Rusted Deck Plates Metal
+    - Slate Tile Floor
+    - Rusted Deck Plates Metal
   - name: Spirit
     wallMaterials:
-    - Shiny Metal/Metal Wall Panel
+    - Metal Wall Panel
     floorMaterials:
-    - Shiny Metal/Fabric SciFi 7 Metal
+    - Fabric SciFi 7 Metal
     slabMaterials:
-    - Shiny Metal/Metal Wall Panel
+    - Metal Wall Panel
     groundMaterials:
-    - Shiny Metal/Fabric SciFi 7 Metal
+    - Fabric SciFi 7 Metal
   cityTypes:
   - name: Slum
     spawnChance: 1

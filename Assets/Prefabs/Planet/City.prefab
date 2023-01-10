@@ -204,8 +204,15 @@ MonoBehaviour:
   defaultWallMaterial: {fileID: 2100000, guid: 12861769f6151ea4485ed8e626647475, type: 2}
   defaultFloorMaterial: {fileID: 2100000, guid: 8811037fe0ece84429ece78b207663e0,
     type: 2}
+  actualSlabMaterial: {fileID: 2100000, guid: 455d693a097fc214085b7818d8af6cd3, type: 2}
+  actualGroundMaterial: {fileID: 2100000, guid: 3ee4d75610c04054895447f45e240413,
+    type: 2}
   wallMaterials: []
   floorMaterials: []
+  slabMaterial: {fileID: 2100000, guid: 455d693a097fc214085b7818d8af6cd3, type: 2}
+  groundMaterial: {fileID: 2100000, guid: 3ee4d75610c04054895447f45e240413, type: 2}
+  foundations: []
+  foundationColliders: []
   wallSectionPrefab: {fileID: 0}
   horGatePrefab: {fileID: 0}
   verGatePrefab: {fileID: 0}
@@ -213,7 +220,8 @@ MonoBehaviour:
   walls: {fileID: 0}
   wallMaterialIndex: 0
   cityWallMaterial: {fileID: 2100000, guid: 0cfca54f750c17845bb45f8af6fceeff, type: 2}
-  doodad: {fileID: 567683109591036116, guid: 6686e16ab14fa874e9121c32b118383e, type: 3}
+  circularCity: 0
+  raisedCity: 0
 --- !u!114 &6564999988731377981
 MonoBehaviour:
   m_ObjectHideFlags: 0

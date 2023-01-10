@@ -9,6 +9,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     //General
     [HideInInspector] public int radius = 100;
     public GameObject mapMarkerPrefab;
+    [HideInInspector] public CityType cityType;
 
     //Building construction
     public List<GameObject> buildingPrefabs;
@@ -21,12 +22,11 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public List<Building> buildings;
 
     //Materials
-    public Material defaultWallMaterial, defaultFloorMaterial, slabMaterial, groundMaterial;
+    public Material defaultWallMaterial, defaultFloorMaterial;
     public Material[] wallMaterials, floorMaterials;
 
     //Foundations
-    public List<FoundationJSON> foundations;
-    public List<Collider> foundationColliders;
+    [HideInInspector] public FoundationManager foundationManager;
 
     //Walls
     public GameObject wallSectionPrefab, horGatePrefab, verGatePrefab, fencePostPrefab;
@@ -40,10 +40,15 @@ public class City : MonoBehaviour, INavZoneUpdater
     private List<CityBlock> availableCityBlocks;
     private List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     [HideInInspector] public bool circularCity = false;
-    [HideInInspector] public bool raisedCity = false;
 
     //Called after city has been generated or regenerated
-    public void OnCityStart()
+
+    public void BeforeCityGeneratedOrRestored()
+    {
+        foundationManager = new FoundationManager(this);
+    }
+
+    public void AfterCityGeneratedOrRestored()
     {
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
@@ -74,8 +79,10 @@ public class City : MonoBehaviour, INavZoneUpdater
         transform.position = cityLocation;
     }
 
-    public void GenerateCity()
+    public void GenerateNewCity()
     {
+        BeforeCityGeneratedOrRestored();
+
         //Reserve terrain location
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
@@ -101,8 +108,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //    ReserveSector();
 
         //Generate foundations
-        if(raisedCity)
-            GenerateFoundationsToRaiseCity();
+        foundationManager.GenerateNewFoundations();
 
         //Generate buildings
         buildings = new List<Building>();
@@ -121,7 +127,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Set the name after all possible influencing factors on the name have been set
         gameObject.name = CityGenerator.GenerateCityName(Planet.planet.biome, radius);
 
-        OnCityStart();
+        AfterCityGeneratedOrRestored();
     }
 
     private void LoadBuildingPrototypes()
@@ -336,29 +342,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         return avgLength * areaSize;
     }
 
-    private void GenerateFoundationsToRaiseCity()
-    {
-        //Take notes so we can save and restore the foundation later
-        foundations = new List<FoundationJSON>();
-        FoundationJSON foundation = new FoundationJSON();
-        foundations.Add(foundation);
-
-        //Customize the foundation
-        if (circularCity)
-            foundation.prefab = "Planet/City/Miscellaneous/Circular Foundation";
-        else
-            foundation.prefab = "Planet/City/Miscellaneous/Rectangular Foundation";
-
-        //Instantiate and place the foundation using the customization
-        foundation.localPosition = Vector3.zero;
-        foundation.localScale = Vector3.one * radius * 2.1f;
-        foundation.GenerateFoundation(this, slabMaterial, groundMaterial);
-
-        //Updates the physics colliders based on changes to transforms.
-        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
-        Physics.SyncTransforms();
-    }
-
     private void GenerateSpecialBuildings()
     {
         for(int x = 0; x < buildingPrototypes.Length; x++)
@@ -472,7 +455,7 @@ public class City : MonoBehaviour, INavZoneUpdater
             buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
             newBuilding.localPosition = buildingPosition;
-            God.SnapToGround(newBuilding, collidersToCheckAgainst:foundationColliders);
+            God.SnapToGround(newBuilding, collidersToCheckAgainst:foundationManager.foundationColliders);
 
             //Rotate it
             SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
@@ -746,17 +729,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Set texture of walls using reference material
         Material referenceMaterial = wallMaterials[wallMaterialIndex];
-        cityWallMaterial.mainTexture = referenceMaterial.mainTexture;
-        cityWallMaterial.SetTexture("_BumpMap", referenceMaterial.GetTexture("_BumpMap"));
-
-        //Set metallic and smoothness properties of walls using reference material
-        SetMetallicAndSmoothnessOfMaterial(cityWallMaterial, referenceMaterial);
-
-        //Scale wall texture
-        Vector2 wallTextureScale = referenceMaterial.mainTextureScale;
-        wallTextureScale.x *= 3.0f;
-        wallTextureScale.y *= 1.5f;
-        cityWallMaterial.mainTextureScale = wallTextureScale;
+        God.CopyMaterialValues(referenceMaterial, cityWallMaterial, 3.0f, 1.5f, true);
     }
 
     private void GenerateWalls()
@@ -982,7 +955,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
         if (snapToGround)
-            God.SnapToGround(newWallSection, collidersToCheckAgainst:foundationColliders);
+            God.SnapToGround(newWallSection, collidersToCheckAgainst:foundationManager.foundationColliders);
 
         //Place fence post correlating to wall section
         if (fencePostPrefab && !gate && !skipFencePost)
@@ -1005,25 +978,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         Transform fencePost = Instantiate(fencePostPrefab, walls).transform;
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
-    }
-
-    //Set material to updates' metallic and smoothness properties to equal that of reference material
-    private void SetMetallicAndSmoothnessOfMaterial(Material materialToUpdate, Material referenceMaterial)
-    {
-        float metallic = referenceMaterial.GetFloat("_Metallic");
-        float smoothness = referenceMaterial.GetFloat("_Glossiness");
-
-        //if (metallic > 0 || smoothness > 0)
-        //    materialToUpdate.EnableKeyword("_METALLICGLOSSMAP");
-
-        materialToUpdate.SetFloat("_Metallic", metallic);
-        materialToUpdate.SetFloat("_Glossiness", smoothness);
-
-       // if (metallic == 0 && smoothness == 0)
-       //     materialToUpdate.DisableKeyword("_METALLICGLOSSMAP");
-
-        //materialToUpdate.
-        //DynamicGI.UpdateEnvironment();
     }
 }
 
@@ -1077,8 +1031,13 @@ public class CityJSON
     public CityJSON(City city)
     {
         name = city.name;
-
         radius = city.radius;
+
+        for(int x = 0; x < CityGenerator.generator.cityTypes.Length; x++)
+        {
+            if (CityGenerator.generator.cityTypes[x] == city.cityType)
+                cityTypeIndex = x;
+        }
 
         wallMaterials = new string[city.wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
@@ -1088,10 +1047,7 @@ public class CityJSON
         for (int x = 0; x < floorMaterials.Length; x++)
             floorMaterials[x] = city.floorMaterials[x].name;
 
-        slabMaterial = city.slabMaterial.name;
-        groundMaterial = city.groundMaterial.name;
-
-        foundations = city.foundations;
+        foundationManager = new FoundationManagerJSON(city.foundationManager);
 
         buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
         foreach (GameObject buildingPrefab in city.buildingPrefabs)
@@ -1144,9 +1100,13 @@ public class CityJSON
 
     public void RestoreCity(City city)
     {
-        city.gameObject.name = name;
+        city.BeforeCityGeneratedOrRestored();
 
+        city.gameObject.name = name;
         city.radius = radius;
+
+        city.cityType = CityGenerator.generator.cityTypes[cityTypeIndex];
+        string cityTypePathSuffix = city.cityType.name + "/";
 
         city.ReserveTerrainLocation();
 
@@ -1158,17 +1118,11 @@ public class CityJSON
         for (int x = 0; x < floorMaterials.Length; x++)
             city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMaterials[x]);
 
-        city.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMaterial);
-        city.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMaterial);
-
-        city.foundations = foundations;
-        foreach (FoundationJSON foundation in foundations)
-            foundation.GenerateFoundation(city, city.slabMaterial, city.groundMaterial);
-        Physics.SyncTransforms();
+        foundationManager.RestoreFoundationManager(city.foundationManager);
 
         city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < buildingPrefabs.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + buildingPrefabs[x]));
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathSuffix + buildingPrefabs[x]));
 
         city.buildings = new List<Building>(buildings.Count);
         for (int x = 0; x < buildings.Count; x++)
@@ -1181,11 +1135,11 @@ public class CityJSON
 
         if (walls)
         {
-            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + wallSection);
-            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + horGate);
-            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + verGate);
+            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + cityTypePathSuffix + wallSection);
+            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + horGate);
+            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + verGate);
             if (!fencePost.Equals(""))
-                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + fencePost);
+                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);
 
             city.PrepareWalls(wallMaterialIndex);
 
@@ -1206,19 +1160,19 @@ public class CityJSON
         //After the city has been regenerated, build the nav mesh to pathfind through it
         city.GenerateNavMesh();
 
-        city.OnCityStart();
+        city.AfterCityGeneratedOrRestored();
     }
 
     //General
     public string name;
     public int radius;
+    public int cityTypeIndex;
 
     //Materials
     public string[] wallMaterials, floorMaterials;
-    public string slabMaterial, groundMaterial;
 
     //Foundations
-    public List<FoundationJSON> foundations;
+    public FoundationManagerJSON foundationManager;
 
     //Buildings
     public List<string> buildingPrefabs;

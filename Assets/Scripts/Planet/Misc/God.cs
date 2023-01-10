@@ -315,4 +315,39 @@ public class God : MonoBehaviour
         transformToSnap.position = newTransformPosition;
         transformToSnap.gameObject.SetActive(true);
     }
+
+    public static void CopyMaterialValues(Material copyValuesFrom, Material copyValuesTo, float xScaling, float yScaling, bool scalingIsRelative)
+    {
+        copyValuesTo.mainTexture = copyValuesFrom.mainTexture;
+        copyValuesTo.SetTexture("_BumpMap", copyValuesFrom.GetTexture("_BumpMap"));
+
+        float metallic = copyValuesFrom.GetFloat("_Metallic");
+        float smoothness = copyValuesFrom.GetFloat("_Glossiness");
+
+        //if (metallic > 0 || smoothness > 0)
+        //    materialToUpdate.EnableKeyword("_METALLICGLOSSMAP");
+
+        copyValuesTo.SetFloat("_Metallic", metallic);
+        copyValuesTo.SetFloat("_Glossiness", smoothness);
+
+        // if (metallic == 0 && smoothness == 0)
+        //     materialToUpdate.DisableKeyword("_METALLICGLOSSMAP");
+
+        //Scale texture
+        Vector2 newTextureScale = copyValuesFrom.mainTextureScale;
+        if(scalingIsRelative)
+        {
+            newTextureScale.x *= xScaling;
+            newTextureScale.y *= yScaling;
+        }
+        else
+        {
+            newTextureScale.x = xScaling;
+            newTextureScale.y = yScaling;
+        }
+        copyValuesTo.mainTextureScale = newTextureScale;
+
+        //materialToUpdate.
+        //DynamicGI.UpdateEnvironment();
+    }
 }

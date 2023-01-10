@@ -242,7 +242,7 @@ public class Planet : MonoBehaviour
             for (int cityCount = 0; cityCount < 1; cityCount++)
             {
                 City newCity = Instantiate(cityPrefab, Vector3.zero, Quaternion.identity).GetComponent<City>();
-                newCity.GenerateCity();
+                newCity.GenerateNewCity();
                 cities.Add(newCity);
             }
         }

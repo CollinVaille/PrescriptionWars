@@ -14,26 +14,26 @@ public class FoundationJSON
     public Vector3 localScale;
 
     //Uses the values in the field variables to instantiate and customize a foundation.
-    public void GenerateFoundation(City city, Material slabMaterial, Material groundMaterial)
+    public void GenerateFoundation(City city)
     {
         //Instantiate and parent the foundation
         transform = GameObject.Instantiate(Resources.Load<GameObject>(prefab)).transform;
         transform.parent = city.transform;
 
-        //Locate needed variables
-        Transform slab = transform.Find("Slab");
-        Transform ground = transform.Find("Ground");
-
         //Apply customization to foundation
         transform.localPosition = localPosition;
-        SetScale(slab, ground);
+        SetScale(transform.Find("Slab"), transform.Find("Ground"));
         transform.localRotation = Quaternion.Euler(0, 0, 0);
-        SetMaterials(slab, ground, slabMaterial, groundMaterial);
+
+        //Add foundation to saving system
+        if (city.foundationManager.foundations == null)
+            city.foundationManager.foundations = new List<FoundationJSON>();
+        city.foundationManager.foundations.Add(this);
 
         //Add foundation to collider system
-        if (city.foundationColliders == null)
-            city.foundationColliders = new List<Collider>();
-        city.foundationColliders.AddRange(transform.GetComponentsInChildren<Collider>());
+        if (city.foundationManager.foundationColliders == null)
+            city.foundationManager.foundationColliders = new List<Collider>();
+        city.foundationManager.foundationColliders.AddRange(transform.GetComponentsInChildren<Collider>());
     }
 
     private void SetScale(Transform slab, Transform ground)
@@ -50,11 +50,5 @@ public class FoundationJSON
         Vector3 groundPosition = ground.localPosition;
         groundPosition.y = groundPosition.y * localScale.y - 0.005f;
         ground.localPosition = groundPosition;
-    }
-
-    private void SetMaterials(Transform slab, Transform ground, Material slabMaterial, Material groundMaterial)
-    {
-        slab.GetComponent<Renderer>().sharedMaterial = slabMaterial;
-        ground.GetComponent<Renderer>().sharedMaterial = groundMaterial;
     }
 }
