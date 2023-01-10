@@ -23,8 +23,15 @@ public class FoundationManager
 
     public void GenerateNewFoundations()
     {
+        if (foundationType == FoundationType.NoFoundations)
+            return;
+
         if(foundationType == FoundationType.SingularSlab)
             GenerateNewSingleSlabFoundation();
+
+        //Updates the physics colliders based on changes to transforms.
+        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        Physics.SyncTransforms();
     }
 
     private void GenerateNewSingleSlabFoundation()
@@ -49,10 +56,6 @@ public class FoundationManager
         foundation.localPosition = Vector3.zero;
         foundation.localScale = Vector3.one * city.radius * 2.1f;
         foundation.GenerateFoundation(city);
-
-        //Updates the physics colliders based on changes to transforms.
-        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
-        Physics.SyncTransforms();
     }
 }
 

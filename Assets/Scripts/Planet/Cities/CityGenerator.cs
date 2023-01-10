@@ -14,19 +14,21 @@ public class CityGenerator : MonoBehaviour
     public void CustomizeCity(City city)
     {
         CityType cityType = SelectCityType();
+        city.cityType = cityType;
+        string cityTypePathSuffix = cityType.name + "/";
 
         //Buildings--------------------------------------------------------------------------------------------------------------
         List<string> genericBuildings = new List<string>(cityType.buildings);
         TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
         city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + genericBuildings[x]));
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathSuffix + genericBuildings[x]));
 
         //Special buildings--------------------------------------------------------------------------------------------------------------
-        AddSpecialBuilding(cityType.prescriptor, city);
-        AddSpecialBuilding(cityType.depot, city);
-        AddSpecialBuilding(cityType.researchFacility, city);
-        AddSpecialBuilding(cityType.tradePost, city);
+        AddSpecialBuilding(cityTypePathSuffix, cityType.prescriptor, city);
+        AddSpecialBuilding(cityTypePathSuffix, cityType.depot, city);
+        AddSpecialBuilding(cityTypePathSuffix, cityType.researchFacility, city);
+        AddSpecialBuilding(cityTypePathSuffix, cityType.tradePost, city);
 
         //Wall materials--------------------------------------------------------------------------------------------------------------
         List<string> wallMats;
@@ -65,26 +67,26 @@ public class CityGenerator : MonoBehaviour
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
-            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + wall);
+            city.cityWallManager.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + cityTypePathSuffix + wall);
 
             //Horizontal Gate
             string gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + gate);
+            city.cityWallManager.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + gate);
 
             //Vertical gate
             gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + gate);
+            city.cityWallManager.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + gate);
 
             //Fence posts
             if (cityType.fencePostChance >= Random.Range(0, 1.0f))
             {
                 string fencePost = cityType.fencePosts[Random.Range(0, cityType.fencePosts.Length)];
-                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + fencePost);
+                city.cityWallManager.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);
             }
         }
 
         //City shape--------------------------------------------------------------------------------------------------------------
-        if (city.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
+        if (city.cityWallManager.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
             city.circularCity = true;
         city.foundationManager.foundationType = FoundationManager.FoundationType.SingularSlab;
     }
@@ -168,10 +170,10 @@ public class CityGenerator : MonoBehaviour
         return toReturn;
     }
 
-    private void AddSpecialBuilding(string resourcePath, City city)
+    private void AddSpecialBuilding(string cityTypePathPrefix, string specialBuildingName, City city)
     {
-        if(resourcePath != null && !resourcePath.Equals(""))
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + resourcePath));
+        if(specialBuildingName != null && !specialBuildingName.Equals(""))
+            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathPrefix + specialBuildingName));
     }
 
     //Not guaranteed to be unique

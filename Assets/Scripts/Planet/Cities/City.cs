@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class City : MonoBehaviour, INavZoneUpdater
 {
-    private enum AreaReservationType { Open, ReservedByRoad, ReservedByBuilding }
+    public enum AreaReservationType { Open, ReservedByRoad, ReservedByBuilding }
 
     //General
     [HideInInspector] public int radius = 100;
@@ -29,16 +29,13 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public FoundationManager foundationManager;
 
     //Walls
-    public GameObject wallSectionPrefab, horGatePrefab, verGatePrefab, fencePostPrefab;
-    [HideInInspector] public Transform walls;
-    [HideInInspector] public int wallMaterialIndex;
-    public Material cityWallMaterial;
+    [HideInInspector] public CityWallManager cityWallManager;
 
     //Area/zoning system (how city is subdivided and organized)
-    private int areaSize = 5;
-    private AreaReservationType[,] areaTaken;
+    [HideInInspector] public int areaSize = 5;
+    [HideInInspector] public AreaReservationType[,] areaTaken;
     private List<CityBlock> availableCityBlocks;
-    private List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
+    [HideInInspector] public List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     [HideInInspector] public bool circularCity = false;
 
     //Called after city has been generated or regenerated
@@ -46,6 +43,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public void BeforeCityGeneratedOrRestored()
     {
         foundationManager = new FoundationManager(this);
+        cityWallManager = new CityWallManager(this);
     }
 
     public void AfterCityGeneratedOrRestored()
@@ -116,8 +114,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         GenerateGenericBuildings(avgBlockLength);
 
         //Generate walls
-        if (wallSectionPrefab)
-            GenerateWalls();
+        cityWallManager.GenerateNewWalls();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
 
@@ -716,269 +713,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         return transform.Find("City Limits").GetComponent<NavigationZone>()
             .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), false);
     }
-
-    public void PrepareWalls(int wallMaterialIndex)
-    {
-        this.wallMaterialIndex = wallMaterialIndex;
-
-        //Prepare for wall creation
-        walls = new GameObject("City Walls").transform;
-        walls.parent = transform;
-        walls.localPosition = Vector3.zero;
-        walls.localRotation = Quaternion.Euler(0, 0, 0);
-
-        //Set texture of walls using reference material
-        Material referenceMaterial = wallMaterials[wallMaterialIndex];
-        God.CopyMaterialValues(referenceMaterial, cityWallMaterial, 3.0f, 1.5f, true);
-    }
-
-    private void GenerateWalls()
-    {
-        PrepareWalls(Random.Range(0, wallMaterials.Length));
-
-        float wallLength = wallSectionPrefab.transform.localScale.x;
-        float placementHeight = 0.0f;
-        //float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;
-
-        if (circularCity)
-            GenerateCircularWalls(wallLength, placementHeight);
-        else
-            GenerateSquareWalls(wallLength, placementHeight);
-    }
-
-    private void GenerateCircularWalls(float wallLength, float placementHeight)
-    {
-        Transform temporaryRotatingBase = new GameObject("Temp - Delete After City Generation").transform;
-        temporaryRotatingBase.parent = walls.parent;
-        temporaryRotatingBase.localPosition = walls.localPosition + Vector3.up * placementHeight;
-        temporaryRotatingBase.localRotation = walls.localRotation;
-
-        //Determine how many wall sections to place, the spacing, the angular math...
-        Vector3 fenceOffsetFromBase = Vector3.forward * radius;
-        float circumference = 2 * Mathf.PI * radius;
-        int targetWallCount = (int)(circumference / wallLength);
-        float currentEulerAngle = 0.0f;
-        float eulerAngleStep = 360.0f / targetWallCount;
-
-        //Precalculations for when to make the wall section a gate
-        //The algorithm is to make a section a gate when its rotation is within 7.5 degrees of a cardinal direction (up, down, left, right)
-        float eulerAngleGateThreshold = 7.5f;
-        float[] gateAngles = new float[5];
-        for (int x = 0; x < gateAngles.Length; x++)
-            gateAngles[x] = x * (360.0f / 4.0f);
-
-        //Place the wall sections, one section per iteration
-        bool lastWasGate = false;
-        for (int wallsPlaced = 0; wallsPlaced < targetWallCount; wallsPlaced++)
-        {
-            //Compute the new fence location
-            Vector3 newFenceLocation = temporaryRotatingBase.TransformPoint(fenceOffsetFromBase);
-            newFenceLocation = walls.InverseTransformPoint(newFenceLocation);
-
-            //Determine its angle
-            int fencePostRotation = (int)(currentEulerAngle + eulerAngleStep / 2.0f);
-
-            //Determine whether it should be a gate
-            bool isGate = false;
-            for(int x = 0; x < gateAngles.Length; x++)
-            {
-                if(Mathf.Abs(gateAngles[x] + currentEulerAngle) < eulerAngleGateThreshold)
-                {
-                    isGate = true;
-                    break;
-                }
-            }
-
-            //Place it
-            PlaceWallSection(isGate, lastWasGate,
-                newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
-                (int)temporaryRotatingBase.localEulerAngles.y, true, fencePostRotation);
-
-            //Rotate the base for the next iteration
-            currentEulerAngle -= eulerAngleStep;
-            temporaryRotatingBase.localEulerAngles = Vector3.up * currentEulerAngle;
-
-            //Other preparation for next iteration
-            lastWasGate = isGate;
-        }
-
-        Destroy(temporaryRotatingBase.gameObject);
-    }
-
-    private void GenerateSquareWalls(float wallLength, float placementHeight)
-    {
-        float cityWidth = areaSize * areaTaken.GetLength(0);
-
-        float startX = -cityWidth / 2.0f + 5;
-        int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
-
-        float startZ = -cityWidth / 2.0f + 5;
-        int verticalSections = horizontalSections;
-
-        //Debug.Log("Radius: " + radius + ", Start X: " + startX + ", Start Z: " + startZ);
-
-        //HORIZONTAL WALLS-------------------------------------------------------------------------------------
-
-        bool[] skipWallSection = new bool[horizontalSections];
-
-        //Find the largest road/gap
-        float largestGapSize = 0;
-        float largestGapCenteredAt = 0;
-        for (int x = 2; x < verticalRoads.Count; x += 2)
-        {
-            int gapSize = (verticalRoads[x + 1] - verticalRoads[x]) * areaSize;
-
-            if (gapSize > largestGapSize)
-            {
-                largestGapSize = gapSize;
-                largestGapCenteredAt = (startX + verticalRoads[x] * areaSize) + gapSize / 2.0f;
-            }
-        }
-
-        //Find the wall section closest to the gap and remove it
-        int closestWallSectionIndex = 0;
-        float closestWallSectionDist = Mathf.Infinity;
-        for (int x = 0; x < skipWallSection.Length; x++)
-        {
-            float wallSectionCenteredAt = startX + x * wallLength;
-            float dist = Mathf.Abs(wallSectionCenteredAt - largestGapCenteredAt);
-            if (dist < closestWallSectionDist)
-            {
-                closestWallSectionIndex = x;
-                closestWallSectionDist = dist;
-            }
-        }
-        skipWallSection[closestWallSectionIndex] = true;
-
-        //Now that the wall section locations have been determined, place them
-        float minZ = startZ - wallLength / 2.0f;
-        float maxZ = startZ + verticalSections * wallLength - wallLength / 2.0f;
-        bool previousWasGate = false;
-        for (int x = 0; x < skipWallSection.Length; x++)
-        {
-            bool nextIsGate = false;
-            if (x < horizontalSections - 1)
-                nextIsGate = skipWallSection[x + 1];
-
-            //Front walls
-            PlaceWallSection(skipWallSection[x], previousWasGate,
-                startX + x * wallLength, placementHeight, minZ, 180, true);
-
-            //Back walls
-            PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, maxZ, 0, true);
-
-            previousWasGate = skipWallSection[x];
-        }
-
-        bool firstHorSectionIsGate = skipWallSection[0];
-        bool lastHorSectionIsGate = skipWallSection[horizontalSections - 1];
-
-        //VERTICAL WALLS-------------------------------------------------------------------------------------
-
-        skipWallSection = new bool[verticalSections];
-
-        //Find the largest road/gap
-        largestGapSize = 0;
-        largestGapCenteredAt = 0;
-        for (int z = 2; z < horizontalRoads.Count; z += 2)
-        {
-            int gapSize = (horizontalRoads[z + 1] - horizontalRoads[z]) * areaSize;
-
-            if (gapSize > largestGapSize)
-            {
-                largestGapSize = gapSize;
-                largestGapCenteredAt = (startZ + horizontalRoads[z] * areaSize) + gapSize / 2.0f;
-            }
-        }
-
-        //Find the wall section closest to the gap and remove it
-        closestWallSectionIndex = 0;
-        closestWallSectionDist = Mathf.Infinity;
-        for (int z = 0; z < skipWallSection.Length; z++)
-        {
-            float wallSectionCenteredAt = startZ + z * wallLength;
-            float dist = Mathf.Abs(wallSectionCenteredAt - largestGapCenteredAt);
-            if (dist < closestWallSectionDist)
-            {
-                closestWallSectionIndex = z;
-                closestWallSectionDist = dist;
-            }
-        }
-        skipWallSection[closestWallSectionIndex] = true;
-
-        //Now that the wall section locations have been determined, place them
-        float minX = startX - wallLength / 2.0f;
-        float maxX = startX + horizontalSections * wallLength - wallLength / 2.0f;
-        previousWasGate = false;
-        for (int z = 0; z < skipWallSection.Length; z++)
-        {
-            bool nextIsGate = false;
-            if (z < verticalSections - 1)
-                nextIsGate = skipWallSection[z + 1];
-
-            PlaceWallSection(skipWallSection[z], nextIsGate,
-                minX, placementHeight, startZ + z * wallLength, -90, true);
-
-            PlaceWallSection(skipWallSection[z], previousWasGate,
-                maxX, placementHeight, startZ + z * wallLength, 90, true);
-
-            previousWasGate = skipWallSection[z];
-        }
-
-        //Place fence post at near corner if no fence gates there
-        /*
-        if (fencePostPrefab && !firstHorSectionIsGate && !skipWallSection[0])
-            PlaceFencePost(new Vector3(
-                startX - wallLength / 2.0f, placementHeight, startZ - wallLength / 2.0f), 90);
-
-        //Place fence post at far corner if no fence gates there
-        if (fencePostPrefab && !lastHorSectionIsGate && !skipWallSection[verticalSections - 1])
-            PlaceFencePost(new Vector3(startX + (verticalSections - 1) * wallLength + wallLength / 2.0f,
-                placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);    */
-    }
-
-    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, bool snapToGround, int fencePostRotation = 9000)
-    {
-        int absRotation = Mathf.Abs(rotation);
-        bool horizontalSection = (absRotation == 0 || absRotation == 180);
-        
-        //Place wall section
-        Transform newWallSection;
-        if (gate)
-            newWallSection = Instantiate(horizontalSection ? horGatePrefab : verGatePrefab, walls).transform;
-        else
-            newWallSection = Instantiate(wallSectionPrefab, walls).transform;
-
-        newWallSection.localRotation = Quaternion.Euler(0, rotation, 0);
-
-        Vector3 wallPosition = new Vector3(x, y, z);
-        newWallSection.localPosition = wallPosition;
-        if (snapToGround)
-            God.SnapToGround(newWallSection, collidersToCheckAgainst:foundationManager.foundationColliders);
-
-        //Place fence post correlating to wall section
-        if (fencePostPrefab && !gate && !skipFencePost)
-        {
-            Vector3 fencePostPosition = newWallSection.TransformPoint(new Vector3(0.5f, 0.0f, 0.0f));
-            fencePostPosition = walls.InverseTransformPoint(fencePostPosition);
-
-            /*
-            if (horizontalSection)
-                fencePostPosition.x += newWallSection.localScale.x / 2.0f;
-            else
-                fencePostPosition.z += newWallSection.localScale.x / 2.0f;  */
-
-            PlaceFencePost(fencePostPosition, fencePostRotation < 9000 ? fencePostRotation : newWallSection.localEulerAngles.y);
-        }
-    }
-
-    public void PlaceFencePost(Vector3 position, float rotation)
-    {
-        Transform fencePost = Instantiate(fencePostPrefab, walls).transform;
-        fencePost.localEulerAngles = new Vector3(0, rotation, 0);
-        fencePost.localPosition = position;
-    }
 }
 
 //Class for encapsulating the coordinates and dimensions of each city block. The dimensions could be wrong for the blocks on the edge of the city.
@@ -1036,7 +770,10 @@ public class CityJSON
         for(int x = 0; x < CityGenerator.generator.cityTypes.Length; x++)
         {
             if (CityGenerator.generator.cityTypes[x] == city.cityType)
+            {
                 cityTypeIndex = x;
+                break;
+            }
         }
 
         wallMaterials = new string[city.wallMaterials.Length];
@@ -1057,45 +794,7 @@ public class CityJSON
         for (int x = 0; x < city.buildings.Count; x++)
             buildings.Add(new BuildingJSON(city.buildings[x]));
 
-        //City walls
-        Transform cityWalls = city.walls;
-        walls = cityWalls;
-        if (walls)
-        {
-            wallMaterialIndex = city.wallMaterialIndex;
-
-            wallSection = city.wallSectionPrefab.name;
-            horGate = city.horGatePrefab.name;
-            verGate = city.verGatePrefab.name;
-            if (city.fencePostPrefab)
-                fencePost = city.fencePostPrefab.name;
-            else
-                fencePost = "";
-
-            wallSectionLocations = new List<Vector3>();
-            wallSectionRotations = new List<int>();
-            wallSectionTypes = new List<string>();
-
-            foreach (Transform wallSection in cityWalls)
-            {
-                wallSectionLocations.Add(wallSection.localPosition);
-                wallSectionRotations.Add((int)wallSection.localEulerAngles.y);
-                wallSectionTypes.Add(wallSection.tag);
-            }
-        }
-        else
-        {
-            wallMaterialIndex = -1;
-
-            wallSection = "";
-            horGate = "";
-            verGate = "";
-            fencePost = "";
-
-            wallSectionLocations = null;
-            wallSectionRotations = null;
-            wallSectionTypes = null;
-        }
+        cityWallManager = new CityWallManagerJSON(city.cityWallManager);
     }
 
     public void RestoreCity(City city)
@@ -1133,29 +832,7 @@ public class CityJSON
             city.buildings.Add(newBuilding);
         }
 
-        if (walls)
-        {
-            city.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + cityTypePathSuffix + wallSection);
-            city.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + horGate);
-            city.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + verGate);
-            if (!fencePost.Equals(""))
-                city.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);
-
-            city.PrepareWalls(wallMaterialIndex);
-
-            for (int x = 0; x < wallSectionLocations.Count; x++)
-            {
-                Vector3 location = wallSectionLocations[x];
-
-                if (wallSectionTypes[x].Equals("Fence Post"))
-                    city.PlaceFencePost(location, wallSectionRotations[x]);
-                else
-                    //We want to place the fence posts manually, so just always say next section is gate
-                    //so it won't place them for us
-                    city.PlaceWallSection(wallSectionTypes[x].Equals("Gate"), true,
-                        location.x, location.y, location.z, wallSectionRotations[x], false);
-            }
-        }
+        cityWallManager.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
 
         //After the city has been regenerated, build the nav mesh to pathfind through it
         city.GenerateNavMesh();
@@ -1178,11 +855,6 @@ public class CityJSON
     public List<string> buildingPrefabs;
     public List<BuildingJSON> buildings;
 
-    //City walls
-    public bool walls;
-    public int wallMaterialIndex;
-    public string wallSection, horGate, verGate, fencePost;
-    public List<Vector3> wallSectionLocations;
-    public List<int> wallSectionRotations;  //Parallel array to wallSectionLocations
-    public List<string> wallSectionTypes;  //Parallel array to wallSectionLocations
+    //Walls
+    public CityWallManagerJSON cityWallManager;
 }
