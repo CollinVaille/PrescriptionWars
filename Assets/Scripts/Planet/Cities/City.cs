@@ -301,6 +301,43 @@ public class City : MonoBehaviour, INavZoneUpdater
         return areasWide;
     }
 
+    public void GetWidestCardinalRoad(bool searchVerticalRoads, bool skipFirstRoad, out float widestRoadWidth, out float widestRoadCenteredAt)
+    {
+        float cityWidth = areaSize * areaTaken.GetLength(0);
+        widestRoadWidth = 0.0f;
+        widestRoadCenteredAt = 0.0f;
+
+        //Find the largest road/gap
+        if (searchVerticalRoads)
+        {
+            float startX = -cityWidth / 2.0f + 5;
+            for (int x = skipFirstRoad ? 2 : 0; x < verticalRoads.Count; x += 2)
+            {
+                int gapSize = (verticalRoads[x + 1] - verticalRoads[x]) * areaSize;
+
+                if (gapSize > widestRoadWidth)
+                {
+                    widestRoadWidth = gapSize;
+                    widestRoadCenteredAt = (startX + verticalRoads[x] * areaSize) + gapSize / 2.0f;
+                }
+            }
+        }
+        else
+        {
+            float startZ = -cityWidth / 2.0f + 5;
+            for (int z = skipFirstRoad ? 2 : 0; z < horizontalRoads.Count; z += 2)
+            {
+                int gapSize = (horizontalRoads[z + 1] - horizontalRoads[z]) * areaSize;
+
+                if (gapSize > widestRoadWidth)
+                {
+                    widestRoadWidth = gapSize;
+                    widestRoadCenteredAt = (startZ + horizontalRoads[z] * areaSize) + gapSize / 2.0f;
+                }
+            }
+        }
+    }
+
     private int GetMaxLengthBetweenRoadsInLocalUnits()
     {
         int longestBuildingLength = 0;

@@ -125,18 +125,7 @@ public class CityWallManager
         bool[] skipWallSection = new bool[horizontalSections];
 
         //Find the largest road/gap
-        float largestGapSize = 0;
-        float largestGapCenteredAt = 0;
-        for (int x = 2; x < city.verticalRoads.Count; x += 2)
-        {
-            int gapSize = (city.verticalRoads[x + 1] - city.verticalRoads[x]) * city.areaSize;
-
-            if (gapSize > largestGapSize)
-            {
-                largestGapSize = gapSize;
-                largestGapCenteredAt = (startX + city.verticalRoads[x] * city.areaSize) + gapSize / 2.0f;
-            }
-        }
+        city.GetWidestCardinalRoad(true, true, out _, out float largestGapCenteredAt);
 
         //Find the wall section closest to the gap and remove it
         int closestWallSectionIndex = 0;
@@ -182,18 +171,7 @@ public class CityWallManager
         skipWallSection = new bool[verticalSections];
 
         //Find the largest road/gap
-        largestGapSize = 0;
-        largestGapCenteredAt = 0;
-        for (int z = 2; z < city.horizontalRoads.Count; z += 2)
-        {
-            int gapSize = (city.horizontalRoads[z + 1] - city.horizontalRoads[z]) * city.areaSize;
-
-            if (gapSize > largestGapSize)
-            {
-                largestGapSize = gapSize;
-                largestGapCenteredAt = (startZ + city.horizontalRoads[z] * city.areaSize) + gapSize / 2.0f;
-            }
-        }
+        city.GetWidestCardinalRoad(false, true, out _, out largestGapCenteredAt);
 
         //Find the wall section closest to the gap and remove it
         closestWallSectionIndex = 0;

@@ -18,17 +18,18 @@ public class CityGenerator : MonoBehaviour
         string cityTypePathSuffix = cityType.name + "/";
 
         //Buildings--------------------------------------------------------------------------------------------------------------
+        string buildingPath = "Planet/City/Buildings/" + cityTypePathSuffix;
         List<string> genericBuildings = new List<string>(cityType.buildings);
         TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
         city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathSuffix + genericBuildings[x]));
+            city.buildingPrefabs.Add(Resources.Load<GameObject>(buildingPath + genericBuildings[x]));
 
         //Special buildings--------------------------------------------------------------------------------------------------------------
-        AddSpecialBuilding(cityTypePathSuffix, cityType.prescriptor, city);
-        AddSpecialBuilding(cityTypePathSuffix, cityType.depot, city);
-        AddSpecialBuilding(cityTypePathSuffix, cityType.researchFacility, city);
-        AddSpecialBuilding(cityTypePathSuffix, cityType.tradePost, city);
+        AddSpecialBuilding(buildingPath + "Prescriptor", city);
+        AddSpecialBuilding(buildingPath + "Depot", city);
+        AddSpecialBuilding(buildingPath + "Research Facility", city);
+        AddSpecialBuilding(buildingPath + "Trade Post", city);
 
         //Wall materials--------------------------------------------------------------------------------------------------------------
         List<string> wallMats;
@@ -88,7 +89,13 @@ public class CityGenerator : MonoBehaviour
         //City shape--------------------------------------------------------------------------------------------------------------
         if (city.cityWallManager.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
             city.circularCity = true;
-        city.foundationManager.foundationType = FoundationManager.FoundationType.SingularSlab;
+
+        //Foundations--------------------------------------------------------------------------------------------------------------
+        city.foundationManager.foundationHeight = Random.Range(cityType.foundationHeightRange.x, cityType.foundationHeightRange.y);
+        if(city.foundationManager.foundationHeight <= 0)
+            city.foundationManager.foundationType = FoundationManager.FoundationType.NoFoundations;
+        else
+            city.foundationManager.foundationType = FoundationManager.FoundationType.SingularSlab;
     }
 
     private CityType SelectCityType()
@@ -170,10 +177,11 @@ public class CityGenerator : MonoBehaviour
         return toReturn;
     }
 
-    private void AddSpecialBuilding(string cityTypePathPrefix, string specialBuildingName, City city)
+    private void AddSpecialBuilding(string specialBuildingPathName, City city)
     {
-        if(specialBuildingName != null && !specialBuildingName.Equals(""))
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathPrefix + specialBuildingName));
+        GameObject specialBuildingPrefab = Resources.Load<GameObject>(specialBuildingPathName);
+        if(specialBuildingPrefab)
+            city.buildingPrefabs.Add(specialBuildingPrefab);
     }
 
     //Not guaranteed to be unique
@@ -343,7 +351,6 @@ public class CityType
 
     //Buildings
     public string[] buildings;
-    public string prescriptor, depot, researchFacility, tradePost;
 
     //Walls
     public string[] wallSections;
@@ -358,4 +365,7 @@ public class CityType
     //Materials
     public string[] wallMaterials;
     public string[] floorMaterials;
+
+    //Foundations
+    public Vector2Int foundationHeightRange;
 }

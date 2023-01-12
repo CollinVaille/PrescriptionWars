@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
+  m_IndirectSpecularColor: {r: 0.69286525, g: 0.5892735, b: 0.4469033, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21637,10 +21637,6 @@ MonoBehaviour:
     - Appartment Complex 3
     - Small Industrial Plant
     - Circular Hut
-    prescriptor: Prescriptor
-    depot: Depot
-    researchFacility: Research Facility
-    tradePost: 
     wallSections:
     - Wall Slab
     - Half Slab Half Bars
@@ -21658,6 +21654,7 @@ MonoBehaviour:
     - Fence Post Slab 2
     wallMaterials: []
     floorMaterials: []
+    foundationHeightRange: {x: 10, y: 50}
 --- !u!1 &1754296268
 GameObject:
   m_ObjectHideFlags: 0
