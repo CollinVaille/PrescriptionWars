@@ -394,7 +394,8 @@ public class NewGalaxyPlanet : MonoBehaviour
             planet.SetActive(solarSystem.visible && planetsVisible);
             atmosphere.SetActive(solarSystem.visible && planetsVisible);
             rings.SetActive(solarSystem.visible && hasRings && planetsVisible);
-            planetNameLabel.gameObject.SetActive(solarSystem.visible && planetsVisible);
+            if(planetNameLabel != null)
+                planetNameLabel.gameObject.SetActive(solarSystem.visible && planetsVisible);
         }
 
         //Instantiates a planetary orbit outline if the player is now zoomed far enough into the galaxy to see it.

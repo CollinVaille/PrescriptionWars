@@ -7,13 +7,12 @@ public class NewResourceBar : MonoBehaviour
 {
     [Header("Image Components")]
 
-    [SerializeField] private Image flagBackgroundImage = null;
-    [SerializeField] private Image flagSymbolImage = null;
+    [SerializeField] private Image flagImage = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        flagImage.sprite = NewGalaxyManager.empires[NewGalaxyManager.playerID].flag.sprite;
     }
 
     // Update is called once per frame

@@ -297,7 +297,7 @@ public class GalaxySolarSystem : MonoBehaviour
 [System.Serializable]
 public class GalaxySolarSystemData
 {
-    public float[] localPosition = new float[3];
+    public float[] localPosition = null;
     public GalaxyStarData star = null;
     public List<GalaxyPlanetData> planets = null;
     public int capitalPlanetIndex = 0;
@@ -305,6 +305,7 @@ public class GalaxySolarSystemData
 
     public GalaxySolarSystemData(GalaxySolarSystem solarSystem)
     {
+        localPosition = new float[3];
         localPosition[0] = solarSystem.transform.localPosition.x;
         localPosition[1] = solarSystem.transform.localPosition.y;
         localPosition[2] = solarSystem.transform.localPosition.z;

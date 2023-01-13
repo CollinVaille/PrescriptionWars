@@ -204,7 +204,7 @@ public class GalaxyStar : MonoBehaviour
         loopsPSMain.maxParticles = loopsPSMaxParticles;
 
         //Updates the activation state of the star's name label.
-        if (starNameLabel.gameObject.activeSelf != (solarSystemVar.visible && NewGalaxyCamera.starNameLabelsVisible))
+        if (starNameLabel != null && starNameLabel.gameObject.activeSelf != (solarSystemVar.visible && NewGalaxyCamera.starNameLabelsVisible))
         {
             starNameLabel.gameObject.SetActive(solarSystemVar.visible && NewGalaxyCamera.starNameLabelsVisible);
         }

@@ -303,8 +303,14 @@ public class NewGalaxyGenerator : MonoBehaviour
                 //Generates the name of the empire.
                 string empireName = empireIndex == 0 ? newGameData.playerEmpireName : EmpireNameGenerator.GenerateEmpireName();
 
+                //Generates the color of the empire.
+                Color empireColor = GetRandomColorBasedOnCulture(empireCulture);
+
+                //Generates the flag of the empire.
+                NewFlag empireFlag = empireIndex == 0 && newGameData.playerEmpireFlag != null ? newGameData.playerEmpireFlag : new NewFlag(FlagDataLoader.flagSymbolNames[UnityEngine.Random.Range(0, FlagDataLoader.flagSymbolNames.Length)], empireColor.r + empireColor.g + empireColor.b < 0.6f ? Color.white : Color.black, empireColor);
+
                 //Adds the new empire to the list of empires existing within the galaxy.
-                empires.Add(new NewEmpire(empireName, empireCulture, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
+                empires.Add(new NewEmpire(empireName, empireCulture, empireColor, empireFlag, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
             }
         }
     }
@@ -694,6 +700,55 @@ public class NewGalaxyGenerator : MonoBehaviour
                 return biome;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Public static function that returns a random empire color based on the specified empire culture.
+    /// </summary>
+    /// <param name="culture"></param>
+    /// <returns></returns>
+    private static Color GetRandomColorBasedOnCulture(NewEmpire.Culture culture)
+    {
+        switch (culture)
+        {
+            case NewEmpire.Culture.Red:
+                return new Color(UnityEngine.Random.Range(0.25f, 1.0f), 0, 0, 1);
+            case NewEmpire.Culture.Green:
+                return new Color(0, UnityEngine.Random.Range(0.25f, 1.0f), 0, 1);
+            case NewEmpire.Culture.Blue:
+                return new Color(0, 0, UnityEngine.Random.Range(0.25f, 1.0f), 1);
+            case NewEmpire.Culture.Purple:
+                List<Color> purpleColors = new List<Color>();
+                purpleColors.Add(new Color(186.0f / 255, 85.0f / 255, 211.0f / 255, 1));         //Medium Orchid
+                purpleColors.Add(new Color(147.0f / 255, 112.0f / 255, 219.0f / 255, 1));        //Medium Purple
+                purpleColors.Add(new Color(138.0f / 255, 43.0f / 255, 226.0f / 255, 1));         //Blue Violet
+                purpleColors.Add(new Color(148.0f / 255, 0.0f / 255, 211.0f / 255, 1));          //Dark Violet
+                purpleColors.Add(new Color(153.0f / 255, 50.0f / 255, 204.0f / 255, 1));         //Dark Orchid
+                purpleColors.Add(new Color(139.0f / 255, 0.0f / 255, 139.0f / 255, 1));          //Dark Magenta
+                purpleColors.Add(new Color(128.0f / 255, 0.0f / 255, 128.0f / 255, 1));          //Purple
+                int random = UnityEngine.Random.Range(0, purpleColors.Count);
+                return purpleColors[random];
+            case NewEmpire.Culture.Gold:
+                List<Color> goldColors = new List<Color>();
+                goldColors.Add(new Color(238.0f / 255, 232.0f / 255, 170.0f / 255, 1));          //Pale Golden Rod
+                goldColors.Add(new Color(240.0f / 255, 230.0f / 255, 140.0f / 255, 1));          //Khaki
+                goldColors.Add(new Color(255.0f / 255, 215.0f / 255, 0.0f / 255, 1));            //Gold
+                goldColors.Add(new Color(255.0f / 255, 223.0f / 255, 0.0f / 255, 1));            //Golden Yellow
+                goldColors.Add(new Color(212.0f / 255, 175.0f / 255, 55.0f / 255, 1));           //Metallic Gold
+                goldColors.Add(new Color(207.0f / 255, 181.0f / 255, 59.0f / 255, 1));           //Old Gold
+                goldColors.Add(new Color(197.0f / 255, 179.0f / 255, 88.0f / 255, 1));           //Vegas Gold
+                int randomIndex = UnityEngine.Random.Range(0, goldColors.Count);
+                return goldColors[randomIndex];
+            case NewEmpire.Culture.Silver:
+                List<Color> silverColors = new List<Color>();
+                silverColors.Add(new Color(211.0f / 255, 211.0f / 255, 211.0f / 255, 1));
+                silverColors.Add(new Color(192.0f / 255, 192.0f / 255, 192.0f / 255, 1));
+                silverColors.Add(new Color(169.0f / 255, 169.0f / 255, 169.0f / 255, 1));
+                int silverRandomIndex = UnityEngine.Random.Range(0, silverColors.Count);
+                return silverColors[silverRandomIndex];
+            default:
+                return new Color(1, 1, 1, 1);
+        }
     }
 
     /// <summary>
