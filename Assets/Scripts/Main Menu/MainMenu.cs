@@ -31,8 +31,6 @@ public class MainMenu : MonoBehaviour
     [Header("Prefabs")]
 
     [SerializeField]
-    private GameObject tooltipPrefab = null;
-    [SerializeField]
     private GameObject backArrowPrefab = null;
 
     //Non-inspector variables.
@@ -49,7 +47,6 @@ public class MainMenu : MonoBehaviour
     {
         mainMenu = this;
 
-        GalaxyTooltip.tooltipPrefab = tooltipPrefab;
         GalaxyMenuBehaviour.backArrowPrefab = backArrowPrefab;
 
         if (mainMenuSceneCamera == null)

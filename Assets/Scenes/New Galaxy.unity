@@ -5504,6 +5504,7 @@ GameObject:
   - component: {fileID: 812554311}
   - component: {fileID: 812554310}
   - component: {fileID: 812554313}
+  - component: {fileID: 812554314}
   m_Layer: 5
   m_Name: Flag Button
   m_TagString: Untagged
@@ -5641,6 +5642,37 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &812554314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812554308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: 0, y: -90}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: Empire Name
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 40
+  textShadowEnabled: 1
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 3
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 2
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 1
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &1088114869
 GameObject:
   m_ObjectHideFlags: 0
@@ -5933,6 +5965,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flagImage: {fileID: 812554311}
+  empireNameTooltip: {fileID: 812554314}
 --- !u!1 &1782092160
 GameObject:
   m_ObjectHideFlags: 0

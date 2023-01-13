@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NewGalaxyCamera : MonoBehaviour
 {
@@ -87,6 +88,11 @@ public class NewGalaxyCamera : MonoBehaviour
     /// Indicates whether the mouse is in the viewport of the screen and therefore visible to the player.
     /// </summary>
     public static bool isMouseInViewport { get => galaxyCamera == null ? false : Input.mousePosition.x >= 0 && Input.mousePosition.x <= galaxyCamera.cameraComponent.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= galaxyCamera.cameraComponent.pixelHeight; }
+
+    /// <summary>
+    /// Publicly accessible property which indicates whether the mouse is over a ui element on the screen.
+    /// </summary>
+    public static bool isMouseOverUI { get => EventSystem.current.IsPointerOverGameObject(); }
 
     private void Awake()
     {

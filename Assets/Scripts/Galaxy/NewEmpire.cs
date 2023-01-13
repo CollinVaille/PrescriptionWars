@@ -22,7 +22,7 @@ public class NewEmpire
     /// <summary>
     /// Public property that should be used both to access and mutate the name of the empire.
     /// </summary>
-    public string name { get => nameVar; set => nameVar = value; }
+    public string name { get => nameVar; set { nameVar = value; if (isPlayerEmpire) NewResourceBar.UpdateEmpireNameTooltip(); } }
 
     /// <summary>
     /// Private variable used to hold the culture of the empire, but the culture should ideally be accessed and mutated through the public property.
@@ -83,6 +83,11 @@ public class NewEmpire
     /// Public property that should be used to access the id (owned index in the list of empires) of the empire.
     /// </summary>
     public int ID { get => IDVar; }
+
+    /// <summary>
+    /// Public property that should be used in order to access a bool that indicates whether or not the empire is the player's empire.
+    /// </summary>
+    public bool isPlayerEmpire { get => ID == NewGalaxyManager.playerID; }
 
     /// <summary>
     /// Private variable that holds the id (owned index in the list of solar systems in the galaxy manager) of every solar system that the empire owns.

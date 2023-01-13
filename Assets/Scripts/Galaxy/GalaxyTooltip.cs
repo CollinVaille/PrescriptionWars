@@ -235,7 +235,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     /// <summary>
     /// The prefab that the tooltip game object will be instantiated from (assigned a value in the start method of the galaxy generator).
     /// </summary>
-    public static GameObject tooltipPrefab;
+    private static GameObject tooltipPrefab { get => Resources.Load<GameObject>("Galaxy/Prefabs/Tooltip"); }
 
     /// <summary>
     /// The canvas that the tooltip is under (set in the start method of the tooltip).
@@ -332,7 +332,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             if (componentAppliedTo3DObject)
             {
                 //Closes the tooltip if the actual component is applied to a 3D object and the mouse is over a 2D ui element.
-                if (GalaxyCamera.IsMouseOverUIElement)
+                if (EventSystem.current.IsPointerOverGameObject())
                     CloseTooltip();
             }
         }
@@ -436,7 +436,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private void OnMouseEnter()
     {
         //Ensures that the mouse is not over a 2D ui element.
-        if (GalaxyCamera.IsMouseOverUIElement)
+        if (EventSystem.current.IsPointerOverGameObject())
             return;
 
         OnPointerEnterTriggerZone();
@@ -647,7 +647,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             case GalaxyTooltipColorOption.Transparent:
                 return Color.clear;
             case GalaxyTooltipColorOption.PlayerEmpireColor:
-                return Empire.empires[GalaxyManager.playerID].color;
+                return NewGalaxyManager.empires[NewGalaxyManager.playerID].color;
             case GalaxyTooltipColorOption.CustomColor:      //Edits needs to be made here.
                 switch (componentOfTooltip.ToLower())
                 {
