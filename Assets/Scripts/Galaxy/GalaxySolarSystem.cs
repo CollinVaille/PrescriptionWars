@@ -73,6 +73,11 @@ public class GalaxySolarSystem : MonoBehaviour
     public int ID { get => IDVar; }
 
     /// <summary>
+    /// Public property that should be accessed in order to determine whether or not the solar system is the capital system of the empire.
+    /// </summary>
+    public bool isCapitalSystem { get => owner.capitalSystemID == ID; }
+
+    /// <summary>
     /// Private variable that holds a boolean value that indicates whether or not the visibility plane of the solar system is visible to the main camera.
     /// </summary>
     private bool visibleVar = false;
@@ -291,6 +296,24 @@ public class GalaxySolarSystem : MonoBehaviour
             return;
         if (hyperspaceLaneIDsVar.Contains(hyperspaceLaneID))
             hyperspaceLaneIDsVar.Remove(hyperspaceLaneID);
+    }
+
+    /// <summary>
+    /// Public method that should be called by the owning empire whenever the solar system is no longer the capital system of the empire.
+    /// </summary>
+    public void OnBecameCapitalSystem()
+    {
+        if(capitalPlanet != null)
+            capitalPlanet.OnBecameEmpireCapitalPlanet();
+    }
+
+    /// <summary>
+    /// Public method that should be called by the owning empire whenever the solar system is now the capital system of the empire.
+    /// </summary>
+    public void OnBecameNoncapitalSystem()
+    {
+        if (capitalPlanet != null)
+            capitalPlanet.OnBecameEmpireNoncapitalPlanet();
     }
 }
 

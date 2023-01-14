@@ -28,6 +28,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the planet labels in the galaxy. Specified through the inspector.")] private Transform planetLabelsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the star labels in the galaxy. Specified through the inspector.")] private Transform starLabelsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the hyperspace lanes within the galaxy. Specified through the inspector.")] private Transform hyperspaceLanesParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the capital symbols in the galaxy. Specified through the inspector.")] private Transform capitalSymbolsParent = null;
 
     [Header("Prefabs")]
 
@@ -129,7 +130,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent });
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent });
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -310,7 +311,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 NewFlag empireFlag = empireIndex == 0 && newGameData.playerEmpireFlag != null ? newGameData.playerEmpireFlag : new NewFlag(FlagDataLoader.flagSymbolNames[UnityEngine.Random.Range(0, FlagDataLoader.flagSymbolNames.Length)], empireColor.r + empireColor.g + empireColor.b < 0.6f ? Color.white : Color.black, empireColor);
 
                 //Adds the new empire to the list of empires existing within the galaxy.
-                empires.Add(new NewEmpire(empireName, empireCulture, empireColor, empireFlag, empireIndex, empireSolarSystemIDs, empirePlanetIDs));
+                empires.Add(new NewEmpire(empireName, empireCulture, empireColor, empireFlag, empireIndex, capitalSystemID, empireSolarSystemIDs, empirePlanetIDs));
             }
         }
     }

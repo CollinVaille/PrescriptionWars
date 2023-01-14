@@ -11,6 +11,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     [SerializeField, Tooltip("The game object that has the atmosphere renderer applied to it.")] private GameObject atmosphere = null;
     [SerializeField, Tooltip("The game object that has the rings renderer applied to it.")] private GameObject rings = null;
     [SerializeField, Tooltip("The transform that marks the location at which the planet label should be placed.")] private Transform planetLabelLocation = null;
+    [SerializeField, Tooltip("The transform that marks the location at which the capital symbol should be placed if the planet is the capital of its solar system.")] private Transform capitalSymbolLocation = null;
 
     //Non-inspector variables.
 
@@ -255,6 +256,21 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     private GameObject planetaryOrbitOutline = null;
 
+    /// <summary>
+    /// Public property that should be accessed in order to determine whether the planet is the capital planet of its solar system.
+    /// </summary>
+    public bool isSystemCapital { get => solarSystem.capitalPlanet == this; }
+
+    /// <summary>
+    /// Public property that should be accessed in order to determine whether the planet is the capital planet in the owning empire's capital system.
+    /// </summary>
+    public bool isEmpireCapital { get => owner.capitalSystemID == solarSystem.ID && isSystemCapital; }
+
+    /// <summary>
+    /// Private holder variable for the image that marks the planet as either the system's capital or the empire's capital.
+    /// </summary>
+    private Image capitalSymbolImage = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -271,6 +287,13 @@ public class NewGalaxyPlanet : MonoBehaviour
         //Updates the planet name label's position.
         planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
         planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
+
+        //Updates the capital symbol image's position.
+        if(capitalSymbolImage != null)
+        {
+            capitalSymbolImage.transform.position = Camera.main.WorldToScreenPoint(capitalSymbolLocation.transform.position);
+            capitalSymbolImage.transform.localPosition = (Vector2)capitalSymbolImage.transform.localPosition;
+        }
     }
 
     /// <summary>
@@ -378,6 +401,21 @@ public class NewGalaxyPlanet : MonoBehaviour
         planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
         planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
 
+        //Instantiates the planet's capital system image.
+        if (isSystemCapital)
+        {
+            capitalSymbolImage = new GameObject().AddComponent<Image>();
+            capitalSymbolImage.transform.SetParent(NewGalaxyManager.capitalSymbolsParent);
+            capitalSymbolImage.transform.localScale = Vector3.one;
+            capitalSymbolImage.rectTransform.sizeDelta = new Vector2(30, 30);
+            capitalSymbolImage.rectTransform.pivot = new Vector2(0.5f, 0);
+            capitalSymbolImage.raycastTarget = false;
+            capitalSymbolImage.sprite = isEmpireCapital ? Resources.Load<Sprite>("Galaxy/Icons/Empire Capital Icon") : Resources.Load<Sprite>("Galaxy/Icons/System Capital Icon");
+            capitalSymbolImage.gameObject.name = planetName + " Capital Symbol";
+            capitalSymbolImage.transform.position = Camera.main.WorldToScreenPoint(capitalSymbolLocation.transform.position);
+            capitalSymbolImage.transform.localPosition = (Vector2)capitalSymbolImage.transform.localPosition;
+        }
+
         //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
         OnZoomPercentageChange();
     }
@@ -396,6 +434,8 @@ public class NewGalaxyPlanet : MonoBehaviour
             rings.SetActive(solarSystem.visible && hasRings && planetsVisible);
             if(planetNameLabel != null)
                 planetNameLabel.gameObject.SetActive(solarSystem.visible && planetsVisible);
+            if (capitalSymbolImage != null)
+                capitalSymbolImage.gameObject.SetActive(solarSystem.visible && planetsVisible);
         }
 
         //Instantiates a planetary orbit outline if the player is now zoomed far enough into the galaxy to see it.
@@ -434,6 +474,22 @@ public class NewGalaxyPlanet : MonoBehaviour
                 hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutline.transform.GetChild(0).GetComponent<SphereCollider>().ClosestPoint(connectingSolarSystem.transform.position));
             }
         }
+    }
+
+    /// <summary>
+    /// Public method that should be called by the planet's solar system whenever the planet becomes the capital planet of the empire.
+    /// </summary>
+    public void OnBecameEmpireCapitalPlanet()
+    {
+
+    }
+
+    /// <summary>
+    /// Public method that should be called by the planet's solar system whenever the planet is no longer the capital planet of the empire.
+    /// </summary>
+    public void OnBecameEmpireNoncapitalPlanet()
+    {
+
     }
 
     /// <summary>

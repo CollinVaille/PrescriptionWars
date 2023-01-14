@@ -76,4 +76,13 @@ public class NewResourceBar : MonoBehaviour
         UpdateFlag();
         UpdateEmpireNameTooltip();
     }
+
+    /// <summary>
+    /// This private method is called whenever the resource bar is destroyed in the project hierarchy and resets the static instance variable to null.
+    /// </summary>
+    private void OnDestroy()
+    {
+        //Resets the static instance variable.
+        resourceBar = null;
+    }
 }

@@ -122,6 +122,35 @@ public class NewEmpire
     /// </summary>
     public List<int> planetIDs { get => planetIDsVar; }
 
+    /// <summary>
+    /// Private variable that holds the id of the solar system that serves as the empire's capital system.
+    /// </summary>
+    private int _capitalSystemID = -1;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the capital system of the empire via system ID.
+    /// </summary>
+    public int capitalSystemID
+    {
+        get => _capitalSystemID;
+        set
+        {
+            //Logs a warning and returns if the empire does not own the specified system.
+            if (!solarSystemIDs.Contains(value))
+            {
+                Debug.LogWarning("Cannot set the specified system as the capital system of the empire because the specified system is not under the empire's control.");
+                return;
+            }
+            //Stores the system ID of the previous capital system.
+            int previousCapitalSystemID = _capitalSystemID;
+            //Changes the capital system ID to the specified value.
+            _capitalSystemID = value;
+            //Informs the previous capital system that it is no longer the capital system of the empire.
+            NewGalaxyManager.solarSystems[previousCapitalSystemID].OnBecameNoncapitalSystem();
+            //Informs the new capital system that it is now the capital system of the empire.
+            NewGalaxyManager.solarSystems[value].OnBecameCapitalSystem();
+        }
+    }
+
     public NewEmpire(EmpireData empireData)
     {
         nameVar = empireData.name;
@@ -129,17 +158,19 @@ public class NewEmpire
         colorVar = new Color(empireData.color[0], empireData.color[1], empireData.color[2], empireData.color[3]);
         flagVar = new NewFlag(empireData.flag);
         IDVar = empireData.ID;
+        _capitalSystemID = empireData.capitalSystemID;
         solarSystemIDsVar = empireData.solarSystemIDs;
         planetIDsVar = empireData.planetIDs;
     }
 
-    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, List<int> solarSystemIDs, List<int> planetIDs)
+    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs)
     {
         nameVar = name;
         cultureVar = culture;
         colorVar = color;
         flagVar = flag;
         IDVar = ID;
+        _capitalSystemID = capitalSystemID;
         solarSystemIDsVar = solarSystemIDs;
         planetIDsVar = planetIDs;
     }
@@ -229,6 +260,7 @@ public class EmpireData
     public float[] color;
     public FlagData flag;
     public int ID;
+    public int capitalSystemID;
     public List<int> solarSystemIDs = null;
     public List<int> planetIDs = null;
 
@@ -239,6 +271,7 @@ public class EmpireData
         color = new float[4] { empire.color.r, empire.color.g, empire.color.b, empire.color.a };
         flag = new FlagData(empire.flag);
         ID = empire.ID;
+        capitalSystemID = empire.capitalSystemID;
         solarSystemIDs = empire.solarSystemIDs;
         planetIDs = empire.planetIDs;
     }
