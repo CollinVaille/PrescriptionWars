@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Elevator : Interactable
+public class Elevator : Interactable, IVerticalScalerImplement
 {
     public enum ElevatorStatus { IdleOnBottom, IdleOnTop, GoingUp, GoingDown }
 
@@ -13,6 +13,12 @@ public class Elevator : Interactable
     private Transform cab, cables, shaft;
 
     private void Start()
+    {
+        if (!shaft)
+            SetReferences();
+    }
+
+    private void SetReferences()
     {
         cab = transform.Find("Elevator Cab");
         cables = transform.Find("Elevator Cables");
@@ -123,4 +129,22 @@ public class Elevator : Interactable
     public override bool OverrideTriggerDescription() { return true; }
 
     protected override string GetInteractionVerb() { return "Call"; }
+
+    public void ScaleToHeight(float heightToScaleTo)
+    {
+        if (!shaft)
+            SetReferences();
+
+        Vector3 scalersScale = Vector3.one;
+        scalersScale.y = 1.0f + (heightToScaleTo / 4.5f);
+        shaft.localScale = scalersScale;
+    }
+
+    public float GetHeight()
+    {
+        if (!shaft)
+            SetReferences();
+
+        return shaft.localScale.y;
+    }
 }

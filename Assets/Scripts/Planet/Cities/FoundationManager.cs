@@ -14,7 +14,7 @@ public class FoundationManager
     public Material slabMaterial, groundMaterial;
     public List<FoundationJSON> foundations;
     public List<Collider> foundationColliders;
-    public List<Transform> verticalScalers;
+    public List<VerticalScaler> verticalScalers;
 
     public FoundationManager(City city)
     {
@@ -25,8 +25,6 @@ public class FoundationManager
 
     public void GenerateNewFoundations()
     {
-        Debug.Log(foundationHeight);
-
         if (foundationType == FoundationType.NoFoundations)
             return;
 
@@ -67,12 +65,12 @@ public class FoundationManager
         //-X gate
         Vector3 foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, -distanceFromCityCenter);
         GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
-        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, true, true);
+        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
 
         //+X gate
         foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, distanceFromCityCenter);
         GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
-        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, true, false);
+        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
         city.GetWidestCardinalRoad(false, !city.circularCity, out widestRoadWidth, out widestRoadCenteredAt);
@@ -82,68 +80,33 @@ public class FoundationManager
         //-Z gate
         foundationPosition = new Vector3(-distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
         GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
-        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, false, true);
+        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
 
         //+Z gate
         foundationPosition = new Vector3(distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
         GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
-        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, false, false);
+        GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
     }
 
-    private void GenerateVerticalScalerBesideEntrance(Vector3 entrancePosition, Vector3 entranceScale, bool generateOnNegativeSide, bool horizontal, bool lesser)
+    private void GenerateVerticalScalerBesideEntrance(Vector3 entrancePosition, Vector3 entranceScale, bool generateOnNegativeSide, int yAxisRotation)
     {
-        Vector3 verticalScalerPos = entrancePosition;
-        Vector3 verticalScalerRot = Vector3.zero;
-
-        //Set the y-axis rotation so that it is facing away from the city
-        if(horizontal)
-        {
-            if (lesser)
-                verticalScalerRot.y = 180.0f;
-            else
-                verticalScalerRot.y = 0.0f;
-        }
-        else
-        {
-            if (lesser)
-                verticalScalerRot.y = -90.0f;
-            else
-                verticalScalerRot.y = 90.0f;
-        }
-
         //Instantiate the vertical scaler
-        GameObject thePrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Elevator");
-        Transform verticalScaler = GameObject.Instantiate(thePrefab, city.transform).transform;
-        verticalScaler.name = verticalScaler.name.Substring(0, verticalScaler.name.Length - 7);
+        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler("Planet/City/Miscellaneous/Elevator", city.transform, this);
+        Transform verticalScalerTransform = verticalScaler.transform;
 
-        //Move it forward along the z-axis so that it is sharing edges with the city edge
-        verticalScaler.localEulerAngles = verticalScalerRot;
-        verticalScaler.localPosition = entrancePosition;
-        Vector3 translation = verticalScaler.right * ((entranceScale.x / 2.0f) + (13.0f / 2.0f));
+        //Rotate it
+        verticalScaler.SetYAxisRotation(yAxisRotation);
+
+        //Position it
+        verticalScalerTransform.localPosition = entrancePosition;
+        Vector3 translation = verticalScalerTransform.right * ((entranceScale.x / 2.0f) + (verticalScaler.width / 2.0f));
         if (generateOnNegativeSide)
             translation *= -1;
-        verticalScaler.Translate(translation, Space.World);
-        verticalScaler.Translate(verticalScaler.forward * (13.0f / 2.0f), Space.World);
+        verticalScalerTransform.Translate(translation, Space.World);
+        verticalScalerTransform.Translate(verticalScalerTransform.forward * (verticalScaler.width / 2.0f), Space.World);
 
-        Vector3 scalersScale = Vector3.one;
-        scalersScale.y = entranceScale.y / (5.0f);
-        verticalScaler.Find("Elevator Shaft").localScale = scalersScale;
-
-        Transform connector = verticalScaler.Find("Upper Level Connector");
-        Vector3 restoredConnectorPosition = connector.localPosition;
-        restoredConnectorPosition.y = foundationHeight / 2.0f;
-        connector.localPosition = restoredConnectorPosition;
-
-        if (!generateOnNegativeSide)
-        {
-            foreach(Transform t in connector)
-            {
-                Vector3 pos = t.localPosition;
-                pos.x = -pos.x;
-                t.localPosition = pos;
-            }
-        }
-
+        //Scale it and connect it to the entrance foundation
+        verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
     }
 
     private void GenerateFoundation(Vector3 localPosition, Vector3 localScale, bool circular)
@@ -188,7 +151,7 @@ public class FoundationManagerJSON
         foundations = foundationManager.foundations;
 
         verticalScalers = new List<VerticalScalerJSON>();
-        foreach (Transform verticalScaler in foundationManager.verticalScalers)
+        foreach (VerticalScaler verticalScaler in foundationManager.verticalScalers)
             verticalScalers.Add(new VerticalScalerJSON(verticalScaler));
     }
 
