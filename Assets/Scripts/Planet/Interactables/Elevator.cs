@@ -16,6 +16,9 @@ public class Elevator : Interactable, IVerticalScalerImplement
     {
         if (!shaft)
             SetReferences();
+
+        //Make sure elevator is correctly configured for its initial state
+        SetCabHeight(elevatorStatus == ElevatorStatus.IdleOnBottom ? 0.0f : GetHeight());
     }
 
     private void SetReferences()
@@ -55,7 +58,7 @@ public class Elevator : Interactable, IVerticalScalerImplement
         if (goingUp)
         {
             elevatorStatus = ElevatorStatus.GoingUp;
-            targetElevation = cabHeight * (shaft.localScale.y - 1.0f);
+            targetElevation = GetHeight();
         }
         else
         {
@@ -105,7 +108,7 @@ public class Elevator : Interactable, IVerticalScalerImplement
         
         //Compute the new y-axis scale for the cables
         Vector3 localCableScale = Vector3.one;
-        float cableCeiling = cabHeight * (shaft.localScale.y - 1.0f);
+        float cableCeiling = GetHeight();
         localCableScale.y = cableCeiling - localCabPosition.y;
 
         //If the scale is approaching 0, just disable the game object
@@ -136,7 +139,7 @@ public class Elevator : Interactable, IVerticalScalerImplement
             SetReferences();
 
         Vector3 scalersScale = Vector3.one;
-        scalersScale.y = 1.0f + (heightToScaleTo / 4.5f);
+        scalersScale.y = 1.0f + (heightToScaleTo / cabHeight);
         shaft.localScale = scalersScale;
     }
 
@@ -145,6 +148,6 @@ public class Elevator : Interactable, IVerticalScalerImplement
         if (!shaft)
             SetReferences();
 
-        return shaft.localScale.y;
+        return cabHeight * (shaft.localScale.y - 1.0f);
     }
 }

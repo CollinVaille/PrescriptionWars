@@ -11,6 +11,7 @@ public class VerticalScaler : MonoBehaviour
     public float width; //Width if its shape is rectangular and diameter if its shape is circular
 
     //Needed for save system (VerticalScalerJSON)
+    [HideInInspector] public bool invertConnectorsXPosition;
     [HideInInspector] public string resourcePath;
 
     public static VerticalScaler InstantiateVerticalScaler(string resourcePath, Transform parent, FoundationManager foundationManager)
@@ -41,6 +42,7 @@ public class VerticalScaler : MonoBehaviour
         Transform connector = transform.Find("Upper Level Connector");
 
         //Configure the connector
+        this.invertConnectorsXPosition = invertConnectorsXPosition;
         if(connector)
         {
             //Position the connector vertically
@@ -85,18 +87,13 @@ public class VerticalScalerJSON
 
     public VerticalScalerJSON(VerticalScaler verticalScaler)
     {
-        resourcePath = verticalScaler.resourcePath;
         Transform verticalScalerTransform = verticalScaler.transform;
 
+        resourcePath = verticalScaler.resourcePath;
         location = verticalScalerTransform.localPosition;
         yAxisRotation = (int)verticalScalerTransform.localEulerAngles.y;
         verticalScale = verticalScaler.GetHeight();
-
-        Transform connector = verticalScalerTransform.Find("Upper Level Connector");
-        if (connector)
-            invertConnectorsXPosition = connector.localPosition.x < 0.0f;
-        else
-            invertConnectorsXPosition = false;
+        invertConnectorsXPosition = verticalScaler.invertConnectorsXPosition;
     }
 
     public void RestoreVerticalScaler(FoundationManager foundationManager)
