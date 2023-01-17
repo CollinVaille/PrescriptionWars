@@ -317,7 +317,7 @@ public class PlanetGenerator : MonoBehaviour
             planet.LoadSkybox(true, "AllSky_Space_AnotherPlanet", "Gloomy", "RedYellowNebular", "RedOrangeYellowNebular");
             planet.LoadSkybox(false, planet.daySkybox.name);
 
-            planet.dayAmbience = planet.LoadAmbience("Large Eerie Reverberant Space");
+            planet.dayAmbience = planet.LoadAmbience("Large Eerie Reverberant Space", "Dark Empty Hissing");
             planet.nightAmbience = planet.dayAmbience;
 
             RenderSettings.fog = true;

@@ -9,8 +9,10 @@ public class Elevator : Interactable, IVerticalScalerImplement
     public ElevatorStatus elevatorStatus = ElevatorStatus.IdleOnBottom;
     public float cabHeight = 4.5f;
     public float upSpeed = 7.5f, downSpeed = 12.5f;
+    public AudioClip startSound, endSound;
 
     private Transform cab, cables, shaft;
+    private AudioSource elevatorSFX;
 
     private void Start()
     {
@@ -26,6 +28,7 @@ public class Elevator : Interactable, IVerticalScalerImplement
         cab = transform.Find("Elevator Cab");
         cables = transform.Find("Elevator Cables");
         shaft = transform.Find("Elevator Shaft");
+        elevatorSFX = cab.GetComponent<AudioSource>();
     }
 
     public override void Interact(Pill interacting)
@@ -35,21 +38,19 @@ public class Elevator : Interactable, IVerticalScalerImplement
         if (!interacting)
             return;
 
-        if (WantsToGoUp(interacting))
-        {
-            if (elevatorStatus == ElevatorStatus.IdleOnBottom)
-                StartCoroutine(MoveElevatorCab(true));
-        }
+        if (elevatorStatus == ElevatorStatus.IdleOnBottom)
+            StartCoroutine(MoveElevatorCab(true));
         else if (elevatorStatus == ElevatorStatus.IdleOnTop)
             StartCoroutine(MoveElevatorCab(false));
     }
 
     //Returns true if the pill that called the elevator wants to go up, false if he wants to go down.
-    private bool WantsToGoUp(Pill interacting)
+    /*
+    private bool WantsToGoUp(Transform pointOfInteraction)
     {
-        float pillsLocalY = transform.InverseTransformPoint(interacting.transform.position).y;
+        float pillsLocalY = transform.InverseTransformPoint(pointOfInteraction.position).y;
         return pillsLocalY < shaft.localScale.y / 2.0f;
-    }
+    }*/
 
     private IEnumerator MoveElevatorCab(bool goingUp)
     {
@@ -65,6 +66,9 @@ public class Elevator : Interactable, IVerticalScalerImplement
             elevatorStatus = ElevatorStatus.GoingDown;
             targetElevation = 0.0f;
         }
+
+        elevatorSFX.PlayOneShot(startSound);
+        elevatorSFX.Play();
 
         //Loop for moving the cab each frame
         while(true)
@@ -90,6 +94,8 @@ public class Elevator : Interactable, IVerticalScalerImplement
         }
 
         //Finalize transition
+        elevatorSFX.Stop();
+        elevatorSFX.PlayOneShot(endSound);
         SetCabHeight(targetElevation);
         if (goingUp)
             elevatorStatus = ElevatorStatus.IdleOnTop;
@@ -131,7 +137,17 @@ public class Elevator : Interactable, IVerticalScalerImplement
 
     public override bool OverrideTriggerDescription() { return true; }
 
-    protected override string GetInteractionVerb() { return "Call"; }
+    public override string GetInteractionDescription()
+    {
+        if (elevatorStatus == ElevatorStatus.IdleOnBottom)
+            return "Send Elevator Up";
+        else if (elevatorStatus == ElevatorStatus.IdleOnTop)
+            return "Send Elevator Down";
+        else if (elevatorStatus == ElevatorStatus.GoingUp)
+            return "(Elevator Going Up)";
+        else
+            return "(Elevator Going Down)";
+    }
 
     public void ScaleToHeight(float heightToScaleTo)
     {

@@ -182,6 +182,7 @@ public class Spawner : MonoBehaviour
     {
         if (city)
         {
+            pill.transform.parent = null;
             pill.transform.position = pill.spawnPoint;
             pill.transform.eulerAngles = Vector3.zero;
         }
