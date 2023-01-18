@@ -8,6 +8,7 @@ public class CityGenerator : MonoBehaviour
 
     public BiomeMaterials[] biomeMaterials;
     public CityType[] cityTypes;
+    public FoundationOptions foundationOptions;
 
     private void Awake() { generator = this; }
 
@@ -368,4 +369,38 @@ public class CityType
 
     //Foundations
     public Vector2Int foundationHeightRange;
+}
+
+[System.Serializable]
+public class FoundationOptions
+{
+    public string basicCircularFoundation, basicRectangularFoundation;
+    public string[] smallCircularFoundations, smallRectangularFoundations, largeCircularFoundations, largeRectangularFoundations;
+}
+
+public class FoundationSelections
+{
+    public string basicCircularFoundation, basicRectangularFoundation;
+    public string smallCircularFoundation, smallRectangularFoundation;
+    public string largeCircularFoundation, largeRectangularFoundation;
+
+    public FoundationSelections(FoundationOptions foundationOptions)
+    {
+        basicCircularFoundation = foundationOptions.basicCircularFoundation;
+        basicRectangularFoundation = foundationOptions.basicRectangularFoundation;
+        smallCircularFoundation = foundationOptions.smallCircularFoundations[Random.Range(0, foundationOptions.smallCircularFoundations.Length)];
+        smallRectangularFoundation = foundationOptions.smallRectangularFoundations[Random.Range(0, foundationOptions.smallRectangularFoundations.Length)];
+        largeCircularFoundation = foundationOptions.largeCircularFoundations[Random.Range(0, foundationOptions.largeCircularFoundations.Length)];
+        largeRectangularFoundation = foundationOptions.largeRectangularFoundations[Random.Range(0, foundationOptions.largeRectangularFoundations.Length)];
+    }
+
+    public string GetFoundationPrefab(bool circular, Vector3 scale)
+    {
+        if (scale.y / 2.0f < 15.0f)
+            return circular ? basicCircularFoundation : basicRectangularFoundation;
+        else if (scale.x < 100.0f)
+            return circular ? smallCircularFoundation : smallRectangularFoundation;
+        else
+            return circular ? largeCircularFoundation : largeRectangularFoundation;
+    }
 }

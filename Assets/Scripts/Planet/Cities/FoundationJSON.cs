@@ -17,7 +17,7 @@ public class FoundationJSON
     public void GenerateFoundation(City city)
     {
         //Instantiate and parent the foundation
-        transform = GameObject.Instantiate(Resources.Load<GameObject>(prefab)).transform;
+        transform = GameObject.Instantiate(Resources.Load<GameObject>("Planet/City/Foundations/" + prefab)).transform;
         transform.parent = city.transform;
 
         //Apply customization to foundation

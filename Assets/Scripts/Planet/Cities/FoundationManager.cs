@@ -28,16 +28,16 @@ public class FoundationManager
         if (foundationType == FoundationType.NoFoundations)
             return;
 
+        FoundationSelections foundationSelections = new FoundationSelections(CityGenerator.generator.foundationOptions);
+
         if (foundationType == FoundationType.SingularSlab)
-            GenerateNewSingleSlabFoundation();
+            GenerateNewSingleSlabFoundation(foundationSelections);
 
         //---
 
-        GenerateEntrancesForCardinalDirections();
-
         //Update the slab and ground materials
         float scaling = city.radius / 10.0f;
-        God.CopyMaterialValues(slabMaterial, actualSlabMaterial, scaling, scaling, true);
+        God.CopyMaterialValues(slabMaterial, actualSlabMaterial, scaling, foundationHeight / 20.0f, true);
         God.CopyMaterialValues(groundMaterial, actualGroundMaterial, scaling, scaling, true);
 
         //Updates the physics colliders based on changes to transforms.
@@ -45,14 +45,16 @@ public class FoundationManager
         Physics.SyncTransforms();
     }
 
-    private void GenerateNewSingleSlabFoundation()
+    private void GenerateNewSingleSlabFoundation(FoundationSelections foundationSelections)
     {
         Vector3 foundationScale = Vector3.one * city.radius * 2.1f;
         foundationScale.y = foundationHeight;
-        GenerateFoundation(Vector3.zero, foundationScale, city.circularCity);
+        GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity, foundationSelections);
+
+        GenerateEntrancesForCardinalDirections(foundationSelections);
     }
 
-    private void GenerateEntrancesForCardinalDirections()
+    private void GenerateEntrancesForCardinalDirections(FoundationSelections foundationSelections)
     {
         bool circularEntrances = Random.Range(0, 2) == 0;
         float distanceFromCityCenter = city.radius * 1.05f;
@@ -64,12 +66,12 @@ public class FoundationManager
         
         //-X gate
         Vector3 foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, -distanceFromCityCenter);
-        GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, foundationSelections);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
 
         //+X gate
         foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, distanceFromCityCenter);
-        GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, foundationSelections);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
@@ -79,12 +81,12 @@ public class FoundationManager
 
         //-Z gate
         foundationPosition = new Vector3(-distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, foundationSelections);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
 
         //+Z gate
         foundationPosition = new Vector3(distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, foundationSelections);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
     }
 
@@ -109,20 +111,17 @@ public class FoundationManager
         verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
     }
 
-    private void GenerateFoundation(Vector3 localPosition, Vector3 localScale, bool circular)
+    private void GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, bool circular, FoundationSelections foundationSelections)
     {
         //Take notes so we can save and restore the foundation later
         FoundationJSON foundation = new FoundationJSON();
 
-        //Customize the foundation
-        if (circular)
-            foundation.prefab = "Planet/City/Miscellaneous/Circular Foundation";
-        else
-            foundation.prefab = "Planet/City/Miscellaneous/Rectangular Foundation";
-
-        //Instantiate and place the foundation using the customization. This will also add it to the lists it needs to be in.
+        //Load in the customization
+        foundation.prefab = foundationSelections.GetFoundationPrefab(circular, localScale);
         foundation.localPosition = localPosition;
         foundation.localScale = localScale;
+
+        //Instantiate and place the foundation using the customization. This will also add it to the lists it needs to be in.
         foundation.GenerateFoundation(city);
     }
 }
