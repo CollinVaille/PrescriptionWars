@@ -19,6 +19,9 @@ public class Elevator : Interactable, IVerticalScalerImplement
         if (!shaft)
             SetReferences();
 
+        //This tells the game to pause the elevator's audio source when we bring up the pause menu
+        God.god.ManageAudioSource(elevatorSFX);
+
         //Make sure elevator is correctly configured for its initial state
         SetCabHeight(elevatorStatus == ElevatorStatus.IdleOnBottom ? 0.0f : GetHeight());
     }

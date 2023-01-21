@@ -10,7 +10,7 @@ public class FoundationManager
     public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
 
-    public Material actualSlabMaterial, actualGroundMaterial;
+    public Material largeSlabMaterial, largeGroundMaterial;
     public Material slabMaterial, groundMaterial;
     public List<FoundationJSON> foundations;
     public List<Collider> foundationColliders;
@@ -19,8 +19,8 @@ public class FoundationManager
     public FoundationManager(City city)
     {
         this.city = city;
-        actualGroundMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Ground Material");
-        actualSlabMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Slab Material");
+        largeGroundMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Large Ground Material");
+        largeSlabMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Large Slab Material");
     }
 
     public void GenerateNewFoundations()
@@ -37,8 +37,8 @@ public class FoundationManager
 
         //Update the slab and ground materials
         float scaling = city.radius / 10.0f;
-        God.CopyMaterialValues(slabMaterial, actualSlabMaterial, scaling, foundationHeight / 20.0f, true);
-        God.CopyMaterialValues(groundMaterial, actualGroundMaterial, scaling, scaling, true);
+        God.CopyMaterialValues(slabMaterial, largeSlabMaterial, scaling, foundationHeight / 20.0f, true);
+        God.CopyMaterialValues(groundMaterial, largeGroundMaterial, scaling, scaling, true);
 
         //Updates the physics colliders based on changes to transforms.
         //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
@@ -47,7 +47,7 @@ public class FoundationManager
 
     private void GenerateNewSingleSlabFoundation(FoundationSelections foundationSelections)
     {
-        Vector3 foundationScale = Vector3.one * city.radius * 2.1f;
+        Vector3 foundationScale = Vector3.one * city.radius * 2.15f;
         foundationScale.y = foundationHeight;
         GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity, foundationSelections);
 
@@ -57,7 +57,7 @@ public class FoundationManager
     private void GenerateEntrancesForCardinalDirections(FoundationSelections foundationSelections)
     {
         bool circularEntrances = Random.Range(0, 2) == 0;
-        float distanceFromCityCenter = city.radius * 1.05f;
+        float distanceFromCityCenter = city.radius * 1.075f;
 
         //Prepare for X gates
         city.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
@@ -142,10 +142,10 @@ public class FoundationManagerJSON
     public FoundationManagerJSON(FoundationManager foundationManager)
     {
         slabMaterial = foundationManager.slabMaterial.name;
-        slabMaterialTiling = foundationManager.actualSlabMaterial.mainTextureScale;
+        slabMaterialTiling = foundationManager.largeSlabMaterial.mainTextureScale;
 
         groundMaterial = foundationManager.groundMaterial.name;
-        groundMaterialTiling = foundationManager.actualGroundMaterial.mainTextureScale;
+        groundMaterialTiling = foundationManager.largeGroundMaterial.mainTextureScale;
 
         foundations = foundationManager.foundations;
 
@@ -157,10 +157,10 @@ public class FoundationManagerJSON
     public void RestoreFoundationManager(FoundationManager foundationManager)
     {
         foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMaterial);
-        God.CopyMaterialValues(foundationManager.slabMaterial, foundationManager.actualSlabMaterial, slabMaterialTiling.x, slabMaterialTiling.y, false);
+        God.CopyMaterialValues(foundationManager.slabMaterial, foundationManager.largeSlabMaterial, slabMaterialTiling.x, slabMaterialTiling.y, false);
 
         foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMaterial);
-        God.CopyMaterialValues(foundationManager.groundMaterial, foundationManager.actualGroundMaterial, groundMaterialTiling.x, groundMaterialTiling.y, false);
+        God.CopyMaterialValues(foundationManager.groundMaterial, foundationManager.largeGroundMaterial, groundMaterialTiling.x, groundMaterialTiling.y, false);
 
         foreach (FoundationJSON foundation in foundations)
             foundation.GenerateFoundation(foundationManager.city);

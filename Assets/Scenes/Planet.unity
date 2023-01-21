@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
+  m_IndirectSpecularColor: {r: 0.77938604, g: 0.7050482, b: 0.5932858, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 6
+  biome: 7
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -21648,13 +21648,13 @@ MonoBehaviour:
     - Open Gate 1
     - Open Gate 2
     - Open Gate 3
-    fencePostChance: 0
+    fencePostChance: 1
     fencePosts:
     - Fence Post Slab
     - Fence Post Slab 2
     wallMaterials: []
     floorMaterials: []
-    foundationHeightRange: {x: 100, y: 500}
+    foundationHeightRange: {x: 200, y: 300}
   foundationOptions:
     basicCircularFoundation: Basic Circular Foundation
     basicRectangularFoundation: Basic Rectangular Foundation
@@ -21663,7 +21663,8 @@ MonoBehaviour:
     smallRectangularFoundations:
     - Pilaster Rectangular Foundation
     largeCircularFoundations:
-    - Basic Circular Foundation
+    - Colosseum Circular Foundation
+    - Hippodrome Circular Foundation
     largeRectangularFoundations:
     - Colonnade Rectangular Foundation
 --- !u!1 &1754296268
