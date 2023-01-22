@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.77938604, g: 0.7050482, b: 0.5932858, a: 1}
+  m_IndirectSpecularColor: {r: 0.636942, g: 0.5401928, b: 0.41384512, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 7
+  biome: 4
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -21659,12 +21659,13 @@ MonoBehaviour:
     basicCircularFoundation: Basic Circular Foundation
     basicRectangularFoundation: Basic Rectangular Foundation
     smallCircularFoundations:
-    - Basic Circular Foundation
+    - Hourglass Circular Foundation
     smallRectangularFoundations:
     - Pilaster Rectangular Foundation
     largeCircularFoundations:
     - Colosseum Circular Foundation
     - Hippodrome Circular Foundation
+    - Sci-Fi Pipes Circular Foundation
     largeRectangularFoundations:
     - Colonnade Rectangular Foundation
 --- !u!1 &1754296268
