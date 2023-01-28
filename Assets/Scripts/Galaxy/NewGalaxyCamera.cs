@@ -128,7 +128,7 @@ public class NewGalaxyCamera : MonoBehaviour
         movementVector.y = 0.0f;
 
         //Click and drag movement
-        if (Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport)
+        if (Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport && !isMouseOverUI)
         {
             movementVector.x += previousMousePosition.x - Input.mousePosition.x;
             movementVector.y += previousMousePosition.y - Input.mousePosition.y;

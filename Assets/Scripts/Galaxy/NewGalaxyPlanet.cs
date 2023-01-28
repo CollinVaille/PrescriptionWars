@@ -401,20 +401,8 @@ public class NewGalaxyPlanet : MonoBehaviour
         planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
         planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
 
-        //Instantiates the planet's capital system image.
-        if (isSystemCapital)
-        {
-            capitalSymbolImage = new GameObject().AddComponent<Image>();
-            capitalSymbolImage.transform.SetParent(NewGalaxyManager.capitalSymbolsParent);
-            capitalSymbolImage.transform.localScale = Vector3.one;
-            capitalSymbolImage.rectTransform.sizeDelta = new Vector2(30, 30);
-            capitalSymbolImage.rectTransform.pivot = new Vector2(0.5f, 0);
-            capitalSymbolImage.raycastTarget = false;
-            capitalSymbolImage.sprite = isEmpireCapital ? Resources.Load<Sprite>("Galaxy/Icons/Empire Capital Icon") : Resources.Load<Sprite>("Galaxy/Icons/System Capital Icon");
-            capitalSymbolImage.gameObject.name = planetName + " Capital Symbol";
-            capitalSymbolImage.transform.position = Camera.main.WorldToScreenPoint(capitalSymbolLocation.transform.position);
-            capitalSymbolImage.transform.localPosition = (Vector2)capitalSymbolImage.transform.localPosition;
-        }
+        //Updates the planet's capital symbol image.
+        UpdateCapitalSymbolImage();
 
         //Executes the OnZoomPercentageChange function at the start in order to ensure the planet is adapted to the galaxy camera's initial zoom percentage.
         OnZoomPercentageChange();
@@ -481,7 +469,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public void OnBecameEmpireCapitalPlanet()
     {
-
+        UpdateCapitalSymbolImage();
     }
 
     /// <summary>
@@ -489,7 +477,36 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     public void OnBecameEmpireNoncapitalPlanet()
     {
+        UpdateCapitalSymbolImage();
+    }
 
+    /// <summary>
+    /// Private method that should be called in order to update the capital symbol image of the planet.
+    /// </summary>
+    private void UpdateCapitalSymbolImage()
+    {
+        if (isSystemCapital && capitalSymbolImage == null)
+        {
+            capitalSymbolImage = new GameObject().AddComponent<Image>();
+            capitalSymbolImage.transform.SetParent(NewGalaxyManager.capitalSymbolsParent);
+            capitalSymbolImage.transform.localScale = Vector3.one;
+            capitalSymbolImage.rectTransform.sizeDelta = new Vector2(30, 30);
+            capitalSymbolImage.rectTransform.pivot = new Vector2(0.5f, 0);
+            capitalSymbolImage.raycastTarget = false;
+            capitalSymbolImage.sprite = isEmpireCapital ? Resources.Load<Sprite>("Galaxy/Icons/Empire Capital Icon") : Resources.Load<Sprite>("Galaxy/Icons/System Capital Icon");
+            capitalSymbolImage.gameObject.name = planetName + " Capital Symbol";
+            capitalSymbolImage.transform.position = Camera.main.WorldToScreenPoint(capitalSymbolLocation.transform.position);
+            capitalSymbolImage.transform.localPosition = (Vector2)capitalSymbolImage.transform.localPosition;
+        }
+        else if (!isSystemCapital && capitalSymbolImage != null)
+        {
+            Destroy(capitalSymbolImage.gameObject);
+            capitalSymbolImage = null;
+        }
+        else if (isSystemCapital && capitalSymbolImage != null && (capitalSymbolImage.sprite != isEmpireCapital ? Resources.Load<Sprite>("Galaxy/Icons/Empire Capital Icon") : Resources.Load<Sprite>("Galaxy/Icons/System Capital Icon")))
+        {
+            capitalSymbolImage.sprite = isEmpireCapital ? Resources.Load<Sprite>("Galaxy/Icons/Empire Capital Icon") : Resources.Load<Sprite>("Galaxy/Icons/System Capital Icon");;
+        }
     }
 
     /// <summary>
