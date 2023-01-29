@@ -128,7 +128,7 @@ public class NewGalaxyCamera : MonoBehaviour
         movementVector.y = 0.0f;
 
         //Click and drag movement
-        if (Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport && !isMouseOverUI)
+        if (Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport && !isMouseOverUI && !NewGalaxyPopupBehaviour.isAPopupBeingDragged)
         {
             movementVector.x += previousMousePosition.x - Input.mousePosition.x;
             movementVector.y += previousMousePosition.y - Input.mousePosition.y;
@@ -146,6 +146,9 @@ public class NewGalaxyCamera : MonoBehaviour
     /// </summary>
     private void ZoomUpdate()
     {
+        //Returns if certain conditions are not met for the mouse wheel to affect the zoom percentage.
+        if (!isMouseInViewport || isMouseOverUI || NewGalaxyPopupBehaviour.isAPopupBeingDragged)
+            return;
         //Stores the initial zoom percentage.
         float initialZoomPercentage = zoomPercentage;
         //Updates the zoom amount based on the mouse wheel.

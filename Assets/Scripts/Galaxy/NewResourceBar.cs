@@ -13,10 +13,17 @@ public class NewResourceBar : MonoBehaviour
 
     [SerializeField] private GalaxyTooltip empireNameTooltip = null;
 
+    //Non-inspector variables.
+
     /// <summary>
     /// Private static resource bar instance variable that is initialized in the awake method.
     /// </summary>
     private static NewResourceBar resourceBar = null;
+
+    /// <summary>
+    /// Public static property that should be used in order to access the height of the resource bar's rect transform.
+    /// </summary>
+    public static float resourceBarHeight { get => ((RectTransform)resourceBar.transform).sizeDelta.y; }
 
     private void Awake()
     {
