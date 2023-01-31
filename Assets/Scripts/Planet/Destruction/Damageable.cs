@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum DamageType { Melee, Scrape, Projectile, Explosive, Fire, HullCompromised }
+public enum DamageType { Melee, Scrape, Projectile, Explosive, Fire, HullCompromised, ImpactSpeed }
 
 public interface Damageable
 {

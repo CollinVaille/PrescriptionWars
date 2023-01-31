@@ -39,9 +39,8 @@ public class RockyDesertBiome
         terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
 
         //Footsteps
-        planet.LoadGroundFootsteps("Martian Dirt");
-        planet.seabedWalking = planet.groundWalking;
-        planet.seabedRunning = planet.groundRunning;
+        planet.LoadGroundMaterial(PlanetMaterialType.MartianDirt);
+        planet.LoadSeabedMaterial(planet.groundMaterial);
 
         //Ominous, luminating, arid fog
         RenderSettings.fog = true;
@@ -93,8 +92,8 @@ public class RockyDesertBiome
         terrainCustomization.noiseStrength = Random.Range(1.25f, 2.25f);
 
         //Footsteps
-        planet.LoadGroundFootsteps("Sand");
-        planet.LoadSeabedFootsteps("Swamp");
+        planet.LoadGroundMaterial(PlanetMaterialType.Sand);
+        planet.LoadSeabedMaterial(PlanetMaterialType.Swamp);
 
         //Ominous, luminating, arid fog
         RenderSettings.fog = true;

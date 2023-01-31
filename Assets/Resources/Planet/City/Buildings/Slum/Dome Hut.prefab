@@ -83,7 +83,6 @@ MonoBehaviour:
   closePosition: 1.5
   doorType: 0
   doorMotion: 1
-  automatic: 0
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 2388471978558448398}
@@ -1133,6 +1132,7 @@ GameObject:
   - component: {fileID: 7934738415921950370}
   - component: {fileID: 7934738415921950371}
   - component: {fileID: 7700551115585246791}
+  - component: {fileID: 3383234422746897822}
   m_Layer: 0
   m_Name: Front Right Window
   m_TagString: Untagged
@@ -1236,6 +1236,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &3383234422746897822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7934738415921950369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &7934738416039531662
 GameObject:
   m_ObjectHideFlags: 0
@@ -2210,6 +2223,7 @@ GameObject:
   - component: {fileID: 8619927076366908657}
   - component: {fileID: 8619927076366908658}
   - component: {fileID: 7382137911624497431}
+  - component: {fileID: 533990438699155360}
   m_Layer: 0
   m_Name: Front Left Window
   m_TagString: Untagged
@@ -2313,3 +2327,16 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &533990438699155360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8619927076366908652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13

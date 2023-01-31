@@ -32,7 +32,7 @@ public class Player : Pill
     private POV pov, povBefore3rdPerson;
     private Dir thirdPersonHorCamPos;
     private Item sidearm = null;
-    private bool soaring = false, continuousPrimaryAction = false, sprinting = false, planetHasLowBoundaries;
+    private bool soaring = false, continuousPrimaryAction = false, sprinting = false;
     private int indoorZoneCount = 0;
 
     //Coroutine keys
@@ -42,8 +42,8 @@ public class Player : Pill
     private float bobInput = 0;
 
     //Feet sound stuff
+    private PlanetMaterialType lastMaterialSteppedOn = PlanetMaterialType.NoMaterial;
     private AudioClip walking, running;
-    public Footsteps[] footsteps;
     private Collider submersedIn = null;
 
     //Commands
@@ -73,7 +73,6 @@ public class Player : Pill
         //Initialize other player settings
         mainAudioSource.spatialBlend = 0;
         feet.clip = walking;
-        planetHasLowBoundaries = Planet.planet.GetComponent<PlanetTerrain>().customization.lowBoundaries;
 
         ApplyDisplaySettings();
 
@@ -911,9 +910,6 @@ public class Player : Pill
     private IEnumerator ManageFootstepsMaterial ()
     {
         RaycastHit raycastHit;
-        int currentFootIndex = -3; //Index of material we're currently walking on
-        bool foundMaterial = false; //Used near bottom to determine if we need to default to default material
-        float terrainTextureIndex = -1;
 
         //Every 5th of a second, update the kind of sound feet make when walking (just material not speed)
         while (true)
@@ -922,17 +918,17 @@ public class Player : Pill
             {
                 if (head.position.y < submersedIn.bounds.max.y + 0.15f) //Fully submersed
                 {
-                    if (currentFootIndex != 1)
+                    if (lastMaterialSteppedOn != PlanetMaterialType.Swimming)
                     {
-                        currentFootIndex = SetFootstepsMaterial(1);
+                        SetMaterialUnderFeet(PlanetMaterialType.Swimming);
                         SetHeadSubmergence(true);
                     }
                 }
                 else //Knee deep
                 {
-                    if (currentFootIndex != 2)
+                    if (lastMaterialSteppedOn != PlanetMaterialType.Water)
                     {
-                        currentFootIndex = SetFootstepsMaterial(2);
+                        SetMaterialUnderFeet(PlanetMaterialType.Water);
                         SetHeadSubmergence(false);
                     }
                 }
@@ -942,68 +938,10 @@ public class Player : Pill
                 SetHeadSubmergence(false);
 
                 Physics.Raycast(transform.position, Vector3.down, out raycastHit);
-
                 if (raycastHit.transform)
                 {
-                    if (raycastHit.transform.CompareTag("Terrain")) //Walking on terrain
-                    {
-                        terrainTextureIndex = PlanetTerrain.planetTerrain.GetTextureIndexAtPoint(transform.position);
-
-                        if (terrainTextureIndex == 0) //Ground (so grass, snow, sand, mud, etc)
-                        {
-                            if (currentFootIndex != -1)
-                                currentFootIndex = SetFootstepsMaterial(-1);
-                        }
-                        else if (terrainTextureIndex == 1) //Cliff (rock)
-                        {
-                            if (currentFootIndex != 0)
-                                currentFootIndex = SetFootstepsMaterial(0);
-                        }
-                        else //Seabed
-                        {
-                            if (currentFootIndex != -2)
-                                currentFootIndex = SetFootstepsMaterial(-2);
-                        }
-                    }
-                    else if(WalkingOnHorizon(raycastHit.transform)) //Walking on horizon
-                    {
-                        if(planetHasLowBoundaries)
-                        {
-                            //Seabed
-                            if (currentFootIndex != -2)
-                                currentFootIndex = SetFootstepsMaterial(-2);
-                        }
-                        else
-                        {
-                            //Ground
-                            if (currentFootIndex != -1)
-                                currentFootIndex = SetFootstepsMaterial(-1);
-                        }
-                    }
-                    else //Walking on something else
-                    {
-                        foundMaterial = false;
-
-                        //See if it's special material
-                        for (int x = 2; x < footsteps.Length; x++)
-                        {
-                            if (raycastHit.transform.CompareTag(footsteps[x].name))
-                            {
-                                foundMaterial = true;
-
-                                //Already set
-                                if (currentFootIndex == x)
-                                    break;
-
-                                //Set it
-                                currentFootIndex = SetFootstepsMaterial(x);
-                            }
-                        }
-
-                        //Default sound is rock
-                        if (!foundMaterial && currentFootIndex != 0)
-                            currentFootIndex = SetFootstepsMaterial(0);
-                    }
+                    PlanetMaterialType newMaterialType = PlanetMaterial.GetMaterialFromTransform(raycastHit.collider.transform, transform.position);
+                    SetMaterialUnderFeetIfNeeded(newMaterialType);
                 }
             }
 
@@ -1012,35 +950,26 @@ public class Player : Pill
         }
     }
 
-    private int SetFootstepsMaterial (int newIndex)
+    private void SetMaterialUnderFeetIfNeeded(PlanetMaterialType planetMaterialType)
     {
-        //Used later on to update sound currently playing
-        bool oldWasWalking = walking == feet.clip;
+        if (lastMaterialSteppedOn != planetMaterialType)
+            SetMaterialUnderFeet(planetMaterialType);
+    }
+
+    private void SetMaterialUnderFeet (PlanetMaterialType planetMaterialType)
+    {
+        //Update tracker
+        lastMaterialSteppedOn = planetMaterialType;
 
         //Set footstep material
-        if (newIndex == -2) //Special case for retrieving terrain material
-        {
-            walking = Planet.planet.seabedWalking;
-            running = Planet.planet.seabedRunning;
-        }
-        else if (newIndex == -1) //Another special case for retrieving terrain material
-        {
-            walking = Planet.planet.groundWalking;
-            running = Planet.planet.groundRunning;
-        }
-        else //Some material besides terrain material
-        {
-            walking = footsteps[newIndex].walking;
-            running = footsteps[newIndex].running;
-        }
+        walking = PlanetMaterial.GetMaterialAudio(planetMaterialType, PlanetMaterialInteractionType.Walking);
+        running = PlanetMaterial.GetMaterialAudio(planetMaterialType, PlanetMaterialInteractionType.Running);
 
         //Update sound currently playing
-        if (oldWasWalking)
-            feet.clip = walking;
-        else
+        if (sprinting)
             feet.clip = running;
-
-        return newIndex;
+        else
+            feet.clip = walking;
     }
 
     public override void Submerge (Collider water)
@@ -1368,16 +1297,6 @@ public class Player : Pill
         }
     }
 
-    private bool WalkingOnHorizon (Transform ground)
-    {
-        if (!ground)
-            return false;
-        else if (ground.name.Equals("Planet Horizon"))
-            return true;
-        else
-            return WalkingOnHorizon(ground.parent);
-    }
-
     public override bool StabbingWithIntentToExecute (float durationIntoExecution) { return durationIntoExecution < 5 && (Input.GetButton("Primary Action") || PlanetPauseMenu.pauseMenu.IsPaused()); }
 
     public void PlayHitMarkerSound (bool hitArmor)
@@ -1412,11 +1331,4 @@ public class Player : Pill
         dropdown2.value = (int)order2;
         dropdown3.value = (int)order3;
     }
-}
-
-[System.Serializable]
-public class Footsteps
-{
-    public string name;
-    public AudioClip walking, running;
 }

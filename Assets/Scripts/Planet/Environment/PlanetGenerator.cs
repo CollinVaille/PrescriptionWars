@@ -86,9 +86,8 @@ public class PlanetGenerator : MonoBehaviour
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Hangar;
 
             //Footsteps
-            planet.LoadGroundFootsteps("Snow");
-            planet.seabedWalking = planet.groundWalking;
-            planet.seabedRunning = planet.groundRunning;
+            planet.LoadGroundMaterial(PlanetMaterialType.Snow);
+            planet.LoadSeabedMaterial(planet.groundMaterial);
 
             //Water
             if (Random.Range(0, 2) == 0)
@@ -125,7 +124,7 @@ public class PlanetGenerator : MonoBehaviour
 
             //Basic sound
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Plain;
-            planet.LoadGroundFootsteps("Grass");
+            planet.LoadGroundMaterial(PlanetMaterialType.Grass);
 
             //Water
             planet.SetUnderwaterColor(new Color(0 / 255.0f, 48 / 255.0f, 255 / 255.0f, 0.5f));
@@ -138,7 +137,7 @@ public class PlanetGenerator : MonoBehaviour
                 if (Random.Range(0, 3) != 0) //Beach
                 {
                     terrainCustomization.seabedTexture = planet.LoadTexture("Sahara", "Soil Beach 0052", "Soil Beach 0079");
-                    planet.LoadSeabedFootsteps("Swamp");
+                    planet.LoadSeabedMaterial(PlanetMaterialType.Swamp);
 
                     //Set seabed height to be above water
                     terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(1.5f, 3.0f);
@@ -146,7 +145,7 @@ public class PlanetGenerator : MonoBehaviour
                 else //Rock shore
                 {
                     terrainCustomization.seabedTexture = planet.LoadTexture("Rock Grassy 0030", "Cliffs 0120", "Age of the Canyon");
-                    planet.LoadSeabedFootsteps("Rock");
+                    planet.LoadSeabedMaterial(PlanetMaterialType.Rock);
 
                     //Set seabed height to be around water level
                     terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(-1.5f, 1.5f);
@@ -155,8 +154,7 @@ public class PlanetGenerator : MonoBehaviour
             else //No water so make seabed appear like ground
             {
                 terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
-                planet.seabedWalking = planet.groundWalking;
-                planet.seabedRunning = planet.groundRunning;
+                planet.LoadSeabedMaterial(planet.groundMaterial);
             }
 
             //Trees
@@ -246,8 +244,8 @@ public class PlanetGenerator : MonoBehaviour
             planet.SetUnderwaterColor(new Color(0 / 255.0f, 70 / 255.0f, 115 / 255.0f, 0.5f));
 
             //Footsteps
-            planet.LoadGroundFootsteps("Sand");
-            planet.LoadSeabedFootsteps(planet.hasOcean ? "Swamp" : "Sand"); //Make sand near water sound wet
+            planet.LoadGroundMaterial(PlanetMaterialType.Sand);
+            planet.LoadSeabedMaterial(planet.hasOcean ? PlanetMaterialType.Swamp : PlanetMaterialType.Sand); //Make sand near water sound wet
 
             FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
         }
@@ -281,9 +279,8 @@ public class PlanetGenerator : MonoBehaviour
 
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Alley;
 
-            planet.LoadGroundFootsteps("Swamp");
-            planet.seabedWalking = planet.groundWalking;
-            planet.seabedRunning = planet.groundRunning;
+            planet.LoadGroundMaterial(PlanetMaterialType.Swamp);
+            planet.LoadSeabedMaterial(planet.groundMaterial);
 
             //Change water color
             planet.SetUnderwaterColor(new Color(72 / 255.0f, 108 / 255.0f, 39 / 255.0f, 0.5f));
@@ -350,9 +347,8 @@ public class PlanetGenerator : MonoBehaviour
 
             planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Arena;
 
-            planet.LoadGroundFootsteps("Rock");
-            planet.seabedWalking = planet.groundWalking;
-            planet.seabedRunning = planet.groundRunning;
+            planet.LoadGroundMaterial(PlanetMaterialType.Rock, PlanetMaterialType.MartianDirt);
+            planet.LoadSeabedMaterial(planet.groundMaterial);
 
             //Rock is molten just at very edge of lava
             terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(0.25f, 0.5f);
@@ -364,14 +360,14 @@ public class PlanetGenerator : MonoBehaviour
                 GenerateSun(planet, Random.Range(1.3f, 1.5f), SunType.GetColorRGB(210, 240, 255));
 
                 terrainCustomization.groundTexture = planet.LoadTexture("Sputnik");
-                planet.LoadGroundFootsteps("Rock");
+                planet.LoadGroundMaterial(PlanetMaterialType.Rock);
             }
             else //Cool snow
             {
                 GenerateSun(planet, Random.Range(1.1f, 1.3f), SunType.GetColorRGB(210, 240, 255));
 
                 terrainCustomization.groundTexture = planet.LoadTexture("Snow");
-                planet.LoadGroundFootsteps("Snow");
+                planet.LoadGroundMaterial(PlanetMaterialType.Snow);
             }
 
             terrainCustomization.cliffTexture = planet.LoadTexture("Dead Sea", "Blue Quartz");
@@ -383,7 +379,7 @@ public class PlanetGenerator : MonoBehaviour
             terrainCustomization.seabedMetallic = 0.2f;
             terrainCustomization.seabedSmoothness = 0.8f;
 
-            planet.LoadSeabedFootsteps("Snow");
+            planet.LoadSeabedMaterial(PlanetMaterialType.Snow);
 
             planet.LoadSkybox(true, "Blue Galaxy 1", "Blue Galaxy 2");
             planet.LoadSkybox(false, planet.daySkybox.name);

@@ -39,7 +39,7 @@ public class Planet : MonoBehaviour
     //Audio
     [HideInInspector] public float ambientVolume = 1;
     private AudioSource ambientAudioSource;
-    [HideInInspector] public AudioClip groundWalking, groundRunning, seabedWalking, seabedRunning;
+    [HideInInspector] public PlanetMaterialType groundMaterial, seabedMaterial;
 
     //Cities
     public GameObject cityPrefab;
@@ -130,16 +130,14 @@ public class Planet : MonoBehaviour
         return Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
     }
 
-    public void LoadGroundFootsteps (string stepType)
+    public void LoadGroundMaterial (params PlanetMaterialType[] planetMaterialTypes)
     {
-        groundWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Walking");
-        groundRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Running");
+        groundMaterial = planetMaterialTypes[Random.Range(0, planetMaterialTypes.Length)];
     }
 
-    public void LoadSeabedFootsteps (string stepType)
+    public void LoadSeabedMaterial (params PlanetMaterialType[] planetMaterialTypes)
     {
-        seabedWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Walking");
-        seabedRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + stepType + " Running");
+        seabedMaterial = planetMaterialTypes[Random.Range(0, planetMaterialTypes.Length)];
     }
 
     public void SetUnderwaterColor (Color underwaterColor)
@@ -188,7 +186,8 @@ public class Planet : MonoBehaviour
         oceanTransform.GetComponent<Collider>().isTrigger = false;
 
         //Set sound
-        oceanTransform.tag = "Ice";
+        PlanetMaterial planetMaterial = oceanTransform.gameObject.AddComponent<PlanetMaterial>();
+        planetMaterial.planetMaterialType = PlanetMaterialType.Ice;
 
         //Set visuals
         Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
@@ -573,10 +572,8 @@ public class PlanetJSON
         reverb = planet.GetComponent<AudioReverbZone>().reverbPreset;
         dayAmbience = planet.dayAmbience.name;
         nightAmbience = planet.nightAmbience.name;
-        groundWalking = planet.groundWalking.name;
-        groundRunning = planet.groundRunning.name;
-        seabedWalking = planet.seabedWalking.name;
-        seabedRunning = planet.seabedRunning.name;
+        groundMaterialIndex = (int)planet.groundMaterial;
+        seabedMaterialIndex = (int)planet.seabedMaterial;
 
         //Fog
         fog = RenderSettings.fog;
@@ -616,10 +613,8 @@ public class PlanetJSON
         planet.GetComponent<AudioReverbZone>().reverbPreset = reverb;
         planet.dayAmbience = Resources.Load<AudioClip>("Planet/Environment/Ambience/" + dayAmbience);
         planet.nightAmbience = Resources.Load<AudioClip>("Planet/Environment/Ambience/" + nightAmbience);
-        planet.groundWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + groundWalking);
-        planet.groundRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + groundRunning);
-        planet.seabedWalking = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + seabedWalking);
-        planet.seabedRunning = Resources.Load<AudioClip>("Planet/Environment/Terrain Footsteps/" + seabedRunning);
+        planet.groundMaterial = (PlanetMaterialType)groundMaterialIndex;
+        planet.seabedMaterial = (PlanetMaterialType)seabedMaterialIndex;
 
         //Fog
         RenderSettings.fog = fog;
@@ -653,7 +648,7 @@ public class PlanetJSON
     //Audio
     public AudioReverbPreset reverb;
     public string dayAmbience, nightAmbience;
-    public string groundWalking, groundRunning, seabedWalking, seabedRunning;
+    public int groundMaterialIndex, seabedMaterialIndex;
 
     //Fog
     public bool fog;

@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 4242400985262109846}
   - component: {fileID: 5110213501985188455}
   - component: {fileID: 6532496072983510358}
+  - component: {fileID: 5761095244011788859}
   m_Layer: 0
   m_Name: Ceiling Panel (1)
   m_TagString: Untagged
@@ -385,6 +386,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5761095244011788859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96046083088409035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &126979879793028581
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +493,7 @@ GameObject:
   - component: {fileID: 2943138074165101954}
   - component: {fileID: 6935735809029415624}
   - component: {fileID: 5230277104277767189}
+  - component: {fileID: 1286831012977623059}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -633,6 +648,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 2.5, z: 22}
   m_Center: {x: 0, y: 0, z: 4}
+--- !u!114 &1286831012977623059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152882477487364807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &234519226672406294
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,6 +672,7 @@ GameObject:
   - component: {fileID: 69292272534808649}
   - component: {fileID: 6933597468408365911}
   - component: {fileID: 6424194856356001762}
+  - component: {fileID: 551774208995393909}
   m_Layer: 0
   m_Name: Roof Equipment
   m_TagString: Untagged
@@ -715,6 +744,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &551774208995393909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234519226672406294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &243858584494316718
 GameObject:
   m_ObjectHideFlags: 0
@@ -6116,6 +6158,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 1}
   health: 350
+--- !u!114 &7136020776789862011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409852779172615697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &504342039773509652
 GameObject:
   m_ObjectHideFlags: 0
@@ -6129,6 +6184,7 @@ GameObject:
   - component: {fileID: 7010790413773094598}
   - component: {fileID: 4106729111742892434}
   - component: {fileID: 3766543299873265185}
+  - component: {fileID: 5984035955468382075}
   m_Layer: 0
   m_Name: Cockpit Glass (7)
   m_TagString: Essential
@@ -6232,6 +6288,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &5984035955468382075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504342039773509652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &651655518422495471
 GameObject:
   m_ObjectHideFlags: 0
@@ -7165,6 +7234,7 @@ GameObject:
   - component: {fileID: 5110409424342596235}
   - component: {fileID: 9083509989527921024}
   - component: {fileID: 7451167862941239348}
+  - component: {fileID: 6718352400647425915}
   m_Layer: 0
   m_Name: Side Panel (4)
   m_TagString: Essential
@@ -7249,6 +7319,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6718352400647425915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1015529263308951653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1048403616899459939
 GameObject:
   m_ObjectHideFlags: 0
@@ -12126,6 +12209,7 @@ GameObject:
   - component: {fileID: 5136902317715613865}
   - component: {fileID: 7366073600838040203}
   - component: {fileID: 3398584192065859340}
+  - component: {fileID: 5032954776528901867}
   m_Layer: 0
   m_Name: Cockpit Glass (8)
   m_TagString: Essential
@@ -12229,6 +12313,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &5032954776528901867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063883925534597667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!65 &1157862578305453654
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12261,6 +12358,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 1}
   health: 350
+--- !u!114 &7460642533637825822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071247645724165298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &1125722015329289816
 GameObject:
   m_ObjectHideFlags: 0
@@ -12273,6 +12383,7 @@ GameObject:
   - component: {fileID: 6019433567233652224}
   - component: {fileID: 3501351247016005930}
   - component: {fileID: 1857090428535715561}
+  - component: {fileID: 6832572195387893717}
   m_Layer: 0
   m_Name: Gun Floor
   m_TagString: Essential
@@ -12357,6 +12468,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6832572195387893717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125722015329289816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1145433525186103180
 GameObject:
   m_ObjectHideFlags: 0
@@ -12422,6 +12546,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 1}
   health: 350
+--- !u!114 &7704672595609334783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172856362380077816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &1180823742673124179
 GameObject:
   m_ObjectHideFlags: 0
@@ -12958,6 +13095,7 @@ GameObject:
   - component: {fileID: 3744653275990289092}
   - component: {fileID: 575177795548413325}
   - component: {fileID: 6075740418997828796}
+  - component: {fileID: 6100610373179166940}
   m_Layer: 0
   m_Name: Cockpit Slab
   m_TagString: Essential
@@ -13042,6 +13180,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6100610373179166940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378829296041831177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1463566887605425050
 GameObject:
   m_ObjectHideFlags: 0
@@ -13137,6 +13288,7 @@ GameObject:
   - component: {fileID: 1927386613835040593}
   - component: {fileID: 7683173276054376892}
   - component: {fileID: 4513090157382718617}
+  - component: {fileID: 5477503338512368640}
   m_Layer: 0
   m_Name: Cockpit Glass (5)
   m_TagString: Essential
@@ -13240,6 +13392,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &5477503338512368640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507377959108856719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &1534150405645225025
 GameObject:
   m_ObjectHideFlags: 0
@@ -13892,6 +14057,7 @@ GameObject:
   - component: {fileID: 3083800328562052514}
   - component: {fileID: 8532109350856807406}
   - component: {fileID: 1604477830820241121}
+  - component: {fileID: 4738311391588543033}
   m_Layer: 0
   m_Name: Side Panel (3)
   m_TagString: Essential
@@ -13976,6 +14142,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4738311391588543033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925035568385210267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1944024439931698195
 GameObject:
   m_ObjectHideFlags: 0
@@ -14317,6 +14496,7 @@ GameObject:
   - component: {fileID: 5803857659881696334}
   - component: {fileID: 1906940770106055997}
   - component: {fileID: 8558734522101511953}
+  - component: {fileID: 1528032637950697163}
   m_Layer: 0
   m_Name: Center Engine
   m_TagString: Untagged
@@ -14481,6 +14661,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1528032637950697163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088612268847071018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &2193523583988069505
 GameObject:
   m_ObjectHideFlags: 0
@@ -14575,6 +14768,7 @@ GameObject:
   - component: {fileID: 5876997441264025172}
   - component: {fileID: 7429866747493841602}
   - component: {fileID: 4553039521526670781}
+  - component: {fileID: 3065975051668685483}
   m_Layer: 0
   m_Name: Cockpit Wall
   m_TagString: Essential
@@ -14659,6 +14853,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3065975051668685483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2252464653687731047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &2310962315898162793
 GameObject:
   m_ObjectHideFlags: 0
@@ -14996,6 +15203,7 @@ GameObject:
   - component: {fileID: 6188046811389188300}
   - component: {fileID: 1849549418885873513}
   - component: {fileID: 8994216014358280609}
+  - component: {fileID: 3656926686369434438}
   m_Layer: 0
   m_Name: Double Door Pillar (1)
   m_TagString: Essential
@@ -15080,6 +15288,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3656926686369434438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2631280553017609679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &2763618545111732703
 GameObject:
   m_ObjectHideFlags: 0
@@ -16325,6 +16546,7 @@ GameObject:
   - component: {fileID: 5274537954924559563}
   - component: {fileID: 8083149633089868243}
   - component: {fileID: 2189509113511778794}
+  - component: {fileID: 2519549458686538655}
   m_Layer: 0
   m_Name: Roof Equipment (1)
   m_TagString: Untagged
@@ -16409,6 +16631,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2519549458686538655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3434206353352003806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3436383953717485422
 GameObject:
   m_ObjectHideFlags: 0
@@ -21932,6 +22167,7 @@ GameObject:
   - component: {fileID: 4698621072388214482}
   - component: {fileID: 3149386289579089424}
   - component: {fileID: 3767293866322982123}
+  - component: {fileID: 4322914448147101454}
   m_Layer: 0
   m_Name: Door Glass
   m_TagString: Untagged
@@ -22035,6 +22271,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 500
+--- !u!114 &4322914448147101454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3652128060708825817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &3683646485711498873
 GameObject:
   m_ObjectHideFlags: 0
@@ -22289,6 +22538,7 @@ GameObject:
   - component: {fileID: 7731181454840780254}
   - component: {fileID: 1171401653845268617}
   - component: {fileID: 3769666266148522382}
+  - component: {fileID: 469883817752121146}
   m_Layer: 0
   m_Name: Roof Ramp
   m_TagString: Essential
@@ -22373,6 +22623,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &469883817752121146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829986272900063210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3845515088245607324
 GameObject:
   m_ObjectHideFlags: 0
@@ -23040,6 +23303,7 @@ GameObject:
   - component: {fileID: 4083440968636231587}
   - component: {fileID: 7074588348339628505}
   - component: {fileID: 7301476032771160700}
+  - component: {fileID: 422091511892906280}
   m_Layer: 0
   m_Name: Engine
   m_TagString: Untagged
@@ -23204,6 +23468,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &422091511892906280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083440968636231581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &4083440969638770506
 GameObject:
   m_ObjectHideFlags: 0
@@ -23298,6 +23575,7 @@ GameObject:
   - component: {fileID: 4083440969828058252}
   - component: {fileID: 4083440969828058255}
   - component: {fileID: 4083440969828058254}
+  - component: {fileID: 5984277838284295128}
   m_Layer: 0
   m_Name: Tricep
   m_TagString: Untagged
@@ -23382,6 +23660,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5984277838284295128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083440969828058248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &4147123896087307083
 GameObject:
   m_ObjectHideFlags: 0
@@ -23394,6 +23685,7 @@ GameObject:
   - component: {fileID: 2155899470096923169}
   - component: {fileID: 1012426709017438547}
   - component: {fileID: 5549031794395397356}
+  - component: {fileID: 872605153678192600}
   m_Layer: 0
   m_Name: Cannon
   m_TagString: Untagged
@@ -23548,6 +23840,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 2.5, z: 22}
   m_Center: {x: 0, y: 0, z: 4}
+--- !u!114 &872605153678192600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4147123896087307083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &4156042525035315902
 GameObject:
   m_ObjectHideFlags: 0
@@ -34281,6 +34586,7 @@ GameObject:
   - component: {fileID: 2912480314883701292}
   - component: {fileID: 8458648326852206891}
   - component: {fileID: 6357745775423318941}
+  - component: {fileID: 2003131838724085178}
   m_Layer: 0
   m_Name: Entry Hall Glass Ceiling
   m_TagString: Essential
@@ -34384,6 +34690,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &2003131838724085178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4625995776167488578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &4702765386219250780
 GameObject:
   m_ObjectHideFlags: 0
@@ -40096,6 +40415,7 @@ GameObject:
   - component: {fileID: 174834029734540810}
   - component: {fileID: 6429003769422903901}
   - component: {fileID: 7823947007415639604}
+  - component: {fileID: 6068039415500798513}
   m_Layer: 0
   m_Name: Cockpit Glass (9)
   m_TagString: Essential
@@ -40199,6 +40519,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &6068039415500798513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5153177081968679209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5190266806663266819
 GameObject:
   m_ObjectHideFlags: 0
@@ -40341,6 +40674,7 @@ GameObject:
   - component: {fileID: 1518373818285896718}
   - component: {fileID: 8506251269074817828}
   - component: {fileID: 6872141158715176167}
+  - component: {fileID: 8530167425075639158}
   m_Layer: 0
   m_Name: Gun Floor
   m_TagString: Essential
@@ -40425,6 +40759,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8530167425075639158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5261422812238906454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5305650178341208296
 GameObject:
   m_ObjectHideFlags: 0
@@ -40534,6 +40881,7 @@ GameObject:
   - component: {fileID: 8945355523744608541}
   - component: {fileID: 4370702611553443479}
   - component: {fileID: 8519471438530335328}
+  - component: {fileID: 1584684398673986024}
   m_Layer: 0
   m_Name: Cockpit Glass
   m_TagString: Essential
@@ -40637,6 +40985,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &1584684398673986024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5306314322145659545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5344593075712706087
 GameObject:
   m_ObjectHideFlags: 0
@@ -40859,6 +41220,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 1}
   health: 350
+--- !u!114 &1425421140105581643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5481457185631978016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5512760355943410667
 GameObject:
   m_ObjectHideFlags: 0
@@ -40871,6 +41245,7 @@ GameObject:
   - component: {fileID: 4373747697659513749}
   - component: {fileID: 5150489837568825333}
   - component: {fileID: 3059408335272436819}
+  - component: {fileID: 172997957240479996}
   m_Layer: 0
   m_Name: Cockpit Wall (1)
   m_TagString: Essential
@@ -40955,6 +41330,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &172997957240479996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5512760355943410667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5513704823210805910
 GameObject:
   m_ObjectHideFlags: 0
@@ -41478,6 +41866,7 @@ GameObject:
   - component: {fileID: 2852273970851523339}
   - component: {fileID: 5587465536112324372}
   - component: {fileID: 7566513817882371718}
+  - component: {fileID: 1824314031897386493}
   m_Layer: 0
   m_Name: Cockpit Glass (3)
   m_TagString: Essential
@@ -41581,6 +41970,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &1824314031897386493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5780741475608799560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5866978707968954667
 GameObject:
   m_ObjectHideFlags: 0
@@ -41594,6 +41996,7 @@ GameObject:
   - component: {fileID: 6883865840429237799}
   - component: {fileID: 7692649277007959633}
   - component: {fileID: 3722780299687070575}
+  - component: {fileID: 8842794691761932921}
   m_Layer: 0
   m_Name: Cockpit Glass (1)
   m_TagString: Essential
@@ -41697,6 +42100,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &8842794691761932921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5866978707968954667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5885942973032894237
 GameObject:
   m_ObjectHideFlags: 0
@@ -58071,6 +58487,7 @@ GameObject:
   - component: {fileID: 4677814141991334475}
   - component: {fileID: 8314107560683129403}
   - component: {fileID: 4551323135129643344}
+  - component: {fileID: 448525811725559355}
   m_Layer: 0
   m_Name: Cockpit Glass (6)
   m_TagString: Essential
@@ -58174,6 +58591,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &448525811725559355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6686684343478880741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &6687881534471758589
 GameObject:
   m_ObjectHideFlags: 0
@@ -59200,6 +59630,7 @@ GameObject:
   - component: {fileID: 5076324962273443832}
   - component: {fileID: 8664884050955676616}
   - component: {fileID: 7610821250015052392}
+  - component: {fileID: 6259567911931463353}
   m_Layer: 0
   m_Name: Cockpit Glass (4)
   m_TagString: Essential
@@ -59303,6 +59734,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &6259567911931463353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7033087450843516647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &7039673089745612502
 GameObject:
   m_ObjectHideFlags: 0
@@ -59315,6 +59759,7 @@ GameObject:
   - component: {fileID: 4404209589115417442}
   - component: {fileID: 4257458495017243550}
   - component: {fileID: 8288414784544484532}
+  - component: {fileID: 8294985006912080658}
   m_Layer: 0
   m_Name: Side Panel (5)
   m_TagString: Essential
@@ -59399,6 +59844,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8294985006912080658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7039673089745612502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &7105967184412580059
 GameObject:
   m_ObjectHideFlags: 0
@@ -64927,6 +65385,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.36591965, z: 0.20000002}
   m_Center: {x: 0, y: -0.24510078, z: 0.1}
+--- !u!114 &8980909483379314991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7771158251714899463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &7777394282471081517
 GameObject:
   m_ObjectHideFlags: 0
@@ -65021,6 +65492,7 @@ GameObject:
   - component: {fileID: 3547941499742178190}
   - component: {fileID: 362295181230372653}
   - component: {fileID: 7671576683566919458}
+  - component: {fileID: 8495950979643210482}
   m_Layer: 0
   m_Name: Ceiling Panel
   m_TagString: Untagged
@@ -65105,6 +65577,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8495950979643210482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7799686477964120511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &7863774917380318359
 GameObject:
   m_ObjectHideFlags: 0
@@ -66239,6 +66724,7 @@ GameObject:
   - component: {fileID: 6503695192060959217}
   - component: {fileID: 7238684926737116526}
   - component: {fileID: 7427794884883391253}
+  - component: {fileID: 7520339561805166859}
   m_Layer: 0
   m_Name: Double Door Pillar
   m_TagString: Essential
@@ -66323,6 +66809,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7520339561805166859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8303570716399098402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &8309451586228237169
 GameObject:
   m_ObjectHideFlags: 0
@@ -66643,6 +67142,7 @@ GameObject:
   - component: {fileID: 553890965970242780}
   - component: {fileID: 7867740421323086878}
   - component: {fileID: 8273983127724586725}
+  - component: {fileID: 6219305125600058750}
   m_Layer: 0
   m_Name: Door Glass
   m_TagString: Untagged
@@ -66746,6 +67246,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 500
+--- !u!114 &6219305125600058750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8373877265517258967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &8418275887247286199
 GameObject:
   m_ObjectHideFlags: 0
@@ -66843,6 +67356,7 @@ GameObject:
   - component: {fileID: 8827235883363270638}
   - component: {fileID: 2677692643592743696}
   - component: {fileID: 5213087202215104602}
+  - component: {fileID: 6927105719865136502}
   m_Layer: 0
   m_Name: Floor Panel (1)
   m_TagString: Essential
@@ -66927,6 +67441,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6927105719865136502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8425699318857913566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &8431492039850098119
 GameObject:
   m_ObjectHideFlags: 0
@@ -68175,6 +68702,7 @@ GameObject:
   - component: {fileID: 9092840161808477613}
   - component: {fileID: 8160732802739426569}
   - component: {fileID: 3242144654016649410}
+  - component: {fileID: 125588387983252256}
   m_Layer: 0
   m_Name: Engine
   m_TagString: Untagged
@@ -68339,6 +68867,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &125588387983252256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9092840161808477587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &9092840161924054046
 GameObject:
   m_ObjectHideFlags: 0
@@ -68385,6 +68926,7 @@ GameObject:
   - component: {fileID: 9092840162048452546}
   - component: {fileID: 9092840162048452545}
   - component: {fileID: 9092840162048452544}
+  - component: {fileID: 4981112614726135947}
   m_Layer: 0
   m_Name: Tricep
   m_TagString: Untagged
@@ -68469,6 +69011,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4981112614726135947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9092840162048452550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &9092840162163261977
 GameObject:
   m_ObjectHideFlags: 0
@@ -68737,9 +69292,10 @@ GameObject:
   - component: {fileID: 9092840163240183499}
   - component: {fileID: 9092840163240183498}
   - component: {fileID: 9092840163240183497}
+  - component: {fileID: 1756336623628234569}
   m_Layer: 0
   m_Name: Floor Panel
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68821,6 +69377,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1756336623628234569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9092840163240183503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &9092840163876656520
 GameObject:
   m_ObjectHideFlags: 0
@@ -69155,6 +69724,7 @@ GameObject:
   - component: {fileID: 4975130047312971312}
   - component: {fileID: 5017723203444548529}
   - component: {fileID: 8380746004744602669}
+  - component: {fileID: 595279755899366007}
   m_Layer: 0
   m_Name: Cockpit Glass (2)
   m_TagString: Essential
@@ -69258,6 +69828,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &595279755899366007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9134553858934219183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &9136258079803722253
 GameObject:
   m_ObjectHideFlags: 0
@@ -69846,15 +70429,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04ee91fdf5b133c4f85b50598586f93d, type: 3}
---- !u!1 &1071247645724165298 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
-    type: 3}
-  m_PrefabInstance: {fileID: 152207452892428771}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &402516510749007368 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
+    type: 3}
+  m_PrefabInstance: {fileID: 152207452892428771}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1071247645724165298 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
     type: 3}
   m_PrefabInstance: {fileID: 152207452892428771}
   m_PrefabAsset: {fileID: 0}
@@ -71204,15 +71787,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04ee91fdf5b133c4f85b50598586f93d, type: 3}
---- !u!1 &2998804360692705180 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
-    type: 3}
-  m_PrefabInstance: {fileID: 2692182243559217869}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2510251025085725990 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2692182243559217869}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2998804360692705180 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
     type: 3}
   m_PrefabInstance: {fileID: 2692182243559217869}
   m_PrefabAsset: {fileID: 0}
@@ -72490,12 +73073,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0240b5702e559b440b1febc8a653657b, type: 3}
---- !u!4 &8612010440007918583 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5328583660362022907, guid: 0240b5702e559b440b1febc8a653657b,
-    type: 3}
-  m_PrefabInstance: {fileID: 4501047963702041612}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4007544065005477084 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 714743437623345360, guid: 0240b5702e559b440b1febc8a653657b,
@@ -72508,6 +73085,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2a176e6b0d65d4181bd9efebb9e647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &8612010440007918583 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5328583660362022907, guid: 0240b5702e559b440b1febc8a653657b,
+    type: 3}
+  m_PrefabInstance: {fileID: 4501047963702041612}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5408813106116359570 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8464825125579942302, guid: 0240b5702e559b440b1febc8a653657b,
@@ -72603,15 +73186,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04ee91fdf5b133c4f85b50598586f93d, type: 3}
---- !u!1 &5481457185631978016 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
-    type: 3}
-  m_PrefabInstance: {fileID: 4671188930565406577}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5141383339343288474 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 04ee91fdf5b133c4f85b50598586f93d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4671188930565406577}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5481457185631978016 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 04ee91fdf5b133c4f85b50598586f93d,
     type: 3}
   m_PrefabInstance: {fileID: 4671188930565406577}
   m_PrefabAsset: {fileID: 0}
@@ -73274,15 +73857,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb, type: 3}
---- !u!4 &6959015719656731837 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 7429209373588771670}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7771158251714899463 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 7429209373588771670}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6959015719656731837 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
     type: 3}
   m_PrefabInstance: {fileID: 7429209373588771670}
   m_PrefabAsset: {fileID: 0}
@@ -73450,15 +74033,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb, type: 3}
---- !u!4 &7863315142234227424 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 7686133872247907595}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7380216548509751386 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 7686133872247907595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7863315142234227424 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
     type: 3}
   m_PrefabInstance: {fileID: 7686133872247907595}
   m_PrefabAsset: {fileID: 0}
@@ -73651,15 +74234,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb, type: 3}
---- !u!4 &8477054250056466733 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
-    type: 3}
-  m_PrefabInstance: {fileID: 8227569164029109958}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &9146629706414857111 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8227569164029109958}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8477054250056466733 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a525d2e9d6b88e24fb2ce1d7a11bd3eb,
     type: 3}
   m_PrefabInstance: {fileID: 8227569164029109958}
   m_PrefabAsset: {fileID: 0}

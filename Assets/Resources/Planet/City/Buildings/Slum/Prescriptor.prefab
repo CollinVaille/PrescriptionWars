@@ -192,7 +192,7 @@ GameObject:
   - component: {fileID: 8574219511938615944}
   m_Layer: 0
   m_Name: Rampart (7)
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -563,7 +563,7 @@ GameObject:
   - component: {fileID: 8505566244483239247}
   m_Layer: 0
   m_Name: Rampart Arch (1)
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -657,9 +657,10 @@ GameObject:
   - component: {fileID: 314596894335140642}
   - component: {fileID: 8300023569796423298}
   - component: {fileID: 8088717343204190248}
+  - component: {fileID: 2853893302214551655}
   m_Layer: 0
   m_Name: Control Panel Backboard
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -741,6 +742,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2853893302214551655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000981869698507093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &1046946195303911319
 GameObject:
   m_ObjectHideFlags: 0
@@ -1098,9 +1112,10 @@ GameObject:
   - component: {fileID: 3412773530732729668}
   - component: {fileID: 5759898852627754880}
   - component: {fileID: 8557468503789569002}
+  - component: {fileID: 957176389100311671}
   m_Layer: 0
   m_Name: Metal Walkway
-  m_TagString: Metal
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1182,6 +1197,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &957176389100311671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201691377555028054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &1373974483387412441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1411,7 +1439,7 @@ GameObject:
   - component: {fileID: 7448111847084600508}
   m_Layer: 0
   m_Name: Rampart Arch (3)
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2220,9 +2248,10 @@ GameObject:
   - component: {fileID: 4090893425073025736}
   - component: {fileID: 3821371490462617807}
   - component: {fileID: 6136242166418605282}
+  - component: {fileID: 8939452468110672950}
   m_Layer: 0
   m_Name: Stepping Stool
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2304,6 +2333,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8939452468110672950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2218550577073565514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &2223860704236282726
 GameObject:
   m_ObjectHideFlags: 0
@@ -2983,9 +3025,10 @@ GameObject:
   - component: {fileID: 6115293996666304965}
   - component: {fileID: 8672488853348222617}
   - component: {fileID: 8477694402388217028}
+  - component: {fileID: 7562783579497274956}
   m_Layer: 0
   m_Name: Control Panel Backboard
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3067,6 +3110,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7562783579497274956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2520229392337395285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &2545659189185941225
 GameObject:
   m_ObjectHideFlags: 0
@@ -3452,9 +3508,10 @@ GameObject:
   - component: {fileID: 6819851355470737413}
   - component: {fileID: 4371756733260537728}
   - component: {fileID: 7161418280379133706}
+  - component: {fileID: 2788660622026426176}
   m_Layer: 0
   m_Name: Ramp (6)
-  m_TagString: Metal
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3536,6 +3593,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2788660622026426176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691853099525744829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &2753663859748061990
 GameObject:
   m_ObjectHideFlags: 0
@@ -3548,6 +3618,7 @@ GameObject:
   - component: {fileID: 2753663859748061986}
   - component: {fileID: 2753663859748061987}
   - component: {fileID: 2753663859748061988}
+  - component: {fileID: 6617050357084089988}
   m_Layer: 0
   m_Name: Dome
   m_TagString: Untagged
@@ -3632,6 +3703,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.8, y: 0.8, z: 0.8}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6617050357084089988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753663859748061990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &2815144164383102764
 GameObject:
   m_ObjectHideFlags: 0
@@ -4437,7 +4521,7 @@ GameObject:
   - component: {fileID: 2871527690204301086}
   m_Layer: 0
   m_Name: Rampart Arch
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5380,6 +5464,7 @@ GameObject:
   - component: {fileID: 290452582037030741}
   - component: {fileID: 4774371208350887410}
   - component: {fileID: 4615909075835708578}
+  - component: {fileID: 809121349414735372}
   m_Layer: 0
   m_Name: Ascension Tower Dome
   m_TagString: Untagged
@@ -5451,6 +5536,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &809121349414735372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4110493611938533124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &4115740260655910852
 GameObject:
   m_ObjectHideFlags: 0
@@ -5833,9 +5931,10 @@ GameObject:
   - component: {fileID: 8401458998334199999}
   - component: {fileID: 8831854110396747670}
   - component: {fileID: 7298826769140889008}
+  - component: {fileID: 3665376437531448730}
   m_Layer: 0
   m_Name: Control Panel Backboard
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5917,6 +6016,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3665376437531448730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4352140715131101518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &4384276954281269756
 GameObject:
   m_ObjectHideFlags: 0
@@ -6679,6 +6791,7 @@ GameObject:
   - component: {fileID: 6084537796998137423}
   - component: {fileID: 3132114268075307671}
   - component: {fileID: 6641284567358011832}
+  - component: {fileID: 8176210719200099190}
   m_Layer: 0
   m_Name: Control Room Window 1
   m_TagString: Untagged
@@ -6782,6 +6895,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &8176210719200099190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5142512467827912580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5200285636924106723
 GameObject:
   m_ObjectHideFlags: 0
@@ -7195,6 +7321,7 @@ GameObject:
   - component: {fileID: 5200285636964541638}
   - component: {fileID: 5200285636964541639}
   - component: {fileID: 5200285636964541688}
+  - component: {fileID: 6014270337983335646}
   m_Layer: 0
   m_Name: Exterior Porch Roof (1)
   m_TagString: Untagged
@@ -7279,6 +7406,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6014270337983335646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285636964541690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5200285636977090916
 GameObject:
   m_ObjectHideFlags: 0
@@ -7772,6 +7912,7 @@ GameObject:
   - component: {fileID: 5200285637886937448}
   - component: {fileID: 5200285637886937449}
   - component: {fileID: 5200285637886937450}
+  - component: {fileID: 4464040933356052623}
   m_Layer: 0
   m_Name: Exterior Porch Roof
   m_TagString: Untagged
@@ -7856,6 +7997,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4464040933356052623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285637886937452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5200285637889088673
 GameObject:
   m_ObjectHideFlags: 0
@@ -7868,6 +8022,7 @@ GameObject:
   - component: {fileID: 5200285637889088685}
   - component: {fileID: 5200285637889088686}
   - component: {fileID: 5200285637889088687}
+  - component: {fileID: 7900851180649329118}
   m_Layer: 0
   m_Name: Exterior Porch Roof Corner (1)
   m_TagString: Untagged
@@ -7952,6 +8107,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7900851180649329118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285637889088673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5200285638073835244
 GameObject:
   m_ObjectHideFlags: 0
@@ -7964,6 +8132,7 @@ GameObject:
   - component: {fileID: 5200285638073835240}
   - component: {fileID: 5200285638073835241}
   - component: {fileID: 5200285638073835242}
+  - component: {fileID: 450952166555417137}
   m_Layer: 0
   m_Name: Exterior Porch Roof Corner
   m_TagString: Untagged
@@ -8048,6 +8217,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &450952166555417137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285638073835244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5200285638117338970
 GameObject:
   m_ObjectHideFlags: 0
@@ -8060,6 +8242,7 @@ GameObject:
   - component: {fileID: 5200285638117339046}
   - component: {fileID: 5200285638117339047}
   - component: {fileID: 5200285638117338968}
+  - component: {fileID: 4635297435278134056}
   m_Layer: 0
   m_Name: Exterior Porch Roof (2)
   m_TagString: Untagged
@@ -8144,6 +8327,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4635297435278134056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285638117338970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5200285638479103985
 GameObject:
   m_ObjectHideFlags: 0
@@ -8156,6 +8352,7 @@ GameObject:
   - component: {fileID: 5200285638479103997}
   - component: {fileID: 5200285638479103998}
   - component: {fileID: 5200285638479103999}
+  - component: {fileID: 3354808426033104299}
   m_Layer: 0
   m_Name: Big Dome
   m_TagString: Untagged
@@ -8240,6 +8437,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.75, y: 1, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3354808426033104299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285638479103985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5200285638483785841
 GameObject:
   m_ObjectHideFlags: 0
@@ -8398,6 +8608,7 @@ GameObject:
   - component: {fileID: 5200285638928647309}
   - component: {fileID: 5200285638928647306}
   - component: {fileID: 5200285638928647307}
+  - component: {fileID: 5709004897400847461}
   m_Layer: 0
   m_Name: Tower Dome
   m_TagString: Untagged
@@ -8469,6 +8680,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5709004897400847461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200285638928647310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5420628948286946704
 GameObject:
   m_ObjectHideFlags: 0
@@ -8540,9 +8764,10 @@ GameObject:
   - component: {fileID: 8868803251329224986}
   - component: {fileID: 8145169400230919198}
   - component: {fileID: 6038882725357039943}
+  - component: {fileID: 8780244635311743046}
   m_Layer: 0
   m_Name: Circular Factory Floor
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8625,6 +8850,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &8780244635311743046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5561563009529570469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5903956732263617390
 GameObject:
   m_ObjectHideFlags: 0
@@ -9526,9 +9764,10 @@ GameObject:
   - component: {fileID: 749756274574842829}
   - component: {fileID: 839797977234912078}
   - component: {fileID: 2533257075385577849}
+  - component: {fileID: 6604622745166492049}
   m_Layer: 0
   m_Name: Metal Walkway (1)
-  m_TagString: Metal
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9610,6 +9849,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6604622745166492049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6232898871980768671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &6493389510632536037
 GameObject:
   m_ObjectHideFlags: 0
@@ -10136,9 +10388,10 @@ GameObject:
   - component: {fileID: 4271842793399732801}
   - component: {fileID: 8225585988283741905}
   - component: {fileID: 7723908289168355279}
+  - component: {fileID: 4315426048754951434}
   m_Layer: 0
   m_Name: Ramp (7)
-  m_TagString: Metal
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10220,6 +10473,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4315426048754951434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7313710383422813980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &7480002267660732896
 GameObject:
   m_ObjectHideFlags: 0
@@ -10638,7 +10904,7 @@ GameObject:
   - component: {fileID: 5967007134903906323}
   m_Layer: 0
   m_Name: Rampart (1)
-  m_TagString: Untagged
+  m_TagString: Essential
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11054,6 +11320,7 @@ GameObject:
   - component: {fileID: 7653684377342367112}
   - component: {fileID: 8767539837385188487}
   - component: {fileID: 5385056962765778673}
+  - component: {fileID: 876983302413460559}
   m_Layer: 0
   m_Name: Control Room Window 2
   m_TagString: Untagged
@@ -11157,6 +11424,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 3, y: 3}
   health: 350
+--- !u!114 &876983302413460559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8658228138589478813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &8695499099162153393
 GameObject:
   m_ObjectHideFlags: 0

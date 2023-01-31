@@ -794,6 +794,7 @@ GameObject:
   - component: {fileID: 9108569079954261613}
   - component: {fileID: 7772891800291383440}
   - component: {fileID: 6244201675914714176}
+  - component: {fileID: 3721210864593669927}
   m_Layer: 0
   m_Name: Fence (1)
   m_TagString: Untagged
@@ -878,6 +879,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3721210864593669927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313768553408691564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &338689742059825073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,9 +1287,10 @@ GameObject:
   - component: {fileID: 8544305801098026374}
   - component: {fileID: 6923815624171896416}
   - component: {fileID: 4334786354617878231}
+  - component: {fileID: 5104930541303562743}
   m_Layer: 0
   m_Name: Lid (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1344,6 +1359,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5104930541303562743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881094159039156354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &1060695468276928846
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,9 +1740,10 @@ GameObject:
   - component: {fileID: 7664444555759745000}
   - component: {fileID: 7719289721244572255}
   - component: {fileID: 6871854078051718612}
+  - component: {fileID: 6030853909123258475}
   m_Layer: 0
   m_Name: Lid
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1783,6 +1812,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6030853909123258475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336015372546323330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &1846814079964234832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1795,6 +1837,7 @@ GameObject:
   - component: {fileID: 3435624917811481801}
   - component: {fileID: 2530970261767444454}
   - component: {fileID: 6665510462326668590}
+  - component: {fileID: 3303697383394704585}
   m_Layer: 0
   m_Name: Fence
   m_TagString: Untagged
@@ -1879,6 +1922,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3303697383394704585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1846814079964234832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &1930567918774736673
 GameObject:
   m_ObjectHideFlags: 0
@@ -1891,6 +1947,7 @@ GameObject:
   - component: {fileID: 1930567918774736677}
   - component: {fileID: 1930567918774736676}
   - component: {fileID: 1930567918774736679}
+  - component: {fileID: 4505904776889268764}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -1975,6 +2032,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4505904776889268764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930567918774736673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1930567919242216914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1984,6 +2054,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1930567919242216915}
+  - component: {fileID: 3711630130694669957}
   m_Layer: 0
   m_Name: Dumpster
   m_TagString: Untagged
@@ -2007,6 +2078,19 @@ Transform:
   m_Father: {fileID: 2768942583193437157}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &3711630130694669957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930567919242216914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1930567919372314224
 GameObject:
   m_ObjectHideFlags: 0
@@ -2018,6 +2102,7 @@ GameObject:
   - component: {fileID: 1930567919372314225}
   - component: {fileID: 1930567919372314228}
   - component: {fileID: 1930567919372314231}
+  - component: {fileID: 6000187168765383667}
   m_Layer: 0
   m_Name: Lid
   m_TagString: Untagged
@@ -2089,6 +2174,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6000187168765383667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930567919372314224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1954811459611184956
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,9 +2483,10 @@ GameObject:
   - component: {fileID: 2805325027464388075}
   - component: {fileID: 7114278779633467403}
   - component: {fileID: 4750142031885459062}
+  - component: {fileID: 3897162102545420687}
   m_Layer: 0
   m_Name: Box (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2469,6 +2568,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3897162102545420687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618040151337410361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &2635030282811965314
 GameObject:
   m_ObjectHideFlags: 0
@@ -2481,6 +2593,7 @@ GameObject:
   - component: {fileID: 4442344437880558563}
   - component: {fileID: 9139473010040266265}
   - component: {fileID: 1951571172502443438}
+  - component: {fileID: 146326029817281263}
   m_Layer: 0
   m_Name: Fence (3)
   m_TagString: Untagged
@@ -2565,6 +2678,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &146326029817281263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2635030282811965314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &2654890885696860948
 GameObject:
   m_ObjectHideFlags: 0
@@ -3748,9 +3874,10 @@ GameObject:
   - component: {fileID: 5294347373729342243}
   - component: {fileID: 3246628843010704080}
   - component: {fileID: 5547552547198406662}
+  - component: {fileID: 5305490995297397341}
   m_Layer: 0
   m_Name: Lid (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3819,6 +3946,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5305490995297397341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4754485062885345887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &5271924401095649898
 GameObject:
   m_ObjectHideFlags: 0
@@ -4310,9 +4450,10 @@ GameObject:
   - component: {fileID: 8676805428058471981}
   - component: {fileID: 5647840442245520774}
   - component: {fileID: 4991793951386717941}
+  - component: {fileID: 7533544963582680421}
   m_Layer: 0
   m_Name: Lid (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4381,6 +4522,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7533544963582680421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5928456540331787889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &6162940735806453102
 GameObject:
   m_ObjectHideFlags: 0
@@ -4799,9 +4953,10 @@ GameObject:
   - component: {fileID: 7582785635618802669}
   - component: {fileID: 7649412450894160467}
   - component: {fileID: 3552254782677037056}
+  - component: {fileID: 3784085000992517023}
   m_Layer: 0
   m_Name: Box (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4883,6 +5038,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3784085000992517023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6835454489867796385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &7053787193522151877
 GameObject:
   m_ObjectHideFlags: 0
@@ -4926,9 +5094,10 @@ GameObject:
   - component: {fileID: 2498704022103837061}
   - component: {fileID: 2476345893920252413}
   - component: {fileID: 3425927364409010268}
+  - component: {fileID: 3080726896889214686}
   m_Layer: 0
   m_Name: Box
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5010,6 +5179,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3080726896889214686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7103517108267124287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &7116359104770483524
 GameObject:
   m_ObjectHideFlags: 0
@@ -5019,9 +5201,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 936671845047883518}
+  - component: {fileID: 85606239482842517}
   m_Layer: 0
   m_Name: Crate Group (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5046,6 +5229,19 @@ Transform:
   m_Father: {fileID: 2768942583193437157}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &85606239482842517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7116359104770483524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &7152642947319548358
 GameObject:
   m_ObjectHideFlags: 0
@@ -5503,9 +5699,10 @@ GameObject:
   - component: {fileID: 8192781508007939762}
   - component: {fileID: 4612235175797001117}
   - component: {fileID: 4192094176923340351}
+  - component: {fileID: 1589707184428082405}
   m_Layer: 0
   m_Name: Box (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5587,6 +5784,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1589707184428082405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7824973815941812364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8385786039446460838
 GameObject:
   m_ObjectHideFlags: 0
@@ -5804,9 +6014,10 @@ GameObject:
   - component: {fileID: 8556041786352995933}
   - component: {fileID: 8556041786352995932}
   - component: {fileID: 8556041786352995935}
+  - component: {fileID: 1748377478716036006}
   m_Layer: 0
   m_Name: Box
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5888,6 +6099,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1748377478716036006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556041786352995929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8556041786695286536
 GameObject:
   m_ObjectHideFlags: 0
@@ -5899,9 +6123,10 @@ GameObject:
   - component: {fileID: 8556041786695286537}
   - component: {fileID: 8556041786695286540}
   - component: {fileID: 8556041786695286543}
+  - component: {fileID: 3854214789458112999}
   m_Layer: 0
   m_Name: Lid
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5970,6 +6195,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3854214789458112999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556041786695286536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8556041786816978090
 GameObject:
   m_ObjectHideFlags: 0
@@ -5979,9 +6217,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8556041786816978091}
+  - component: {fileID: 919348913875170655}
   m_Layer: 0
   m_Name: Crate Group
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6006,6 +6245,19 @@ Transform:
   m_Father: {fileID: 2768942583193437157}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &919348913875170655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556041786816978090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8685043448029681572
 GameObject:
   m_ObjectHideFlags: 0
@@ -6017,9 +6269,10 @@ GameObject:
   - component: {fileID: 4767340484608416467}
   - component: {fileID: 4121118881357955099}
   - component: {fileID: 5473039738971216685}
+  - component: {fileID: 1163109235962286170}
   m_Layer: 0
   m_Name: Lid (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6088,6 +6341,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1163109235962286170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8685043448029681572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8925989927216963874
 GameObject:
   m_ObjectHideFlags: 0
@@ -6801,6 +7067,7 @@ GameObject:
   - component: {fileID: 7083565671537984837}
   - component: {fileID: 6791535559560838703}
   - component: {fileID: 3910705907130622893}
+  - component: {fileID: 2551363515765990793}
   m_Layer: 0
   m_Name: Fence (2)
   m_TagString: Untagged
@@ -6885,6 +7152,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2551363515765990793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9023010062669181054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &9094846418232612506
 GameObject:
   m_ObjectHideFlags: 0
@@ -6897,9 +7177,10 @@ GameObject:
   - component: {fileID: 2319767324148458317}
   - component: {fileID: 6018421939828431172}
   - component: {fileID: 3188030045345501614}
+  - component: {fileID: 6663832332175690020}
   m_Layer: 0
   m_Name: Box (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6981,6 +7262,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6663832332175690020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9094846418232612506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &9207754404462902192
 GameObject:
   m_ObjectHideFlags: 0

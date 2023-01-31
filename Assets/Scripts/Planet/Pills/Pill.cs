@@ -46,7 +46,10 @@ public class Pill : MonoBehaviour, Damageable
             return;
 
         if (voice)
-            Say(voice.GetOof(), damageType != DamageType.Fire, Random.Range(0.2f, 0.4f));
+        {
+            AudioClip deathShriek = damage < 100.0f ? voice.GetOof() : voice.GetDramaticDeath();
+            Say(deathShriek, damageType != DamageType.Fire, Random.Range(0.2f, 0.4f));
+        }
 
         //Friendly fire is prevented!
         if (this.team == team)
@@ -108,14 +111,18 @@ public class Pill : MonoBehaviour, Damageable
     protected void OnCollisionEnter (Collision collision)
     {
         //This check is needed... pills often stab each other to death at the same time and when that happens this function can be called on a disabled gameobject.
-        //If allowed to continue when disabled, you get warnings about playing audio from disabled audio source.
-        if (!gameObject.activeInHierarchy)
+        //If allowed to continue when disabled, you get warnings about playing audio from a disabled audio source.
+        if (!gameObject.activeInHierarchy || !rBody)
             return;
 
         int layerHit = collision.GetContact(0).thisCollider.gameObject.layer;
 
+        //Hard bodily impact
+        if (collision.relativeVelocity.magnitude > 10.0f)
+            ProcessNonTrivialBodilyImpact(collision);
+
         //Pointy (layer 8) and blunt (layer 9) objects can damage pills upon contact
-        if (holding && (layerHit == 8 || layerHit == 9))
+        else if (holding && (layerHit == 8 || layerHit == 9))
         {
             Damageable hitObject = collision.GetContact(0).otherCollider.GetComponent<Damageable>();
             Pill hitPill = collision.GetContact(0).otherCollider.GetComponent<Pill>();
@@ -127,7 +134,7 @@ public class Pill : MonoBehaviour, Damageable
                     //Apply damage and knockback
                     hitObject.Damage(holding.meleeDamage, holding.meleeKnockback, transform.position, DamageType.Melee, team);
 
-                    if(hitPill && hitPill.team != team)
+                    if (hitPill && hitPill.team != team)
                     {
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
@@ -163,6 +170,44 @@ public class Pill : MonoBehaviour, Damageable
                     mainAudioSource.PlayOneShot(God.god.genericImpact);
             }
         }
+    }
+
+    private void ProcessNonTrivialBodilyImpact(Collision collision)
+    {
+        float impactSpeed = collision.relativeVelocity.magnitude;
+        
+        PlayNonTrivialImpactSound(collision);
+
+        if(impactSpeed > 20.0f)
+            DamageSelfAndOtherFromNonTrivialImpact(collision, impactSpeed);
+    }
+
+    private void PlayNonTrivialImpactSound(Collision collision)
+    {
+        //What material did we hit?
+        PlanetMaterialType contactedMaterial = PlanetMaterial.GetMaterialFromTransform(collision.GetContact(0).otherCollider.transform, transform.position);
+
+        //Play sound if there is one for that
+        AudioClip hitSound = PlanetMaterial.GetMaterialAudio(contactedMaterial, PlanetMaterialInteractionType.MediumImpact);
+        if (hitSound)
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+    }
+
+    private void DamageSelfAndOtherFromNonTrivialImpact(Collision collision, float impactSpeed)
+    {
+        float damage = (impactSpeed - 20.0f) * 3.5f;
+
+        //If the pill is in an elevator, airship, hovercraft, or any other piece of technology dampen the damage to help with possible jankiness issues
+        if (transform.parent)
+            damage *= 0.2f;
+
+        //Damage what we hit
+        Damageable hitObject = collision.GetContact(0).otherCollider.GetComponent<Damageable>();
+        if (hitObject != null)
+            hitObject.Damage(damage, 0.0f, transform.position, DamageType.ImpactSpeed, team);
+
+        //Damage ourselves
+        Damage(damage, 0.0f, transform.position, DamageType.ImpactSpeed, -420);
     }
 
     public virtual bool StabbingWithIntentToExecute(float durationIntoExecution) { return false; }
@@ -320,17 +365,28 @@ public class Pill : MonoBehaviour, Damageable
     {
         performingAction = false;
         health = maxHealth;
-
         dead = false;
 
+        WipeAnyLingeringEffectsFromPastLife();
+
+        gameObject.SetActive(true);
+    }
+
+    private void WipeAnyLingeringEffectsFromPastLife()
+    {
         //Extinguish any fires from a previous life, the future cannot be weighed down by burdens of the past
-        if(onFire)
+        if (onFire)
         {
             Destroy(transform.GetComponentInChildren<Fire>().gameObject);
             onFire = false;
         }
 
-        gameObject.SetActive(true);
+        //Same with skydiving deaths
+        if (rBody)
+            rBody.velocity = Vector3.zero;
+
+        //And we do not speak about the past
+        mainAudioSource.Stop();
     }
 
     public virtual void EquipGear (GameObject gear, bool forHead) { }

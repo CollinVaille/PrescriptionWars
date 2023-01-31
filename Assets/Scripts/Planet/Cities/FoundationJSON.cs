@@ -29,7 +29,8 @@ public class FoundationJSON
         SetScale(slab, ground);
         transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-        SetMaterialsIfNeeded(ground, city.foundationManager);
+        SetRenderMaterialsIfNeeded(slab, ground, city.foundationManager);
+        SetPlanetMaterialForGround(slab, city.foundationManager);
 
         //Add foundation to saving system
         if (city.foundationManager.foundations == null)
@@ -58,19 +59,24 @@ public class FoundationJSON
         ground.localPosition = groundPosition;
     }
 
-    private void SetMaterialsIfNeeded(Transform ground, FoundationManager foundationManager)
+    private void SetRenderMaterialsIfNeeded(Transform slab, Transform ground, FoundationManager foundationManager)
     {
         //Large scale sections of the foundation use a large scale version of the ground and slab material.
         //That large scale version is already placed on them and programatically scaled elsewhere in the program.
         //However, for smaller scale sections of foundation we directly set the renderer's shared material to that of the reference material.
         //This allows the smaller scale sections of the foundation to not have extra tiling while the large scale sections do.
 
-        if (ground.localScale.x < 100.0f)
+        if (slab.localScale.x < 100.0f)
         {
             Renderer groundRenderer = ground.GetComponent<Renderer>();
             if (groundRenderer)
                 groundRenderer.sharedMaterial = foundationManager.groundMaterial;
         }
 
+    }
+
+    private void SetPlanetMaterialForGround(Transform slab, FoundationManager foundationManager)
+    {
+        PlanetMaterial.SetMaterialTypeBasedOnName(foundationManager.groundMaterial.name, slab.Find("Ground Collider").gameObject);
     }
 }

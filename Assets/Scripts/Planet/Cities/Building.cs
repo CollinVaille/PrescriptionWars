@@ -66,8 +66,7 @@ public class Building : MonoBehaviour
             else if (theRenderer && theRenderer.sharedMaterial == city.defaultFloorMaterial)
             {
                 theRenderer.sharedMaterial = floor;
-                if (floor.name.Contains("Wood"))
-                    child.tag = "Wood";
+                PlanetMaterial.SetMaterialTypeBasedOnName(floor.name, child.gameObject);
             }
 
             if (child.childCount > 0)

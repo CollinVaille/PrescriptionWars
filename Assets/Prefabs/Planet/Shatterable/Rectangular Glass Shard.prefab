@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1916206174893790069}
   - component: {fileID: 6767881523546852850}
   - component: {fileID: 7717650658689880975}
+  - component: {fileID: 1303581164715674775}
   m_Layer: 0
   m_Name: Rectangular Glass Shard
   m_TagString: Untagged
@@ -114,6 +115,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1303581164715674775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875487179284960803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &7229816529968359857
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.6963989, g: 0.74522036, b: 0.7588593, a: 1}
+  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 0
+  biome: 1
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -14387,10 +14387,8 @@ MonoBehaviour:
   hasOcean: 1
   ice: {fileID: 2100000, guid: 3c62456a5537ade4d913bfd4c20663d3, type: 2}
   ambientVolume: 1
-  groundWalking: {fileID: 0}
-  groundRunning: {fileID: 0}
-  seabedWalking: {fileID: 0}
-  seabedRunning: {fileID: 0}
+  groundMaterial: 0
+  seabedMaterial: 0
   cityPrefab: {fileID: 3469767919227977101, guid: 0cc35a3868bd1f340ad78068687ef297,
     type: 3}
   cities: []
@@ -21648,7 +21646,7 @@ MonoBehaviour:
     - Open Gate 1
     - Open Gate 2
     - Open Gate 3
-    fencePostChance: 1
+    fencePostChance: 0
     fencePosts:
     - Fence Post Slab
     - Fence Post Slab 2

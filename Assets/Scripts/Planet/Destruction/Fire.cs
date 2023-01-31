@@ -54,7 +54,16 @@ public class Fire : MonoBehaviour
 
     public static bool IsFlammable (Transform target)
     {
-        return target.CompareTag("Wood") || target.GetComponent<Damageable>() != null;
+        if (target.GetComponent<Damageable>() != null)
+            return true;
+        else
+        {
+            PlanetMaterial planetMaterial = target.GetComponent<PlanetMaterial>();
+            if (planetMaterial)
+                return PlanetMaterial.IsFlammable(planetMaterial.planetMaterialType);
+            else
+                return false;
+        }
     }
 
     //INSTANCE STUFF-------------------------------------------------------------------------------------

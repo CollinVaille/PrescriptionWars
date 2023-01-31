@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1396986392853426929}
   - component: {fileID: 6059862160762334326}
   - component: {fileID: 7128695210655379979}
+  - component: {fileID: 3016473333806215633}
   m_Layer: 0
   m_Name: Triangular Glass Shard
   m_TagString: Untagged
@@ -114,6 +115,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3016473333806215633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419668295593047975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &7899836221543909429
 GameObject:
   m_ObjectHideFlags: 0

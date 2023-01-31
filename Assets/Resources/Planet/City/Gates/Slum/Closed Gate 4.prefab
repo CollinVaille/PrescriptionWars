@@ -2003,6 +2003,7 @@ GameObject:
   - component: {fileID: 1520339117453001550}
   - component: {fileID: 1520339117453001549}
   - component: {fileID: 1520339117453001548}
+  - component: {fileID: 4821266639852069296}
   m_Layer: 0
   m_Name: Gate Roof
   m_TagString: Untagged
@@ -2087,6 +2088,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4821266639852069296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520339117453001522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &1520339117680263170
 GameObject:
   m_ObjectHideFlags: 0

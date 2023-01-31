@@ -692,9 +692,10 @@ GameObject:
   - component: {fileID: 868258104799249985}
   - component: {fileID: 5213152696542550945}
   - component: {fileID: 7712921340134655452}
+  - component: {fileID: 1059479636121780958}
   m_Layer: 0
   m_Name: Box (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -776,6 +777,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1059479636121780958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060331351867376787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &1294565725580260671
 GameObject:
   m_ObjectHideFlags: 0
@@ -2487,9 +2501,10 @@ GameObject:
   - component: {fileID: 6661194116244637228}
   - component: {fileID: 5401080095127266762}
   - component: {fileID: 1642240615932190077}
+  - component: {fileID: 4680705357743275307}
   m_Layer: 0
   m_Name: Lid (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2558,6 +2573,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4680705357743275307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2799108537800559400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &2928585320852607904
 GameObject:
   m_ObjectHideFlags: 0
@@ -3554,6 +3582,7 @@ GameObject:
   - component: {fileID: 8834175288559411678}
   - component: {fileID: 792248695049760353}
   - component: {fileID: 3044507025266935621}
+  - component: {fileID: 114902515017390586}
   m_Layer: 0
   m_Name: Glass Battlement (3)
   m_TagString: Untagged
@@ -3657,6 +3686,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 6}
   health: 350
+--- !u!114 &114902515017390586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354251650109530337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &3357809943179378476
 GameObject:
   m_ObjectHideFlags: 0
@@ -4006,6 +4048,7 @@ GameObject:
   - component: {fileID: 3504629515365205948}
   - component: {fileID: 3504629515365205923}
   - component: {fileID: 7355891127560002855}
+  - component: {fileID: 2950955086956138690}
   m_Layer: 0
   m_Name: Penthouse Window
   m_TagString: Untagged
@@ -4109,6 +4152,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &2950955086956138690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3504629515365205921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &3725380116619136976
 GameObject:
   m_ObjectHideFlags: 0
@@ -4122,6 +4178,7 @@ GameObject:
   - component: {fileID: 8244920877604223486}
   - component: {fileID: 5721648713914108265}
   - component: {fileID: 9084325570970895628}
+  - component: {fileID: 4959024755127480223}
   m_Layer: 0
   m_Name: Glass Roof
   m_TagString: Untagged
@@ -4235,6 +4292,19 @@ MonoBehaviour:
   m_VoxelSize: 0.2
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &4959024755127480223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3725380116619136976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &3790922975385683122
 GameObject:
   m_ObjectHideFlags: 0
@@ -4534,9 +4604,10 @@ GameObject:
   - component: {fileID: 4665654092877704258}
   - component: {fileID: 4738425628300509685}
   - component: {fileID: 8484661828632792702}
+  - component: {fileID: 4437701432838761477}
   m_Layer: 0
   m_Name: Lid
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4605,6 +4676,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4437701432838761477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4064589913360394280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &4086891098984554481
 GameObject:
   m_ObjectHideFlags: 0
@@ -4871,6 +4955,7 @@ GameObject:
   - component: {fileID: 6063693507592742508}
   - component: {fileID: 5836676582866060008}
   - component: {fileID: 8528796548577795300}
+  - component: {fileID: 3720979112208805277}
   m_Layer: 0
   m_Name: Glass Battlement (2)
   m_TagString: Untagged
@@ -4974,6 +5059,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 6}
   health: 350
+--- !u!114 &3720979112208805277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4318091640277224620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &4344970056422578437
 GameObject:
   m_ObjectHideFlags: 0
@@ -5238,9 +5336,10 @@ GameObject:
   - component: {fileID: 7943071480835861118}
   - component: {fileID: 5913753653901579177}
   - component: {fileID: 1179180483275706377}
+  - component: {fileID: 1682724179376261359}
   m_Layer: 0
   m_Name: Rooftop Bridge
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5351,6 +5450,19 @@ MonoBehaviour:
   m_VoxelSize: 0.2
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &1682724179376261359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4619887069773121140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &4638406467872245250
 GameObject:
   m_ObjectHideFlags: 0
@@ -5843,9 +5955,10 @@ GameObject:
   - component: {fileID: 7903553942048933438}
   - component: {fileID: 1901109365943015705}
   - component: {fileID: 4722824207146090337}
+  - component: {fileID: 38611941493597205}
   m_Layer: 0
   m_Name: Rooftop Bridge (2)
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5956,6 +6069,19 @@ MonoBehaviour:
   m_VoxelSize: 0.2
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &38611941493597205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908442034360260019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5077188595083578150
 GameObject:
   m_ObjectHideFlags: 0
@@ -5968,9 +6094,10 @@ GameObject:
   - component: {fileID: 6579956166592107800}
   - component: {fileID: 7702241053253816375}
   - component: {fileID: 1211300537535894933}
+  - component: {fileID: 2661416876758850201}
   m_Layer: 0
   m_Name: Box (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6052,6 +6179,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2661416876758850201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5077188595083578150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &5120188922790762063
 GameObject:
   m_ObjectHideFlags: 0
@@ -6253,9 +6393,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2746511937589120340}
+  - component: {fileID: 6652580969749480451}
   m_Layer: 0
   m_Name: Crate Group (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6280,6 +6421,19 @@ Transform:
   m_Father: {fileID: 905059153664038991}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 209.845, z: 0}
+--- !u!114 &6652580969749480451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5197236418284945134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &5221619435919564181
 GameObject:
   m_ObjectHideFlags: 0
@@ -6292,9 +6446,10 @@ GameObject:
   - component: {fileID: 598703921593586223}
   - component: {fileID: 630388923447900759}
   - component: {fileID: 389982291567145974}
+  - component: {fileID: 8918476369664701170}
   m_Layer: 0
   m_Name: Box
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6376,6 +6531,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8918476369664701170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5221619435919564181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &5423143294051105947
 GameObject:
   m_ObjectHideFlags: 0
@@ -6389,6 +6557,7 @@ GameObject:
   - component: {fileID: 1122724136011449876}
   - component: {fileID: 2561810671940976068}
   - component: {fileID: 61659201082650718}
+  - component: {fileID: 8240369364156023758}
   m_Layer: 0
   m_Name: Penthouse Window (2)
   m_TagString: Untagged
@@ -6492,6 +6661,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &8240369364156023758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5423143294051105947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &5505409880928498006
 GameObject:
   m_ObjectHideFlags: 0
@@ -6824,6 +7006,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989d06060c3cd8c4caa6fccc9ce76680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7132339290168692746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5840163036093902869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
+--- !u!114 &3163731100962895083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5840163036565447398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &5937240858063162382
 GameObject:
   m_ObjectHideFlags: 0
@@ -6837,7 +7045,7 @@ GameObject:
   - component: {fileID: 6995793087835865223}
   m_Layer: 0
   m_Name: Lid (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6919,6 +7127,7 @@ GameObject:
   - component: {fileID: 5558165028484442463}
   - component: {fileID: 8702287478239510026}
   - component: {fileID: 629855440363698422}
+  - component: {fileID: 740524773992280352}
   m_Layer: 0
   m_Name: Penthouse Window (1)
   m_TagString: Untagged
@@ -7022,6 +7231,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 2, y: 2}
   health: 350
+--- !u!114 &740524773992280352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5989507105040900953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &6017782422270464441
 GameObject:
   m_ObjectHideFlags: 0
@@ -7165,9 +7387,10 @@ GameObject:
   - component: {fileID: 780055179864291559}
   - component: {fileID: 8748122174646829806}
   - component: {fileID: 494270565280483844}
+  - component: {fileID: 5059257320837104227}
   m_Layer: 0
   m_Name: Box (1)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7249,6 +7472,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5059257320837104227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6112874239819500848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &6457828694891327198
 GameObject:
   m_ObjectHideFlags: 0
@@ -7262,6 +7498,7 @@ GameObject:
   - component: {fileID: 8461870672505105869}
   - component: {fileID: 7682752590347283629}
   - component: {fileID: 2695334554360432923}
+  - component: {fileID: 6481671047545287796}
   m_Layer: 0
   m_Name: Glass Battlement
   m_TagString: Untagged
@@ -7365,6 +7602,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 6}
   health: 350
+--- !u!114 &6481671047545287796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457828694891327198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &6656041757510653427
 GameObject:
   m_ObjectHideFlags: 0
@@ -7377,9 +7627,10 @@ GameObject:
   - component: {fileID: 6656041757510653431}
   - component: {fileID: 6656041757510653430}
   - component: {fileID: 6656041757510653429}
+  - component: {fileID: 272269457000738783}
   m_Layer: 0
   m_Name: Box
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7461,6 +7712,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &272269457000738783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6656041757510653427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &6656041759060068096
 GameObject:
   m_ObjectHideFlags: 0
@@ -7470,9 +7734,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6656041759060068097}
+  - component: {fileID: 3366840836687970170}
   m_Layer: 0
   m_Name: Crate Group
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7497,6 +7762,19 @@ Transform:
   m_Father: {fileID: 905059153664038991}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 149.084, z: 0}
+--- !u!114 &3366840836687970170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6656041759060068096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &6656041759198422178
 GameObject:
   m_ObjectHideFlags: 0
@@ -7510,7 +7788,7 @@ GameObject:
   - component: {fileID: 6656041759198422181}
   m_Layer: 0
   m_Name: Lid
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7592,6 +7870,7 @@ GameObject:
   - component: {fileID: 6269131902059570864}
   - component: {fileID: 3435138819643727203}
   - component: {fileID: 4548978303851804440}
+  - component: {fileID: 4085284540019251514}
   m_Layer: 0
   m_Name: Glass Battlement (1)
   m_TagString: Untagged
@@ -7695,6 +7974,19 @@ MonoBehaviour:
     type: 3}
   fractures: {x: 1, y: 6}
   health: 350
+--- !u!114 &4085284540019251514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002009318326264485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 13
 --- !u!1 &7335600580242217831
 GameObject:
   m_ObjectHideFlags: 0
@@ -7996,7 +8288,7 @@ GameObject:
   - component: {fileID: 7358589032948681644}
   m_Layer: 0
   m_Name: Lid (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8449,9 +8741,10 @@ GameObject:
   - component: {fileID: 1862759792825125889}
   - component: {fileID: 3350697855147998708}
   - component: {fileID: 1881922967509295473}
+  - component: {fileID: 39544231080001240}
   m_Layer: 0
   m_Name: Rooftop Bridge (1)
-  m_TagString: Metal
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8562,6 +8855,19 @@ MonoBehaviour:
   m_VoxelSize: 0.2
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &39544231080001240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8227386980972960933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &8286874759639846425
 GameObject:
   m_ObjectHideFlags: 0
@@ -8683,9 +8989,10 @@ GameObject:
   - component: {fileID: 4889043627198681159}
   - component: {fileID: 4668548371090373113}
   - component: {fileID: 1994545969249348522}
+  - component: {fileID: 3894224823129536265}
   m_Layer: 0
   m_Name: Box (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8767,6 +9074,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3894224823129536265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8376204641834492939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8693130125568351707
 GameObject:
   m_ObjectHideFlags: 0
@@ -8778,9 +9098,10 @@ GameObject:
   - component: {fileID: 5947034687057028487}
   - component: {fileID: 7242633655532635692}
   - component: {fileID: 8044627660262315359}
+  - component: {fileID: 2307743975006058602}
   m_Layer: 0
   m_Name: Lid (2)
-  m_TagString: Wood
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8849,6 +9170,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2307743975006058602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8693130125568351707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 6
 --- !u!1 &8701048795760074057
 GameObject:
   m_ObjectHideFlags: 0
@@ -9712,10 +10046,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 905059153664038991}
     m_Modifications:
+    - target: {fileID: 7363608875124811761, guid: e1605265a188bdf4983de0940d05e831,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 7363608876804846850, guid: e1605265a188bdf4983de0940d05e831,
         type: 3}
       propertyPath: m_Name
       value: Crate
+      objectReference: {fileID: 0}
+    - target: {fileID: 7363608876804846850, guid: e1605265a188bdf4983de0940d05e831,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7363608876804846851, guid: e1605265a188bdf4983de0940d05e831,
         type: 3}
@@ -9772,11 +10116,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7363608876943185568, guid: e1605265a188bdf4983de0940d05e831,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1605265a188bdf4983de0940d05e831, type: 3}
+--- !u!1 &5840163036565447398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7363608875124811761, guid: e1605265a188bdf4983de0940d05e831,
+    type: 3}
+  m_PrefabInstance: {fileID: 3980238779182204183}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5840163036093902868 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7363608876804846851, guid: e1605265a188bdf4983de0940d05e831,
+    type: 3}
+  m_PrefabInstance: {fileID: 3980238779182204183}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5840163036093902869 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7363608876804846850, guid: e1605265a188bdf4983de0940d05e831,
     type: 3}
   m_PrefabInstance: {fileID: 3980238779182204183}
   m_PrefabAsset: {fileID: 0}
