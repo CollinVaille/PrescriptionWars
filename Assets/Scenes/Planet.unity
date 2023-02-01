@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
+  m_IndirectSpecularColor: {r: 0.20245346, g: 0.326593, b: 0.4543758, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 1
+  biome: 3
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -14411,7 +14411,6 @@ MonoBehaviour:
   jab: {fileID: 8300000, guid: 1edad35ab620fe7459e2bd6065839a9e, type: 3}
   softItemImpact: {fileID: 8300000, guid: 64a96386d16dcd849ad59a5f8730df58, type: 3}
   hardItemImpact: {fileID: 8300000, guid: d69fd149cc71faf4e8047900af08320a, type: 3}
-  genericImpact: {fileID: 8300000, guid: 2642dc7bfcfca5f4d8c02b110b76afad, type: 3}
   corpsePrefab: {fileID: 5059777174072120811, guid: c1e5b5b56bf4ec744b632edcf9473c91,
     type: 3}
   altitudeLimits: {x: 0, y: 1250}
@@ -21601,13 +21600,13 @@ MonoBehaviour:
     - Sand Wall
     - Sand Wall 2
     - Slate Tile Floor
-    - Rusted Deck Plates Metal
+    - Rusted Deck Plates Hollow Metal
     slabMaterials:
     - Sand Wall
     - Cobblestone Wall
     groundMaterials:
     - Slate Tile Floor
-    - Rusted Deck Plates Metal
+    - Rusted Deck Plates Hollow Metal
   - name: Spirit
     wallMaterials:
     - Metal Wall Panel
@@ -21646,7 +21645,7 @@ MonoBehaviour:
     - Open Gate 1
     - Open Gate 2
     - Open Gate 3
-    fencePostChance: 0
+    fencePostChance: 0.5
     fencePosts:
     - Fence Post Slab
     - Fence Post Slab 2

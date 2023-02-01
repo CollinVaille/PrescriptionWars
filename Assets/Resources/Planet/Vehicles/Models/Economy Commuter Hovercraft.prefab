@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4999935335844889874}
   - component: {fileID: 1612253315599350251}
   - component: {fileID: 9026028133086665216}
+  - component: {fileID: 451178797554109956}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -96,6 +97,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.023000004, y: 2.6187115, z: 0.023000015}
   m_Center: {x: 9.313226e-10, y: 1.3088923, z: 0.00000011688098}
+--- !u!114 &451178797554109956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036683151833599287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1036683152878833431
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,6 +123,7 @@ GameObject:
   - component: {fileID: 1612253314897656779}
   - component: {fileID: 9026028131841074476}
   - component: {fileID: 7414532497799579940}
+  - component: {fileID: 881632895415787756}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -207,10 +222,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 500
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
+  engineType: 0
   exhaustCloud: {fileID: 4264657143761105392}
   exhaustStream: {fileID: 4264657143761089540}
   exhaustManager: {fileID: 2411122447660944722}
+  supportReverseThrusting: 1
   center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &881632895415787756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036683152878833431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1943689229526989017
 GameObject:
   m_ObjectHideFlags: 0
@@ -5042,7 +5072,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9e3c65c8b316a5f44b71566e7ae3496f, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5134,6 +5163,7 @@ GameObject:
   - component: {fileID: 3046276885829072977}
   - component: {fileID: 3046276885829072976}
   - component: {fileID: 3046276885829073007}
+  - component: {fileID: 4187727767226156583}
   m_Layer: 0
   m_Name: Engine Cross Struct
   m_TagString: Untagged
@@ -5218,6 +5248,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: 0.00000005960467, y: 1.0587912e-22, z: -0.00000008940697}
+--- !u!114 &4187727767226156583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276885829073005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276885848757001
 GameObject:
   m_ObjectHideFlags: 0
@@ -5311,8 +5354,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   powerOn: {fileID: 8300000, guid: a87e95437215c394db0cf1d5b1e9465e, type: 3}
   powerOff: {fileID: 8300000, guid: 68c65ec691fccd14a8c3631b8bf90946, type: 3}
-  gasPedal: 0
-  steeringWheel: 0
   thrustPower: 2000
   brakePower: 1500
   turnStrength: 90
@@ -5562,6 +5603,7 @@ GameObject:
   - component: {fileID: 3046276885888151198}
   - component: {fileID: 3046276885888151197}
   - component: {fileID: 3046276885888151196}
+  - component: {fileID: 159869148627820446}
   m_Layer: 0
   m_Name: Control Panel
   m_TagString: Untagged
@@ -5646,6 +5688,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &159869148627820446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276885888151194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276885908464529
 GameObject:
   m_ObjectHideFlags: 0
@@ -5658,6 +5713,7 @@ GameObject:
   - component: {fileID: 3046276885908464533}
   - component: {fileID: 3046276885908464532}
   - component: {fileID: 3046276885908464531}
+  - component: {fileID: 8758948848314505690}
   m_Layer: 0
   m_Name: Engine Struct
   m_TagString: Untagged
@@ -5742,6 +5798,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.000015318394, y: -0.00000047683716, z: -0.00000008940697}
+--- !u!114 &8758948848314505690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276885908464529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276886013565050
 GameObject:
   m_ObjectHideFlags: 0
@@ -5754,6 +5823,7 @@ GameObject:
   - component: {fileID: 3046276886013565054}
   - component: {fileID: 3046276886013565053}
   - component: {fileID: 3046276886013565052}
+  - component: {fileID: 1530312977399964366}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -5838,6 +5908,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &1530312977399964366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276886013565050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276886338296506
 GameObject:
   m_ObjectHideFlags: 0
@@ -5850,6 +5933,7 @@ GameObject:
   - component: {fileID: 3046276886338296510}
   - component: {fileID: 3046276886338296509}
   - component: {fileID: 3046276886338296508}
+  - component: {fileID: 4340719411405344277}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Buoyant
@@ -5934,6 +6018,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 0.4}
   m_Center: {x: 0.000000059604645, y: 0.000030517578, z: -0.00000008940696}
+--- !u!114 &4340719411405344277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276886338296506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276886746499675
 GameObject:
   m_ObjectHideFlags: 0
@@ -6172,6 +6269,7 @@ GameObject:
   - component: {fileID: 3046276887237304933}
   - component: {fileID: 3046276887237304932}
   - component: {fileID: 3046276887237304931}
+  - component: {fileID: 2979820926585989043}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -6256,6 +6354,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2979820926585989043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276887237304929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3046276887301783751
 GameObject:
   m_ObjectHideFlags: 0
@@ -6268,6 +6379,7 @@ GameObject:
   - component: {fileID: 3046276887301783754}
   - component: {fileID: 3046276887301783753}
   - component: {fileID: 3046276887301783752}
+  - component: {fileID: 4823216123122530935}
   m_Layer: 0
   m_Name: Engine Base
   m_TagString: Untagged
@@ -6352,6 +6464,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2.0000005, z: 1.0000005}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940699}
+--- !u!114 &4823216123122530935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046276887301783751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &4098155292314525129
 GameObject:
   m_ObjectHideFlags: 0
@@ -11089,7 +11214,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: da38a8e0fe9c5e640a81293f0c299171, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20842,6 +20966,7 @@ GameObject:
   - component: {fileID: 3046276887178392778}
   - component: {fileID: 3046276887178392779}
   - component: {fileID: 3046276887178392780}
+  - component: {fileID: 22292257745145461}
   m_Layer: 0
   m_Name: Frame
   m_TagString: Untagged
@@ -20965,6 +21090,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.002054504, y: 2.6187108, z: 0.0075591044}
   m_Center: {x: 0.009481814, y: 1.3088919, z: 0.0004665621}
+--- !u!114 &22292257745145461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6442225158061162197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &6442225159224126336
 GameObject:
   m_ObjectHideFlags: 0
@@ -20978,6 +21116,7 @@ GameObject:
   - component: {fileID: 4709559779728645980}
   - component: {fileID: 3046276886818390459}
   - component: {fileID: 7184904933304962927}
+  - component: {fileID: 8798660399900037462}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -21076,10 +21215,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 500
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
+  engineType: 0
   exhaustCloud: {fileID: 2524869268136125488}
   exhaustStream: {fileID: 3541150385028437883}
   exhaustManager: {fileID: 2411122447660944722}
+  supportReverseThrusting: 1
   center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &8798660399900037462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6442225159224126336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &6951626651757188405
 GameObject:
   m_ObjectHideFlags: 0
@@ -25976,6 +26130,7 @@ GameObject:
   - component: {fileID: 9026028132555994631}
   - component: {fileID: 9026028132555994680}
   - component: {fileID: 9026028132555994681}
+  - component: {fileID: 2164333138512154041}
   m_Layer: 0
   m_Name: Engine Struct
   m_TagString: Untagged
@@ -26060,6 +26215,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 1.9999999, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2164333138512154041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026028132555994683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &9026028132684285702
 GameObject:
   m_ObjectHideFlags: 0
@@ -26072,6 +26240,7 @@ GameObject:
   - component: {fileID: 9026028132684285698}
   - component: {fileID: 9026028132684285699}
   - component: {fileID: 9026028132684285700}
+  - component: {fileID: 6867942899394552627}
   m_Layer: 0
   m_Name: Engine Struct
   m_TagString: Untagged
@@ -26156,6 +26325,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.000015318394, y: -0.0000009536743, z: -0.00000008940697}
+--- !u!114 &6867942899394552627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026028132684285702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &9026028132830403834
 GameObject:
   m_ObjectHideFlags: 0
@@ -26168,6 +26350,7 @@ GameObject:
   - component: {fileID: 9026028132830403782}
   - component: {fileID: 9026028132830403783}
   - component: {fileID: 9026028132830403832}
+  - component: {fileID: 2327780249812159820}
   m_Layer: 0
   m_Name: Engine Cross Struct
   m_TagString: Untagged
@@ -26252,3 +26435,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: -0.000001847744, y: 0.0000038146973, z: -0.00000008940697}
+--- !u!114 &2327780249812159820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9026028132830403834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12

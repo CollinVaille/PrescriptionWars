@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5056570986714040108}
   - component: {fileID: 5056570986714040111}
   - component: {fileID: 5056570986714040110}
+  - component: {fileID: 7347488170716173800}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -96,6 +97,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &7347488170716173800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570986714040104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570986722068345
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,6 +122,7 @@ GameObject:
   - component: {fileID: 5056570986722068349}
   - component: {fileID: 5056570986722068348}
   - component: {fileID: 5056570986722068351}
+  - component: {fileID: 8619752482661856290}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -192,6 +207,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &8619752482661856290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570986722068345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570986746215048
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +264,7 @@ GameObject:
   - component: {fileID: 5056570986794377180}
   - component: {fileID: 5056570986794377183}
   - component: {fileID: 5056570986794377182}
+  - component: {fileID: 5161461887961034681}
   m_Layer: 0
   m_Name: Engine Arm
   m_TagString: Untagged
@@ -320,6 +349,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: 0.00000005960467, y: 1.0587912e-22, z: -0.00000008940697}
+--- !u!114 &5161461887961034681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570986794377176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987021632764
 GameObject:
   m_ObjectHideFlags: 0
@@ -9934,7 +9976,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 9e3c65c8b316a5f44b71566e7ae3496f, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9992,6 +10033,7 @@ GameObject:
   - component: {fileID: 5056570987112204390}
   - component: {fileID: 5056570987112204385}
   - component: {fileID: 5056570987112204384}
+  - component: {fileID: 5733055375546546619}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -10076,6 +10118,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &5733055375546546619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987112204386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987116250960
 GameObject:
   m_ObjectHideFlags: 0
@@ -10204,6 +10259,7 @@ GameObject:
   - component: {fileID: 5056570987180504050}
   - component: {fileID: 5056570987180504045}
   - component: {fileID: 5056570987180504044}
+  - component: {fileID: 1583498572104052250}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -10288,6 +10344,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &1583498572104052250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987180504046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987184151401
 GameObject:
   m_ObjectHideFlags: 0
@@ -10416,8 +10485,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   powerOn: {fileID: 8300000, guid: a87e95437215c394db0cf1d5b1e9465e, type: 3}
   powerOff: {fileID: 8300000, guid: 68c65ec691fccd14a8c3631b8bf90946, type: 3}
-  gasPedal: 0
-  steeringWheel: 0
   thrustPower: 1500
   brakePower: 1000
   turnStrength: 45
@@ -10751,6 +10818,7 @@ GameObject:
   - component: {fileID: 5056570987267204057}
   - component: {fileID: 5056570987267204056}
   - component: {fileID: 5056570987267204059}
+  - component: {fileID: 1547095061237731424}
   m_Layer: 0
   m_Name: Engine Forearm
   m_TagString: Untagged
@@ -10835,6 +10903,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: 0.00000005960467, y: 1.0587912e-22, z: -0.00000008940697}
+--- !u!114 &1547095061237731424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987267204053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987361616532
 GameObject:
   m_ObjectHideFlags: 0
@@ -10847,6 +10928,7 @@ GameObject:
   - component: {fileID: 5056570987361616536}
   - component: {fileID: 5056570987361616539}
   - component: {fileID: 5056570987361616538}
+  - component: {fileID: 2043889635674439002}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -10931,6 +11013,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &2043889635674439002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987361616532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987460546789
 GameObject:
   m_ObjectHideFlags: 0
@@ -15725,6 +15820,7 @@ GameObject:
   - component: {fileID: 5056570987472941270}
   - component: {fileID: 5056570987472941265}
   - component: {fileID: 5056570987472941264}
+  - component: {fileID: 4415411212033993929}
   m_Layer: 0
   m_Name: Engine Arm
   m_TagString: Untagged
@@ -15809,6 +15905,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: 0.00000005960467, y: 1.0587912e-22, z: -0.00000008940697}
+--- !u!114 &4415411212033993929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987472941266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987612063781
 GameObject:
   m_ObjectHideFlags: 0
@@ -20722,6 +20831,7 @@ GameObject:
   - component: {fileID: 5056570987846510342}
   - component: {fileID: 5056570987846510337}
   - component: {fileID: 5056570987846510336}
+  - component: {fileID: 2009387010783072975}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -20806,6 +20916,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &2009387010783072975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987846510338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987857894994
 GameObject:
   m_ObjectHideFlags: 0
@@ -20818,6 +20941,7 @@ GameObject:
   - component: {fileID: 5056570987857894998}
   - component: {fileID: 5056570987857894993}
   - component: {fileID: 5056570987857894992}
+  - component: {fileID: 9025083338632680696}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -20902,6 +21026,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &9025083338632680696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987857894994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570987886793727
 GameObject:
   m_ObjectHideFlags: 0
@@ -20914,6 +21051,7 @@ GameObject:
   - component: {fileID: 5056570987886793603}
   - component: {fileID: 5056570987886793602}
   - component: {fileID: 5056570987886793725}
+  - component: {fileID: 8142237057563722925}
   m_Layer: 0
   m_Name: Dashboard
   m_TagString: Untagged
@@ -20998,6 +21136,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8142237057563722925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570987886793727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988023897250
 GameObject:
   m_ObjectHideFlags: 0
@@ -21010,6 +21161,7 @@ GameObject:
   - component: {fileID: 5056570988023897254}
   - component: {fileID: 5056570988023897249}
   - component: {fileID: 5056570988023897248}
+  - component: {fileID: 2868683379352221257}
   m_Layer: 0
   m_Name: Seat Bottom
   m_TagString: Untagged
@@ -21094,6 +21246,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &2868683379352221257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988023897250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988024605231
 GameObject:
   m_ObjectHideFlags: 0
@@ -21106,6 +21271,7 @@ GameObject:
   - component: {fileID: 5056570988024605235}
   - component: {fileID: 5056570988024605234}
   - component: {fileID: 5056570988024605229}
+  - component: {fileID: 1420528366900493868}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Buoyant
@@ -21190,6 +21356,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 0.4}
   m_Center: {x: 0.000000059604645, y: 0.000030517578, z: -0.00000008940696}
+--- !u!114 &1420528366900493868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988024605231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988062101505
 GameObject:
   m_ObjectHideFlags: 0
@@ -21235,6 +21414,7 @@ GameObject:
   - component: {fileID: 5056570988064805757}
   - component: {fileID: 5056570988064805756}
   - component: {fileID: 5056570988064805759}
+  - component: {fileID: 7931018993410321582}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -21333,10 +21513,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 500
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
+  engineType: 0
   exhaustCloud: {fileID: 5056570988458604207}
   exhaustStream: {fileID: 5056570987460546794}
   exhaustManager: {fileID: 2667096493758852225}
+  supportReverseThrusting: 1
   center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &7931018993410321582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988064805753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988090745216
 GameObject:
   m_ObjectHideFlags: 0
@@ -21350,6 +21545,7 @@ GameObject:
   - component: {fileID: 5056570988090745220}
   - component: {fileID: 5056570988090745223}
   - component: {fileID: 5056570988090745222}
+  - component: {fileID: 8310014442074287392}
   m_Layer: 0
   m_Name: Engine Barrel
   m_TagString: Untagged
@@ -21448,10 +21644,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 500
   partFailure: {fileID: 8300000, guid: e832f218161482740a725c21661eac88, type: 3}
+  engineType: 0
   exhaustCloud: {fileID: 5056570987047093826}
   exhaustStream: {fileID: 5056570987021632765}
   exhaustManager: {fileID: 2667096493758852225}
+  supportReverseThrusting: 1
   center: {x: 0, y: 1.25, z: 0}
+--- !u!114 &8310014442074287392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988090745216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988114244286
 GameObject:
   m_ObjectHideFlags: 0
@@ -21592,6 +21803,7 @@ GameObject:
   - component: {fileID: 5056570988242522450}
   - component: {fileID: 5056570988242522445}
   - component: {fileID: 5056570988242522444}
+  - component: {fileID: 1110459549149162643}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -21676,6 +21888,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &1110459549149162643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988242522446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988253240238
 GameObject:
   m_ObjectHideFlags: 0
@@ -21688,6 +21913,7 @@ GameObject:
   - component: {fileID: 5056570988253240242}
   - component: {fileID: 5056570988253240237}
   - component: {fileID: 5056570988253240236}
+  - component: {fileID: 3027687462133580342}
   m_Layer: 0
   m_Name: Engine Struct
   m_TagString: Untagged
@@ -21772,6 +21998,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 1.9999999, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &3027687462133580342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988253240238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988300477976
 GameObject:
   m_ObjectHideFlags: 0
@@ -26928,6 +27167,7 @@ GameObject:
   - component: {fileID: 5056570988709809818}
   - component: {fileID: 5056570988709809813}
   - component: {fileID: 5056570988709809812}
+  - component: {fileID: 4851332931360500352}
   m_Layer: 0
   m_Name: Front Struct
   m_TagString: Untagged
@@ -27012,6 +27252,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &4851332931360500352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988709809814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988723789588
 GameObject:
   m_ObjectHideFlags: 0
@@ -27024,6 +27277,7 @@ GameObject:
   - component: {fileID: 5056570988723789592}
   - component: {fileID: 5056570988723789595}
   - component: {fileID: 5056570988723789594}
+  - component: {fileID: 8419964196029883401}
   m_Layer: 0
   m_Name: Dashboard Arm
   m_TagString: Untagged
@@ -27108,6 +27362,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000004, y: 2.0000005, z: 1.0000002}
   m_Center: {x: 0.00000005960466, y: 0, z: -0.00000008940697}
+--- !u!114 &8419964196029883401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988723789588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988726976143
 GameObject:
   m_ObjectHideFlags: 0
@@ -27120,6 +27387,7 @@ GameObject:
   - component: {fileID: 5056570988726976147}
   - component: {fileID: 5056570988726976146}
   - component: {fileID: 5056570988726976141}
+  - component: {fileID: 8847278480218646349}
   m_Layer: 0
   m_Name: Engine Forearm
   m_TagString: Untagged
@@ -27204,6 +27472,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000006, y: 2.000001, z: 1.0000002}
   m_Center: {x: 0.00000005960467, y: 1.0587912e-22, z: -0.00000008940697}
+--- !u!114 &8847278480218646349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988726976143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988762925457
 GameObject:
   m_ObjectHideFlags: 0
@@ -27216,6 +27497,7 @@ GameObject:
   - component: {fileID: 5056570988762925461}
   - component: {fileID: 5056570988762925460}
   - component: {fileID: 5056570988762925463}
+  - component: {fileID: 1438756786509587390}
   m_Layer: 0
   m_Name: Seat Back
   m_TagString: Untagged
@@ -27300,6 +27582,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &1438756786509587390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988762925457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5056570988763043624
 GameObject:
   m_ObjectHideFlags: 0
@@ -27312,6 +27607,7 @@ GameObject:
   - component: {fileID: 5056570988763043628}
   - component: {fileID: 5056570988763043631}
   - component: {fileID: 5056570988763043630}
+  - component: {fileID: 7826422612745022571}
   m_Layer: 0
   m_Name: Engine Base
   m_TagString: Untagged
@@ -27396,3 +27692,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2.0000005, z: 1.0000005}
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940699}
+--- !u!114 &7826422612745022571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5056570988763043624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12

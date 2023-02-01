@@ -96,7 +96,10 @@ public class CityGenerator : MonoBehaviour
         if(city.foundationManager.foundationHeight <= 0)
             city.foundationManager.foundationType = FoundationManager.FoundationType.NoFoundations;
         else
-            city.foundationManager.foundationType = FoundationManager.FoundationType.SingularSlab;
+        {
+            city.foundationManager.foundationType = FoundationManager.FoundationType.PerBuilding;
+            city.radius += Random.Range(10, 30); //This type of foundation doesn't generate as much per square foot so make the square footage bigger
+        }
     }
 
     private CityType SelectCityType()

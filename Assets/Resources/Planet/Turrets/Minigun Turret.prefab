@@ -327,6 +327,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6042492912410244757}
   - component: {fileID: 122058257173109711}
+  - component: {fileID: 3572376351068934852}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -366,6 +367,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.9, z: 1}
   m_Center: {x: 0, y: -0.45, z: 0}
+--- !u!114 &3572376351068934852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915219698669815029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &997167292407777343
 GameObject:
   m_ObjectHideFlags: 0
@@ -2145,6 +2159,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6487282122965704541}
   - component: {fileID: 8218419782923243613}
+  - component: {fileID: 297210694889642192}
   m_Layer: 0
   m_Name: Swiveling Body
   m_TagString: Untagged
@@ -2182,6 +2197,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0.25}
+--- !u!114 &297210694889642192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7845221439832070767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &8131612788304705139
 GameObject:
   m_ObjectHideFlags: 0
@@ -2358,6 +2386,7 @@ GameObject:
   - component: {fileID: 1726789274019798192}
   - component: {fileID: 6452760493139269357}
   - component: {fileID: 7058478312953039541}
+  - component: {fileID: 542128279350525779}
   m_Layer: 10
   m_Name: Minigun Turret
   m_TagString: Untagged
@@ -2413,11 +2442,11 @@ MonoBehaviour:
   damage: 20
   range: 300
   rotaryVelocity: 1200
+  groundHeight: 0.9
   spinUp: {fileID: 8300000, guid: 09b12586bac35bc42923622865694097, type: 3}
   cooldown: {fileID: 8300000, guid: 686063d261538344c810e0130cd90b63, type: 3}
   firing: {fileID: 8300000, guid: a40069d4406fdc44ea28d97e0a4b50b2, type: 3}
   lightFlash: {fileID: 1684832188811503944}
-  impactEffect: Plasma Impact
 --- !u!135 &6452760493139269357
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2527,6 +2556,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &542128279350525779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8995130007083122154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &9166065091142715935
 GameObject:
   m_ObjectHideFlags: 0

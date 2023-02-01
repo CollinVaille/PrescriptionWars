@@ -1532,6 +1532,7 @@ GameObject:
   - component: {fileID: 925519856894007936}
   - component: {fileID: 3333488155573813978}
   - component: {fileID: 6998248857663911699}
+  - component: {fileID: 7420184499681152633}
   m_Layer: 10
   m_Name: Light Switch
   m_TagString: Untagged
@@ -1588,6 +1589,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.1, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0.15}
+--- !u!114 &7420184499681152633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510624589145927478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &1553789263054929115
 GameObject:
   m_ObjectHideFlags: 0
@@ -2648,6 +2662,7 @@ GameObject:
   - component: {fileID: 2277726395842890437}
   - component: {fileID: 2277726395842890436}
   - component: {fileID: 2277726395842890435}
+  - component: {fileID: 8947878986563109521}
   m_Layer: 10
   m_Name: Door
   m_TagString: Untagged
@@ -2753,6 +2768,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8947878986563109521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2277726395842890433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &2334548952301574366
 GameObject:
   m_ObjectHideFlags: 0
@@ -4306,6 +4334,7 @@ GameObject:
   - component: {fileID: 3126950785834455150}
   - component: {fileID: 5263094262505267345}
   - component: {fileID: 4804107099717319727}
+  - component: {fileID: 4612290004382029194}
   m_Layer: 10
   m_Name: Storage Closet Door
   m_TagString: Untagged
@@ -4411,6 +4440,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4612290004382029194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3250502189979656409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &3414099299112469396
 GameObject:
   m_ObjectHideFlags: 0

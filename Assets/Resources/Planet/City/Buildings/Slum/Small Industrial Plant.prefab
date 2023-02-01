@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d03ab6b3bb32443499a9f92d3d8a2b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length: 25
+  length: 30
   spawnChance: 20
   beds:
   - {fileID: 34531369796046537}
@@ -2100,6 +2100,7 @@ GameObject:
   - component: {fileID: 6370696003418540700}
   - component: {fileID: 6370696003418540701}
   - component: {fileID: 2089386088937129058}
+  - component: {fileID: 8857196380273645939}
   m_Layer: 10
   m_Name: Ladder
   m_TagString: Untagged
@@ -2200,6 +2201,19 @@ MonoBehaviour:
   topHeight: 4.5
   rung1: {fileID: 8300000, guid: 0563ebdbbddab2c4685fc80c133d52a4, type: 3}
   rung2: {fileID: 8300000, guid: 244c4d4574e6f2a4a929de00f6ab99cd, type: 3}
+--- !u!114 &8857196380273645939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370696003418540703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &6506947378965452655
 GameObject:
   m_ObjectHideFlags: 0
@@ -3067,6 +3081,7 @@ GameObject:
   - component: {fileID: 2551909236638010292}
   - component: {fileID: 2219414013494655121}
   - component: {fileID: 4168300564557807267}
+  - component: {fileID: 4683619356192091907}
   m_Layer: 10
   m_Name: Ladder
   m_TagString: Untagged
@@ -3167,6 +3182,19 @@ MonoBehaviour:
   topHeight: 9.5
   rung1: {fileID: 8300000, guid: 0563ebdbbddab2c4685fc80c133d52a4, type: 3}
   rung2: {fileID: 8300000, guid: 244c4d4574e6f2a4a929de00f6ab99cd, type: 3}
+--- !u!114 &4683619356192091907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962884512393538195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &8241190904733342608
 GameObject:
   m_ObjectHideFlags: 0
@@ -3276,6 +3304,7 @@ GameObject:
   - component: {fileID: 8798372351666540860}
   - component: {fileID: 8798372351666540861}
   - component: {fileID: 8798372351666540858}
+  - component: {fileID: 1863690369666411354}
   m_Layer: 10
   m_Name: Door
   m_TagString: Untagged
@@ -3381,6 +3410,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1863690369666411354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8798372351666540856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &8798372352063673687
 GameObject:
   m_ObjectHideFlags: 0

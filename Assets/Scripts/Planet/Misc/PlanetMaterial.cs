@@ -81,11 +81,11 @@ public class PlanetMaterial : MonoBehaviour
     {
         switch(interactionType)
         {
-            case PlanetMaterialInteractionType.Running:
-                pathParts = new PlanetMaterialPathParts("Planet/Environment/Footsteps/", " Running");
-                break;
             case PlanetMaterialInteractionType.Walking:
                 pathParts = new PlanetMaterialPathParts("Planet/Environment/Footsteps/", " Walking");
+                break;
+            case PlanetMaterialInteractionType.Running:
+                pathParts = new PlanetMaterialPathParts("Planet/Environment/Footsteps/", " Running");
                 break;
             case PlanetMaterialInteractionType.MediumImpact:
                 pathParts = new PlanetMaterialPathParts("Planet/Environment/Impacts/", " Medium Impact");
@@ -133,7 +133,7 @@ public class PlanetMaterial : MonoBehaviour
 
     public static PlanetMaterialType GetMaterialFromTransform(Transform transformWithMaterial, Vector3 atPosition)
     {
-        if (transformWithMaterial.CompareTag("Terrain")) //Walking on terrain
+        if (transformWithMaterial.CompareTag("Terrain")) //Hit the terrain
         {
             int newTerrainTextureIndex = PlanetTerrain.planetTerrain.GetTextureIndexAtPoint(atPosition);
 
@@ -144,27 +144,27 @@ public class PlanetMaterial : MonoBehaviour
             else //Seabed
                 return Planet.planet.seabedMaterial;
         }
-        else if (GroundIsPartOfHorizon(transformWithMaterial)) //Walking on horizon
+        else if (ThisThingIsPartOfHorizon(transformWithMaterial)) //Hit the horizon
         {
             if (Planet.planet.GetComponent<PlanetTerrain>().customization.lowBoundaries)
                 return Planet.planet.seabedMaterial;
             else
                 return Planet.planet.groundMaterial;
         }
-        else //Walking on something else
+        else //Hit something else
         {
             PlanetMaterial customMaterialTag = transformWithMaterial.GetComponent<PlanetMaterial>();
             return customMaterialTag ? customMaterialTag.planetMaterialType : PlanetMaterialType.Rock;
         }
     }
 
-    private static bool GroundIsPartOfHorizon(Transform ground)
+    private static bool ThisThingIsPartOfHorizon(Transform thisThing)
     {
-        if (!ground)
+        if (!thisThing)
             return false;
-        else if (ground.name.Equals("Planet Horizon"))
+        else if (thisThing.name.Equals("Planet Horizon"))
             return true;
         else
-            return GroundIsPartOfHorizon(ground.parent);
+            return ThisThingIsPartOfHorizon(thisThing.parent);
     }
 }

@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 726182164}
   - component: {fileID: 726182163}
   - component: {fileID: 726182162}
+  - component: {fileID: 2400190366490077038}
   m_Layer: 0
   m_Name: Rack Bottom Panel
   m_TagString: Untagged
@@ -263,6 +264,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2400190366490077038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726182160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &837890316
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +717,7 @@ GameObject:
   - component: {fileID: 2121939232}
   - component: {fileID: 2121939231}
   - component: {fileID: 2121939230}
+  - component: {fileID: 6671336692116570762}
   m_Layer: 0
   m_Name: Rack Wall
   m_TagString: Untagged
@@ -787,6 +802,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6671336692116570762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121939228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &377357658488191317
 GameObject:
   m_ObjectHideFlags: 0
@@ -5962,6 +5990,7 @@ GameObject:
   - component: {fileID: 5170945014096646634}
   - component: {fileID: 5170945014096646635}
   - component: {fileID: 8151985128141317339}
+  - component: {fileID: 1371232312698049230}
   m_Layer: 10
   m_Name: Back Door
   m_TagString: Untagged
@@ -6068,6 +6097,19 @@ MonoBehaviour:
   closeDuration: 0.65
   building: {fileID: 1218276009050752481}
   triggerZones: []
+--- !u!114 &1371232312698049230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5170945014096646646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5589046154758478939
 GameObject:
   m_ObjectHideFlags: 0

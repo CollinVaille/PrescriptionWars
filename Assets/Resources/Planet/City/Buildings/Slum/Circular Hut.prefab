@@ -404,6 +404,7 @@ GameObject:
   - component: {fileID: 1302822906186297462}
   - component: {fileID: 1302822906186297457}
   - component: {fileID: 1302822906186297456}
+  - component: {fileID: 709628377786407860}
   m_Layer: 16
   m_Name: Right Door
   m_TagString: Untagged
@@ -488,6 +489,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &709628377786407860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302822906186297453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &1302822906343083910
 GameObject:
   m_ObjectHideFlags: 0
@@ -2879,6 +2893,7 @@ GameObject:
   - component: {fileID: 7378119059433441422}
   - component: {fileID: 7378119059433441423}
   - component: {fileID: 7378119059433441416}
+  - component: {fileID: 1315876128699403172}
   m_Layer: 16
   m_Name: Left Door
   m_TagString: Untagged
@@ -2963,6 +2978,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1315876128699403172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7378119059433441418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &8645969354121304412
 GameObject:
   m_ObjectHideFlags: 0

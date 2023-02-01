@@ -892,6 +892,7 @@ GameObject:
   - component: {fileID: 6476669472692934168}
   - component: {fileID: 6476669472692934175}
   - component: {fileID: 102160386331516331}
+  - component: {fileID: 7905830247914255192}
   m_Layer: 10
   m_Name: Door
   m_TagString: Untagged
@@ -994,10 +995,22 @@ MonoBehaviour:
   closePosition: 0
   doorType: 0
   doorMotion: 0
-  automatic: 0
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 5708404958184864307}
+--- !u!114 &7905830247914255192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6476669472692934173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &6476669473566802643
 GameObject:
   m_ObjectHideFlags: 0

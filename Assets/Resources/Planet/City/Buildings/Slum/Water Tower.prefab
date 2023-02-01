@@ -887,6 +887,7 @@ GameObject:
   - component: {fileID: 5864738698867475742}
   - component: {fileID: 5864738698867475737}
   - component: {fileID: 713976674012171949}
+  - component: {fileID: 113352969013482798}
   m_Layer: 10
   m_Name: Locked Door
   m_TagString: Untagged
@@ -992,3 +993,16 @@ MonoBehaviour:
   openDuration: 0.2
   closeDuration: 0.2
   building: {fileID: 0}
+--- !u!114 &113352969013482798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5864738698867475739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5

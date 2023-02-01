@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 621466967704547229}
   - component: {fileID: 621466967704547228}
   - component: {fileID: 621466967704547227}
+  - component: {fileID: 6311909146220925383}
   m_Layer: 10
   m_Name: Room Door
   m_TagString: Untagged
@@ -118,6 +119,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &6311909146220925383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621466967704547225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &621466968045987609
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1126,7 @@ GameObject:
   - component: {fileID: 3555585930131611896}
   - component: {fileID: 3555585930131611897}
   - component: {fileID: 3555585930131611902}
+  - component: {fileID: 6581021201553396861}
   m_Layer: 16
   m_Name: Left Door
   m_TagString: Untagged
@@ -1196,6 +1211,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6581021201553396861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3555585930131611900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &3555585930523010195
 GameObject:
   m_ObjectHideFlags: 0
@@ -2550,6 +2578,7 @@ GameObject:
   - component: {fileID: 4983000058417321984}
   - component: {fileID: 4983000058417321991}
   - component: {fileID: 4983000058417321990}
+  - component: {fileID: 3582448255561142828}
   m_Layer: 16
   m_Name: Right Door
   m_TagString: Untagged
@@ -2634,6 +2663,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3582448255561142828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4983000058417322011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5945527151554561157
 GameObject:
   m_ObjectHideFlags: 0
@@ -2647,6 +2689,7 @@ GameObject:
   - component: {fileID: 5945527151554561153}
   - component: {fileID: 5945527151554561152}
   - component: {fileID: 5945527151554561159}
+  - component: {fileID: 2455229448734801920}
   m_Layer: 10
   m_Name: Room Door
   m_TagString: Untagged
@@ -2752,6 +2795,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &2455229448734801920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945527151554561157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5945527151942324932
 GameObject:
   m_ObjectHideFlags: 0
@@ -2861,6 +2917,7 @@ GameObject:
   - component: {fileID: 5945527152005618331}
   - component: {fileID: 5945527152005618330}
   - component: {fileID: 5945527152005618329}
+  - component: {fileID: 2139954811756418058}
   m_Layer: 10
   m_Name: Room Door
   m_TagString: Untagged
@@ -2966,6 +3023,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &2139954811756418058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945527152005618335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5945527152047980398
 GameObject:
   m_ObjectHideFlags: 0
@@ -3088,6 +3158,7 @@ GameObject:
   - component: {fileID: 5945527152153363660}
   - component: {fileID: 5945527152153363635}
   - component: {fileID: 5945527152153363634}
+  - component: {fileID: 6159833613023313897}
   m_Layer: 10
   m_Name: Room Door
   m_TagString: Untagged
@@ -3193,6 +3264,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &6159833613023313897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945527152153363632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &5945527152269560837
 GameObject:
   m_ObjectHideFlags: 0
@@ -4110,6 +4194,7 @@ GameObject:
   - component: {fileID: 6493387589624665191}
   - component: {fileID: 6493387589624665190}
   - component: {fileID: 2200741014551714457}
+  - component: {fileID: 5979861576905220110}
   m_Layer: 10
   m_Name: Ladder
   m_TagString: Untagged
@@ -4210,6 +4295,19 @@ MonoBehaviour:
   topHeight: 4.25
   rung1: {fileID: 8300000, guid: 0563ebdbbddab2c4685fc80c133d52a4, type: 3}
   rung2: {fileID: 8300000, guid: 244c4d4574e6f2a4a929de00f6ab99cd, type: 3}
+--- !u!114 &5979861576905220110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6493387589624665188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &6551339686497676054
 GameObject:
   m_ObjectHideFlags: 0
@@ -5044,6 +5142,7 @@ GameObject:
   - component: {fileID: 8116791196772030681}
   - component: {fileID: 8116791196772030680}
   - component: {fileID: 8116791196772030683}
+  - component: {fileID: 6645056196440263265}
   m_Layer: 10
   m_Name: Back Door
   m_TagString: Untagged
@@ -5149,6 +5248,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 2850336637828353234}
+--- !u!114 &6645056196440263265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116791196772030661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &8116791197617153970
 GameObject:
   m_ObjectHideFlags: 0
@@ -6979,6 +7091,7 @@ GameObject:
   - component: {fileID: 9059697012538526435}
   - component: {fileID: 9059697012538526434}
   - component: {fileID: 9059697012538526433}
+  - component: {fileID: 7530370673255471727}
   m_Layer: 0
   m_Name: Safe Box
   m_TagString: Untagged
@@ -7063,6 +7176,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7530370673255471727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059697012538526439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &9059697012867349430
 GameObject:
   m_ObjectHideFlags: 0

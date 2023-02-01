@@ -12,7 +12,7 @@ public class God : MonoBehaviour
     public static God god;
 
     //Audio
-    public AudioClip deflection, jab, softItemImpact, hardItemImpact, genericImpact;
+    public AudioClip deflection, jab, softItemImpact, hardItemImpact;
 
     //Audio Managment
     //Parallel lists for pause/resuming audio sources on pause menu

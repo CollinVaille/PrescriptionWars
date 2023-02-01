@@ -20,7 +20,7 @@ public class Pill : MonoBehaviour, Damageable
     //Status variables
     public int team = 0;
     public float moveSpeed = 10;
-    protected float health = 100, maxHealth;
+    protected float health = 100, maxHealth, timeOfLastCollision = 0.0f;
     protected bool dead = false, touchingWater = false, controlOverride = false, holstering = false;
     protected string statusReport = "Unresponsive";
     private int lifeNumber = 1;
@@ -112,9 +112,10 @@ public class Pill : MonoBehaviour, Damageable
     {
         //This check is needed... pills often stab each other to death at the same time and when that happens this function can be called on a disabled gameobject.
         //If allowed to continue when disabled, you get warnings about playing audio from a disabled audio source.
-        if (!gameObject.activeInHierarchy || !rBody)
+        if (!gameObject.activeInHierarchy || !rBody || (Time.timeSinceLevelLoad - timeOfLastCollision) < 0.1f)
             return;
 
+        timeOfLastCollision = Time.timeSinceLevelLoad;
         int layerHit = collision.GetContact(0).thisCollider.gameObject.layer;
 
         //Hard bodily impact
@@ -167,7 +168,14 @@ public class Pill : MonoBehaviour, Damageable
                 if (collision.gameObject.GetComponent<Pill>()) //Hit gear of some jackwagon
                     mainAudioSource.PlayOneShot(God.god.deflection);
                 else //Hit wall or something
-                    mainAudioSource.PlayOneShot(God.god.genericImpact);
+                {
+                    PlanetMaterialType hitMaterial = PlanetMaterial.GetMaterialFromTransform(collision.GetContact(0).otherCollider.transform, transform.position);
+                    AudioClip hitSound = PlanetMaterial.GetMaterialAudio(hitMaterial, PlanetMaterialInteractionType.MediumImpact);
+
+                    if (hitSound)
+                        mainAudioSource.PlayOneShot(hitSound);
+                    //mainAudioSource.PlayOneShot(God.god.genericImpact);
+                }
             }
         }
     }

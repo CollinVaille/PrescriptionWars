@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 95407819522915521}
   - component: {fileID: 95407819522915522}
   - component: {fileID: 95407819522915523}
+  - component: {fileID: 1748429014137316712}
   m_Layer: 0
   m_Name: Spigot Body
   m_TagString: Untagged
@@ -179,6 +180,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &1748429014137316712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95407819522915525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &95407819683344826
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,6 +406,7 @@ GameObject:
   - component: {fileID: 95407820513399911}
   - component: {fileID: 95407820513399928}
   - component: {fileID: 95407820513399929}
+  - component: {fileID: 579025007080498977}
   m_Layer: 0
   m_Name: Spigot Base (1)
   m_TagString: Untagged
@@ -477,6 +492,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &579025007080498977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95407820513399931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &95407820657752726
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,6 +517,7 @@ GameObject:
   - component: {fileID: 95407820657752722}
   - component: {fileID: 95407820657752723}
   - component: {fileID: 95407820657752724}
+  - component: {fileID: 2090127287001863080}
   m_Layer: 0
   m_Name: Spigot Base
   m_TagString: Untagged
@@ -574,6 +603,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &2090127287001863080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95407820657752726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 5
 --- !u!1 &95407820881509452
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,6 +2368,7 @@ GameObject:
   - component: {fileID: 2817643061170180989}
   - component: {fileID: 1387294944144283474}
   - component: {fileID: 4449081509883761598}
+  - component: {fileID: 7382929240404408111}
   m_Layer: 10
   m_Name: Roll Up Door
   m_TagString: Untagged
@@ -2431,6 +2474,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &7382929240404408111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2399063262853921386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &2505540404869081872
 GameObject:
   m_ObjectHideFlags: 0
@@ -6950,6 +7006,7 @@ GameObject:
   - component: {fileID: 8925989928752988288}
   - component: {fileID: 8925989928752988295}
   - component: {fileID: 2545745772630756147}
+  - component: {fileID: 2121901904602220864}
   m_Layer: 10
   m_Name: Roll Up Door
   m_TagString: Untagged
@@ -7055,6 +7112,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 0}
+--- !u!114 &2121901904602220864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8925989928752988293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &9023010062669181054
 GameObject:
   m_ObjectHideFlags: 0

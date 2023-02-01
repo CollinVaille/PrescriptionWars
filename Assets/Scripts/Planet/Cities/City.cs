@@ -15,6 +15,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public List<GameObject> buildingPrefabs;
     private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
     private int totalSpawnChance = 0;
+    [HideInInspector] public BuildingSpecifications buildingSpecifications;
 
     //Building maintenance
     private int nextAvailableBuilding = 0;
@@ -31,6 +32,9 @@ public class City : MonoBehaviour, INavZoneUpdater
     //Walls
     [HideInInspector] public CityWallManager cityWallManager;
 
+    //Bridges
+    [HideInInspector] public BridgeManager bridgeManager;
+
     //Area/zoning system (how city is subdivided and organized)
     [HideInInspector] public int areaSize = 5;
     [HideInInspector] public AreaReservationType[,] areaTaken;
@@ -44,6 +48,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     {
         foundationManager = new FoundationManager(this);
         cityWallManager = new CityWallManager(this);
+        bridgeManager = new BridgeManager(this);
     }
 
     public void AfterCityGeneratedOrRestored()
@@ -80,6 +85,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public void GenerateNewCity()
     {
         BeforeCityGeneratedOrRestored();
+        buildingSpecifications = new BuildingSpecifications();
 
         //Reserve terrain location
         //radius = Random.Range(40, 100);
@@ -108,13 +114,24 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Generate foundations
         foundationManager.GenerateNewFoundations();
 
+        //Updates the physics colliders based on changes to transforms.
+        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        Physics.SyncTransforms();
+
         //Generate buildings
         buildings = new List<Building>();
-        GenerateSpecialBuildings();
-        GenerateGenericBuildings(avgBlockLength);
+        GenerateNewSpecialBuildings();
+        GenerateNewGenericBuildings(avgBlockLength);
+
+        //Updates the physics colliders based on changes to transforms.
+        //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        Physics.SyncTransforms();
 
         //Generate walls
         cityWallManager.GenerateNewWalls();
+
+        //Generate bridges
+        bridgeManager.GenerateNewBridges();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
 
@@ -376,7 +393,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         return avgLength * areaSize;
     }
 
-    private void GenerateSpecialBuildings()
+    private void GenerateNewSpecialBuildings()
     {
         for(int x = 0; x < buildingPrototypes.Length; x++)
         {
@@ -386,14 +403,14 @@ public class City : MonoBehaviour, INavZoneUpdater
                 //Keep trying to generate it until we succeed or hit 50 attempts
                 for(int attempt = 1; attempt <= 50; attempt++)
                 {
-                    if (GenerateBuilding(x, true, true))
+                    if (GenerateNewBuilding(x, true, true))
                         break;
                 }
             }
         }
     }
 
-    private void GenerateGenericBuildings(int averageBlockLength)
+    private void GenerateNewGenericBuildings(int averageBlockLength)
     {
         //Go through all the large generic buildings and give each once chance to spawn early (so they doesn't get crowded out by a bunch of small buildings)
         for(int x = 0; x < buildingPrototypes.Length; x++)
@@ -402,7 +419,7 @@ public class City : MonoBehaviour, INavZoneUpdater
                 continue;
 
             if (buildingPrototypes[x].length > averageBlockLength)
-                GenerateBuilding(x, true, false);
+                GenerateNewBuilding(x, true, false);
         }
 
         int buildingIndex = -1;
@@ -412,20 +429,20 @@ public class City : MonoBehaviour, INavZoneUpdater
             buildingIndex = SelectGenericBuildingPrototype();
 
             //Attempt to place it somewhere
-            GenerateBuilding(buildingIndex, buildingPrototypes[buildingIndex].length > averageBlockLength, false);
+            GenerateNewBuilding(buildingIndex, buildingPrototypes[buildingIndex].length > averageBlockLength, false);
         }
     }
 
     //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
     //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
     //Returns whether building was successfully generated.
-    private bool GenerateBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
+    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
     {
-
         //Find place that can fit model...
 
         int newX = 0, newZ = 0;
-        int areaLength = Mathf.CeilToInt(buildingPrototypes[buildingIndex].length * 1.0f / areaSize);
+        int radiusOfBuilding = buildingPrototypes[buildingIndex].length + buildingSpecifications.extraRadius;
+        int areaLength = Mathf.CeilToInt(radiusOfBuilding * 1.0f / areaSize);
         bool foundPlace = false;
 
         //Placement strategy #1: Center on the largest available city block
@@ -481,18 +498,49 @@ public class City : MonoBehaviour, INavZoneUpdater
             newBuilding.parent = transform;
             newBuilding.localRotation = Quaternion.Euler(0, 0, 0);
 
+            //Rotate it
+            bool hasCardinalRotation = SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
+
             //Position it...
             Vector3 buildingPosition = Vector3.zero;
 
-            //Center building within allocated area and convert from area space to local coordinates
+            //Compute the location for the building: centered within allocated area, converting from area space to local coordinates
             buildingPosition.x = (newX + (areaLength / 2.0f) - areaTaken.GetLength(0) / 2.0f) * areaSize;
             buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
-            newBuilding.localPosition = buildingPosition;
-            God.SnapToGround(newBuilding, collidersToCheckAgainst:foundationManager.foundationColliders);
+            //Apply the computed location to the building and any foundation underneath the building if applicable...
+            //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
+            float buildingFoundationHeight = Random.Range(buildingSpecifications.foundationHeightRange.x, buildingSpecifications.foundationHeightRange.y);
+            if (buildingFoundationHeight > 5) //Include foundation
+            {
+                //Place foundation
+                Vector3 foundationScale = Vector3.one * radiusOfBuilding;
+                foundationScale.y = buildingFoundationHeight;
+                bool circularFoundation = !hasCardinalRotation || Random.Range(0, 2) == 0;
+                FoundationJSON foundationJSON = foundationManager.GenerateNewFoundation(buildingPosition, foundationScale, circularFoundation);
 
-            //Rotate it
-            SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
+                //Place building
+                buildingPosition.y += (foundationScale.y / 2.0f);
+                newBuilding.localPosition = buildingPosition;
+
+                //Tell the bridge system this foundation needs connecting with the rest of the city
+                BridgeDestination bridgeDestination;
+                Vector3 bridgeDestinationPosition = transform.TransformPoint(buildingPosition);
+                if (circularFoundation)
+                    bridgeDestination = new BridgeDestination(bridgeDestinationPosition, foundationScale.x / 2.0f);
+                else
+                {
+                    Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponents<Collider>();
+                    bridgeDestination = new BridgeDestination(bridgeDestinationPosition, slabColliders);
+                }
+                bridgeManager.AddNewDestination(bridgeDestination);
+            }
+            else //No foundation
+            {
+                //Place building
+                newBuilding.localPosition = buildingPosition;
+                God.SnapToGround(newBuilding, collidersToCheckAgainst: foundationManager.foundationColliders);
+            }
 
             //Remember building and finally, call set up on it
             buildings.Add(newBuilding.GetComponent<Building>());
@@ -571,11 +619,12 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
     }
 
-    private void SetBuildingRotation(Transform building, int xCoord, int zCoord)
+    //Returns whether building rotation is strictly pointing in a cardinal direction (0, 90, 180, 270 degrees within city coordinate system)
+    private bool SetBuildingRotation(Transform building, int xCoord, int zCoord)
     {
         Vector3 newRotation = Vector3.zero;
-
-        int newMargin = 0;
+        int newMargin;
+        bool strictlyCardinal;
 
         //Find closest horizontal road
         int closestZMargin = 9999;
@@ -606,6 +655,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Review results and determine rotation
         if (closestXMargin == closestZMargin && Random.Range(0, 2) == 0) //Rotate according to both horizontal and vertical
         {
+            strictlyCardinal = false;
+
             if (faceLeft)
             {
                 if (faceDown)
@@ -623,6 +674,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
         else if (closestXMargin < closestZMargin) //Rotate according to closest vertical road
         {
+            strictlyCardinal = true;
+
             if (faceLeft)
                 newRotation.y = -90;
             else
@@ -630,6 +683,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
         else  //Rotate according to closest horizontal road
         {
+            strictlyCardinal = true;
+
             if (faceDown)
                 newRotation.y = 180;
             else
@@ -638,6 +693,8 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Apply rotation
         building.localEulerAngles = newRotation;
+
+        return strictlyCardinal;
     }
 
     //This may have a bug where it doesn't check the whole sector before reserving it, just the corner.
@@ -794,6 +851,12 @@ public class CityBlock : System.IComparable<CityBlock>
 
     public int GetSmallestDimension() { return dimensions.x < dimensions.y ? dimensions.x : dimensions.y; }
     private int GetLargestDimension() { return dimensions.x < dimensions.y ? dimensions.y : dimensions.x; }
+}
+
+public class BuildingSpecifications
+{
+    public int extraRadius = 0;
+    public Vector2 foundationHeightRange = Vector2.zero;
 }
 
 [System.Serializable]

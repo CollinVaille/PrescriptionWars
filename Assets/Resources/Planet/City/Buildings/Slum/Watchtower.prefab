@@ -2064,6 +2064,7 @@ GameObject:
   - component: {fileID: 5591395422751974405}
   - component: {fileID: 5591395422751974402}
   - component: {fileID: 1518718327591202742}
+  - component: {fileID: 6933862309961362059}
   m_Layer: 10
   m_Name: Roll Up Door
   m_TagString: Untagged
@@ -2169,6 +2170,19 @@ MonoBehaviour:
   openDuration: 0.75
   closeDuration: 0.75
   building: {fileID: 806646105033093078}
+--- !u!114 &6933862309961362059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5591395422751974400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &5632966597227491473
 GameObject:
   m_ObjectHideFlags: 0
