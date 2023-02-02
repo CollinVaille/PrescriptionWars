@@ -410,8 +410,9 @@ public class PlanetTerrain : MonoBehaviour
         if (flatten)
             radius *= 2;
 
-        int xCoord = 0;
-        int zCoord = 0;
+        //Set initial values to center of terrain so that if we don't get a match we just plop it in the middle
+        int xCoord = areaSteepness.GetLength(0) / 2;
+        int zCoord = areaSteepness.GetLength(1) / 2;
         float smallestDifference = 9999;
 
         //Go through all the areas and remember the one that had the closest steepness value to preferred steepness
@@ -488,6 +489,9 @@ public class PlanetTerrain : MonoBehaviour
     {
         int areasLong = Mathf.CeilToInt(radius * 2.0f / areaSize);
 
+        Debug.Log("Reserving " + xCoord + ", " + zCoord);
+        Debug.Log(areasLong + " vs " + areaSteepness.Length);
+
         int xStart = xCoord - (areasLong / 2); //Leftmost x included
         int zStart = zCoord - (areasLong / 2); //Bottommost z included
 
@@ -496,6 +500,7 @@ public class PlanetTerrain : MonoBehaviour
         {
             for (int z = zStart; z < zStart + areasLong; z++)
             {
+                Debug.Log(x + ", " + z);
                 areaSteepness[x, z] = 9999;
                 areaHeight[x, z] = 9999;
             }

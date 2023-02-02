@@ -91,8 +91,9 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
-        radius = Random.Range(80, 130);
+        //radius = Random.Range(80, 130);
         //radius = Random.Range(150, 300); //Huge city
+        radius = Random.Range(2500, 400);
         InitializeAreaReservationSystem();
         ReserveTerrainLocation();
 
@@ -441,8 +442,9 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Find place that can fit model...
 
         int newX = 0, newZ = 0;
-        int radiusOfBuilding = buildingPrototypes[buildingIndex].length + buildingSpecifications.extraRadius;
-        int areaLength = Mathf.CeilToInt(radiusOfBuilding * 1.0f / areaSize);
+        int buildingRadius = buildingPrototypes[buildingIndex].length + buildingSpecifications.extraBuildingRadius;
+        int totalRadius = buildingRadius + buildingSpecifications.extraRadiusForSpacing;
+        int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaSize);
         bool foundPlace = false;
 
         //Placement strategy #1: Center on the largest available city block
@@ -510,34 +512,16 @@ public class City : MonoBehaviour, INavZoneUpdater
 
             //Apply the computed location to the building and any foundation underneath the building if applicable...
             //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
-            float buildingFoundationHeight = Random.Range(buildingSpecifications.foundationHeightRange.x, buildingSpecifications.foundationHeightRange.y);
-            if (buildingFoundationHeight > 5) //Include foundation
+            FoundationJSON buildingFoundation = foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
+            if (buildingFoundation != null) //Has foundation underneath building
             {
-                //Place foundation
-                Vector3 foundationScale = Vector3.one * radiusOfBuilding;
-                foundationScale.y = buildingFoundationHeight;
-                bool circularFoundation = !hasCardinalRotation || Random.Range(0, 2) == 0;
-                FoundationJSON foundationJSON = foundationManager.GenerateNewFoundation(buildingPosition, foundationScale, circularFoundation);
-
-                //Place building
-                buildingPosition.y += (foundationScale.y / 2.0f);
+                //Place building on top of foundation
+                buildingPosition.y += (buildingFoundation.localScale.y / 2.0f);
                 newBuilding.localPosition = buildingPosition;
-
-                //Tell the bridge system this foundation needs connecting with the rest of the city
-                BridgeDestination bridgeDestination;
-                Vector3 bridgeDestinationPosition = transform.TransformPoint(buildingPosition);
-                if (circularFoundation)
-                    bridgeDestination = new BridgeDestination(bridgeDestinationPosition, foundationScale.x / 2.0f);
-                else
-                {
-                    Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponents<Collider>();
-                    bridgeDestination = new BridgeDestination(bridgeDestinationPosition, slabColliders);
-                }
-                bridgeManager.AddNewDestination(bridgeDestination);
             }
             else //No foundation
             {
-                //Place building
+                //Place building on whatever is beneath it (could be terrain or foundations previously created)
                 newBuilding.localPosition = buildingPosition;
                 God.SnapToGround(newBuilding, collidersToCheckAgainst: foundationManager.foundationColliders);
             }
@@ -855,7 +839,7 @@ public class CityBlock : System.IComparable<CityBlock>
 
 public class BuildingSpecifications
 {
-    public int extraRadius = 0;
+    public int extraBuildingRadius = 0, extraRadiusForSpacing = 0;
     public Vector2 foundationHeightRange = Vector2.zero;
 }
 

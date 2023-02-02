@@ -5,6 +5,7 @@ using UnityEngine;
 public class BridgeDestinationPairing
 {
     public Vector3 destination1, destination2; //In global space
+    public Collider[] destination1Colliders, destination2Colliders;
 
     public BridgeDestinationPairing(Vector3 destination1, Vector3 destination2)
     {
@@ -33,5 +34,10 @@ public class BridgeDestinationPairing
             destination1 = closestOn1To2;
             destination2 = suggestionFrom2;
         }
+
+        //---
+
+        destination1Colliders = bridgeDestination1.boundaryColliders;
+        destination2Colliders = bridgeDestination2.boundaryColliders;
     }
 }

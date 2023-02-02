@@ -27,30 +27,11 @@ public class BridgeDestination
         Vector3 closestPoint;
 
         if (boundaryColliders != null)
-            closestPoint = GetClosestPointAmongstColliders(inRelationTo);
+            closestPoint = Bridge.GetClosestPointAmongstColliders(inRelationTo, boundaryColliders);
         else
             closestPoint = Vector3.MoveTowards(center, inRelationTo, radius);
 
         closestPoint.y = center.y;
-
-        return closestPoint;
-    }
-
-    private Vector3 GetClosestPointAmongstColliders(Vector3 inRelationTo)
-    {
-        Vector3 closestPoint = boundaryColliders[0].ClosestPoint(inRelationTo);
-        float shortestDistance = Vector3.Distance(closestPoint, inRelationTo);
-
-        for (int x = 1; x < boundaryColliders.Length; x++)
-        {
-            Vector3 closestPointOnThisCollider = boundaryColliders[x].ClosestPoint(inRelationTo);
-            float shortestDistanceOnThisCollider = Vector3.Distance(closestPointOnThisCollider, inRelationTo);
-            if (shortestDistanceOnThisCollider < shortestDistance)
-            {
-                closestPoint = closestPointOnThisCollider;
-                shortestDistance = shortestDistanceOnThisCollider;
-            }
-        }
 
         return closestPoint;
     }

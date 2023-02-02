@@ -7,12 +7,13 @@ public class BridgeManager
     public City city;
     private List<BridgeDestination> destinations;
     private List<BridgeDestinationPairing> pairings;
-    private GameObject markerPrefab;
+    private GameObject markerPrefab, specialConnector;
 
     public BridgeManager(City city)
     {
         this.city = city;
         markerPrefab = Resources.Load<GameObject>("Planet/City/Bridges/Short/Simple Arch Bridge");
+        specialConnector = Resources.Load<GameObject>("Planet/City/Miscellaneous/Special Connector");
     }
 
     public void AddNewDestination(BridgeDestination bridgeDestination)
@@ -142,43 +143,109 @@ public class BridgeManager
         float sectionLength = totalBridgeLength / numberOfSections;
         Vector3 endpoint1 = Vector3.MoveTowards(pairing.destination1, pairing.destination2, -(totalPadding / 2.0f));
         Vector3 endpoint2 = Vector3.MoveTowards(pairing.destination2, pairing.destination1, -(totalPadding / 2.0f));
+        bool keepSubstructure = numberOfSections > 1;
 
         for(int x = 0; x < numberOfSections; x++)
         {
             Vector3 bridgePosition = Vector3.MoveTowards(endpoint1, endpoint2, sectionLength * (x + 0.5f));
 
+            //Generate the bridge section
+            Bridge bridge;
             if(x == 0)
-                GenerateNewBridgeSection(bridgePrototype.gameObject, true, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial);
+                bridge = GenerateNewBridgeSection(bridgePrototype.gameObject, true, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
             else
-                GenerateNewBridgeSection(bridgePrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial);
+                bridge = GenerateNewBridgeSection(bridgePrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
+
+            //For the first and last bridge sections, see if we need to generate a connector beside them
+            if (x == 0)
+                GenerateNewConnectorIfNeeded(pairing.destination1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
+            if (x == numberOfSections - 1) //WARNING: DON'T make this else if because the first and last could be the same section
+                GenerateNewConnectorIfNeeded(pairing.destination2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
         }
     }
 
-    private void GenerateNewBridgeSection(GameObject bridgeObject, bool alreadyInstantiated, Vector3 position, float zScale, Vector3 rotation, Material newSlabMaterial, Material newGroundMaterial)
+    private Bridge GenerateNewBridgeSection(GameObject bridgeObject, bool alreadyInstantiated, Vector3 position, float zScale, Vector3 rotation, Material newSlabMaterial, Material newGroundMaterial, bool useSubstructure)
     {
         //Get the instantiated game object as a transform
-        Transform bridge;
+        Transform bridgeTransform;
         if (alreadyInstantiated)
-            bridge = bridgeObject.transform;
+            bridgeTransform = bridgeObject.transform;
         else
-            bridge = GameObject.Instantiate(bridgeObject).transform;
+            bridgeTransform = GameObject.Instantiate(bridgeObject).transform;
 
         //Parent it
-        bridge.parent = city.transform;
+        bridgeTransform.parent = city.transform;
 
         //Position
-        bridge.position = position;
+        bridgeTransform.position = position;
 
         //Scale
-        Vector3 bridgeScale = bridge.localScale;
+        Vector3 bridgeScale = bridgeTransform.localScale;
         bridgeScale.z = zScale;
-        bridge.localScale = bridgeScale;
+        bridgeTransform.localScale = bridgeScale;
 
         //Rotate
-        bridge.eulerAngles = rotation;
+        bridgeTransform.eulerAngles = rotation;
 
         //Reskin
-        Bridge bridgeComponent = bridge.GetComponent<Bridge>();
-        bridgeComponent.RepaintRecursive(bridge, newSlabMaterial, newGroundMaterial);
+        Bridge bridge = bridgeTransform.GetComponent<Bridge>();
+        bridge.SetUpBridge(useSubstructure, newSlabMaterial, newGroundMaterial);
+
+        return bridge;
+    }
+
+    private void GenerateNewConnectorIfNeeded(Collider[] collidersToHit, Bridge bridge, bool checkBack, Material newSlabMaterial, Material newGroundMaterial)
+    {
+        if (collidersToHit == null)
+            return;
+
+        Vector3 leftCorner = bridge.GetCorner(true, checkBack);
+        Vector3 rightCorner = bridge.GetCorner(false, checkBack);
+
+        bool leftCornerTooFarAway = IsCornerTooFarAway(leftCorner, collidersToHit);
+        bool rightCornerTooFarAway = IsCornerTooFarAway(rightCorner, collidersToHit);
+
+        if (leftCornerTooFarAway || rightCornerTooFarAway)
+            GenerateNewConnector(bridge, checkBack, newSlabMaterial, newGroundMaterial);
+    }
+
+    private void GenerateNewConnector(Bridge bridge, bool onBack, Material newSlabMaterial, Material newGroundMaterial)
+    {
+        Transform bridgeTransform = bridge.transform;
+
+        //Compute scale beforehand
+        Vector3 connectorScale = Vector3.one;
+        connectorScale.x = bridgeTransform.localScale.x;
+        connectorScale.z = connectorScale.x * 3.0f;
+
+        //Compute position beforehand
+        Vector3 edgeOfBridgeInLocal = (onBack ? Vector3.back : Vector3.forward) * 0.5f;
+        Vector3 edgeOfBridge = bridgeTransform.TransformPoint(edgeOfBridgeInLocal);
+
+        Vector3 offsetDirection = onBack ? -bridgeTransform.forward : bridgeTransform.forward;
+        offsetDirection.y = 0.0f;
+
+        Vector3 connectorPosition = edgeOfBridge + offsetDirection * (connectorScale.z / 2.0f);
+
+        //Compute rotation beforehand
+        Vector3 connectorRotation = bridgeTransform.eulerAngles;
+        connectorRotation.x = 0.0f;
+        connectorRotation.z = 0.0f;
+
+        //Create the connector
+        Bridge connector = GenerateNewBridgeSection(specialConnector, false, connectorPosition, connectorScale.z, connectorRotation, newSlabMaterial, newGroundMaterial, false);
+        
+        //Adjust scale post-creation
+        connectorScale.y = connector.transform.localScale.y;
+        connector.transform.localScale = connectorScale;
+
+        //Adjust position post-creation
+        connector.transform.position += Vector3.down * ((connectorScale.y / 2.0f) + 0.1f);
+    }
+
+    private bool IsCornerTooFarAway(Vector3 corner, Collider[] collidersToHit)
+    {
+        Vector3 closestPointOnColliders = Bridge.GetClosestPointAmongstColliders(corner, collidersToHit);
+        return Vector3.Distance(corner, closestPointOnColliders) > 0.25f;
     }
 }

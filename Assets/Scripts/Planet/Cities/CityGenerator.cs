@@ -98,7 +98,7 @@ public class CityGenerator : MonoBehaviour
         else
         {
             city.foundationManager.foundationType = FoundationManager.FoundationType.PerBuilding;
-            city.radius += Random.Range(10, 30); //This type of foundation doesn't generate as much per square foot so make the square footage bigger
+            city.radius += Random.Range(25, 40); //This type of foundation doesn't generate as much per square foot so make the square footage bigger
         }
     }
 

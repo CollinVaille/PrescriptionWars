@@ -53,7 +53,7 @@ public class FoundationManager
     {
         Vector3 foundationScale = Vector3.one * city.radius * 2.15f;
         foundationScale.y = foundationHeight;
-        GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity);
+        GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity, false);
 
         GenerateEntrancesForCardinalDirections();
     }
@@ -67,7 +67,9 @@ public class FoundationManager
         city.cityWallManager.wallSectionPrefab = null;
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
-        city.buildingSpecifications.extraRadius = 15;
+        city.buildingSpecifications.extraBuildingRadius = 15;
+        if(Random.Range(0, 2) == 0)
+            city.buildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
 
         //Tell building construction to create foundations underneath each building at this height range
         city.buildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
@@ -76,6 +78,7 @@ public class FoundationManager
     private void GenerateEntrancesForCardinalDirections()
     {
         bool circularEntrances = Random.Range(0, 2) == 0;
+        bool entrancesNeedConnecting = EntranceFoundationNeedsConnecting();
         float distanceFromCityCenter = city.radius * 1.075f;
 
         //Prepare for X gates
@@ -85,12 +88,12 @@ public class FoundationManager
         
         //-X gate
         Vector3 foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, -distanceFromCityCenter);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
 
         //+X gate
         foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, distanceFromCityCenter);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
@@ -100,12 +103,12 @@ public class FoundationManager
 
         //-Z gate
         foundationPosition = new Vector3(-distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
 
         //+Z gate
         foundationPosition = new Vector3(distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances);
+        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
     }
 
@@ -130,7 +133,27 @@ public class FoundationManager
         verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
     }
 
-    public FoundationJSON GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, bool circular)
+    //This function gives the foundation manager the chance to generate a foundation underneath the building before it is created.
+    public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
+    {
+        //Determine whether building should have a foundation generated underneath it
+        float buildingFoundationHeight = Random.Range(city.buildingSpecifications.foundationHeightRange.x, city.buildingSpecifications.foundationHeightRange.y);
+
+        if (buildingFoundationHeight > 5) //Include foundation
+        {
+            //Place foundation
+            Vector3 foundationScale = Vector3.one * radiusOfBuilding;
+            foundationScale.y = buildingFoundationHeight;
+            bool circularFoundation = !hasCardinalRotation || Random.Range(0, 2) == 0;
+            FoundationJSON foundationJSON = GenerateNewFoundation(buildingPosition, foundationScale, circularFoundation, BuildingFoundationNeedsConnecting());
+
+            return foundationJSON;
+        }
+        else //Skip foundation
+            return null;
+    }
+
+    private FoundationJSON GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, bool circular, bool needsConnecting)
     {
         //Take notes so we can save and restore the foundation later
         FoundationJSON foundationJSON = new FoundationJSON();
@@ -143,7 +166,33 @@ public class FoundationManager
         //Instantiate and place the foundation using the customization. This will also add it to the lists it needs to be in.
         foundationJSON.GenerateFoundation(city);
 
+        //If requested, tell the bridge system this foundation needs connecting with the rest of the city
+        if(needsConnecting)
+        {
+            BridgeDestination bridgeDestination;
+            Vector3 bridgeDestinationPosition = city.transform.TransformPoint(localPosition);
+            bridgeDestinationPosition.y += (localScale.y / 2.0f);
+            if (circular)
+                bridgeDestination = new BridgeDestination(bridgeDestinationPosition, localScale.x / 2.0f);
+            else
+            {
+                Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponents<Collider>();
+                bridgeDestination = new BridgeDestination(bridgeDestinationPosition, slabColliders);
+            }
+            city.bridgeManager.AddNewDestination(bridgeDestination);
+        }
+
         return foundationJSON;
+    }
+
+    private bool BuildingFoundationNeedsConnecting()
+    {
+        return foundationType == FoundationType.PerBuilding;
+    }
+
+    private bool EntranceFoundationNeedsConnecting()
+    {
+        return foundationType == FoundationType.PerBuilding;
     }
 }
 
