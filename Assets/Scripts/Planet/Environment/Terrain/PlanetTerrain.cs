@@ -487,10 +487,8 @@ public class PlanetTerrain : MonoBehaviour
 
     private void ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, int radius, bool flatten)
     {
-        int areasLong = Mathf.CeilToInt(radius * 2.0f / areaSize);
-
-        Debug.Log("Reserving " + xCoord + ", " + zCoord);
-        Debug.Log(areasLong + " vs " + areaSteepness.Length);
+        //The Mathf.Min caps the city size to that of the entire terrain
+        int areasLong = Mathf.Min(Mathf.CeilToInt(radius * 2.0f / areaSize), areaSteepness.GetLength(0) - 2);
 
         int xStart = xCoord - (areasLong / 2); //Leftmost x included
         int zStart = zCoord - (areasLong / 2); //Bottommost z included
@@ -500,7 +498,6 @@ public class PlanetTerrain : MonoBehaviour
         {
             for (int z = zStart; z < zStart + areasLong; z++)
             {
-                Debug.Log(x + ", " + z);
                 areaSteepness[x, z] = 9999;
                 areaHeight[x, z] = 9999;
             }
