@@ -5,12 +5,77 @@ using UnityEngine.EventSystems;
 
 public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [Header("Base Opening Options")]
+
+    [SerializeField, Tooltip("Specifies the type of animation that will be played when the popup opens.")] protected OpeningAnimationType openingAnimationType = 0;
+    [SerializeField, Tooltip("Specifies the amount of time that the opening animation will last unless the opening animation type is instant.")] protected float openingAnimationLength = 0;
+
+    [Header("Base Closing Options")]
+
+    [SerializeField, Tooltip("Specifies the type of animation that will be played when the popup closes.")] protected ClosingAnimationType closingAnimationType = 0;
+    [SerializeField, Tooltip("Specifies the amount of time that the closing animation will last unless the closing animation type is instant.")] protected float closingAnimationLength = 0;
+    [SerializeField, Tooltip("Specifies whether the popup game object should be destroyed whenever the popup is closed.")] protected bool destroyOnClose = false;
+
     //Non-inspector variables.
+
+    public enum OpeningAnimationType
+    {
+        /// <summary>
+        /// The popup instantly opens up to full size.
+        /// </summary>
+        Instant,
+        /// <summary>
+        /// The popup starts at scale 0 and gradually expands until it is scale 1 according to the opening animation length.
+        /// </summary>
+        Expand
+    }
+
+    public enum ClosingAnimationType
+    {
+        /// <summary>
+        /// The popup instantly closes.
+        /// </summary>
+        Instant,
+        /// <summary>
+        /// The popup starts at scale 1 and gradually shrinks until it is scale 0 according to the closing animation length.
+        /// </summary>
+        Shrink
+    }
+
+    /// <summary>
+    /// Private variable that indicates how much time has elapsed since the opening animation started and should be used in coordination with the openingAnimationLength variable.
+    /// </summary>
+    protected float openingAnimationTimeElapsed = 0;
+
+    /// <summary>
+    /// Private variable that indicates how much time has elapsed since the closing animation started and should be used in coordination with the closingAnimationLength variable.
+    /// </summary>
+    protected float closingAnimationTimeElapsed = 0;
+
+    /// <summary>
+    /// Publicly accessible and privately mutable property that indicates whether or not the popup is opening and playing its opening animation. 
+    /// </summary>
+    public bool opening { get; private set; }
+
+    /// <summary>
+    /// Publicly accessible and privately mutable property that indicates whether or not the popup is opening and playing its closing animation. 
+    /// </summary>
+    public bool closing { get; private set; }
+
+    /// <summary>
+    /// Publicly accessible property that indicates whether or not the popup is open.
+    /// </summary>
+    public bool open { get => gameObject.activeSelf; }
+
+    /// <summary>
+    /// Publicly accessible property that indicates whether or not the popup is closed.
+    /// </summary>
+    public bool closed { get => !gameObject.activeSelf; }
 
     /// <summary>
     /// Private variable that indicates the offset of the pointer from the popup's position.
     /// </summary>
-    private Vector2 pointerOffset = Vector2.zero;
+    protected Vector2 pointerOffset = Vector2.zero;
 
     /// <summary>
     /// Public property that indicates whether or not the popup is being dragged by the player.
@@ -20,7 +85,12 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     /// <summary>
     /// Private reference variable to the parent canvas of the popup.
     /// </summary>
-    private Canvas parentCanvas = null;
+    protected Canvas parentCanvas = null;
+
+    /// <summary>
+    /// Public property that indicates whether or not the popup is the top popup (the top popup is the one with the last sibling index).
+    /// </summary>
+    public bool isTopPopup { get => transform.GetSiblingIndex() == transform.parent.childCount - 1; }
 
     /// <summary>
     /// Private static list that contains all the popups that currently exist within the game.
@@ -43,7 +113,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         }
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         //Sets the parent canvas reference variable.
         parentCanvas = GetComponentInParent<Canvas>();
@@ -55,15 +125,139 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        
+        if (opening)
+            OpeningAnimationUpdate();
+        else if (closing)
+            ClosingAnimationUpdate();
+
+        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup)
+            Close();
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to open and enable the popup.
+    /// </summary>
+    public virtual void Open()
+    {
+        //Enables the popup game object if the popup is not already open, which will call the OnEnable method.
+        if (!open && !opening)
+            gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to close and either disable or destroy the popup.
+    /// </summary>
+    public virtual void Close()
+    {
+        //Ends the current opening animation if there is one and also switches the closing animation type to instant if the popup was closing.
+        if (opening)
+        {
+            EndOpeningAnimation();
+            closingAnimationType = ClosingAnimationType.Instant;
+        }
+        //Begins the process of closing the popup if it is not already in the process of closing.
+        if(!closed && !closing)
+            BeginClosingAnimation();
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup begins its opening animation.
+    /// </summary>
+    protected virtual void BeginOpeningAnimation()
+    {
+        openingAnimationTimeElapsed = 0;
+        opening = true;
+
+        if (openingAnimationType == OpeningAnimationType.Instant)
+        {
+            EndOpeningAnimation();
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Protected method that is called every frame when the popup is in the middle of opening.
+    /// </summary>
+    protected virtual void OpeningAnimationUpdate()
+    {
+        openingAnimationTimeElapsed += Time.deltaTime;
+
+        if(openingAnimationType == OpeningAnimationType.Expand)
+        {
+            float scale = openingAnimationLength <= 0 ? 1 : openingAnimationTimeElapsed / openingAnimationLength > 1 ? 1 : openingAnimationTimeElapsed / openingAnimationLength;
+            transform.localScale = new Vector2(scale, scale);
+        }
+
+        if (openingAnimationTimeElapsed >= openingAnimationLength)
+            EndOpeningAnimation();
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup ends its opening animation.
+    /// </summary>
+    protected virtual void EndOpeningAnimation()
+    {
+        transform.localScale = Vector2.one;
+        openingAnimationTimeElapsed = 0;
+        opening = false;
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup begins its closing animation.
+    /// </summary>
+    protected virtual void BeginClosingAnimation()
+    {
+        closingAnimationTimeElapsed = 0;
+        closing = true;
+
+        if(closingAnimationType == ClosingAnimationType.Instant)
+        {
+            EndClosingAnimation();
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Protected method that is called every frame when the popup is in the middle of closing.
+    /// </summary>
+    protected virtual void ClosingAnimationUpdate()
+    {
+        closingAnimationTimeElapsed += Time.deltaTime;
+
+        if(closingAnimationType == ClosingAnimationType.Shrink)
+        {
+            float scale = closingAnimationLength <= 0 ? 0 : 1 - (closingAnimationTimeElapsed / closingAnimationLength) < 0 ? 0 : 1 - (closingAnimationTimeElapsed / closingAnimationLength);
+            transform.localScale = new Vector2(scale, scale);
+        }
+
+        if (closingAnimationTimeElapsed >= closingAnimationLength)
+            EndClosingAnimation();
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup ends its closing animation.
+    /// </summary>
+    protected virtual void EndClosingAnimation()
+    {
+        if (destroyOnClose)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        gameObject.SetActive(false);
+        transform.SetAsFirstSibling();
+        transform.localScale = Vector2.one;
+        closingAnimationTimeElapsed = 0;
+        closing = false;
     }
 
     /// <summary>
@@ -117,14 +311,31 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     }
 
     /// <summary>
-    /// Private method that is called whenever a popup is destroyed and removes the popup from the static list of popups.
+    /// Protected method that is called whenever a popup is destroyed and removes the popup from the static list of popups.
     /// </summary>
-    private void OnDestroy()
+    protected void OnDestroy()
     {
         //Removes the popup from the static list of popups.
         popups.Remove(this);
         //Sets the list of popups to null if there are currently no popups existing within the game.
         if (popups.Count == 0)
             popups = null;
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup is disabled.
+    /// </summary>
+    protected virtual void OnDisable()
+    {
+        
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the popup is first enabled or whenever it is opened.
+    /// </summary>
+    protected virtual void OnEnable()
+    {
+        //Begins the popup's opening animation.
+        BeginOpeningAnimation();
     }
 }

@@ -409,6 +409,14 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
+    /// Removes the planet's OnGalaxyGenerationCompletion function from the list of functions to be executed once the galaxy has finished generating in case it is necessary (like when the maximum amount of placement attempts for a solar system is reached).
+    /// </summary>
+    public void RemoveOnGalaxyGenerationCompletionFunction()
+    {
+        NewGalaxyGenerator.RemoveFunctionFromFunctionsToExecuteOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion);
+    }
+
+    /// <summary>
     /// Private function that should be added to the list of functions to be called by the galaxy camera whenever the zoom percentage of the camera changes and updates the planet's visibility to optimize performance among other things.
     /// </summary>
     private void OnZoomPercentageChange()

@@ -554,6 +554,11 @@ public class NewGalaxyGenerator : MonoBehaviour
                 {
                     Debug.LogWarning("Maximum amount of allowed attempts to fail to validly position a solar system reached. Will stop adding any more solar systems to the galaxy.");
                     Destroy(solarSystem.gameObject);
+                    foreach (NewGalaxyPlanet solarSystemPlanet in solarSystemPlanets)
+                    {
+                        solarSystemPlanet.RemoveOnGalaxyGenerationCompletionFunction();
+                        Destroy(solarSystemPlanet);
+                    }
                     break;
                 }
             }
@@ -773,13 +778,32 @@ public class NewGalaxyGenerator : MonoBehaviour
     {
         if(galaxyGenerator == null)
         {
-            Debug.LogWarning("Cannot execute function on galaxy generation completion because the galaxy has already finished generating.");
+            Debug.LogWarning("Cannot execute function on galaxy generation completion, probably because the galaxy has already finished generating.");
             return;
         }
 
         if (!galaxyGenerator.galaxyGenerationCompletionFunctions.ContainsKey(executionOrderNumber))
             galaxyGenerator.galaxyGenerationCompletionFunctions.Add(executionOrderNumber, new List<Action>());
         galaxyGenerator.galaxyGenerationCompletionFunctions[executionOrderNumber].Add(function);
+    }
+
+    /// <summary>
+    /// Removes the specified function to the list of functions to be executed once the galaxy has completely finished generating.
+    /// </summary>
+    /// <param name="function"></param>
+    public static void RemoveFunctionFromFunctionsToExecuteOnGalaxyGenerationCompletion(Action function)
+    {
+        if (galaxyGenerator == null)
+            return;
+
+        foreach(int executionOrderNumber in galaxyGenerator.galaxyGenerationCompletionFunctions.Keys)
+        {
+            if (galaxyGenerator.galaxyGenerationCompletionFunctions[executionOrderNumber].Contains(function))
+            {
+                galaxyGenerator.galaxyGenerationCompletionFunctions[executionOrderNumber].Remove(function);
+                break;
+            }
+        }
     }
 
     /// <summary>
