@@ -111,7 +111,7 @@ public class BridgeManager
     private void GenerateNewBridgeFromPairingIfApplicable(BridgeDestinationPairing pairing, GameObject bridgePrefab)
     {
         //Determine if the distance is too short for a bridge
-        float gapLength = Vector3.Distance(pairing.destination1, pairing.destination2);
+        float gapLength = Vector3.Distance(pairing.destination1EdgePoint, pairing.destination2EdgePoint);
 
         if (gapLength < 0.05f)
             return;
@@ -122,70 +122,68 @@ public class BridgeManager
 
     private void GenerateNewBridgeFromPairing(BridgeDestinationPairing pairing, GameObject bridgePrefab)
     {
-        float point1Padding = 0.5f, point2Padding = 0.5f;
-
-        Vector3 destination1 = pairing.destination1;
-        Vector3 destination2 = pairing.destination2;
+        NewBridgeSpecs specs = new NewBridgeSpecs(pairing, bridgePrefab);
 
         //Before generating, determine if the angle is too steep
-        Vector3 bridgeRotation = Quaternion.LookRotation(pairing.destination2 - pairing.destination1).eulerAngles;
+        Vector3 bridgeRotation = specs.GetBridgeRotation();
         Vector3 bridgeXZRotation = new Vector3(bridgeRotation.x, 0.0f, bridgeRotation.z);
 
-        //If it is too steep (and tall enough), have the lower point draw a flat line of bridge sections to the upper point's x, z location.
-        //Once there, put up a vertical scaler (like a ladder).
-        if (Mathf.Abs(bridgeXZRotation.magnitude) > 15.0f && Mathf.Abs(destination2.y - destination1.y) > 1.5f)
+        //If it is too steep and the distance is sufficient enough, have the lower point draw a flat line of bridge sections to the upper point's x, z location.
+        //Once there, put up a vertical scaler (like a ladder) to cover the y difference.
+        if (bridgeXZRotation.magnitude > 15.0f && Mathf.Abs(specs.point2.y - specs.point1.y) > 1.5f)
         {
             Vector3 bottomPoint, topPoint;
+            Vector3 verticalScalerRotation = bridgeRotation;
 
-            if(destination1.y < destination2.y) //Generate vertical scaler at destination 2
+            if (specs.point1.y < specs.point2.y) //Generate vertical scaler at destination 2
             {
-                bottomPoint = destination2;
-                bottomPoint.y = destination1.y;
-                topPoint = destination2;
+                bottomPoint = specs.point2;
+                bottomPoint.y = specs.point1.y;
+                topPoint = specs.point2;
 
-                destination2 = bottomPoint;
+                specs.point2 = bottomPoint;
 
-                point2Padding = 0.0f;
+                specs.point2Padding = 0.0f;
 
-                bridgeRotation.y = bridgeRotation.y + 180.0f;
+                verticalScalerRotation.y = verticalScalerRotation.y + 180.0f;
             }
             else //Generate vertical scaler at destination 1
             {
-                bottomPoint = destination1;
-                bottomPoint.y = destination2.y;
-                topPoint = destination1;
+                bottomPoint = specs.point1;
+                bottomPoint.y = specs.point2.y;
+                topPoint = specs.point1;
 
-                destination1 = bottomPoint;
+                specs.point1 = bottomPoint;
 
-                point1Padding = 0.0f;
+                specs.point1Padding = 0.0f;
             }
 
-            GenerateNewVerticalScalerAtEndOfBridge(bottomPoint, topPoint, (int)city.transform.InverseTransformDirection(bridgeRotation).y);
+            GenerateNewVerticalScalerAtEndOfBridge(bottomPoint, topPoint, (int)city.transform.InverseTransformDirection(verticalScalerRotation).y);
         }
         //Otherwise, draw an angle bridge between the points
 
-        GenerateNewBridgeSectionsBetweenPoints(destination1, destination2, point1Padding, point2Padding, pairing.destination1Colliders, pairing.destination2Colliders, bridgePrefab);
+        GenerateNewBridgeSectionsBetweenPoints(specs);
     }
 
     //This will take the points provided as is and draw bridge sections between them.
     //This function does not check if the points are too close to each other or the angle between them is too steep.
     //Those checks should already have been done by the function(s) that call this.
-    private void GenerateNewBridgeSectionsBetweenPoints(Vector3 point1, Vector3 point2, float point1Padding, float point2Padding, Collider[] point1Colliders, Collider[] point2Colliders, GameObject bridgePrefab)
+    private void GenerateNewBridgeSectionsBetweenPoints(NewBridgeSpecs specs)
     {
-        float gapLength = Vector3.Distance(point1, point2);
+        float gapLength = Vector3.Distance(specs.point1, specs.point2);
 
         //Choose appearance options for the new bridge
         Material newSlabMaterial = city.wallMaterials[Random.Range(0, city.wallMaterials.Length)];
         Material newGroundMaterial = city.floorMaterials[Random.Range(0, city.floorMaterials.Length)];
 
         //Create prototype bridge
-        Bridge bridgePrototype = GameObject.Instantiate(bridgePrefab).GetComponent<Bridge>();
+        Bridge bridgePrototype = GameObject.Instantiate(specs.bridgePrefab).GetComponent<Bridge>();
 
         //Define some needed variables
-        Vector3 bridgeRotation = Quaternion.LookRotation(point2 - point1).eulerAngles;
+        Vector3 bridgeRotation = specs.GetBridgeRotation();
 
         float defaultBridgeLength = bridgePrototype.transform.localScale.z;
-        float totalBridgeLength = gapLength + point1Padding + point2Padding;
+        float totalBridgeLength = gapLength + specs.point1Padding + specs.point2Padding;
 
         //From the prototype, decide whether we want to stretch it or tile it to span the length of the gap
         int numberOfSections;
@@ -197,8 +195,8 @@ public class BridgeManager
         //Proceed with filling the gap with a bridge by either stretching or tiling the bridge section(s)
         float sectionLength = totalBridgeLength / numberOfSections;
         bool justNeedSingleRamp = totalBridgeLength < 3.0f;
-        Vector3 endpoint1 = Vector3.MoveTowards(point1, point2, -(point1Padding / 2.0f));
-        Vector3 endpoint2 = Vector3.MoveTowards(point2, point1, -(point2Padding / 2.0f));
+        Vector3 endpoint1 = Vector3.MoveTowards(specs.point1, specs.point2, -(specs.point1Padding / 2.0f));
+        Vector3 endpoint2 = Vector3.MoveTowards(specs.point2, specs.point1, -(specs.point2Padding / 2.0f));
         bool keepSubstructure = numberOfSections > 1;
 
         for (int x = 0; x < numberOfSections; x++)
@@ -218,13 +216,16 @@ public class BridgeManager
             else if (x == 0)
                 bridge = GenerateNewBridgeSection(bridgePrototype.gameObject, true, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
             else
-                bridge = GenerateNewBridgeSection(bridgePrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
+                bridge = GenerateNewBridgeSection(specs.bridgePrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
 
             //For the first and last bridge sections, see if we need to generate a connector beside them
-            if (x == 0)
-                GenerateNewEdgeConnectorIfNeeded(point1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
-            if (x == numberOfSections - 1) //WARNING: DON'T make this else if because the first and last could be the same section
-                GenerateNewEdgeConnectorIfNeeded(point2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
+            if(!justNeedSingleRamp)
+            {
+                if (x == 0)
+                    GenerateNewEdgeConnectorIfNeeded(specs.point1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
+                if (x == numberOfSections - 1) //WARNING: DON'T make this else if because the first and last could be the same section
+                    GenerateNewEdgeConnectorIfNeeded(specs.point2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
+            }
         }
     }
 
@@ -280,7 +281,7 @@ public class BridgeManager
         //Compute scale beforehand
         Vector3 connectorScale = Vector3.one;
         connectorScale.x = bridgeTransform.localScale.x;
-        connectorScale.z = connectorScale.x * 3.0f;
+        connectorScale.z = connectorScale.x * 2.5f;
 
         //Compute position beforehand
         Vector3 edgeOfBridgeInLocal = (onBack ? Vector3.back : Vector3.forward) * 0.5f;

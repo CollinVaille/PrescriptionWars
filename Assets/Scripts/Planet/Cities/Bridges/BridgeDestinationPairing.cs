@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class BridgeDestinationPairing
 {
-    public Vector3 destination1, destination2; //In global space
-    public Collider[] destination1Colliders, destination2Colliders;
-
-    public BridgeDestinationPairing(Vector3 destination1, Vector3 destination2)
-    {
-        this.destination1 = destination1;
-        this.destination2 = destination2;
-    }
+    public BridgeDestination destination1, destination2;
+    public Vector3 destination1EdgePoint, destination2EdgePoint; //In global space
 
     public BridgeDestinationPairing(BridgeDestination bridgeDestination1, BridgeDestination bridgeDestination2)
     {
+        destination1 = bridgeDestination1;
+        destination2 = bridgeDestination2;
+
+        //---
+
         Vector3 suggestionFrom1 = bridgeDestination1.GetClosestPoint(bridgeDestination2.center);
         Vector3 suggestionFrom2 = bridgeDestination2.GetClosestPoint(bridgeDestination1.center);
 
@@ -26,18 +25,13 @@ public class BridgeDestinationPairing
 
         if (suggestion1Distance < suggestion2Distance) //Choose suggestion 1
         {
-            destination1 = suggestionFrom1;
-            destination2 = closestOn2To1;
+            destination1EdgePoint = suggestionFrom1;
+            destination2EdgePoint = closestOn2To1;
         }
         else //Choose suggestion 2
         {
-            destination1 = closestOn1To2;
-            destination2 = suggestionFrom2;
+            destination1EdgePoint = closestOn1To2;
+            destination2EdgePoint = suggestionFrom2;
         }
-
-        //---
-
-        destination1Colliders = bridgeDestination1.boundaryColliders;
-        destination2Colliders = bridgeDestination2.boundaryColliders;
     }
 }
