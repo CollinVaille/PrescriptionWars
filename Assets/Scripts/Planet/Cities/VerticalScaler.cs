@@ -36,7 +36,7 @@ public class VerticalScaler : MonoBehaviour
     public void ScaleToHeightAndConnect(float heightToScaleTo, bool invertConnectorsXPosition)
     {
         //Scale it
-        GetComponent<IVerticalScalerImplement>().ScaleToHeight(heightToScaleTo);
+        GetVerticalScalerImplement().ScaleToHeight(heightToScaleTo);
 
         //Find the connector
         Transform connector = transform.Find("Upper Level Connector");
@@ -72,7 +72,17 @@ public class VerticalScaler : MonoBehaviour
 
     public float GetHeight()
     {
-        return GetComponent<IVerticalScalerImplement>().GetHeight();
+        return GetVerticalScalerImplement().GetHeight();
+    }
+
+    private IVerticalScalerImplement GetVerticalScalerImplement()
+    {
+        IVerticalScalerImplement verticalScalerImplement = GetComponent<IVerticalScalerImplement>();
+
+        if (verticalScalerImplement != null)
+            return verticalScalerImplement;
+
+        return GetComponentInChildren<IVerticalScalerImplement>();
     }
 }
 

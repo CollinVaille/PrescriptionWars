@@ -68,10 +68,13 @@ public class FoundationManager
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
         city.buildingSpecifications.extraBuildingRadius = 15;
+
+        //We may also want extra spacing between the foundations for aesthetics, variation, and also more space for bridges
         if(Random.Range(0, 2) == 0)
             city.buildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
 
         //Tell building construction to create foundations underneath each building at this height range
+        //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
         city.buildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
     }
 

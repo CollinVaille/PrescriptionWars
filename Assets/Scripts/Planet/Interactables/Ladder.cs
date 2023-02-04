@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ladder : Interactable
+public class Ladder : Interactable, IVerticalScalerImplement
 {
     private Pill occupant = null;
     private Vector3 occupantLocalPosition = Vector3.zero;
@@ -14,6 +14,7 @@ public class Ladder : Interactable
 
     public float bottomHeight = -3.5f, topHeight = 3.5f;
     public AudioClip rung1, rung2;
+    public Transform scalablePart;
 
     public override void Interact(Pill interacting)
     {
@@ -60,7 +61,7 @@ public class Ladder : Interactable
         occupantRBody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         occupantRBody.isKinematic = true;
 
-        occupant.transform.parent = transform.parent;
+        occupant.transform.parent = GetComponentInParent<VerticalScaler>().transform;
         occupantLocalPosition.x = 0.0f;
         occupantLocalPosition.y = occupant.transform.localPosition.y;
         occupantLocalPosition.z = 1.0f;
@@ -146,4 +147,34 @@ public class Ladder : Interactable
     }
 
     protected override string GetInteractionVerb() { return occupant == Player.player ? "Let Go" : "Climb"; }
+
+    public void ScaleToHeight(float heightToScaleTo)
+    {
+        //Get transform
+        Transform ladderTransform = GetScalablePartOfLadder();
+
+        //Update position
+        Vector3 ladderScale = ladderTransform.localScale;
+        ladderScale.y = heightToScaleTo;
+        ladderTransform.localScale = ladderScale;
+
+        //Update rotation
+        Vector3 ladderPosition = ladderTransform.localPosition;
+        ladderPosition.y = ladderScale.y / 2.0f;
+        ladderTransform.localPosition = ladderPosition;
+
+        //Update logic for when to hop on and off
+        bottomHeight = 1.0f;
+        topHeight = ladderScale.y + 1.0f;
+    }
+
+    public float GetHeight()
+    {
+        return GetScalablePartOfLadder().localScale.y;
+    }
+
+    private Transform GetScalablePartOfLadder()
+    {
+        return scalablePart ? scalablePart : transform;
+    }
 }

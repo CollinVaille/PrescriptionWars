@@ -7,13 +7,13 @@ public class BridgeManager
     public City city;
     private List<BridgeDestination> destinations;
     private List<BridgeDestinationPairing> pairings;
-    private GameObject markerPrefab, specialConnector;
+    private GameObject markerPrefab, connectorPrefab;
 
     public BridgeManager(City city)
     {
         this.city = city;
         markerPrefab = Resources.Load<GameObject>("Planet/City/Bridges/Short/Simple Arch Bridge");
-        specialConnector = Resources.Load<GameObject>("Planet/City/Miscellaneous/Special Connector");
+        connectorPrefab = Resources.Load<GameObject>("Planet/City/Miscellaneous/Special Connector");
     }
 
     public void AddNewDestination(BridgeDestination bridgeDestination)
@@ -110,13 +110,69 @@ public class BridgeManager
 
     private void GenerateNewBridgeFromPairingIfApplicable(BridgeDestinationPairing pairing, GameObject bridgePrefab)
     {
-        //First, determine if the distance is too short for a bridge
+        //Determine if the distance is too short for a bridge
         float gapLength = Vector3.Distance(pairing.destination1, pairing.destination2);
 
-        if (gapLength < 1.0f)
+        if (gapLength < 0.05f)
             return;
 
         //Proceed with generation...
+        GenerateNewBridgeFromPairing(pairing, bridgePrefab);
+    }
+
+    private void GenerateNewBridgeFromPairing(BridgeDestinationPairing pairing, GameObject bridgePrefab)
+    {
+        float point1Padding = 0.5f, point2Padding = 0.5f;
+
+        Vector3 destination1 = pairing.destination1;
+        Vector3 destination2 = pairing.destination2;
+
+        //Before generating, determine if the angle is too steep
+        Vector3 bridgeRotation = Quaternion.LookRotation(pairing.destination2 - pairing.destination1).eulerAngles;
+        Vector3 bridgeXZRotation = new Vector3(bridgeRotation.x, 0.0f, bridgeRotation.z);
+
+        //If it is too steep (and tall enough), have the lower point draw a flat line of bridge sections to the upper point's x, z location.
+        //Once there, put up a vertical scaler (like a ladder).
+        if (Mathf.Abs(bridgeXZRotation.magnitude) > 15.0f && Mathf.Abs(destination2.y - destination1.y) > 1.5f)
+        {
+            Vector3 bottomPoint, topPoint;
+
+            if(destination1.y < destination2.y) //Generate vertical scaler at destination 2
+            {
+                bottomPoint = destination2;
+                bottomPoint.y = destination1.y;
+                topPoint = destination2;
+
+                destination2 = bottomPoint;
+
+                point2Padding = 0.0f;
+
+                bridgeRotation.y = bridgeRotation.y + 180.0f;
+            }
+            else //Generate vertical scaler at destination 1
+            {
+                bottomPoint = destination1;
+                bottomPoint.y = destination2.y;
+                topPoint = destination1;
+
+                destination1 = bottomPoint;
+
+                point1Padding = 0.0f;
+            }
+
+            GenerateNewVerticalScalerAtEndOfBridge(bottomPoint, topPoint, (int)city.transform.InverseTransformDirection(bridgeRotation).y);
+        }
+        //Otherwise, draw an angle bridge between the points
+
+        GenerateNewBridgeSectionsBetweenPoints(destination1, destination2, point1Padding, point2Padding, pairing.destination1Colliders, pairing.destination2Colliders, bridgePrefab);
+    }
+
+    //This will take the points provided as is and draw bridge sections between them.
+    //This function does not check if the points are too close to each other or the angle between them is too steep.
+    //Those checks should already have been done by the function(s) that call this.
+    private void GenerateNewBridgeSectionsBetweenPoints(Vector3 point1, Vector3 point2, float point1Padding, float point2Padding, Collider[] point1Colliders, Collider[] point2Colliders, GameObject bridgePrefab)
+    {
+        float gapLength = Vector3.Distance(point1, point2);
 
         //Choose appearance options for the new bridge
         Material newSlabMaterial = city.wallMaterials[Random.Range(0, city.wallMaterials.Length)];
@@ -126,11 +182,10 @@ public class BridgeManager
         Bridge bridgePrototype = GameObject.Instantiate(bridgePrefab).GetComponent<Bridge>();
 
         //Define some needed variables
-        Vector3 bridgeRotation = Quaternion.LookRotation(pairing.destination2 - pairing.destination1).eulerAngles;
-        
+        Vector3 bridgeRotation = Quaternion.LookRotation(point2 - point1).eulerAngles;
+
         float defaultBridgeLength = bridgePrototype.transform.localScale.z;
-        float totalPadding = 1.0f;
-        float totalBridgeLength = gapLength + totalPadding;
+        float totalBridgeLength = gapLength + point1Padding + point2Padding;
 
         //From the prototype, decide whether we want to stretch it or tile it to span the length of the gap
         int numberOfSections;
@@ -141,26 +196,35 @@ public class BridgeManager
 
         //Proceed with filling the gap with a bridge by either stretching or tiling the bridge section(s)
         float sectionLength = totalBridgeLength / numberOfSections;
-        Vector3 endpoint1 = Vector3.MoveTowards(pairing.destination1, pairing.destination2, -(totalPadding / 2.0f));
-        Vector3 endpoint2 = Vector3.MoveTowards(pairing.destination2, pairing.destination1, -(totalPadding / 2.0f));
+        bool justNeedSingleRamp = totalBridgeLength < 3.0f;
+        Vector3 endpoint1 = Vector3.MoveTowards(point1, point2, -(point1Padding / 2.0f));
+        Vector3 endpoint2 = Vector3.MoveTowards(point2, point1, -(point2Padding / 2.0f));
         bool keepSubstructure = numberOfSections > 1;
 
-        for(int x = 0; x < numberOfSections; x++)
+        for (int x = 0; x < numberOfSections; x++)
         {
             Vector3 bridgePosition = Vector3.MoveTowards(endpoint1, endpoint2, sectionLength * (x + 0.5f));
 
             //Generate the bridge section
             Bridge bridge;
-            if(x == 0)
+            if (justNeedSingleRamp)
+            {
+                bridgePosition.y -= 0.1f;
+                bridge = GenerateNewBridgeSection(connectorPrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, false);
+                Vector3 bridgeScale = bridge.transform.localScale;
+                bridgeScale.x = 5.0f;
+                bridge.transform.localScale = bridgeScale;
+            }
+            else if (x == 0)
                 bridge = GenerateNewBridgeSection(bridgePrototype.gameObject, true, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
             else
                 bridge = GenerateNewBridgeSection(bridgePrefab, false, bridgePosition, sectionLength, bridgeRotation, newSlabMaterial, newGroundMaterial, keepSubstructure);
 
             //For the first and last bridge sections, see if we need to generate a connector beside them
             if (x == 0)
-                GenerateNewConnectorIfNeeded(pairing.destination1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
+                GenerateNewEdgeConnectorIfNeeded(point1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
             if (x == numberOfSections - 1) //WARNING: DON'T make this else if because the first and last could be the same section
-                GenerateNewConnectorIfNeeded(pairing.destination2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
+                GenerateNewEdgeConnectorIfNeeded(point2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
         }
     }
 
@@ -194,7 +258,7 @@ public class BridgeManager
         return bridge;
     }
 
-    private void GenerateNewConnectorIfNeeded(Collider[] collidersToHit, Bridge bridge, bool checkBack, Material newSlabMaterial, Material newGroundMaterial)
+    private void GenerateNewEdgeConnectorIfNeeded(Collider[] collidersToHit, Bridge bridge, bool checkBack, Material newSlabMaterial, Material newGroundMaterial)
     {
         if (collidersToHit == null)
             return;
@@ -206,10 +270,10 @@ public class BridgeManager
         bool rightCornerTooFarAway = IsCornerTooFarAway(rightCorner, collidersToHit);
 
         if (leftCornerTooFarAway || rightCornerTooFarAway)
-            GenerateNewConnector(bridge, checkBack, newSlabMaterial, newGroundMaterial);
+            GenerateNewEdgeConnector(bridge, checkBack, newSlabMaterial, newGroundMaterial);
     }
 
-    private void GenerateNewConnector(Bridge bridge, bool onBack, Material newSlabMaterial, Material newGroundMaterial)
+    private void GenerateNewEdgeConnector(Bridge bridge, bool onBack, Material newSlabMaterial, Material newGroundMaterial)
     {
         Transform bridgeTransform = bridge.transform;
 
@@ -233,19 +297,37 @@ public class BridgeManager
         connectorRotation.z = 0.0f;
 
         //Create the connector
-        Bridge connector = GenerateNewBridgeSection(specialConnector, false, connectorPosition, connectorScale.z, connectorRotation, newSlabMaterial, newGroundMaterial, false);
+        Bridge connector = GenerateNewBridgeSection(connectorPrefab, false, connectorPosition, connectorScale.z, connectorRotation, newSlabMaterial, newGroundMaterial, false);
         
         //Adjust scale post-creation
         connectorScale.y = connector.transform.localScale.y;
         connector.transform.localScale = connectorScale;
 
         //Adjust position post-creation
-        connector.transform.position += Vector3.down * ((connectorScale.y / 2.0f) + 0.1f);
+        connector.transform.position += Vector3.down * 0.1f;
     }
 
     private bool IsCornerTooFarAway(Vector3 corner, Collider[] collidersToHit)
     {
         Vector3 closestPointOnColliders = Bridge.GetClosestPointAmongstColliders(corner, collidersToHit);
+        closestPointOnColliders.y = corner.y; //We don't want the y-value to factor into the distance. We're only looking for x-z corners
+
         return Vector3.Distance(corner, closestPointOnColliders) > 0.25f;
+    }
+
+    private void GenerateNewVerticalScalerAtEndOfBridge(Vector3 bottomPoint, Vector3 topPoint, int yAxisRotation)
+    {
+        //Instantiate the vertical scaler
+        VerticalScaler newVerticalScaler = VerticalScaler.InstantiateVerticalScaler("Planet/City/Miscellaneous/Thick Rusty Ladder", city.transform, city.foundationManager);
+        Transform verticalScalerTransform = newVerticalScaler.transform;
+
+        //Rotate it
+        newVerticalScaler.SetYAxisRotation(yAxisRotation);
+
+        //Position it
+        verticalScalerTransform.position = bottomPoint;
+
+        //Scale it and connect it to the entrance foundation
+        newVerticalScaler.ScaleToHeightAndConnect(topPoint.y - bottomPoint.y, false);
     }
 }
