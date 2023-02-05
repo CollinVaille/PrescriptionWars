@@ -56,6 +56,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
         mapMarker.InitializeMarker(transform);
+
+        Debug.Log("City at " + transform.position);
     }
 
     private void InitializeAreaReservationSystem()
@@ -69,15 +71,29 @@ public class City : MonoBehaviour, INavZoneUpdater
         }
     }
 
-    public void ReserveTerrainLocation()
+    //If its a new city, the cityLocation parameter is ignored and a new position is chosen. Else, its a restored city and the cityLocation is reused.
+    public void ReserveTerrainLocation(bool newCity, Vector3 cityLocation)
     {
-        //Reserve location for city
-        Vector3 cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(Random.Range(0, 10),
-            (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4), 500, (int)(radius * 1.2f), true);
+        TerrainReservationOptions options = new TerrainReservationOptions(newCity, (int)(radius * 1.2f));
+        options.flatten = true;
 
-        //Place city at slight offset to location
-        cityLocation.x -= 10;
-        cityLocation.z -= 10;
+        //Reserve location for city
+        if (newCity)
+        {
+            options.heightRange = new Vector2Int((int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4), 500);
+            options.preferredSteepness = Random.Range(0, 10);
+        }
+        else
+            options.position = cityLocation;
+
+        cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(options);
+
+        /* if(newCity)
+        {
+            //Place city at slight offset to location
+            cityLocation.x -= 10;
+            cityLocation.z -= 10;
+        }   */
 
         transform.position = cityLocation;
     }
@@ -95,7 +111,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         radius = Random.Range(150, 300); //Huge city
         //radius = 500; //Approximately the size of the whole terrain
         InitializeAreaReservationSystem();
-        ReserveTerrainLocation();
+        ReserveTerrainLocation(true, Vector3.zero);
 
         //Determine city type, which determines whether we have walls, fence posts...
         //what buildings and building materials are used etc...
@@ -860,6 +876,8 @@ public class CityJSON
             }
         }
 
+        cityLocation = city.transform.position;
+
         wallMaterials = new string[city.wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
             wallMaterials[x] = city.wallMaterials[x].name;
@@ -868,7 +886,7 @@ public class CityJSON
         for (int x = 0; x < floorMaterials.Length; x++)
             floorMaterials[x] = city.floorMaterials[x].name;
 
-        foundationManager = new FoundationManagerJSON(city.foundationManager);
+        foundationManagerJSON = new FoundationManagerJSON(city.foundationManager);
 
         buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
         foreach (GameObject buildingPrefab in city.buildingPrefabs)
@@ -878,7 +896,9 @@ public class CityJSON
         for (int x = 0; x < city.buildings.Count; x++)
             buildings.Add(new BuildingJSON(city.buildings[x]));
 
-        cityWallManager = new CityWallManagerJSON(city.cityWallManager);
+        cityWallManagerJSON = new CityWallManagerJSON(city.cityWallManager);
+
+        bridgeManagerJSON = new BridgeManagerJSON(city.bridgeManager);
     }
 
     public void RestoreCity(City city)
@@ -891,7 +911,7 @@ public class CityJSON
         city.cityType = CityGenerator.generator.cityTypes[cityTypeIndex];
         string cityTypePathSuffix = city.cityType.name + "/";
 
-        city.ReserveTerrainLocation();
+        city.ReserveTerrainLocation(false, cityLocation);
 
         city.wallMaterials = new Material[wallMaterials.Length];
         for (int x = 0; x < wallMaterials.Length; x++)
@@ -901,7 +921,7 @@ public class CityJSON
         for (int x = 0; x < floorMaterials.Length; x++)
             city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMaterials[x]);
 
-        foundationManager.RestoreFoundationManager(city.foundationManager);
+        foundationManagerJSON.RestoreFoundationManager(city.foundationManager);
 
         city.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < buildingPrefabs.Count; x++)
@@ -916,7 +936,9 @@ public class CityJSON
             city.buildings.Add(newBuilding);
         }
 
-        cityWallManager.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
+        cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
+
+        bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
 
         //After the city has been regenerated, build the nav mesh to pathfind through it
         city.GenerateNavMesh();
@@ -928,17 +950,21 @@ public class CityJSON
     public string name;
     public int radius;
     public int cityTypeIndex;
+    public Vector3 cityLocation;
 
     //Materials
     public string[] wallMaterials, floorMaterials;
 
     //Foundations
-    public FoundationManagerJSON foundationManager;
+    public FoundationManagerJSON foundationManagerJSON;
 
     //Buildings
     public List<string> buildingPrefabs;
     public List<BuildingJSON> buildings;
 
     //Walls
-    public CityWallManagerJSON cityWallManager;
+    public CityWallManagerJSON cityWallManagerJSON;
+
+    //Bridges
+    public BridgeManagerJSON bridgeManagerJSON;
 }

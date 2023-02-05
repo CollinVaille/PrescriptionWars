@@ -398,48 +398,72 @@ public class PlanetTerrain : MonoBehaviour
 
     private bool AreaAtPositionAvailable (float globalXPos, float globalZPos)
     {
-        int x = (int)((globalXPos + 500) / areaSize);
-        int z = (int)((globalZPos + 500) / areaSize);
-
-        return areaHeight[x, z] < 9000;
+        Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(globalXPos, globalZPos);
+        return areaHeight[areaCoords.x, areaCoords.y] < 9000;
     }
 
-    public Vector3 ReserveTerrainPosition (float preferredSteepness, int minHeight, int maxHeight, int radius, bool flatten)
+    public Vector2Int ConvertFromGlobalToAreaUnits(float globalXPos, float globalZPos)
     {
+        return new Vector2Int((int)((globalXPos + 500) / areaSize), (int)((globalZPos + 500) / areaSize));
+    }
+
+    public Vector2 ConvertFromAreaToGlobalUnits(float areaXCoord, float areaZCoord)
+    {
+        return new Vector2((areaXCoord * areaSize) - 500.0f, (areaZCoord * areaSize) - 500.0f);
+    }
+
+    public Vector3 ReserveTerrainPosition (TerrainReservationOptions options)
+    {
+        int xCoord, zCoord;
+
         //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
-        if (flatten)
-            radius *= 2;
+        if (options.flatten)
+            options.radius *= 2;
 
-        //Set initial values to center of terrain so that if we don't get a match we just plop it in the middle
-        int xCoord = areaSteepness.GetLength(0) / 2;
-        int zCoord = areaSteepness.GetLength(1) / 2;
-        float smallestDifference = 9999;
-
-        //Go through all the areas and remember the one that had the closest steepness value to preferred steepness
-        for (int x = 0; x < areaSteepness.GetLength(0); x++)
+        if (options.newGeneration) //New generation
         {
-            for (int z = 0; z < areaSteepness.GetLength(1); z++)
+            //Set initial values to center of terrain so that if we don't get a match we just plop it in the middle
+            xCoord = areaSteepness.GetLength(0) / 2;
+            zCoord = areaSteepness.GetLength(1) / 2;
+            float smallestDifference = 9999;
+
+            //Go through all the areas and remember the one that had the closest steepness value to preferred steepness
+            for (int x = 0; x < areaSteepness.GetLength(0); x++)
             {
-                //Look for candidate with best steepness value
-                if (Mathf.Abs(areaSteepness[x, z] - preferredSteepness) < smallestDifference)
+                for (int z = 0; z < areaSteepness.GetLength(1); z++)
                 {
-                    //Make sure it is safe
-                    if (SelectedAreasAreSafe(x, z, 0, 500, radius))
+                    //Look for candidate with best steepness value
+                    if (Mathf.Abs(areaSteepness[x, z] - options.preferredSteepness) < smallestDifference)
                     {
-                        //Found new best area
-                        smallestDifference = Mathf.Abs(areaSteepness[x, z] - preferredSteepness);
-                        xCoord = x;
-                        zCoord = z;
+                        //Make sure it is safe
+                        if (SelectedAreasAreSafe(x, z, 0, 500, options.radius))
+                        {
+                            //Found new best area
+                            smallestDifference = Mathf.Abs(areaSteepness[x, z] - options.preferredSteepness);
+                            xCoord = x;
+                            zCoord = z;
+                        }
                     }
                 }
             }
         }
+        else //Restoration
+        {
+            Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(options.position.x, options.position.z);
+            xCoord = areaCoords.x;
+            zCoord = areaCoords.y;
+        }
 
         //Now that we have concluded which area(s) to reserve, reserve it/them...
-        ReserveSelectedAreas(xCoord, zCoord, minHeight, radius, flatten);
+        int minHeightForReservation = options.newGeneration ? options.heightRange.x + 1 : (int)options.position.y;
+
+        Debug.Log("Reserving " + xCoord + ", " + minHeightForReservation + ", " + zCoord);
+
+        ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options.radius, options.flatten);
 
         //Compute the starting point of the area we just reserved (in world coordinates)
-        Vector3 worldPosition = new Vector3(-500 + xCoord * areaSize, 9999, -500 + zCoord * areaSize);
+        Vector2 globalCoords = ConvertFromAreaToGlobalUnits(xCoord, zCoord);
+        Vector3 worldPosition = new Vector3(globalCoords.x, 9999.0f, globalCoords.y);
 
         //Translate from starting point to center point of area
         worldPosition.x += areaSize / 2;
@@ -515,8 +539,8 @@ public class PlanetTerrain : MonoBehaviour
                                                             (int)(zStart * areaSize + selectionSize * 0.5f));
 
             //Make sure height is above min height
-            if (newHeight < minHeight + 1)
-                newHeight = minHeight + 1;
+            if (newHeight < minHeight)
+                newHeight = minHeight;
 
             //Convert from world coordinates to terrain heightmap coordinates
             newHeight /= 512.0f;

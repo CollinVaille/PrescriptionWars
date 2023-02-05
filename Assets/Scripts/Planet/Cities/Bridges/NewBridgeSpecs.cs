@@ -7,9 +7,9 @@ public class NewBridgeSpecs
     public Vector3 point1, point2;
     public float point1Padding = 0.5f, point2Padding = 0.5f;
     public Collider[] point1Colliders, point2Colliders;
-    public GameObject bridgePrefab;
+    public string bridgeResourcePath;
 
-    public NewBridgeSpecs(BridgeDestinationPairing bridgeDestinationPairing, GameObject bridgePrefab)
+    public NewBridgeSpecs(BridgeDestinationPairing bridgeDestinationPairing, string bridgeResourcePath)
     {
         point1 = bridgeDestinationPairing.destination1EdgePoint;
         point2 = bridgeDestinationPairing.destination2EdgePoint;
@@ -17,7 +17,7 @@ public class NewBridgeSpecs
         point1Colliders = bridgeDestinationPairing.destination1.boundaryColliders;
         point2Colliders = bridgeDestinationPairing.destination2.boundaryColliders;
 
-        this.bridgePrefab = bridgePrefab;
+        this.bridgeResourcePath = bridgeResourcePath;
 
         AdjustPointsIfNeeded(bridgeDestinationPairing);
     }

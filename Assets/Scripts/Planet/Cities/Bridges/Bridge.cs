@@ -8,11 +8,42 @@ public class Bridge : MonoBehaviour
 
     public Material slabMaterial, groundMaterial;
     public BridgeFillMode fillMode = BridgeFillMode.StretchingOrTilingOK;
+    [HideInInspector] public string resourcePath;
+    [HideInInspector] public bool usingSubstructure = false;
 
-    public void SetUpBridge(bool useSubstructure, Material newSlabMaterial, Material newGroundMaterial)
+    public void SetUpBridge(string resourcePath, Vector3 position, Vector3 rotation, float zScale, BridgeManager bridgeManager, bool useSubstructure)
     {
-        RepaintRecursive(transform, newSlabMaterial, newGroundMaterial);
+        //Remember needed variables
+        this.resourcePath = resourcePath;
+
+        //Fit into scene
+        SetUpTransform(position, rotation, zScale, bridgeManager.city.transform);
+        RepaintRecursive(transform, bridgeManager.slabMaterial, bridgeManager.groundMaterial);
         SetUpSubstructure(useSubstructure);
+
+        //Add to save system
+        if (bridgeManager.bridges == null)
+            bridgeManager.bridges = new List<Bridge>();
+        bridgeManager.bridges.Add(this);
+    }
+
+    private void SetUpTransform(Vector3 position, Vector3 rotation, float zScale, Transform parent)
+    {
+        Transform bridgeTransform = transform;
+
+        //Parent it
+        bridgeTransform.parent = parent;
+
+        //Position
+        bridgeTransform.position = position;
+
+        //Scale
+        Vector3 bridgeScale = bridgeTransform.localScale;
+        bridgeScale.z = zScale;
+        bridgeTransform.localScale = bridgeScale;
+
+        //Rotate
+        bridgeTransform.eulerAngles = rotation;
     }
 
     private void SetUpSubstructure(bool useSubstructure)
@@ -26,6 +57,8 @@ public class Bridge : MonoBehaviour
         {
             if (Physics.Raycast(substructure.position + Vector3.down * 1.0f, Vector3.down, out RaycastHit hit))
             {
+                usingSubstructure = true;
+
                 //Unparent from bridge so that its scale and rotation are not messed
                 //New parent is the bridge's parent because that guy doesn't have those issues
                 substructure.parent = transform.parent;
@@ -125,5 +158,31 @@ public class Bridge : MonoBehaviour
         }
 
         return closestPoint;
+    }
+}
+
+[System.Serializable]
+public class BridgeJSON
+{
+    public string prefabPath;
+    public Vector3 position, rotation;
+    public float zScale;
+    public bool useSubstructure;
+
+    public BridgeJSON(Bridge bridge, BridgeManager bridgeManager)
+    {
+        prefabPath = bridge.resourcePath;
+
+        position = bridge.transform.position;
+        rotation = bridge.transform.eulerAngles;
+        zScale = bridge.transform.localScale.z;
+
+        useSubstructure = bridge.usingSubstructure;
+    }
+
+    public void RestoreBridge(BridgeManager bridgeManager)
+    {
+        Bridge bridge = GameObject.Instantiate(Resources.Load<GameObject>(prefabPath)).GetComponent<Bridge>();
+        bridge.SetUpBridge(prefabPath, position, rotation, zScale, bridgeManager, useSubstructure);
     }
 }
