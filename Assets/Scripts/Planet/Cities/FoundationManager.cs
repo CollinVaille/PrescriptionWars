@@ -67,15 +67,15 @@ public class FoundationManager
         city.cityWallManager.wallSectionPrefab = null;
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
-        city.buildingSpecifications.extraBuildingRadius = 15;
+        city.buildingManager.buildingSpecifications.extraBuildingRadius = 15;
 
         //We may also want extra spacing between the foundations for aesthetics, variation, and also more space for bridges
         if(Random.Range(0, 2) == 0)
-            city.buildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
+            city.buildingManager.buildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
 
         //Tell building construction to create foundations underneath each building at this height range
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
-        city.buildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+        city.buildingManager.buildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
     }
 
     private void GenerateEntrancesForCardinalDirections()
@@ -118,7 +118,7 @@ public class FoundationManager
     private void GenerateVerticalScalerBesideEntrance(Vector3 entrancePosition, Vector3 entranceScale, bool generateOnNegativeSide, int yAxisRotation)
     {
         //Instantiate the vertical scaler
-        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler("Planet/City/Miscellaneous/Elevator", city.transform, this);
+        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(false), city.transform, this);
         Transform verticalScalerTransform = verticalScaler.transform;
 
         //Rotate it
@@ -140,7 +140,7 @@ public class FoundationManager
     public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
     {
         //Determine whether building should have a foundation generated underneath it
-        float buildingFoundationHeight = Random.Range(city.buildingSpecifications.foundationHeightRange.x, city.buildingSpecifications.foundationHeightRange.y);
+        float buildingFoundationHeight = Random.Range(city.buildingManager.buildingSpecifications.foundationHeightRange.x, city.buildingManager.buildingSpecifications.foundationHeightRange.y);
 
         if (buildingFoundationHeight > 5) //Include foundation
         {

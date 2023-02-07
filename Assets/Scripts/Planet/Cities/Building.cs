@@ -61,9 +61,9 @@ public class Building : MonoBehaviour
         foreach(Transform child in t)
         {
             MeshRenderer theRenderer = child.GetComponent<MeshRenderer>();
-            if (theRenderer && theRenderer.sharedMaterial == city.defaultWallMaterial)
+            if (theRenderer && theRenderer.sharedMaterial == city.buildingManager.defaultWallMaterial)
                 theRenderer.sharedMaterial = wall;
-            else if (theRenderer && theRenderer.sharedMaterial == city.defaultFloorMaterial)
+            else if (theRenderer && theRenderer.sharedMaterial == city.buildingManager.defaultFloorMaterial)
             {
                 theRenderer.sharedMaterial = floor;
                 PlanetMaterial.SetMaterialTypeBasedOnName(floor.name, child.gameObject);
@@ -209,20 +209,20 @@ public class BuildingJSON
         building.transform.localPosition = localPosition;
         building.transform.localRotation = localRotation;
 
-        for(int x = 0; x < city.wallMaterials.Length; x++)
+        for(int x = 0; x < city.buildingManager.wallMaterials.Length; x++)
         {
-            if (wall.Equals(city.wallMaterials[x].name))
+            if (wall.Equals(city.buildingManager.wallMaterials[x].name))
             {
-                building.wall = city.wallMaterials[x];
+                building.wall = city.buildingManager.wallMaterials[x];
                 break;
             }
         }
 
-        for (int x = 0; x < city.floorMaterials.Length; x++)
+        for (int x = 0; x < city.buildingManager.floorMaterials.Length; x++)
         {
-            if (floor.Equals(city.floorMaterials[x].name))
+            if (floor.Equals(city.buildingManager.floorMaterials[x].name))
             {
-                building.floor = city.floorMaterials[x];
+                building.floor = city.buildingManager.floorMaterials[x];
                 break;
             }
         }

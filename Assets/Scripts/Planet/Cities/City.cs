@@ -11,41 +11,23 @@ public class City : MonoBehaviour, INavZoneUpdater
     public GameObject mapMarkerPrefab;
     [HideInInspector] public CityType cityType;
 
-    //Building construction
-    public List<GameObject> buildingPrefabs;
-    private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
-    private int totalSpawnChance = 0;
-    [HideInInspector] public BuildingSpecifications buildingSpecifications;
-
-    //Building maintenance
-    private int nextAvailableBuilding = 0;
-    private int nextAvailableBed = -1;
-    [HideInInspector] public List<Building> buildings;
-
-    //Materials
-    public Material defaultWallMaterial, defaultFloorMaterial;
-    public Material[] wallMaterials, floorMaterials;
-
-    //Foundations
-    [HideInInspector] public FoundationManager foundationManager;
-
-    //Walls
-    [HideInInspector] public CityWallManager cityWallManager;
-
-    //Bridges
-    [HideInInspector] public BridgeManager bridgeManager;
-
     //Area/zoning system (how city is subdivided and organized)
     [HideInInspector] public int areaSize = 5;
     [HideInInspector] public AreaReservationType[,] areaTaken;
-    private List<CityBlock> availableCityBlocks;
+    [HideInInspector] public List<CityBlock> availableCityBlocks;
     [HideInInspector] public List<int> horizontalRoads, verticalRoads; //Even index entries denote start point of road, odd index entries indicate end point of previous index's road
     [HideInInspector] public bool circularCity = false;
 
-    //Called after city has been generated or regenerated
+    //Relegate other aspects of city management to specialized managers (to declutter code)
+    [HideInInspector] public BuildingManager buildingManager;
+    [HideInInspector] public FoundationManager foundationManager;
+    [HideInInspector] public CityWallManager cityWallManager;
+    [HideInInspector] public BridgeManager bridgeManager;
 
+    //Called after city has been generated or regenerated
     public void BeforeCityGeneratedOrRestored()
     {
+        buildingManager = new BuildingManager(this);
         foundationManager = new FoundationManager(this);
         cityWallManager = new CityWallManager(this);
         bridgeManager = new BridgeManager(this);
@@ -99,7 +81,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public void GenerateNewCity()
     {
         BeforeCityGeneratedOrRestored();
-        buildingSpecifications = new BuildingSpecifications();
+        buildingManager.buildingSpecifications = new BuildingSpecifications();
 
         //Reserve terrain location
         //radius = Random.Range(40, 100);
@@ -116,7 +98,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         CityGenerator.generator.CustomizeCity(this);
 
         //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for GenerateRoads())
-        LoadBuildingPrototypes();
+        buildingManager.LoadBuildingPrototypes();
 
         //Generate roads (and city blocks)
         GenerateRoads();
@@ -134,9 +116,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         Physics.SyncTransforms();
 
         //Generate buildings
-        buildings = new List<Building>();
-        GenerateNewSpecialBuildings();
-        GenerateNewGenericBuildings(avgBlockLength);
+        buildingManager.GenerateNewBuildings(avgBlockLength);
 
         //Updates the physics colliders based on changes to transforms.
         //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
@@ -159,31 +139,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         AfterCityGeneratedOrRestored();
     }
 
-    private void LoadBuildingPrototypes()
-    {
-        buildingPrototypes = new Building[buildingPrefabs.Count];
-
-        for (int x = 0; x < buildingPrefabs.Count; x++)
-        {
-            buildingPrototypes[x] = Instantiate(buildingPrefabs[x]).GetComponent<Building>();
-            buildingPrototypes[x].gameObject.SetActive(false);
-
-            if(!buildingPrototypes[x].CompareTag("Special Building"))
-                totalSpawnChance += buildingPrototypes[x].spawnChance;
-        }
-    }
-
-    private Transform InstantiateNewBuilding(int buildingIndex)
-    {
-        if (!buildingPrototypes[buildingIndex].gameObject.activeSelf) //Is model home available?
-        {
-            buildingPrototypes[buildingIndex].gameObject.SetActive(true);
-            return buildingPrototypes[buildingIndex].transform;
-        }
-        else //Fine, we'll create a new one
-            return Instantiate(buildingPrefabs[buildingIndex]).transform;
-    }
-
     private void GenerateRoads()
     {
         //Needed set up regardless of what kind of roads we want to generate
@@ -191,7 +146,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         verticalRoads = new List<int>();
         availableCityBlocks = new List<CityBlock>();
         Vector2Int roadWidthRange = new Vector2Int(5, 20);
-        Vector2Int roadSpacingRange = new Vector2Int(40, GetMaxLengthBetweenRoadsInLocalUnits());
+        Vector2Int roadSpacingRange = new Vector2Int(40, buildingManager.GetMaxLengthBetweenRoadsInLocalUnits());
 
         //Choose and execute specific kind of road generation
         if (circularCity)
@@ -369,18 +324,6 @@ public class City : MonoBehaviour, INavZoneUpdater
             }
         }
     }
-
-    private int GetMaxLengthBetweenRoadsInLocalUnits()
-    {
-        int longestBuildingLength = 0;
-        foreach(Building building in buildingPrototypes)
-        {
-            if (longestBuildingLength < building.length)
-                longestBuildingLength = building.length;
-        }
-
-        return Mathf.Max(70, (int)(longestBuildingLength * 1.5f));
-    }
     
     private int GetAverageLengthOfCityBlockInLocalUnits()
     {
@@ -408,170 +351,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         return avgLength * areaSize;
     }
 
-    private void GenerateNewSpecialBuildings()
-    {
-        for(int x = 0; x < buildingPrototypes.Length; x++)
-        {
-            //For each special building that is supposed to be included in the city
-            if(buildingPrototypes[x].CompareTag("Special Building"))
-            {
-                //Keep trying to generate it until we succeed or hit 50 attempts
-                for(int attempt = 1; attempt <= 50; attempt++)
-                {
-                    if (GenerateNewBuilding(x, true, true))
-                        break;
-                }
-            }
-        }
-    }
-
-    private void GenerateNewGenericBuildings(int averageBlockLength)
-    {
-        //Go through all the large generic buildings and give each once chance to spawn early (so they doesn't get crowded out by a bunch of small buildings)
-        for(int x = 0; x < buildingPrototypes.Length; x++)
-        {
-            if (buildingPrototypes[x].CompareTag("Special Building"))
-                continue;
-
-            if (buildingPrototypes[x].length > averageBlockLength)
-                GenerateNewBuilding(x, true, false);
-        }
-
-        int buildingIndex = -1;
-        for (int x = 0; x < 400; x++)
-        {
-            //Randomly pick a model to build
-            buildingIndex = SelectGenericBuildingPrototype();
-
-            //Attempt to place it somewhere
-            GenerateNewBuilding(buildingIndex, buildingPrototypes[buildingIndex].length > averageBlockLength, false);
-        }
-    }
-
-    //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
-    //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
-    //Returns whether building was successfully generated.
-    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
-    {
-        //Find place that can fit model...
-
-        int newX = 0, newZ = 0;
-        int buildingRadius = buildingPrototypes[buildingIndex].length + buildingSpecifications.extraBuildingRadius;
-        int totalRadius = buildingRadius + buildingSpecifications.extraRadiusForSpacing;
-        int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaSize);
-        bool foundPlace = false;
-
-        //Placement strategy #1: Center on the largest available city block
-        if (placeInLargestAvailableBlock)
-        {
-            while(availableCityBlocks.Count > 0)
-            {
-                int indexToPop = availableCityBlocks.Count - 1;
-                CityBlock possibleLocation = availableCityBlocks[indexToPop];
-                availableCityBlocks.RemoveAt(indexToPop);
-
-                //The largest city block left is not big enough, so resort to random placement
-                //Keep the >= because same size generates will fail SafeToGenerate (tested)
-                if (areaLength >= possibleLocation.GetSmallestDimension())
-                    break;
-
-                //Block is large enough for the building, but is there something already in it?
-                newX = possibleLocation.coords.x;
-                newZ = possibleLocation.coords.y;
-                if (SafeToGenerate(newX, newZ, areaLength, false))
-                {
-                    foundPlace = true;
-                    break;
-                }
-            }
-        }
-
-        //Placement strategy #2: Random placement
-        if (!foundPlace)
-        {
-            int maxAttempts = overrideRoadsIfNeeded ? 200 : 50;
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
-            {
-                newX = Random.Range(0, areaTaken.GetLength(0));
-                newZ = Random.Range(0, areaTaken.GetLength(1));
-
-                if (SafeToGenerate(newX, newZ, areaLength, maxAttempts > 150))
-                {
-                    foundPlace = true;
-                    break;
-                }
-            }
-        }
-
-        //If found place, create model, position it, and call set up on it
-        if (foundPlace)
-        {
-            //Reserve area for building
-            ReserveAreas(newX, newZ, areaLength, AreaReservationType.ReservedByBuilding);
-
-            //Create it
-            Transform newBuilding = InstantiateNewBuilding(buildingIndex);
-            newBuilding.parent = transform;
-            newBuilding.localRotation = Quaternion.Euler(0, 0, 0);
-
-            //Rotate it
-            bool hasCardinalRotation = SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
-
-            //Position it...
-            Vector3 buildingPosition = Vector3.zero;
-
-            //Compute the location for the building: centered within allocated area, converting from area space to local coordinates
-            buildingPosition.x = (newX + (areaLength / 2.0f) - areaTaken.GetLength(0) / 2.0f) * areaSize;
-            buildingPosition.z = (newZ + (areaLength / 2.0f) - areaTaken.GetLength(1) / 2.0f) * areaSize;
-
-            //Apply the computed location to the building and any foundation underneath the building if applicable...
-            //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
-            FoundationJSON buildingFoundation = foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
-            if (buildingFoundation != null) //Has foundation underneath building
-            {
-                //Place building on top of foundation
-                buildingPosition.y += (buildingFoundation.localScale.y / 2.0f);
-                newBuilding.localPosition = buildingPosition;
-            }
-            else //No foundation
-            {
-                //Place building on whatever is beneath it (could be terrain or foundations previously created)
-                newBuilding.localPosition = buildingPosition;
-                God.SnapToGround(newBuilding, collidersToCheckAgainst: foundationManager.foundationColliders);
-            }
-
-            //Remember building and finally, call set up on it
-            buildings.Add(newBuilding.GetComponent<Building>());
-            newBuilding.GetComponent<Building>().SetUpBuilding(
-                this,
-                buildingIndex,
-                wallMaterials[Random.Range(0, wallMaterials.Length)],
-                floorMaterials[Random.Range(0, floorMaterials.Length)]);
-        }
-        //Otherwise, we fucking give up
-
-        return foundPlace;
-    }
-
-    private int SelectGenericBuildingPrototype()
-    {
-        for (int attempt = 1; attempt <= 50; attempt++)
-        {
-            for (int x = 0; x < buildingPrototypes.Length; x++)
-            {
-                //The end of the prototypes array is where the special buildings are. Since this function is to pick generic models, we stop once we hit the special section
-                if (buildingPrototypes[x].CompareTag("Special Building"))
-                    break;
-
-                if (Random.Range(0, totalSpawnChance) < buildingPrototypes[x].spawnChance)
-                    return x;
-            }
-        }
-
-        return 0;
-    }
-
-    private bool SafeToGenerate(int startX, int startZ, int areasLong, bool overrideRoads)
+    public bool SafeToGenerate(int startX, int startZ, int areasLong, bool overrideRoads)
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
@@ -593,7 +373,7 @@ public class City : MonoBehaviour, INavZoneUpdater
                     return false;
 
                 //Circular boundary
-                if (circularCity && !IsWithinCircularCityWalls(x, z))
+                if (circularCity && !cityWallManager.IsWithinCircularCityWalls(x, z))
                     return false;
             }
         }
@@ -601,98 +381,13 @@ public class City : MonoBehaviour, INavZoneUpdater
         return true;
     }
 
-    //Usually cities are a rectangle where building placement is restricted by a city width and height.
-    //This adds another requirement that buildings be within a certain radius from the city center.
-    private bool IsWithinCircularCityWalls(int x, int z)
-    {
-        return AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < radius;
-    }
-
-    private void ReserveAreas(int startX, int startZ, int areasLong, AreaReservationType reservationType)
+    public void ReserveAreas(int startX, int startZ, int areasLong, AreaReservationType reservationType)
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
             for (int z = startZ; z < startZ + areasLong; z++)
                 areaTaken[x, z] = reservationType;
         }
-    }
-
-    //Returns whether building rotation is strictly pointing in a cardinal direction (0, 90, 180, 270 degrees within city coordinate system)
-    private bool SetBuildingRotation(Transform building, int xCoord, int zCoord)
-    {
-        Vector3 newRotation = Vector3.zero;
-        int newMargin;
-        bool strictlyCardinal;
-
-        //Find closest horizontal road
-        int closestZMargin = 9999;
-        bool faceDown = false;
-        for (int z = 0; z < horizontalRoads.Count; z++)
-        {
-            newMargin = Mathf.Abs(zCoord - horizontalRoads[z]);
-            if (newMargin < closestZMargin)
-            {
-                closestZMargin = newMargin;
-                faceDown = zCoord > horizontalRoads[z];
-            }
-        }
-
-        //Find closest vertical road
-        int closestXMargin = 9999;
-        bool faceLeft = false;
-        for (int x = 0; x < verticalRoads.Count; x++)
-        {
-            newMargin = Mathf.Abs(xCoord - verticalRoads[x]);
-            if (newMargin < closestXMargin)
-            {
-                closestXMargin = newMargin;
-                faceLeft = xCoord > verticalRoads[x];
-            }
-        }
-
-        //Review results and determine rotation
-        if (closestXMargin == closestZMargin && Random.Range(0, 2) == 0) //Rotate according to both horizontal and vertical
-        {
-            strictlyCardinal = false;
-
-            if (faceLeft)
-            {
-                if (faceDown)
-                    newRotation.y = -135;
-                else
-                    newRotation.y = -45;
-            }
-            else
-            {
-                if (faceDown)
-                    newRotation.y = 135;
-                else
-                    newRotation.y = 45;
-            }
-        }
-        else if (closestXMargin < closestZMargin) //Rotate according to closest vertical road
-        {
-            strictlyCardinal = true;
-
-            if (faceLeft)
-                newRotation.y = -90;
-            else
-                newRotation.y = 90;
-        }
-        else  //Rotate according to closest horizontal road
-        {
-            strictlyCardinal = true;
-
-            if (faceDown)
-                newRotation.y = 180;
-            else
-                newRotation.y = 0;
-        }
-
-        //Apply rotation
-        building.localEulerAngles = newRotation;
-
-        return strictlyCardinal;
     }
 
     //This may have a bug where it doesn't check the whole sector before reserving it, just the corner.
@@ -750,48 +445,13 @@ public class City : MonoBehaviour, INavZoneUpdater
         return AreaCoordToLocalCoord(sectorCenter);
     }
 
-    private Vector3 AreaCoordToLocalCoord(Vector3 areaCoord)
+    public Vector3 AreaCoordToLocalCoord(Vector3 areaCoord)
     {
         //Used to be / 2 (int math)
         areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) / 2.0f) * areaSize;
         areaCoord.z = (areaCoord.z - areaTaken.GetLength(1) / 2.0f) * areaSize;
 
         return areaCoord;
-    }
-
-    public Vector3 GetNewSpawnPoint()
-    {
-        nextAvailableBed++;
-
-        Building building = null;
-        bool foundBed = false;
-
-        for (int attempt = 1; !foundBed && attempt <= 50; attempt++)
-        {
-            if (nextAvailableBuilding >= buildings.Count)
-                nextAvailableBuilding = 0;
-
-            building = buildings[nextAvailableBuilding];
-
-            if (building.HasNoBeds())
-            {
-                nextAvailableBuilding++;
-                continue;
-            }
-
-            if (!building.HasBedAtIndex(nextAvailableBed))
-            {
-                nextAvailableBed = 0;
-                nextAvailableBuilding++;
-            }
-            else
-                foundBed = true;
-        }
-
-        if (foundBed)
-            return building.GetPositionOfBedAtIndex(nextAvailableBed) + Vector3.up * 3;
-        else
-            return transform.position; //Couldn't find bed so shove into center of city as fallback
     }
 
     public void GenerateNavMesh()
@@ -851,15 +511,21 @@ public class CityBlock : System.IComparable<CityBlock>
     private int GetLargestDimension() { return dimensions.x < dimensions.y ? dimensions.y : dimensions.x; }
 }
 
-public class BuildingSpecifications
-{
-    public int extraBuildingRadius = 0, extraRadiusForSpacing = 0;
-    public Vector2 foundationHeightRange = Vector2.zero;
-}
-
 [System.Serializable]
 public class CityJSON
 {
+    //General
+    public string name;
+    public int radius;
+    public int cityTypeIndex;
+    public Vector3 cityLocation;
+
+    //Sub-managers
+    public BuildingManagerJSON buildingManagerJSON;
+    public FoundationManagerJSON foundationManagerJSON;
+    public CityWallManagerJSON cityWallManagerJSON;
+    public BridgeManagerJSON bridgeManagerJSON;
+
     public CityJSON(City city)
     {
         name = city.name;
@@ -876,26 +542,9 @@ public class CityJSON
 
         cityLocation = city.transform.position;
 
-        wallMaterials = new string[city.wallMaterials.Length];
-        for (int x = 0; x < wallMaterials.Length; x++)
-            wallMaterials[x] = city.wallMaterials[x].name;
-
-        floorMaterials = new string[city.floorMaterials.Length];
-        for (int x = 0; x < floorMaterials.Length; x++)
-            floorMaterials[x] = city.floorMaterials[x].name;
-
+        buildingManagerJSON = new BuildingManagerJSON(city.buildingManager);
         foundationManagerJSON = new FoundationManagerJSON(city.foundationManager);
-
-        buildingPrefabs = new List<string>(city.buildingPrefabs.Count);
-        foreach (GameObject buildingPrefab in city.buildingPrefabs)
-            buildingPrefabs.Add(buildingPrefab.name);
-
-        buildings = new List<BuildingJSON>(city.buildings.Count);
-        for (int x = 0; x < city.buildings.Count; x++)
-            buildings.Add(new BuildingJSON(city.buildings[x]));
-
         cityWallManagerJSON = new CityWallManagerJSON(city.cityWallManager);
-
         bridgeManagerJSON = new BridgeManagerJSON(city.bridgeManager);
     }
 
@@ -911,31 +560,9 @@ public class CityJSON
 
         city.ReserveTerrainLocation(false, cityLocation);
 
-        city.wallMaterials = new Material[wallMaterials.Length];
-        for (int x = 0; x < wallMaterials.Length; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMaterials[x]);
-
-        city.floorMaterials = new Material[floorMaterials.Length];
-        for (int x = 0; x < floorMaterials.Length; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMaterials[x]);
-
+        buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathSuffix);
         foundationManagerJSON.RestoreFoundationManager(city.foundationManager);
-
-        city.buildingPrefabs = new List<GameObject>();
-        for (int x = 0; x < buildingPrefabs.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathSuffix + buildingPrefabs[x]));
-
-        city.buildings = new List<Building>(buildings.Count);
-        for (int x = 0; x < buildings.Count; x++)
-        {
-            Building newBuilding = GameObject.Instantiate(city.buildingPrefabs[
-                buildings[x].buildingIndex]).GetComponent<Building>();
-            buildings[x].RestoreBuilding(newBuilding, city);
-            city.buildings.Add(newBuilding);
-        }
-
         cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
-
         bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
 
         //After the city has been regenerated, build the nav mesh to pathfind through it
@@ -943,26 +570,4 @@ public class CityJSON
 
         city.AfterCityGeneratedOrRestored();
     }
-
-    //General
-    public string name;
-    public int radius;
-    public int cityTypeIndex;
-    public Vector3 cityLocation;
-
-    //Materials
-    public string[] wallMaterials, floorMaterials;
-
-    //Foundations
-    public FoundationManagerJSON foundationManagerJSON;
-
-    //Buildings
-    public List<string> buildingPrefabs;
-    public List<BuildingJSON> buildings;
-
-    //Walls
-    public CityWallManagerJSON cityWallManagerJSON;
-
-    //Bridges
-    public BridgeManagerJSON bridgeManagerJSON;
 }

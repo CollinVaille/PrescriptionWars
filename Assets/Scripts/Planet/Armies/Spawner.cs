@@ -108,7 +108,7 @@ public class Spawner : MonoBehaviour
 
         //Position and rotate pill
         if (city)
-            pill.spawnPoint = city.GetNewSpawnPoint();
+            pill.spawnPoint = city.buildingManager.GetNewSpawnPoint();
         SetSpawnPositionAndRotation(pill);
 
         //Create everlasting bond with pill

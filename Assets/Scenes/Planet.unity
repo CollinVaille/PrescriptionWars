@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.51900166, g: 0.42201304, b: 0.01190424, a: 1}
+  m_IndirectSpecularColor: {r: 0.63727725, g: 0.5404876, b: 0.4140485, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21652,9 +21652,13 @@ MonoBehaviour:
     bridges:
     - Simple Arch Bridge
     - Scaffolding Bridge
+    defaultWallMaterial: Concrete Wall
+    defaultFloorMaterial: Concrete Floor
     wallMaterials: []
     floorMaterials: []
     foundationHeightRange: {x: 100, y: 200}
+    minorVerticalScaler: Rusty Ladder With Platform
+    majorVerticalScaler: Rickety Elevator
   foundationOptions:
     basicCircularFoundation: Basic Circular Foundation
     basicRectangularFoundation: Basic Rectangular Foundation

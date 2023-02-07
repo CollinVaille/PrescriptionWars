@@ -28,7 +28,7 @@ public class CityWallManager
         walls.localRotation = Quaternion.Euler(0, 0, 0);
 
         //Set texture of walls using reference material
-        Material referenceMaterial = city.wallMaterials[wallMaterialIndex];
+        Material referenceMaterial = city.buildingManager.wallMaterials[wallMaterialIndex];
         God.CopyMaterialValues(referenceMaterial, cityWallMaterial, 3.0f, 1.5f, true);
     }
 
@@ -37,7 +37,7 @@ public class CityWallManager
         if (!wallSectionPrefab)
             return;
 
-        PrepareWalls(Random.Range(0, city.wallMaterials.Length));
+        PrepareWalls(Random.Range(0, city.buildingManager.wallMaterials.Length));
 
         float wallLength = wallSectionPrefab.transform.localScale.x;
         float placementHeight = 0.0f;
@@ -260,6 +260,14 @@ public class CityWallManager
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
     }
+
+    //Usually cities are a rectangle where building placement is restricted by a city width and height.
+    //This adds another requirement that buildings be within a certain radius from the city center.
+    public bool IsWithinCircularCityWalls(int x, int z)
+    {
+        return city.AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < city.radius;
+    }
+
 }
 
 [System.Serializable]

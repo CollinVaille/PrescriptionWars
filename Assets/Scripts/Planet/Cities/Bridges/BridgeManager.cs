@@ -196,10 +196,6 @@ public class BridgeManager
     {
         float gapLength = Vector3.Distance(specs.point1, specs.point2);
 
-        //Choose appearance options for the new bridge
-        Material newSlabMaterial = city.wallMaterials[Random.Range(0, city.wallMaterials.Length)];
-        Material newGroundMaterial = city.floorMaterials[Random.Range(0, city.floorMaterials.Length)];
-
         //Create prototype bridge
         Bridge bridgePrototype = InstantiateBridge(specs.bridgePrefabIndex);
 
@@ -253,9 +249,9 @@ public class BridgeManager
             if(!justNeedSingleRamp)
             {
                 if (x == 0)
-                    GenerateNewEdgeConnectorIfNeeded(specs.point1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
+                    GenerateNewEdgeConnectorIfNeeded(specs.point1Colliders, bridge, true);
                 if (x == numberOfSections - 1) //WARNING: DON'T make this "else if" because the first and last could be the same section
-                    GenerateNewEdgeConnectorIfNeeded(specs.point2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
+                    GenerateNewEdgeConnectorIfNeeded(specs.point2Colliders, bridge, false);
             }
         }
     }
@@ -274,7 +270,7 @@ public class BridgeManager
         return bridge;
     }
 
-    private void GenerateNewEdgeConnectorIfNeeded(Collider[] collidersToHit, Bridge bridge, bool checkBack, Material newSlabMaterial, Material newGroundMaterial)
+    private void GenerateNewEdgeConnectorIfNeeded(Collider[] collidersToHit, Bridge bridge, bool checkBack)
     {
         if (collidersToHit == null)
             return;
@@ -286,10 +282,10 @@ public class BridgeManager
         bool rightCornerTooFarAway = IsCornerTooFarAway(rightCorner, collidersToHit);
 
         if (leftCornerTooFarAway || rightCornerTooFarAway)
-            GenerateNewEdgeConnector(bridge, checkBack, newSlabMaterial, newGroundMaterial);
+            GenerateNewEdgeConnector(bridge, checkBack);
     }
 
-    private void GenerateNewEdgeConnector(Bridge bridge, bool onBack, Material newSlabMaterial, Material newGroundMaterial)
+    private void GenerateNewEdgeConnector(Bridge bridge, bool onBack)
     {
         Transform bridgeTransform = bridge.transform;
 
@@ -334,7 +330,7 @@ public class BridgeManager
     private void GenerateNewVerticalScalerAtEndOfBridge(Vector3 bottomPoint, Vector3 topPoint, int yAxisRotation)
     {
         //Instantiate the vertical scaler
-        VerticalScaler newVerticalScaler = VerticalScaler.InstantiateVerticalScaler("Planet/City/Miscellaneous/Thick Rusty Ladder", city.transform, city.foundationManager);
+        VerticalScaler newVerticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(true), city.transform, city.foundationManager);
         Transform verticalScalerTransform = newVerticalScaler.transform;
 
         //Rotate it

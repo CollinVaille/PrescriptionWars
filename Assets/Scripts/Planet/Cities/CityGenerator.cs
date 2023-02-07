@@ -22,15 +22,18 @@ public class CityGenerator : MonoBehaviour
         string buildingPath = "Planet/City/Buildings/" + cityTypePathSuffix;
         List<string> genericBuildings = new List<string>(cityType.buildings);
         TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
-        city.buildingPrefabs = new List<GameObject>();
+        city.buildingManager.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
-            city.buildingPrefabs.Add(Resources.Load<GameObject>(buildingPath + genericBuildings[x]));
+            city.buildingManager.buildingPrefabs.Add(Resources.Load<GameObject>(buildingPath + genericBuildings[x]));
 
         //Special buildings--------------------------------------------------------------------------------------------------------------
         AddSpecialBuilding(buildingPath + "Prescriptor", city);
         AddSpecialBuilding(buildingPath + "Depot", city);
         AddSpecialBuilding(buildingPath + "Research Facility", city);
         AddSpecialBuilding(buildingPath + "Trade Post", city);
+
+        //Default materials--------------------------------------------------------------------------------------------------------------
+        city.buildingManager.SetDefaultMaterials();
 
         //Wall materials--------------------------------------------------------------------------------------------------------------
         List<string> wallMats;
@@ -40,9 +43,9 @@ public class CityGenerator : MonoBehaviour
             wallMats = new List<string>(GetBiomeMaterials().wallMaterials);
 
         TrimToRandomSubset(wallMats, Random.Range(3, 6));
-        city.wallMaterials = new Material[wallMats.Count];
+        city.buildingManager.wallMaterials = new Material[wallMats.Count];
         for (int x = 0; x < wallMats.Count; x++)
-            city.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMats[x]);
+            city.buildingManager.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMats[x]);
 
         //Floor materials--------------------------------------------------------------------------------------------------------------
         List<string> floorMats;
@@ -52,9 +55,9 @@ public class CityGenerator : MonoBehaviour
             floorMats = new List<string>(GetBiomeMaterials().floorMaterials);
 
         TrimToRandomSubset(floorMats, Random.Range(2, 5));
-        city.floorMaterials = new Material[floorMats.Count];
+        city.buildingManager.floorMaterials = new Material[floorMats.Count];
         for (int x = 0; x < floorMats.Count; x++)
-            city.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMats[x]);
+            city.buildingManager.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMats[x]);
 
         //Slab materials--------------------------------------------------------------------------------------------------------------
         List<string> slabMats = new List<string>(GetBiomeMaterials().slabMaterials);
@@ -191,7 +194,7 @@ public class CityGenerator : MonoBehaviour
     {
         GameObject specialBuildingPrefab = Resources.Load<GameObject>(specialBuildingPathName);
         if(specialBuildingPrefab)
-            city.buildingPrefabs.Add(specialBuildingPrefab);
+            city.buildingManager.buildingPrefabs.Add(specialBuildingPrefab);
     }
 
     //Not guaranteed to be unique
@@ -376,11 +379,20 @@ public class CityType
     public string[] bridges;
 
     //Materials
+    public string defaultWallMaterial, defaultFloorMaterial;
     public string[] wallMaterials;
     public string[] floorMaterials;
 
     //Foundations
     public Vector2Int foundationHeightRange;
+
+    //Vertical scalers
+    public string minorVerticalScaler, majorVerticalScaler;
+
+    public string GetVerticalScaler(bool minor)
+    {
+        return "Planet/City/Vertical Scalers/" + (minor ? minorVerticalScaler : majorVerticalScaler);
+    }
 }
 
 [System.Serializable]
