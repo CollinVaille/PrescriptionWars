@@ -56,8 +56,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
         mapMarker.InitializeMarker(transform);
-
-        Debug.Log("City at " + transform.position);
     }
 
     private void InitializeAreaReservationSystem()

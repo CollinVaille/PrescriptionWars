@@ -457,8 +457,6 @@ public class PlanetTerrain : MonoBehaviour
         //Now that we have concluded which area(s) to reserve, reserve it/them...
         int minHeightForReservation = options.newGeneration ? options.heightRange.x + 1 : (int)options.position.y;
 
-        Debug.Log("Reserving " + xCoord + ", " + minHeightForReservation + ", " + zCoord);
-
         ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options.radius, options.flatten);
 
         //Compute the starting point of the area we just reserved (in world coordinates)

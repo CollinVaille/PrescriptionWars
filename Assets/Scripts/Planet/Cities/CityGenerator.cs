@@ -100,6 +100,12 @@ public class CityGenerator : MonoBehaviour
             city.foundationManager.foundationType = FoundationManager.FoundationType.PerBuilding;
             city.radius += Random.Range(25, 40); //This type of foundation doesn't generate as much per square foot so make the square footage bigger
         }
+
+        //Bridges--------------------------------------------------------------------------------------------------------------
+        city.bridgeManager.bridgePrefabPaths = new List<string>(cityType.bridges);
+        TrimToRandomSubset(city.bridgeManager.bridgePrefabPaths, Random.Range(1, 4));
+        city.bridgeManager.bridgePrefabPaths.Add("Special Connector");
+
     }
 
     private CityType SelectCityType()
@@ -365,6 +371,9 @@ public class CityType
     //Fence Posts
     public float fencePostChance = 0.5f; //0 = 0% spawn chance, 1 = 100% spawn chance
     public string[] fencePosts;
+
+    //Bridges
+    public string[] bridges;
 
     //Materials
     public string[] wallMaterials;

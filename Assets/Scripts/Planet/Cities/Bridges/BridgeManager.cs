@@ -6,6 +6,7 @@ public class BridgeManager
 {
     public City city;
     public Material slabMaterial, groundMaterial;
+    public List<string> bridgePrefabPaths;
 
     private List<BridgeDestination> destinations;
     private List<BridgeDestinationPairing> pairings;
@@ -42,6 +43,17 @@ public class BridgeManager
     {
         slabMaterial = city.foundationManager.slabMaterial;
         groundMaterial = city.foundationManager.groundMaterial;
+    }
+
+    public Bridge InstantiateBridge(int prefabIndex)
+    {
+        string fullResourcePath = "Planet/City/Bridges/" + city.cityType.name + "/" + bridgePrefabPaths[prefabIndex];
+        return GameObject.Instantiate(Resources.Load<GameObject>(fullResourcePath)).GetComponent<Bridge>();
+    }
+
+    private int GetIndexOfABridgeModel(bool specialConnector)
+    {
+        return specialConnector ? bridgePrefabPaths.Count - 1 : Random.Range(0, bridgePrefabPaths.Count - 1);
     }
 
     private void GenerateNewPairingsFromDestinations()
@@ -125,12 +137,12 @@ public class BridgeManager
             return;
 
         //Proceed with generation...
-        GenerateNewBridgeFromPairing(pairing, "Planet/City/Bridges/Short/Simple Arch Bridge");
+        GenerateNewBridgeFromPairing(pairing, GetIndexOfABridgeModel(false));
     }
 
-    private void GenerateNewBridgeFromPairing(BridgeDestinationPairing pairing, string bridgeResourcePath)
+    private void GenerateNewBridgeFromPairing(BridgeDestinationPairing pairing, int prefabIndex)
     {
-        NewBridgeSpecs specs = new NewBridgeSpecs(pairing, bridgeResourcePath);
+        NewBridgeSpecs specs = new NewBridgeSpecs(pairing, prefabIndex);
 
         //Before generating, determine if the angle is too steep
         Vector3 bridgeRotation = specs.GetBridgeRotation();
@@ -145,6 +157,8 @@ public class BridgeManager
 
             if (specs.point1.y < specs.point2.y) //Generate vertical scaler at destination 2
             {
+                specs.verticalScalerAtDestination2 = true;
+
                 bottomPoint = specs.point2;
                 bottomPoint.y = specs.point1.y;
                 topPoint = specs.point2;
@@ -157,6 +171,8 @@ public class BridgeManager
             }
             else //Generate vertical scaler at destination 1
             {
+                specs.verticalScalerAtDestination1 = true;
+
                 bottomPoint = specs.point1;
                 bottomPoint.y = specs.point2.y;
                 topPoint = specs.point1;
@@ -185,7 +201,7 @@ public class BridgeManager
         Material newGroundMaterial = city.floorMaterials[Random.Range(0, city.floorMaterials.Length)];
 
         //Create prototype bridge
-        Bridge bridgePrototype = GameObject.Instantiate(Resources.Load<GameObject>(specs.bridgeResourcePath)).GetComponent<Bridge>();
+        Bridge bridgePrototype = InstantiateBridge(specs.bridgePrefabIndex);
 
         //Define some needed variables
         Vector3 bridgeRotation = specs.GetBridgeRotation();
@@ -216,39 +232,44 @@ public class BridgeManager
             if (justNeedSingleRamp)
             {
                 bridgePosition.y -= 0.1f;
-                bridge = GenerateNewBridgeSection(GetResourcePathForConnector(), bridgePosition, sectionLength, bridgeRotation, false);
+                bridge = GenerateNewBridgeSection(GetIndexOfABridgeModel(true), bridgePosition, sectionLength, bridgeRotation, false, false);
                 Vector3 bridgeScale = bridge.transform.localScale;
                 bridgeScale.x = 5.0f;
                 bridge.transform.localScale = bridgeScale;
 
                 GameObject.Destroy(bridgePrototype);
             }
-            else if (x == 0)
-                bridge = GenerateNewBridgeSection(specs.bridgeResourcePath, bridgePosition, sectionLength, bridgeRotation, keepSubstructure, bridgePrototype);
             else
-                bridge = GenerateNewBridgeSection(specs.bridgeResourcePath, bridgePosition, sectionLength, bridgeRotation, keepSubstructure);
+            {
+                bool avoidRoof = (x == 0) && specs.verticalScalerAtDestination1 || (x == numberOfSections - 1) && specs.verticalScalerAtDestination2;
+
+                if (x == 0)
+                    bridge = GenerateNewBridgeSection(specs.bridgePrefabIndex, bridgePosition, sectionLength, bridgeRotation, keepSubstructure, !avoidRoof, bridgePrototype);
+                else
+                    bridge = GenerateNewBridgeSection(specs.bridgePrefabIndex, bridgePosition, sectionLength, bridgeRotation, keepSubstructure, !avoidRoof);
+            }
 
             //For the first and last bridge sections, see if we need to generate a connector beside them
             if(!justNeedSingleRamp)
             {
                 if (x == 0)
                     GenerateNewEdgeConnectorIfNeeded(specs.point1Colliders, bridge, true, newSlabMaterial, newGroundMaterial);
-                if (x == numberOfSections - 1) //WARNING: DON'T make this else if because the first and last could be the same section
+                if (x == numberOfSections - 1) //WARNING: DON'T make this "else if" because the first and last could be the same section
                     GenerateNewEdgeConnectorIfNeeded(specs.point2Colliders, bridge, false, newSlabMaterial, newGroundMaterial);
             }
         }
     }
 
-    private Bridge GenerateNewBridgeSection(string resourcePath, Vector3 position, float zScale, Vector3 rotation, bool useSubstructure, Bridge prototype = null)
+    private Bridge GenerateNewBridgeSection(int prefabIndex, Vector3 position, float zScale, Vector3 rotation, bool useSubstructure, bool useRoof, Bridge prototype = null)
     {
         //Get the instantiated game object as a transform
         Bridge bridge;
         if (prototype)
             bridge = prototype;
         else
-            bridge = GameObject.Instantiate(Resources.Load<GameObject>(resourcePath)).GetComponent<Bridge>();
+            bridge = InstantiateBridge(prefabIndex);
 
-        bridge.SetUpBridge(resourcePath, position, rotation, zScale, this, useSubstructure);
+        bridge.SetUpBridge(prefabIndex, position, rotation, zScale, this, useSubstructure, useRoof);
 
         return bridge;
     }
@@ -292,7 +313,7 @@ public class BridgeManager
         connectorRotation.z = 0.0f;
 
         //Create the connector
-        Bridge connector = GenerateNewBridgeSection(GetResourcePathForConnector(), connectorPosition, connectorScale.z, connectorRotation, false);
+        Bridge connector = GenerateNewBridgeSection(GetIndexOfABridgeModel(true), connectorPosition, connectorScale.z, connectorRotation, false, false);
         
         //Adjust scale post-creation
         connectorScale.y = connector.transform.localScale.y;
@@ -325,22 +346,20 @@ public class BridgeManager
         //Scale it and connect it to the entrance foundation
         newVerticalScaler.ScaleToHeightAndConnect(topPoint.y - bottomPoint.y, false);
     }
-
-    private string GetResourcePathForConnector()
-    {
-        return "Planet/City/Miscellaneous/Special Connector";
-    }
 }
 
 [System.Serializable]
 public class BridgeManagerJSON
 {
+    public List<string> bridgePrefabPaths;
     public BridgeJSON[] bridgeJSONs;
 
     public BridgeManagerJSON(BridgeManager bridgeManager)
     {
         if (bridgeManager.bridges == null)
             return;
+
+        bridgePrefabPaths = bridgeManager.bridgePrefabPaths;
 
         bridgeJSONs = new BridgeJSON[bridgeManager.bridges.Count];
         for(int x = 0; x < bridgeJSONs.Length; x++)
@@ -353,6 +372,8 @@ public class BridgeManagerJSON
 
         if (bridgeJSONs == null)
             return;
+
+        bridgeManager.bridgePrefabPaths = bridgePrefabPaths;
 
         foreach (BridgeJSON bridgeJSON in bridgeJSONs)
             bridgeJSON.RestoreBridge(bridgeManager);

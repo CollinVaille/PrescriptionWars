@@ -7,9 +7,10 @@ public class NewBridgeSpecs
     public Vector3 point1, point2;
     public float point1Padding = 0.5f, point2Padding = 0.5f;
     public Collider[] point1Colliders, point2Colliders;
-    public string bridgeResourcePath;
+    public int bridgePrefabIndex;
+    public bool verticalScalerAtDestination1 = false, verticalScalerAtDestination2 = false;
 
-    public NewBridgeSpecs(BridgeDestinationPairing bridgeDestinationPairing, string bridgeResourcePath)
+    public NewBridgeSpecs(BridgeDestinationPairing bridgeDestinationPairing, int bridgePrefabIndex)
     {
         point1 = bridgeDestinationPairing.destination1EdgePoint;
         point2 = bridgeDestinationPairing.destination2EdgePoint;
@@ -17,7 +18,7 @@ public class NewBridgeSpecs
         point1Colliders = bridgeDestinationPairing.destination1.boundaryColliders;
         point2Colliders = bridgeDestinationPairing.destination2.boundaryColliders;
 
-        this.bridgeResourcePath = bridgeResourcePath;
+        this.bridgePrefabIndex = bridgePrefabIndex;
 
         AdjustPointsIfNeeded(bridgeDestinationPairing);
     }
@@ -30,7 +31,7 @@ public class NewBridgeSpecs
 
     private void AdjustForOverlappingOrMisalignedPoints(BridgeDestinationPairing pairing)
     {
-        //Bridge endpoints are overlapping or misaligned. We should fix this by moving on of them closer to its centerpoint.
+        //Bridge endpoints are overlapping or misaligned. We should fix this by moving one of them closer to its centerpoint.
         if(PointsAreOverlapping(pairing) || PointsAreMisaligned(pairing))
         {
             if(point1.y < point2.y) //Move point 1 closer to its center
