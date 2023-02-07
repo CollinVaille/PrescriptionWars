@@ -124,6 +124,9 @@ public class BridgeManager
 
     private void GenerateNewBridgesFromPairings()
     {
+        if (pairings == null)
+            return;
+
         foreach (BridgeDestinationPairing pairing in pairings)
             GenerateNewBridgeFromPairingIfApplicable(pairing);
     }

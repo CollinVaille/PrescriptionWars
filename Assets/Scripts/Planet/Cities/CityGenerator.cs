@@ -96,8 +96,10 @@ public class CityGenerator : MonoBehaviour
 
         //Foundations--------------------------------------------------------------------------------------------------------------
         city.foundationManager.foundationHeight = Random.Range(cityType.foundationHeightRange.x, cityType.foundationHeightRange.y);
-        if(city.foundationManager.foundationHeight <= 0)
+        if (city.foundationManager.foundationHeight <= 0)
             city.foundationManager.foundationType = FoundationManager.FoundationType.NoFoundations;
+        else if (Random.Range(0, 1) == 0)
+            city.foundationManager.foundationType = FoundationManager.FoundationType.Islands;
         else
         {
             city.foundationManager.foundationType = FoundationManager.FoundationType.PerBuilding;

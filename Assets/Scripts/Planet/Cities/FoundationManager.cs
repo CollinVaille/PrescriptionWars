@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FoundationManager
 {
-    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding }
+    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands }
 
     public City city;
     public FoundationType foundationType = FoundationType.NoFoundations;
@@ -47,6 +47,8 @@ public class FoundationManager
             GenerateNewSingleSlabFoundation();
         else if (foundationType == FoundationType.PerBuilding)
             GenerateNewPerBuildingFoundations();
+        else if (foundationType == FoundationType.Islands)
+            GenerateNewIslandFoundations();
     }
 
     private void GenerateNewSingleSlabFoundation()
@@ -67,15 +69,78 @@ public class FoundationManager
         city.cityWallManager.wallSectionPrefab = null;
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
-        city.buildingManager.buildingSpecifications.extraBuildingRadius = 15;
+        city.buildingManager.newBuildingSpecifications.extraBuildingRadius = 15;
 
         //We may also want extra spacing between the foundations for aesthetics, variation, and also more space for bridges
         if(Random.Range(0, 2) == 0)
-            city.buildingManager.buildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
+            city.buildingManager.newBuildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
 
         //Tell building construction to create foundations underneath each building at this height range
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
-        city.buildingManager.buildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+        city.buildingManager.newBuildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+    }
+
+    private void GenerateNewIslandFoundations()
+    {
+        AreaManager areaManager = city.areaManager;
+
+        //Still need entrances
+        GenerateEntrancesForCardinalDirections();
+
+        //Ensure no walls are generated
+        city.cityWallManager.wallSectionPrefab = null;
+
+        //Determine how much square feet we want to try to take up with foundations. This will determine how dense the city is
+        float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
+        float squareMetersWeAreTryingToClaim = Mathf.Max(totalSquareMetersForCity * Random.Range(0.2f, 0.8f), Mathf.Min(20000, totalSquareMetersForCity));
+        float squareMetersClaimedSoFar = 0.0f;
+
+        //Start with buildings being allowed to generate nowhere
+        areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
+
+        //Then, add foundations one by one where buildings can spawn until we hit our square footage goal or run out of attempts
+        for(int attempt = 1; attempt <= 400 && squareMetersClaimedSoFar < squareMetersWeAreTryingToClaim; attempt++)
+        {
+            //Randomly choose a new location and scale for a foundation
+            Vector2Int center = new Vector2Int(Random.Range(0, areaManager.areaTaken.GetLength(0)), Random.Range(0, areaManager.areaTaken.GetLength(1)));
+            int areasLong = Random.Range(80, 200) / areaManager.areaSize;
+            Vector2Int outerAreaStart = new Vector2Int(center.x - areasLong / 2, center.y - areasLong / 2);
+
+            //See if it fits
+            if (!areaManager.SafeToGenerate(outerAreaStart.x, outerAreaStart.y, areasLong, AreaManager.AreaReservationType.LackingRequiredFoundation, true))
+                continue;
+
+            //If it does, then go ahead with adding the foundation...
+            bool circularFoundation = (Random.Range(0, 2) == 0);
+
+            //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
+            areaManager.ReserveAreasWithType(outerAreaStart.x, outerAreaStart.y, areasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.LackingRequiredFoundation);
+
+            //Create a smaller concentric subpocket where buildings can spawn inside the larger area we just reserved
+            int bufferInAreas = 3;
+            if(circularFoundation)
+            {
+                int innerCircleRadius = (areasLong / 2) - bufferInAreas;
+                areaManager.ReserveAreasWithinThisCircle(center.x, center.y, innerCircleRadius, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+            }
+            else
+            {
+                Vector2Int innerAreaStart = new Vector2Int(outerAreaStart.x + bufferInAreas, outerAreaStart.y + bufferInAreas);
+                areaManager.ReserveAreasWithType(innerAreaStart.x, innerAreaStart.y, areasLong - 2 * bufferInAreas, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+            }
+
+            //Remember how much area we just reserved
+            float squareMetersLong = areasLong * areaManager.areaSize;
+            squareMetersClaimedSoFar += AreaManager.CalculateAreaFromDimensions(circularFoundation, squareMetersLong * 0.5f);
+
+            //Calculate the parameters needed to place the foundation
+            Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(center.x, 0.0f, center.y));
+            Vector3 foundationScale = Vector3.one * squareMetersLong;
+            foundationScale.y = foundationHeight * Random.Range(0.9f, 1.1f);
+
+            //Place the foundation and hook it up with bridges
+            GenerateNewFoundation(foundationLocalPosition, foundationScale, circularFoundation, true);
+        }
     }
 
     private void GenerateEntrancesForCardinalDirections()
@@ -85,7 +150,7 @@ public class FoundationManager
         float distanceFromCityCenter = city.radius * 1.075f;
 
         //Prepare for X gates
-        city.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
+        city.areaManager.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
         Vector3 foundationScale = Vector3.one * Mathf.Clamp(widestRoadWidth * 2.0f, 20.0f, 30.0f);
         foundationScale.y = foundationHeight - 0.05f;
         
@@ -100,7 +165,7 @@ public class FoundationManager
         GenerateVerticalScalerBesideEntrance(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
-        city.GetWidestCardinalRoad(false, !city.circularCity, out widestRoadWidth, out widestRoadCenteredAt);
+        city.areaManager.GetWidestCardinalRoad(false, !city.circularCity, out widestRoadWidth, out widestRoadCenteredAt);
         foundationScale = Vector3.one * Mathf.Clamp(widestRoadWidth * 2.0f, 20.0f, 30.0f);
         foundationScale.y = foundationHeight - 0.05f;
 
@@ -140,7 +205,7 @@ public class FoundationManager
     public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
     {
         //Determine whether building should have a foundation generated underneath it
-        float buildingFoundationHeight = Random.Range(city.buildingManager.buildingSpecifications.foundationHeightRange.x, city.buildingManager.buildingSpecifications.foundationHeightRange.y);
+        float buildingFoundationHeight = city.buildingManager.newBuildingSpecifications.GetRandomFoundationHeight();
 
         if (buildingFoundationHeight > 5) //Include foundation
         {
@@ -195,7 +260,7 @@ public class FoundationManager
 
     private bool EntranceFoundationNeedsConnecting()
     {
-        return foundationType == FoundationType.PerBuilding;
+        return foundationType == FoundationType.PerBuilding || foundationType == FoundationType.Islands;
     }
 }
 

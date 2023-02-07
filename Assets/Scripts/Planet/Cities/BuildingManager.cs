@@ -10,7 +10,7 @@ public class BuildingManager
     public List<GameObject> buildingPrefabs;
     private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
     private int totalSpawnChance = 0;
-    public BuildingSpecifications buildingSpecifications;
+    public NewBuildingSpecifications newBuildingSpecifications;
 
     //Building maintenance
     private int nextAvailableBuilding = 0, nextAvailableBed = -1;
@@ -103,22 +103,24 @@ public class BuildingManager
     //Returns whether building was successfully generated.
     private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
     {
+        AreaManager areaManager = city.areaManager;
+
         //Find place that can fit model...
 
         int newX = 0, newZ = 0;
-        int buildingRadius = buildingPrototypes[buildingIndex].length + buildingSpecifications.extraBuildingRadius;
-        int totalRadius = buildingRadius + buildingSpecifications.extraRadiusForSpacing;
-        int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / city.areaSize);
+        int buildingRadius = buildingPrototypes[buildingIndex].length + newBuildingSpecifications.extraBuildingRadius;
+        int totalRadius = buildingRadius + newBuildingSpecifications.extraRadiusForSpacing;
+        int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaManager.areaSize);
         bool foundPlace = false;
 
         //Placement strategy #1: Center on the largest available city block
         if (placeInLargestAvailableBlock)
         {
-            while (city.availableCityBlocks.Count > 0)
+            while (areaManager.availableCityBlocks.Count > 0)
             {
-                int indexToPop = city.availableCityBlocks.Count - 1;
-                CityBlock possibleLocation = city.availableCityBlocks[indexToPop];
-                city.availableCityBlocks.RemoveAt(indexToPop);
+                int indexToPop = areaManager.availableCityBlocks.Count - 1;
+                CityBlock possibleLocation = areaManager.availableCityBlocks[indexToPop];
+                areaManager.availableCityBlocks.RemoveAt(indexToPop);
 
                 //The largest city block left is not big enough, so resort to random placement
                 //Keep the >= because same size generates will fail SafeToGenerate (tested)
@@ -128,7 +130,7 @@ public class BuildingManager
                 //Block is large enough for the building, but is there something already in it?
                 newX = possibleLocation.coords.x;
                 newZ = possibleLocation.coords.y;
-                if (city.SafeToGenerate(newX, newZ, areaLength, false))
+                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, false))
                 {
                     foundPlace = true;
                     break;
@@ -142,10 +144,10 @@ public class BuildingManager
             int maxAttempts = overrideRoadsIfNeeded ? 200 : 50;
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
-                newX = Random.Range(0, city.areaTaken.GetLength(0));
-                newZ = Random.Range(0, city.areaTaken.GetLength(1));
+                newX = Random.Range(0, areaManager.areaTaken.GetLength(0));
+                newZ = Random.Range(0, areaManager.areaTaken.GetLength(1));
 
-                if (city.SafeToGenerate(newX, newZ, areaLength, maxAttempts > 150))
+                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, maxAttempts > 150))
                 {
                     foundPlace = true;
                     break;
@@ -157,7 +159,7 @@ public class BuildingManager
         if (foundPlace)
         {
             //Reserve area for building
-            city.ReserveAreas(newX, newZ, areaLength, City.AreaReservationType.ReservedByBuilding);
+            areaManager.ReserveAreasRegardlessOfType(newX, newZ, areaLength, AreaManager.AreaReservationType.ReservedByBuilding);
 
             //Create it
             Transform newBuilding = InstantiateNewBuilding(buildingIndex);
@@ -171,8 +173,8 @@ public class BuildingManager
             Vector3 buildingPosition = Vector3.zero;
 
             //Compute the location for the building: centered within allocated area, converting from area space to local coordinates
-            buildingPosition.x = (newX + (areaLength / 2.0f) - city.areaTaken.GetLength(0) / 2.0f) * city.areaSize;
-            buildingPosition.z = (newZ + (areaLength / 2.0f) - city.areaTaken.GetLength(1) / 2.0f) * city.areaSize;
+            buildingPosition.x = (newX + (areaLength / 2.0f) - areaManager.areaTaken.GetLength(0) / 2.0f) * areaManager.areaSize;
+            buildingPosition.z = (newZ + (areaLength / 2.0f) - areaManager.areaTaken.GetLength(1) / 2.0f) * areaManager.areaSize;
 
             //Apply the computed location to the building and any foundation underneath the building if applicable...
             //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
@@ -224,6 +226,8 @@ public class BuildingManager
     //Returns whether building rotation is strictly pointing in a cardinal direction (0, 90, 180, 270 degrees within city coordinate system)
     private bool SetBuildingRotation(Transform building, int xCoord, int zCoord)
     {
+        AreaManager areaManager = city.areaManager;
+
         Vector3 newRotation = Vector3.zero;
         int newMargin;
         bool strictlyCardinal;
@@ -231,26 +235,26 @@ public class BuildingManager
         //Find closest horizontal road
         int closestZMargin = 9999;
         bool faceDown = false;
-        for (int z = 0; z < city.horizontalRoads.Count; z++)
+        for (int z = 0; z < areaManager.horizontalRoads.Count; z++)
         {
-            newMargin = Mathf.Abs(zCoord - city.horizontalRoads[z]);
+            newMargin = Mathf.Abs(zCoord - areaManager.horizontalRoads[z]);
             if (newMargin < closestZMargin)
             {
                 closestZMargin = newMargin;
-                faceDown = zCoord > city.horizontalRoads[z];
+                faceDown = zCoord > areaManager.horizontalRoads[z];
             }
         }
 
         //Find closest vertical road
         int closestXMargin = 9999;
         bool faceLeft = false;
-        for (int x = 0; x < city.verticalRoads.Count; x++)
+        for (int x = 0; x < areaManager.verticalRoads.Count; x++)
         {
-            newMargin = Mathf.Abs(xCoord - city.verticalRoads[x]);
+            newMargin = Mathf.Abs(xCoord - areaManager.verticalRoads[x]);
             if (newMargin < closestXMargin)
             {
                 closestXMargin = newMargin;
-                faceLeft = xCoord > city.verticalRoads[x];
+                faceLeft = xCoord > areaManager.verticalRoads[x];
             }
         }
 
@@ -353,10 +357,12 @@ public class BuildingManager
     }
 }
 
-public class BuildingSpecifications
+public class NewBuildingSpecifications
 {
     public int extraBuildingRadius = 0, extraRadiusForSpacing = 0;
     public Vector2 foundationHeightRange = Vector2.zero;
+
+    public float GetRandomFoundationHeight() { return Random.Range(foundationHeightRange.x, foundationHeightRange.y); }
 }
 
 [System.Serializable]

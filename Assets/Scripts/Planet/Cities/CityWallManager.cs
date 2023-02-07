@@ -110,7 +110,7 @@ public class CityWallManager
 
     private void GenerateNewSquareWalls(float wallLength, float placementHeight)
     {
-        float cityWidth = city.areaSize * city.areaTaken.GetLength(0);
+        float cityWidth = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0);
 
         float startX = -cityWidth / 2.0f + 5;
         int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
@@ -125,7 +125,7 @@ public class CityWallManager
         bool[] skipWallSection = new bool[horizontalSections];
 
         //Find the largest road/gap
-        city.GetWidestCardinalRoad(true, true, out _, out float largestGapCenteredAt);
+        city.areaManager.GetWidestCardinalRoad(true, true, out _, out float largestGapCenteredAt);
 
         //Find the wall section closest to the gap and remove it
         int closestWallSectionIndex = 0;
@@ -171,7 +171,7 @@ public class CityWallManager
         skipWallSection = new bool[verticalSections];
 
         //Find the largest road/gap
-        city.GetWidestCardinalRoad(false, true, out _, out largestGapCenteredAt);
+        city.areaManager.GetWidestCardinalRoad(false, true, out _, out largestGapCenteredAt);
 
         //Find the wall section closest to the gap and remove it
         closestWallSectionIndex = 0;
@@ -259,13 +259,6 @@ public class CityWallManager
         Transform fencePost = GameObject.Instantiate(fencePostPrefab, walls).transform;
         fencePost.localEulerAngles = new Vector3(0, rotation, 0);
         fencePost.localPosition = position;
-    }
-
-    //Usually cities are a rectangle where building placement is restricted by a city width and height.
-    //This adds another requirement that buildings be within a certain radius from the city center.
-    public bool IsWithinCircularCityWalls(int x, int z)
-    {
-        return city.AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < city.radius;
     }
 
 }
