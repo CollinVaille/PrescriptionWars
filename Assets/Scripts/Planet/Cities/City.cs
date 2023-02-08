@@ -16,6 +16,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public FoundationManager foundationManager;
     [HideInInspector] public CityWallManager cityWallManager;
     [HideInInspector] public BridgeManager bridgeManager;
+    [HideInInspector] public NewCitySpecifications newCitySpecifications;
 
     //Called after city has been generated or regenerated
     public void BeforeCityGeneratedOrRestored()
@@ -64,7 +65,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public void GenerateNewCity()
     {
         BeforeCityGeneratedOrRestored();
-        buildingManager.newBuildingSpecifications = new NewBuildingSpecifications();
+        newCitySpecifications = new NewCitySpecifications();
 
         //Reserve terrain location
         //radius = Random.Range(40, 100);
@@ -133,50 +134,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         return transform.Find("City Limits").GetComponent<NavigationZone>()
             .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), false);
     }
-}
-
-//Class for encapsulating the coordinates and dimensions of each city block. The dimensions could be wrong for the blocks on the edge of the city.
-//Thus, you would need to check the area coordinate system with the SafeToGenerate method before taking anything for granted.
-public class CityBlock : System.IComparable<CityBlock>
-{
-    public Vector2Int coords = Vector2Int.zero;
-    public Vector2Int dimensions = Vector2Int.zero;
-
-    public CityBlock() { }
-
-    public CityBlock(CityBlock other)
-    {
-        coords = other.coords;
-        dimensions = other.dimensions;
-    }
-
-    //Order the city blocks smallest to largest
-    public int CompareTo(CityBlock other)
-    {
-        int mySmallest = GetSmallestDimension();
-        int otherSmallest = other.GetSmallestDimension();
-
-        if (mySmallest < otherSmallest)
-            return -1;
-        else if (mySmallest > otherSmallest)
-            return 1;
-        else
-        {
-            int myLargest = GetLargestDimension();
-            int otherLargest = other.GetLargestDimension();
-
-            if (myLargest < otherLargest)
-                return -1;
-            else if (myLargest > otherLargest)
-                return 1;
-            else
-                return 0;
-        }
-
-    }
-
-    public int GetSmallestDimension() { return dimensions.x < dimensions.y ? dimensions.x : dimensions.y; }
-    private int GetLargestDimension() { return dimensions.x < dimensions.y ? dimensions.y : dimensions.x; }
 }
 
 [System.Serializable]

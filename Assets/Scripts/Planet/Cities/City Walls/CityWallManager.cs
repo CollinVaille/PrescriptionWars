@@ -39,6 +39,12 @@ public class CityWallManager
 
         PrepareWalls(Random.Range(0, city.buildingManager.wallMaterials.Length));
 
+        if (city.newCitySpecifications.shouldGenerateCityPerimeterWalls)
+            GenerateNewWallsAroundCityPerimeter();
+    }
+
+    private void GenerateNewWallsAroundCityPerimeter()
+    {
         float wallLength = wallSectionPrefab.transform.localScale.x;
         float placementHeight = 0.0f;
         //float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;

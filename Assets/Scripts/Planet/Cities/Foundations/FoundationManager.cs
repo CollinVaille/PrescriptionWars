@@ -17,6 +17,8 @@ public class FoundationManager
     public List<Collider> foundationColliders;
     public List<VerticalScaler> verticalScalers;
 
+    //Main entry points---
+
     public FoundationManager(City city)
     {
         this.city = city;
@@ -51,6 +53,8 @@ public class FoundationManager
             GenerateNewIslandFoundations();
     }
 
+    //Foundation type-specific generation logic---
+
     private void GenerateNewSingleSlabFoundation()
     {
         Vector3 foundationScale = Vector3.one * city.radius * 2.15f;
@@ -66,18 +70,18 @@ public class FoundationManager
         GenerateEntrancesForCardinalDirections();
 
         //Ensure no walls are generated
-        city.cityWallManager.wallSectionPrefab = null;
+        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
-        city.buildingManager.newBuildingSpecifications.extraBuildingRadius = 15;
+        city.newCitySpecifications.extraUsedBuildingRadius = 15;
 
         //We may also want extra spacing between the foundations for aesthetics, variation, and also more space for bridges
         if(Random.Range(0, 2) == 0)
-            city.buildingManager.newBuildingSpecifications.extraRadiusForSpacing = Random.Range(0, 10);
+            city.newCitySpecifications.extraBuildingRadiusForSpacing = Random.Range(0, 10);
 
         //Tell building construction to create foundations underneath each building at this height range
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
-        city.buildingManager.newBuildingSpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+        city.newCitySpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
     }
 
     private void GenerateNewIslandFoundations()
@@ -88,7 +92,7 @@ public class FoundationManager
         GenerateEntrancesForCardinalDirections();
 
         //Ensure no walls are generated
-        city.cityWallManager.wallSectionPrefab = null;
+        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
 
         //Determine how much square feet we want to try to take up with foundations. This will determine how dense the city is
         float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
@@ -142,6 +146,8 @@ public class FoundationManager
             GenerateNewFoundation(foundationLocalPosition, foundationScale, circularFoundation, true);
         }
     }
+
+    //Helper methods---
 
     private void GenerateEntrancesForCardinalDirections()
     {
@@ -205,7 +211,7 @@ public class FoundationManager
     public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
     {
         //Determine whether building should have a foundation generated underneath it
-        float buildingFoundationHeight = city.buildingManager.newBuildingSpecifications.GetRandomFoundationHeight();
+        float buildingFoundationHeight = city.newCitySpecifications.GetRandomFoundationHeight();
 
         if (buildingFoundationHeight > 5) //Include foundation
         {

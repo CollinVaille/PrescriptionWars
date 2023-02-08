@@ -10,7 +10,6 @@ public class BuildingManager
     public List<GameObject> buildingPrefabs;
     private Building[] buildingPrototypes; //First instance of each building (parallel array to one above)
     private int totalSpawnChance = 0;
-    public NewBuildingSpecifications newBuildingSpecifications;
 
     //Building maintenance
     private int nextAvailableBuilding = 0, nextAvailableBed = -1;
@@ -108,8 +107,8 @@ public class BuildingManager
         //Find place that can fit model...
 
         int newX = 0, newZ = 0;
-        int buildingRadius = buildingPrototypes[buildingIndex].length + newBuildingSpecifications.extraBuildingRadius;
-        int totalRadius = buildingRadius + newBuildingSpecifications.extraRadiusForSpacing;
+        int buildingRadius = buildingPrototypes[buildingIndex].length + city.newCitySpecifications.extraUsedBuildingRadius;
+        int totalRadius = buildingRadius + city.newCitySpecifications.extraBuildingRadiusForSpacing;
         int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaManager.areaSize);
         bool foundPlace = false;
 
@@ -355,14 +354,6 @@ public class BuildingManager
         defaultWallMaterial = Resources.Load<Material>("Planet/City/Materials/" + city.cityType.defaultWallMaterial);
         defaultFloorMaterial = Resources.Load<Material>("Planet/City/Materials/" + city.cityType.defaultFloorMaterial);
     }
-}
-
-public class NewBuildingSpecifications
-{
-    public int extraBuildingRadius = 0, extraRadiusForSpacing = 0;
-    public Vector2 foundationHeightRange = Vector2.zero;
-
-    public float GetRandomFoundationHeight() { return Random.Range(foundationHeightRange.x, foundationHeightRange.y); }
 }
 
 [System.Serializable]
