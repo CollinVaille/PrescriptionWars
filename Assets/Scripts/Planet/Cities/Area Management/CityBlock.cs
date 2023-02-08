@@ -17,6 +17,12 @@ public class CityBlock : System.IComparable<CityBlock>
         dimensions = other.dimensions;
     }
 
+    public CityBlock(Vector2Int coords, Vector2Int dimensions)
+    {
+        this.coords = coords;
+        this.dimensions = dimensions;
+    }
+
     //Order the city blocks smallest to largest
     public int CompareTo(CityBlock other)
     {

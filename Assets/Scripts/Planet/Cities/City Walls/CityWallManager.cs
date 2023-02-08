@@ -10,11 +10,13 @@ public class CityWallManager
     public Transform walls;
     public int wallMaterialIndex;
     public Material cityWallMaterial;
+    public List<NewCityWallRequest> newCityWallRequests;
 
     public CityWallManager(City city)
     {
         this.city = city;
         cityWallMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/City Walls");
+        newCityWallRequests = new List<NewCityWallRequest>();
     }
 
     public void PrepareWalls(int wallMaterialIndex)
@@ -39,32 +41,46 @@ public class CityWallManager
 
         PrepareWalls(Random.Range(0, city.buildingManager.wallMaterials.Length));
 
+        ProcessNewCityWallRequests();
+
         if (city.newCitySpecifications.shouldGenerateCityPerimeterWalls)
             GenerateNewWallsAroundCityPerimeter();
     }
 
-    private void GenerateNewWallsAroundCityPerimeter()
+    private void ProcessNewCityWallRequests()
     {
-        float wallLength = wallSectionPrefab.transform.localScale.x;
-        float placementHeight = 0.0f;
-        //float placementHeight = wallSectionPrefab.transform.localScale.y / 3.0f;
-
-        if (city.circularCity)
-            GenerateNewCircularWalls(wallLength, placementHeight);
-        else
-            GenerateNewSquareWalls(wallLength, placementHeight);
+        foreach (NewCityWallRequest cityWallRequest in newCityWallRequests)
+        {
+            if (cityWallRequest.circular)
+                GenerateNewCircularWalls(cityWallRequest.localCenter, cityWallRequest.halfLength);
+            else
+                GenerateNewSquareWalls(cityWallRequest.localCenter, cityWallRequest.halfLength);
+        }
     }
 
-    private void GenerateNewCircularWalls(float wallLength, float placementHeight)
+    private void GenerateNewWallsAroundCityPerimeter()
     {
+        if (city.circularCity) //Circular perimeters walls
+            GenerateNewCircularWalls(walls.localPosition, city.radius);
+        else //Square perimeter walls
+        {
+            float squareWallHalfLength = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0) * 0.5f;
+            GenerateNewSquareWalls(walls.localPosition, squareWallHalfLength);
+        }
+    }
+
+    private void GenerateNewCircularWalls(Vector3 localCenter, float radius)
+    {
+        float wallLength = wallSectionPrefab.transform.localScale.x;
+
         Transform temporaryRotatingBase = new GameObject("Temp - Delete After City Generation").transform;
         temporaryRotatingBase.parent = walls.parent;
-        temporaryRotatingBase.localPosition = walls.localPosition + Vector3.up * placementHeight;
+        temporaryRotatingBase.localPosition = localCenter;
         temporaryRotatingBase.localRotation = walls.localRotation;
 
         //Determine how many wall sections to place, the spacing, the angular math...
-        Vector3 fenceOffsetFromBase = Vector3.forward * city.radius;
-        float circumference = 2 * Mathf.PI * city.radius;
+        Vector3 fenceOffsetFromBase = Vector3.forward * radius;
+        float circumference = 2 * Mathf.PI * radius;
         int targetWallCount = (int)(circumference / wallLength);
         float currentEulerAngle = 0.0f;
         float eulerAngleStep = 360.0f / targetWallCount;
@@ -114,14 +130,24 @@ public class CityWallManager
         GameObject.Destroy(temporaryRotatingBase.gameObject);
     }
 
-    private void GenerateNewSquareWalls(float wallLength, float placementHeight)
+    private void GenerateNewSquareWalls(Vector3 localCenter, float halfLength)
     {
-        float cityWidth = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0);
+        //Adjust position slightly before we begin. I'm not sure why we have to do this, I just know it works (kind of).
+        int placementHeight = (int)localCenter.y;
+        localCenter += Vector3.one * 5;
+        localCenter.y = placementHeight;
 
-        float startX = -cityWidth / 2.0f + 5;
-        int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
+        float wallLength = wallSectionPrefab.transform.localScale.x;
+        //float cityWidth = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0);
 
-        float startZ = -cityWidth / 2.0f + 5;
+        //float startX = -cityWidth / 2.0f + 5;
+        //int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
+        float startX = localCenter.x - halfLength;
+        int horizontalSections = Mathf.CeilToInt((halfLength * 2) / wallLength);
+
+        //float startZ = -cityWidth / 2.0f + 5;
+        //int verticalSections = horizontalSections;
+        float startZ = localCenter.z - halfLength;
         int verticalSections = horizontalSections;
 
         //Debug.Log("Radius: " + radius + ", Start X: " + startX + ", Start Z: " + startZ);

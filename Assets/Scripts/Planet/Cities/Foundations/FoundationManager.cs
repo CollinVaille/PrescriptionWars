@@ -107,7 +107,7 @@ public class FoundationManager
         {
             //Randomly choose a new location and scale for a foundation
             Vector2Int center = new Vector2Int(Random.Range(0, areaManager.areaTaken.GetLength(0)), Random.Range(0, areaManager.areaTaken.GetLength(1)));
-            int areasLong = Random.Range(80, 200) / areaManager.areaSize;
+            int areasLong = Random.Range(80, 230) / areaManager.areaSize;
             Vector2Int outerAreaStart = new Vector2Int(center.x - areasLong / 2, center.y - areasLong / 2);
 
             //See if it fits
@@ -115,14 +115,22 @@ public class FoundationManager
                 continue;
 
             //If it does, then go ahead with adding the foundation...
+
+            //Create some needed variables upfront
             bool circularFoundation = (Random.Range(0, 2) == 0);
+            int squareMetersLong = areasLong * areaManager.areaSize;
+            bool generateWalls = squareMetersLong > 120;
 
             //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
             areaManager.ReserveAreasWithType(outerAreaStart.x, outerAreaStart.y, areasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.LackingRequiredFoundation);
 
-            //Create a smaller concentric subpocket where buildings can spawn inside the larger area we just reserved
+            //Next, create a smaller concentric subpocket where buildings can spawn inside the larger area we just reserved
+            //We'll call the area in between the two radii where the walls spawn the buffer zone
             int bufferInAreas = 3;
-            if(circularFoundation)
+            if (generateWalls)
+                bufferInAreas *= 2;
+
+            if (circularFoundation)
             {
                 int innerCircleRadius = (areasLong / 2) - bufferInAreas;
                 areaManager.ReserveAreasWithinThisCircle(center.x, center.y, innerCircleRadius, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
@@ -134,7 +142,6 @@ public class FoundationManager
             }
 
             //Remember how much area we just reserved
-            float squareMetersLong = areasLong * areaManager.areaSize;
             squareMetersClaimedSoFar += AreaManager.CalculateAreaFromDimensions(circularFoundation, squareMetersLong * 0.5f);
 
             //Calculate the parameters needed to place the foundation
@@ -144,7 +151,25 @@ public class FoundationManager
 
             //Place the foundation and hook it up with bridges
             GenerateNewFoundation(foundationLocalPosition, foundationScale, circularFoundation, true);
+
+            //Create walls that line the edges of the foundation
+            if(generateWalls)
+            {
+                NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
+                newCityWallRequest.circular = circularFoundation;
+                newCityWallRequest.localCenter = foundationLocalPosition;
+                newCityWallRequest.halfLength = (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f;
+                city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
+            }
+
+            //Add the building subpocket to the city block system so that special and/or large buildings know to try to generate in the middle...
+            //...of these locations first before trying random placement
+            int innerRadiusInMeters = squareMetersLong - bufferInAreas * areaManager.areaSize;
+            city.areaManager.availableCityBlocks.Add(new CityBlock(center, Vector2Int.one * innerRadiusInMeters));
         }
+
+        if(Random.Range(0, 1) == 0)
+            areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
     }
 
     //Helper methods---

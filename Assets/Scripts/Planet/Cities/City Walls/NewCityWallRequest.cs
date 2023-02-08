@@ -5,6 +5,6 @@ using UnityEngine;
 public class NewCityWallRequest
 {
     public bool circular = false; //True = circular walls, False = Square walls
-    public Vector3 center;
+    public Vector3 localCenter;
     public float halfLength;
 }
