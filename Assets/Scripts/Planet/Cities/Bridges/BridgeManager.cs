@@ -33,13 +33,13 @@ public class BridgeManager
 
     public void GenerateNewBridges()
     {
-        GetBridgeMaterials();
+        DetermineBridgeMaterials();
 
         GenerateNewPairingsFromDestinations();
         GenerateNewBridgesFromPairings();
     }
     
-    public void GetBridgeMaterials()
+    public void DetermineBridgeMaterials()
     {
         slabMaterial = city.foundationManager.slabMaterial;
         groundMaterial = city.foundationManager.groundMaterial;
@@ -236,7 +236,7 @@ public class BridgeManager
                 bridgeScale.x = 5.0f;
                 bridge.transform.localScale = bridgeScale;
 
-                GameObject.Destroy(bridgePrototype);
+                GameObject.Destroy(bridgePrototype.gameObject);
             }
             else
             {
@@ -367,7 +367,7 @@ public class BridgeManagerJSON
 
     public void RestoreBridgeManager(BridgeManager bridgeManager)
     {
-        bridgeManager.GetBridgeMaterials();
+        bridgeManager.DetermineBridgeMaterials();
 
         if (bridgeJSONs == null)
             return;

@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 6718635337634930964}
   - component: {fileID: 6718635337634930965}
   - component: {fileID: 1849533516872888298}
+  - component: {fileID: 6665351610532452824}
   m_Layer: 10
   m_Name: Ladder
   m_TagString: Untagged
@@ -146,6 +147,19 @@ MonoBehaviour:
   rung1: {fileID: 8300000, guid: 0563ebdbbddab2c4685fc80c133d52a4, type: 3}
   rung2: {fileID: 8300000, guid: 244c4d4574e6f2a4a929de00f6ab99cd, type: 3}
   scalablePart: {fileID: 4886624601087842028}
+--- !u!114 &6665351610532452824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6718635337634930967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65e08cbbb20c4546b4334b8c6d3252e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planetMaterialType: 12
 --- !u!1 &8731816250560085194
 GameObject:
   m_ObjectHideFlags: 0

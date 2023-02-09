@@ -92,7 +92,7 @@ public class FoundationManager
         GenerateEntrancesForCardinalDirections();
 
         //Ensure no walls are generated
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
+        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = (Random.Range(0, 2) == 0);
 
         //Determine how much square feet we want to try to take up with foundations. This will determine how dense the city is
         float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
