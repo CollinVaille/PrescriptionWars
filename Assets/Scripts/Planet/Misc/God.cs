@@ -351,7 +351,7 @@ public class God : MonoBehaviour
         //DynamicGI.UpdateEnvironment();
     }
 
-    /*public static void PlaceDebugMarker(Vector3 position, Transform parent = null, float width = 0.5f, float height = 500.0f)
+    public static void PlaceDebugMarker(Vector3 position, Transform parent = null, float width = 2.5f, float height = 500.0f, string markerName = "Debug Marker")
     {
         Transform debugMarker = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
         
@@ -365,6 +365,7 @@ public class God : MonoBehaviour
 
         debugMarker.position = position;
         debugMarker.rotation = Quaternion.Euler(0, 0, 0);
+
+        debugMarker.name = markerName;
     }
-    */
 }

@@ -63,11 +63,15 @@ public class VerticalScaler : MonoBehaviour
         }
     }
 
-    public void SetYAxisRotation(int yAxisRotation)
+    public void SetYAxisRotation(int yAxisRotation, bool inLocalSpace = true)
     {
         Vector3 verticalScalerRotation = Vector3.zero;
         verticalScalerRotation.y = yAxisRotation;
-        transform.localEulerAngles = verticalScalerRotation;
+
+        if(inLocalSpace)
+            transform.localEulerAngles = verticalScalerRotation;
+        else
+            transform.eulerAngles = verticalScalerRotation;
     }
 
     public float GetHeight()

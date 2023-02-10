@@ -92,7 +92,7 @@ public class CityGenerator : MonoBehaviour
 
         //City shape--------------------------------------------------------------------------------------------------------------
         if (city.cityWallManager.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
-            city.circularCity = true;
+            city.circularCity = Random.Range(0.0f, 1.0f / cityType.fencePostChance) > 0.5f;
 
         //Foundations--------------------------------------------------------------------------------------------------------------
         city.foundationManager.foundationHeight = Random.Range(cityType.foundationHeightRange.x, cityType.foundationHeightRange.y);

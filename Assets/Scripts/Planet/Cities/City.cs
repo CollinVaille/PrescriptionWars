@@ -5,7 +5,7 @@ using UnityEngine;
 public class City : MonoBehaviour, INavZoneUpdater
 {
     //General
-    [HideInInspector] public int radius = 100;
+    public int radius = 100;
     public GameObject mapMarkerPrefab;
     [HideInInspector] public CityType cityType;
     [HideInInspector] public bool circularCity = false;
@@ -72,7 +72,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
         //radius = Random.Range(80, 130);
-        radius = Random.Range(150, 300); //Huge city
+        //radius = Random.Range(250, 300); //Huge city
+        radius = Random.Range(70, 300);
         //radius = 500; //Approximately the size of the whole terrain
         areaManager.InitializeAreaReservationSystem();
         ReserveTerrainLocation(true, Vector3.zero);

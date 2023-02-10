@@ -27,7 +27,6 @@ public class AreaManager
         ReserveAllAreasRegardlessOfType(AreaReservationType.Open);
     }
 
-
     public void GenerateRoads()
     {
         //Needed set up regardless of what kind of roads we want to generate
@@ -270,8 +269,6 @@ public class AreaManager
         return true;
     }
 
-
-
     public void ReserveAreasWithType(int startX, int startZ, int areasLong, AreaReservationType newType, AreaReservationType oldType)
     {
         ReserveTheseAreas(startX, startZ, areasLong, newType, false, oldType);
@@ -312,9 +309,18 @@ public class AreaManager
 
         for (int x = startX; x < startX + areasLong; x++)
         {
+            //X boundaries
+            if (x < 0 || x >= areaTaken.GetLength(0))
+                continue;
+
             for (int z = startZ; z < startZ + areasLong; z++)
             {
-                if(overrideRegardlessOfType || areaTaken[x, z] == oldType)
+                //Z boundaries
+                if (z < 0 || z >= areaTaken.GetLength(1))
+                    continue;
+
+                //Reserve the area if conditions match
+                if (overrideRegardlessOfType || areaTaken[x, z] == oldType)
                 {
                     if (Mathf.Sqrt(Mathf.Pow(x - centerX, 2) + Mathf.Pow(z - centerZ, 2)) < radiusInAreas)
                         areaTaken[x, z] = newType;
@@ -381,10 +387,18 @@ public class AreaManager
     public Vector3 AreaCoordToLocalCoord(Vector3 areaCoord)
     {
         //Used to be / 2 (int math)
-        areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) / 2.0f) * areaSize;
-        areaCoord.z = (areaCoord.z - areaTaken.GetLength(1) / 2.0f) * areaSize;
+        areaCoord.x = (areaCoord.x - areaTaken.GetLength(0) * 0.5f) * areaSize;
+        areaCoord.z = (areaCoord.z - areaTaken.GetLength(1) * 0.5f) * areaSize;
 
         return areaCoord;
+    }
+
+    public Vector3 LocalCoordToAreaCoord(Vector3 localCoord)
+    {
+        localCoord.x = (localCoord.x / areaSize) + (areaTaken.GetLength(0) * 0.5f);
+        localCoord.z = (localCoord.z / areaSize) + (areaTaken.GetLength(1) * 0.5f);
+
+        return localCoord;
     }
 
     //Usually cities are a rectangle where building placement is restricted by a city width and height.
