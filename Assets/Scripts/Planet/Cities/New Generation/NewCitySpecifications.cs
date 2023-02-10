@@ -11,14 +11,17 @@ public class NewCitySpecifications
     public int extraUsedBuildingRadius = 0, extraBuildingRadiusForSpacing = 0;
 
     //Foundations
-    public Vector2 foundationHeightRange = Vector2.zero;
+    public Vector2 buildingFoundationHeightRange = Vector2.zero;
+    //There are some foundation types that have multiple levels of foundations/buildings. When this bool is true, it means even the lowest...
+    //...levels of buildings need foundations below them so that they are not underwater. This happens when the city is near sea level and an ocean is present.
+    public bool lowerBuildingsMustHaveFoundations = false;
 
     //City walls
     public bool shouldGenerateCityPerimeterWalls = true;
 
     //---
 
-    public float GetRandomFoundationHeight() { return Random.Range(foundationHeightRange.x, foundationHeightRange.y); }
+    public float GetRandomBuildingFoundationHeight() { return Random.Range(buildingFoundationHeightRange.x, buildingFoundationHeightRange.y); }
 
 
 }

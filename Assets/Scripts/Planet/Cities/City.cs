@@ -75,12 +75,20 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(250, 300); //Huge city
         radius = Random.Range(70, 300);
         //radius = 500; //Approximately the size of the whole terrain
-        areaManager.InitializeAreaReservationSystem();
-        ReserveTerrainLocation(true, Vector3.zero);
 
         //Determine city type, which determines whether we have walls, fence posts...
         //what buildings and building materials are used etc...
         CityGenerator.generator.CustomizeCity(this);
+
+        //Just determine what our plans are for the foundations. The actual building of foundations is later on.
+        //We need to determine our plans now so that we can finalize the city radius. A lot of stuff is based on the city radius.
+        foundationManager.DetermineFoundationPlans();
+        foundationManager.AdjustCityRadiusToCompensateForFoundationPlans();
+
+        //At this point, the city radius is final. We will now create our area management system and reserve our place in the terrain...
+        //...based on the city radius.
+        areaManager.InitializeAreaReservationSystem();
+        ReserveTerrainLocation(true, Vector3.zero);
 
         //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for GenerateRoads())
         buildingManager.LoadBuildingPrototypes();
@@ -90,14 +98,12 @@ public class City : MonoBehaviour, INavZoneUpdater
         areaManager.availableCityBlocks.Sort(); //Sort the city blocks, smallest to largest
         int avgBlockLength = areaManager.GetAverageLengthOfCityBlockInLocalUnits();
 
-        //for (int x = 0; x < Random.Range(0, radius / 40); x++)
-        //    ReserveSector();
-
         //Generate foundations
         foundationManager.GenerateNewFoundations();
 
         //Updates the physics colliders based on changes to transforms.
         //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        //The buildings need to raycast snap to the top of the foundations (thus why this is needed here).
         Physics.SyncTransforms();
 
         //Generate buildings
@@ -105,6 +111,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Updates the physics colliders based on changes to transforms.
         //Needed for raycasts to work correctly for the remainder of the city generation (since its all done in one frame).
+        //The walls need to raycast snap to the top of the foundations (and buildings?). Not sure if this one is needed actually...
         Physics.SyncTransforms();
 
         //Generate walls

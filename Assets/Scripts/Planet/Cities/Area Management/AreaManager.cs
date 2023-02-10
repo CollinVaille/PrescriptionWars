@@ -408,5 +408,13 @@ public class AreaManager
         return AreaCoordToLocalCoord(new Vector3(x, 0, z)).magnitude < city.radius;
     }
 
-    public static float CalculateAreaFromDimensions(bool circular, float halfLength) { return circular ? Mathf.PI * Mathf.Pow(halfLength, 2) : Mathf.Pow(halfLength * 2, 2); }
+    public static float CalculateAreaFromDimensions(bool circular, float halfLength)
+    {
+        return circular ? Mathf.PI * Mathf.Pow(halfLength, 2) : Mathf.Pow(halfLength * 2, 2);
+    }
+
+    public static float CalculateHalfLengthFromArea(bool circular, float area)
+    {
+        return circular ?  Mathf.Sqrt(area / Mathf.PI) : Mathf.Sqrt(area) * 0.5f;
+    }
 }

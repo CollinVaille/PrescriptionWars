@@ -33,9 +33,6 @@ public class CityType
     public string[] wallMaterials;
     public string[] floorMaterials;
 
-    //Foundations
-    public Vector2Int foundationHeightRange;
-
     //Vertical scalers
     public string minorVerticalScaler, majorVerticalScaler;
 

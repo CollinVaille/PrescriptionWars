@@ -6,7 +6,7 @@ public class CityGenerator : MonoBehaviour
 {
     public static CityGenerator generator;
 
-    public BiomeMaterials[] biomeMaterials;
+    public BiomeCityOptions[] biomeCityOptions;
     public CityType[] cityTypes;
     public FoundationOptions foundationOptions;
 
@@ -14,9 +14,13 @@ public class CityGenerator : MonoBehaviour
 
     public void CustomizeCity(City city)
     {
+        //Get city type
         CityType cityType = SelectCityType();
         city.cityType = cityType;
         string cityTypePathSuffix = cityType.name + "/";
+
+        //Get biome-city options
+        BiomeCityOptions biomeOptions = GetBiomeCityOptions();
 
         //Buildings--------------------------------------------------------------------------------------------------------------
         string buildingPath = "Planet/City/Buildings/" + cityTypePathSuffix;
@@ -40,7 +44,7 @@ public class CityGenerator : MonoBehaviour
         if (cityType.wallMaterials != null && cityType.wallMaterials.Length != 0)
             wallMats = new List<string>(cityType.wallMaterials);
         else
-            wallMats = new List<string>(GetBiomeMaterials().wallMaterials);
+            wallMats = new List<string>(biomeOptions.wallMaterials.Length != 0 ? biomeOptions.wallMaterials : biomeCityOptions[0].wallMaterials);
 
         TrimToRandomSubset(wallMats, Random.Range(3, 6));
         city.buildingManager.wallMaterials = new Material[wallMats.Count];
@@ -52,7 +56,7 @@ public class CityGenerator : MonoBehaviour
         if (cityType.floorMaterials != null && cityType.floorMaterials.Length != 0)
             floorMats = new List<string>(cityType.floorMaterials);
         else
-            floorMats = new List<string>(GetBiomeMaterials().floorMaterials);
+            floorMats = new List<string>(biomeOptions.floorMaterials.Length != 0 ? biomeOptions.floorMaterials : biomeCityOptions[0].floorMaterials);
 
         TrimToRandomSubset(floorMats, Random.Range(2, 5));
         city.buildingManager.floorMaterials = new Material[floorMats.Count];
@@ -60,15 +64,15 @@ public class CityGenerator : MonoBehaviour
             city.buildingManager.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMats[x]);
 
         //Slab materials--------------------------------------------------------------------------------------------------------------
-        List<string> slabMats = new List<string>(GetBiomeMaterials().slabMaterials);
+        List<string> slabMats = new List<string>(biomeOptions.slabMaterials.Length != 0 ? biomeOptions.slabMaterials : biomeCityOptions[0].slabMaterials);
         city.foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMats[Random.Range(0, slabMats.Count)]);
 
         //Ground materials--------------------------------------------------------------------------------------------------------------
-        List<string> groundMats = new List<string>(GetBiomeMaterials().groundMaterials);
+        List<string> groundMats = new List<string>(biomeOptions.groundMaterials.Length != 0 ? biomeOptions.groundMaterials : biomeCityOptions[0].groundMaterials);
         city.foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
-        if (Random.Range(0, 90) < city.radius && cityType.wallSections.Length > 0)
+        if (city.radius > Random.Range(0, 90) && cityType.wallSections.Length > 0)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
@@ -95,16 +99,15 @@ public class CityGenerator : MonoBehaviour
             city.circularCity = Random.Range(0.0f, 1.0f / cityType.fencePostChance) > 0.5f;
 
         //Foundations--------------------------------------------------------------------------------------------------------------
-        city.foundationManager.foundationHeight = Random.Range(cityType.foundationHeightRange.x, cityType.foundationHeightRange.y);
-        if (city.foundationManager.foundationHeight <= 0)
-            city.foundationManager.foundationType = FoundationManager.FoundationType.NoFoundations;
-        else if (Random.Range(0, 1) == 0)
-            city.foundationManager.foundationType = FoundationManager.FoundationType.Islands;
-        else
+        if (biomeOptions.foundationChance > Random.Range(0.0f, 1.0f)) //Chance for non-zero foundation height (and thus the presence of foundations)
         {
-            city.foundationManager.foundationType = FoundationManager.FoundationType.PerBuilding;
-            city.radius += Random.Range(25, 40); //This type of foundation doesn't generate as much per square foot so make the square footage bigger
+            if(Random.Range(0, 3) != 0)
+                city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.x, biomeOptions.foundationHeightRange.y);
+            else
+                city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.z, biomeOptions.foundationHeightRange.w);
         }
+        else //Zero foundation height (and thus zero foundations). This could be overruled later if the city needs foundations to be above water
+            city.foundationManager.foundationHeight = 0;
 
         //Bridges--------------------------------------------------------------------------------------------------------------
         city.bridgeManager.bridgePrefabPaths = new List<string>(cityType.bridges);
@@ -175,16 +178,16 @@ public class CityGenerator : MonoBehaviour
             toTrim.RemoveAt(Random.Range(0, toTrim.Count));
     }
 
-    private BiomeMaterials GetBiomeMaterials()
+    private BiomeCityOptions GetBiomeCityOptions()
     {
-        BiomeMaterials toReturn = biomeMaterials[0];
-        string biome = Planet.planet.biome.ToString().ToLower();
+        BiomeCityOptions toReturn = biomeCityOptions[0];
+        Planet.Biome biome = Planet.planet.biome;
 
-        for (int x = 0; x < biomeMaterials.Length; x++)
+        for (int x = 0; x < biomeCityOptions.Length; x++)
         {
-            if (biome.Equals(biomeMaterials[x].name.ToLower()))
+            if (biome == biomeCityOptions[x].biome)
             {
-                toReturn = biomeMaterials[x];
+                toReturn = biomeCityOptions[x];
                 break;
             }
         }

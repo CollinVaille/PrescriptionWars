@@ -26,6 +26,55 @@ public class FoundationManager
         largeSlabMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Large Slab Material");
     }
 
+    public void DetermineFoundationPlans()
+    {
+        //The foundation height has been set by CityGenerator. Now, we need to see if the height should be tweaked and what foundation type we should go for...
+
+        //If the city is underwater, raise it above water with foundations
+        if (Planet.planet.hasOcean)
+        {
+            float heightDifference = (Planet.planet.oceanTransform.position.y + 2.0f) - city.transform.position.y;
+            if (heightDifference > 0.0f)
+            {
+                city.newCitySpecifications.lowerBuildingsMustHaveFoundations = true;
+
+                float heightDifferenceWithFoundations = heightDifference - foundationHeight;
+                if(heightDifferenceWithFoundations > 0.0f)
+                    foundationHeight += Mathf.CeilToInt(heightDifferenceWithFoundations);
+            }
+        }
+
+        //Finalize decision to skip foundations
+        if (foundationHeight < 0)
+            foundationType = FoundationType.NoFoundations;
+
+        //Commence with choosing a foundation
+        else
+        {
+            //Enforce minimum non-zero foundation height (super short foundations don't play well with our elevator and bridge systems)
+            if (foundationHeight < 10)
+                foundationHeight = 10;
+
+            //Choose a random foundation type
+            if (foundationType == FoundationType.NoFoundations)
+                foundationType = GetRandomNonNullFoundationType();
+        }
+    }
+
+    //The idea here is that certain foundation types create wasted space in the city that cannot be used for buildings.
+    //Since we're trying be able to control the "size" of a city regardless of foundation type, it becomes necessary to expand the size...
+    //...of the city (by adjusting city.radius) to compensate for wasted space. These calculations are made below based on square feet so that it scales well.
+    public void AdjustCityRadiusToCompensateForFoundationPlans()
+    {
+        float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
+        float usablePercentage = GetEstimatedUsableSquareMeterPercentageForCity();
+        float newSquareMetersForCity = totalSquareMetersForCity / usablePercentage;
+        float newRadiusForCity = AreaManager.CalculateHalfLengthFromArea(city.circularCity, newSquareMetersForCity);
+
+        //Debug.Log("from " + ((int)city.radius) + " to " + ((int)newRadiusForCity) + " with usage percent " + usablePercentage);
+        city.radius = (int)newRadiusForCity;
+    }
+
     public void GenerateNewFoundations()
     {
         if (foundationType == FoundationType.NoFoundations)
@@ -81,7 +130,7 @@ public class FoundationManager
 
         //Tell building construction to create foundations underneath each building at this height range
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
-        city.newCitySpecifications.foundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+        city.newCitySpecifications.buildingFoundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
     }
 
     private void GenerateNewIslandFoundations()
@@ -92,10 +141,10 @@ public class FoundationManager
 
     //Helper methods---
 
-    public void GenerateEntrancesForCardinalDirections(bool entrancesNeedConnecting)
+    public void GenerateEntrancesForCardinalDirections(bool entrancesNeedConnecting, float extraDistanceFromCityCenter = 0.0f)
     {
         bool circularEntrances = Random.Range(0, 2) == 0;
-        float distanceFromCityCenter = city.radius * 1.075f;
+        float distanceFromCityCenter = (city.radius * 1.075f) + extraDistanceFromCityCenter;
 
         //Prepare for X gates
         city.areaManager.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
@@ -176,7 +225,7 @@ public class FoundationManager
     public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
     {
         //Determine whether building should have a foundation generated underneath it
-        float buildingFoundationHeight = city.newCitySpecifications.GetRandomFoundationHeight();
+        float buildingFoundationHeight = city.newCitySpecifications.GetRandomBuildingFoundationHeight();
 
         if (buildingFoundationHeight > 5) //Include foundation
         {
@@ -227,6 +276,29 @@ public class FoundationManager
     private bool BuildingFoundationNeedsConnecting()
     {
         return foundationType == FoundationType.PerBuilding;
+    }
+
+    private static FoundationType GetRandomNonNullFoundationType()
+    {
+        int selection = Random.Range(1, 4);
+        switch(selection)
+        {
+            case 1: return FoundationType.SingularSlab;
+            case 2: return FoundationType.PerBuilding;
+            default: return FoundationType.Islands;
+        }
+    }
+
+    private float GetEstimatedUsableSquareMeterPercentageForCity()
+    {
+        switch(foundationType)
+        {
+            case FoundationType.NoFoundations: return 1.0f;
+            case FoundationType.SingularSlab: return 1.0f;
+            case FoundationType.PerBuilding: return 0.65f;
+            case FoundationType.Islands: return 0.8f;
+            default: return 1.0f;
+        }
     }
 }
 

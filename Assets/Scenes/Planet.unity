@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.64203775, g: 0.54466665, b: 0.4168527, a: 1}
+  m_IndirectSpecularColor: {r: 0.5440822, g: 0.4444066, b: 0.0062613995, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21568,8 +21568,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7330a9bd9c4228a45a7c7694155b0f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  biomeMaterials:
-  - name: Frozen
+  biomeCityOptions:
+  - name: Default
+    biome: 0
     wallMaterials:
     - Concrete Wall
     - Concrete Wall 2
@@ -21580,7 +21581,10 @@ MonoBehaviour:
     - Concrete Wall 2
     groundMaterials:
     - Concrete Floor
+    foundationChance: 0.5
+    foundationHeightRange: {x: 10, y: 50, z: 10, w: 100}
   - name: Temperate
+    biome: 2
     wallMaterials:
     - Brick Wall
     - Plaster Wall
@@ -21591,7 +21595,10 @@ MonoBehaviour:
     - Cobblestone Wall
     groundMaterials:
     - Slate Tile Floor
-  - name: SandyDesert
+    foundationChance: 0.4
+    foundationHeightRange: {x: 10, y: 50, z: 20, w: 85}
+  - name: Sandy Desert
+    biome: 3
     wallMaterials:
     - Sand Wall
     - Sand Wall 2
@@ -21607,7 +21614,10 @@ MonoBehaviour:
     groundMaterials:
     - Slate Tile Floor
     - Rusted Deck Plates Hollow Metal
+    foundationChance: 0.33
+    foundationHeightRange: {x: 10, y: 50, z: 35, w: 75}
   - name: Spirit
+    biome: 7
     wallMaterials:
     - Metal Wall Panel
     floorMaterials:
@@ -21616,6 +21626,28 @@ MonoBehaviour:
     - Metal Wall Panel
     groundMaterials:
     - Fabric SciFi 7 Metal
+    foundationChance: 0.8
+    foundationHeightRange: {x: 15, y: 70, z: 15, w: 175}
+  - name: Hell
+    biome: 6
+    wallMaterials:
+    - Metal Wall Panel
+    floorMaterials:
+    - Fabric SciFi 7 Metal
+    slabMaterials:
+    - Metal Wall Panel
+    groundMaterials:
+    - Fabric SciFi 7 Metal
+    foundationChance: 0.9
+    foundationHeightRange: {x: 0, y: 200, z: 0, w: 350}
+  - name: Swamp
+    biome: 5
+    wallMaterials: []
+    floorMaterials: []
+    slabMaterials: []
+    groundMaterials: []
+    foundationChance: 0.25
+    foundationHeightRange: {x: 0, y: 20, z: 0, w: 50}
   cityTypes:
   - name: Slum
     spawnChance: 1
@@ -21656,7 +21688,6 @@ MonoBehaviour:
     defaultFloorMaterial: Concrete Floor
     wallMaterials: []
     floorMaterials: []
-    foundationHeightRange: {x: 100, y: 200}
     minorVerticalScaler: Rusty Ladder With Platform
     majorVerticalScaler: Rickety Elevator
   foundationOptions:

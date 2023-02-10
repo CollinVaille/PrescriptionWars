@@ -15,6 +15,10 @@ public class FoundationGeneratorForIslands
         city = foundationManager.city;
     }
 
+    //Generates a new set of foundations that each can house multiple buildings on them (or none at all). The foundations are connected by bridges.
+    //These foundations are considered "islands" and I call them "level 2" foundations.
+    //There is a possible singular lower elevation "level 1" foundation that these foundations can sit on that spans the entire area of the city.
+    //Buildings can spawn on both level 1 and level 2, making for a multi-leveled city.
     public void GenerateNewIslandFoundations()
     {
         AreaManager areaManager = city.areaManager;
@@ -24,7 +28,7 @@ public class FoundationGeneratorForIslands
         Vector2Int level2WidthRange = Get2ndLevelFoundationWidthRange(city.radius);
 
         //Determine level 1 and level 2 heights (level 1 is at the feet of the island foundations, level 2 is the top of the island foundations)
-        bool level1IsElevated = (Random.Range(0, 2) == 0);
+        bool level1IsElevated = (Random.Range(0, 2) == 0) || city.newCitySpecifications.lowerBuildingsMustHaveFoundations;
         float level1Height;
         Vector2 level2HeightRange = (new Vector2(Random.Range(0.8f, 1.0f), Random.Range(1.0f, 1.2f))) * foundationManager.foundationHeight;
 
@@ -90,7 +94,7 @@ public class FoundationGeneratorForIslands
             Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(center.x, 0.0f, center.y));
             foundationLocalPosition.y += level1Height / 2.0f;
             Vector3 foundationScale = Vector3.one * squareMetersLong;
-            foundationScale.y = Random.Range(level2HeightRange.x, level2HeightRange.y);
+            foundationScale.y = Mathf.Max(20.0f, Random.Range(level2HeightRange.x, level2HeightRange.y));
 
             //Place the foundation and hook it up with bridges
             foundationManager.GenerateNewFoundation(foundationLocalPosition, foundationScale, circularFoundation, true);
@@ -129,7 +133,8 @@ public class FoundationGeneratorForIslands
 
         //Still need entrances at city perimeters (could be level 1 or level 2 entrances depending on whether level 1 is elevated)
         //This should be done nearly last, after the GenerateLevel2VerticalScalers. We don't want the foundation colliders from this to show up in those computations.
-        foundationManager.GenerateEntrancesForCardinalDirections(!level1IsElevated);
+        float extraDistanceFromCityToEntrance = level1IsElevated ? 0.0f : 10.0f;
+        foundationManager.GenerateEntrancesForCardinalDirections(!level1IsElevated, extraDistanceFromCityCenter: extraDistanceFromCityToEntrance);
 
         //Make it so that buildings can spawn on level 1 as well
         areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
