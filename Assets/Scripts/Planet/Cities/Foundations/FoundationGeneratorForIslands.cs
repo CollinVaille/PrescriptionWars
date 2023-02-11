@@ -97,7 +97,8 @@ public class FoundationGeneratorForIslands
             foundationScale.y = Mathf.Max(20.0f, Random.Range(level2HeightRange.x, level2HeightRange.y));
 
             //Place the foundation and hook it up with bridges
-            foundationManager.GenerateNewFoundation(foundationLocalPosition, foundationScale, circularFoundation, true);
+            FoundationShape foundationShape = circularFoundation ? FoundationShape.Circular : FoundationShape.Rectangular;
+            foundationManager.GenerateNewFoundation(foundationLocalPosition, foundationScale, foundationShape, true);
 
             //Create walls that line the edges of the foundation
             if (generateWalls)
@@ -128,7 +129,7 @@ public class FoundationGeneratorForIslands
             //...for a foundation collider to put our second level vertical scaler beside. That algorithm needs to just be looking at level 2 colliders.
             Vector3 level1FoundationScale = Vector3.one * city.radius * 2.15f;
             level1FoundationScale.y = level1Height;
-            foundationManager.GenerateNewFoundation(Vector3.zero, level1FoundationScale, city.circularCity, false);
+            foundationManager.GenerateNewFoundation(Vector3.zero, level1FoundationScale, city.circularCity ? FoundationShape.Circular : FoundationShape.Rectangular, false);
         }
 
         //Still need entrances at city perimeters (could be level 1 or level 2 entrances depending on whether level 1 is elevated)

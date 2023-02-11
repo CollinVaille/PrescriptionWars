@@ -66,7 +66,7 @@ public class Building : MonoBehaviour
             else if (theRenderer && theRenderer.sharedMaterial == city.buildingManager.defaultFloorMaterial)
             {
                 theRenderer.sharedMaterial = floor;
-                PlanetMaterial.SetMaterialTypeBasedOnName(floor.name, child.gameObject);
+                PlanetMaterial.SetMaterialTypeBasedOnNameNOTRecursive(floor.name, child.gameObject);
             }
 
             if (child.childCount > 0)

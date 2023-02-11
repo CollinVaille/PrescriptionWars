@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class FoundationManager
 {
-    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands }
+    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Atlantis;
     public int foundationHeight = 0;
     public FoundationSelections foundationSelections;
 
@@ -39,16 +39,16 @@ public class FoundationManager
                 city.newCitySpecifications.lowerBuildingsMustHaveFoundations = true;
 
                 float heightDifferenceWithFoundations = heightDifference - foundationHeight;
-                if(heightDifferenceWithFoundations > 0.0f)
+                if (heightDifferenceWithFoundations > 0.0f)
                     foundationHeight += Mathf.CeilToInt(heightDifferenceWithFoundations);
             }
         }
 
-        //Finalize decision to skip foundations
+        //Either finalize decision to skip foundations...
         if (foundationHeight < 0)
             foundationType = FoundationType.NoFoundations;
 
-        //Commence with choosing a foundation
+        //Or, commence with choosing a foundation...
         else
         {
             //Enforce minimum non-zero foundation height (super short foundations don't play well with our elevator and bridge systems)
@@ -59,6 +59,10 @@ public class FoundationManager
             if (foundationType == FoundationType.NoFoundations)
                 foundationType = GetRandomNonNullFoundationType();
         }
+
+        //Enforce required conditions for certain foundation types
+        if (foundationType == FoundationType.Atlantis)
+            city.circularCity = true;
     }
 
     //The idea here is that certain foundation types create wasted space in the city that cannot be used for buildings.
@@ -100,6 +104,8 @@ public class FoundationManager
             GenerateNewPerBuildingFoundations();
         else if (foundationType == FoundationType.Islands)
             GenerateNewIslandFoundations();
+        else if (foundationType == FoundationType.Atlantis)
+            GenerateNewAtlantisFoundations();
     }
 
     //Foundation type-specific generation logic---
@@ -108,7 +114,7 @@ public class FoundationManager
     {
         Vector3 foundationScale = Vector3.one * city.radius * 2.15f;
         foundationScale.y = foundationHeight;
-        GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity, false);
+        GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity ? FoundationShape.Circular : FoundationShape.Rectangular, false);
 
         GenerateEntrancesForCardinalDirections(false);
     }
@@ -139,11 +145,17 @@ public class FoundationManager
         generator.GenerateNewIslandFoundations();
     }
 
+    private void GenerateNewAtlantisFoundations()
+    {
+        FoundationGeneratorForAtlantis generator = new FoundationGeneratorForAtlantis(this);
+        generator.GenerateNewAtlantisFoundations();
+    }
+
     //Helper methods---
 
     public void GenerateEntrancesForCardinalDirections(bool entrancesNeedConnecting, float extraDistanceFromCityCenter = 0.0f)
     {
-        bool circularEntrances = Random.Range(0, 2) == 0;
+        FoundationShape foundationShape = (Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
         float distanceFromCityCenter = (city.radius * 1.075f) + extraDistanceFromCityCenter;
 
         //Prepare for X gates
@@ -153,12 +165,12 @@ public class FoundationManager
         
         //-X gate
         Vector3 foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, -distanceFromCityCenter);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
+        GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
         GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
 
         //+X gate
         foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, distanceFromCityCenter);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
+        GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
         GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
@@ -168,12 +180,12 @@ public class FoundationManager
 
         //-Z gate
         foundationPosition = new Vector3(-distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
+        GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
         GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
 
         //+Z gate
         foundationPosition = new Vector3(distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
-        GenerateNewFoundation(foundationPosition, foundationScale, circularEntrances, entrancesNeedConnecting);
+        GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
         GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
     }
 
@@ -232,8 +244,8 @@ public class FoundationManager
             //Place foundation
             Vector3 foundationScale = Vector3.one * radiusOfBuilding;
             foundationScale.y = buildingFoundationHeight;
-            bool circularFoundation = !hasCardinalRotation || Random.Range(0, 2) == 0;
-            FoundationJSON foundationJSON = GenerateNewFoundation(buildingPosition, foundationScale, circularFoundation, BuildingFoundationNeedsConnecting());
+            FoundationShape foundationShape = (!hasCardinalRotation || Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
+            FoundationJSON foundationJSON = GenerateNewFoundation(buildingPosition, foundationScale, foundationShape, BuildingFoundationNeedsConnecting());
 
             return foundationJSON;
         }
@@ -241,13 +253,13 @@ public class FoundationManager
             return null;
     }
 
-    public FoundationJSON GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, bool circular, bool needsConnecting)
+    public FoundationJSON GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, FoundationShape shape, bool needsConnecting)
     {
         //Take notes so we can save and restore the foundation later
         FoundationJSON foundationJSON = new FoundationJSON();
 
         //Load in the customization
-        foundationJSON.prefab = foundationSelections.GetFoundationPrefab(circular, localScale);
+        foundationJSON.prefab = foundationSelections.GetFoundationPrefab(shape, localScale);
         foundationJSON.localPosition = localPosition;
         foundationJSON.localScale = localScale;
 
@@ -260,11 +272,11 @@ public class FoundationManager
             BridgeDestination bridgeDestination;
             Vector3 bridgeDestinationPosition = city.transform.TransformPoint(localPosition);
             bridgeDestinationPosition.y += (localScale.y / 2.0f);
-            if (circular)
+            if (shape == FoundationShape.Circular)
                 bridgeDestination = new BridgeDestination(bridgeDestinationPosition, localScale.x / 2.0f);
             else
             {
-                Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponents<Collider>();
+                Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponentsInChildren<Collider>();
                 bridgeDestination = new BridgeDestination(bridgeDestinationPosition, slabColliders);
             }
             city.bridgeManager.AddNewDestination(bridgeDestination);
@@ -280,12 +292,13 @@ public class FoundationManager
 
     private static FoundationType GetRandomNonNullFoundationType()
     {
-        int selection = Random.Range(1, 4);
+        int selection = Random.Range(0, 3);
         switch(selection)
         {
-            case 1: return FoundationType.SingularSlab;
-            case 2: return FoundationType.PerBuilding;
-            default: return FoundationType.Islands;
+            case 0: return FoundationType.SingularSlab;
+            case 1: return FoundationType.PerBuilding;
+            case 2: return FoundationType.Islands;
+            default: return FoundationType.Atlantis;
         }
     }
 
@@ -297,6 +310,7 @@ public class FoundationManager
             case FoundationType.SingularSlab: return 1.0f;
             case FoundationType.PerBuilding: return 0.65f;
             case FoundationType.Islands: return 0.8f;
+            case FoundationType.Atlantis: return 0.5f;
             default: return 1.0f;
         }
     }

@@ -77,6 +77,6 @@ public class FoundationJSON
 
     private void SetPlanetMaterialForGround(Transform slab, FoundationManager foundationManager)
     {
-        PlanetMaterial.SetMaterialTypeBasedOnName(foundationManager.groundMaterial.name, slab.Find("Ground Collider").gameObject);
+        PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(foundationManager.groundMaterial.name, slab.Find("Ground Collider"));
     }
 }

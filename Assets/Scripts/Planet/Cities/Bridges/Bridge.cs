@@ -172,7 +172,7 @@ public class Bridge : MonoBehaviour
         else if (theRenderer.sharedMaterial == groundMaterial)
         {
             theRenderer.sharedMaterial = newGroundMaterial;
-            PlanetMaterial.SetMaterialTypeBasedOnName(newGroundMaterial.name, theRenderer.gameObject);
+            PlanetMaterial.SetMaterialTypeBasedOnNameNOTRecursive(newGroundMaterial.name, theRenderer.gameObject);
         }
     }
 
