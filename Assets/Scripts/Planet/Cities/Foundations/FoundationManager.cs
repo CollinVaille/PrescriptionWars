@@ -7,7 +7,7 @@ public class FoundationManager
     public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
 
     public City city;
-    public FoundationType foundationType = FoundationType.Atlantis;
+    public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
     public FoundationSelections foundationSelections;
 
@@ -292,7 +292,7 @@ public class FoundationManager
 
     private static FoundationType GetRandomNonNullFoundationType()
     {
-        int selection = Random.Range(0, 3);
+        int selection = Random.Range(0, 4);
         switch(selection)
         {
             case 0: return FoundationType.SingularSlab;
@@ -310,7 +310,7 @@ public class FoundationManager
             case FoundationType.SingularSlab: return 1.0f;
             case FoundationType.PerBuilding: return 0.65f;
             case FoundationType.Islands: return 0.8f;
-            case FoundationType.Atlantis: return 0.5f;
+            case FoundationType.Atlantis: return 0.55f;
             default: return 1.0f;
         }
     }

@@ -302,7 +302,7 @@ public class BuildingManager
         return strictlyCardinal;
     }
 
-    public int GetMaxLengthBetweenRoadsInLocalUnits()
+    public int GetLongestBuildingLength()
     {
         int longestBuildingLength = 0;
         foreach (Building building in buildingPrototypes)
@@ -311,7 +311,12 @@ public class BuildingManager
                 longestBuildingLength = building.length;
         }
 
-        return Mathf.Max(70, (int)(longestBuildingLength * 1.5f));
+        return longestBuildingLength;
+    }
+
+    public int GetMaxLengthBetweenRoadsInLocalUnits()
+    {
+        return Mathf.Max(70, (int)(GetLongestBuildingLength() * 1.5f));
     }
 
     public Vector3 GetNewSpawnPoint()

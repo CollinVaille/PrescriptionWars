@@ -153,7 +153,8 @@ public class BridgeManager
 
         //If it is too steep and the distance is sufficient enough, have the lower point draw a flat line of bridge sections to the upper point's x, z location.
         //Once there, put up a vertical scaler (like a ladder) to cover the y difference.
-        if (bridgeXZRotation.magnitude > 15.0f && Mathf.Abs(specs.point2.y - specs.point1.y) > 1.5f)
+        float unsignedBridgeXZRotation = Mathf.DeltaAngle(bridgeXZRotation.magnitude, 0.0f);
+        if (unsignedBridgeXZRotation > 15.0f && Mathf.Abs(specs.point2.y - specs.point1.y) > 1.5f)
         {
             Vector3 bottomPoint, topPoint;
             Vector3 verticalScalerRotation = bridgeRotation;

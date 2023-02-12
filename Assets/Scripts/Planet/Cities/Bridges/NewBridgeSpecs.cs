@@ -66,7 +66,7 @@ public class NewBridgeSpecs
         Vector3 angleBetweenClosestPoints = GetBridgeRotation();
         Vector3 angleBetweenCenters = GetLookRotation(pairing.destination1.center, pairing.destination2.center);
 
-        return Mathf.DeltaAngle(angleBetweenClosestPoints.y, angleBetweenCenters.y) > 44.0f;
+        return Mathf.Abs(Mathf.DeltaAngle(angleBetweenClosestPoints.y, angleBetweenCenters.y)) > 44.0f;
     }
 
     public Vector3 GetBridgeRotation() { return GetLookRotation(point1, point2); }

@@ -6,8 +6,8 @@ using UnityEngine;
 //Thus, you would need to check the area coordinate system with the SafeToGenerate method before taking anything for granted.
 public class CityBlock : System.IComparable<CityBlock>
 {
-    public Vector2Int coords = Vector2Int.zero;
-    public Vector2Int dimensions = Vector2Int.zero;
+    public Vector2Int coords = Vector2Int.zero; //In areas
+    public Vector2Int dimensions = Vector2Int.zero; //In areas
 
     public CityBlock() { }
 

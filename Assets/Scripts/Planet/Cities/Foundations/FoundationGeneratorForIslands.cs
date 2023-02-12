@@ -52,9 +52,9 @@ public class FoundationGeneratorForIslands
         for (int attempt = 1; attempt <= 400 && squareMetersClaimedSoFar < squareMetersWeAreTryingToClaim; attempt++)
         {
             //Randomly choose a new location and scale for a foundation
-            Vector2Int center = new Vector2Int(Random.Range(0, areaManager.areaTaken.GetLength(0)), Random.Range(0, areaManager.areaTaken.GetLength(1)));
+            Vector2Int centerInAreas = new Vector2Int(Random.Range(0, areaManager.areaTaken.GetLength(0)), Random.Range(0, areaManager.areaTaken.GetLength(1)));
             int areasLong = Random.Range(level2WidthRange.x, level2WidthRange.y) / areaManager.areaSize;
-            Vector2Int outerAreaStart = new Vector2Int(center.x - areasLong / 2, center.y - areasLong / 2);
+            Vector2Int outerAreaStart = new Vector2Int(centerInAreas.x - areasLong / 2, centerInAreas.y - areasLong / 2);
 
             //See if it fits
             if (!areaManager.SafeToGenerate(outerAreaStart.x, outerAreaStart.y, areasLong, AreaManager.AreaReservationType.LackingRequiredFoundation, true))
@@ -79,7 +79,7 @@ public class FoundationGeneratorForIslands
             if (circularFoundation)
             {
                 int innerCircleRadius = (areasLong / 2) - bufferInAreas;
-                areaManager.ReserveAreasWithinThisCircle(center.x, center.y, innerCircleRadius, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+                areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, innerCircleRadius, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
             }
             else
             {
@@ -91,7 +91,7 @@ public class FoundationGeneratorForIslands
             squareMetersClaimedSoFar += AreaManager.CalculateAreaFromDimensions(circularFoundation, squareMetersLong * 0.5f);
 
             //Calculate the parameters needed to place the foundation
-            Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(center.x, 0.0f, center.y));
+            Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(centerInAreas.x, 0.0f, centerInAreas.y));
             foundationLocalPosition.y += level1Height / 2.0f;
             Vector3 foundationScale = Vector3.one * squareMetersLong;
             foundationScale.y = Mathf.Max(20.0f, Random.Range(level2HeightRange.x, level2HeightRange.y));
@@ -112,8 +112,8 @@ public class FoundationGeneratorForIslands
 
             //Add the building subpocket to the city block system so that special and/or large buildings know to try to generate in the middle...
             //...of these locations first before trying random placement
-            int innerRadiusInMeters = squareMetersLong - bufferInAreas * areaManager.areaSize;
-            city.areaManager.availableCityBlocks.Add(new CityBlock(center, Vector2Int.one * innerRadiusInMeters));
+            int innerRadiusInAreas = (squareMetersLong / areaManager.areaSize) - bufferInAreas;
+            city.areaManager.availableCityBlocks.Add(new CityBlock(centerInAreas, Vector2Int.one * innerRadiusInAreas));
         }
 
         //If we are making level 1 elevated, then generate what is needed for that now
