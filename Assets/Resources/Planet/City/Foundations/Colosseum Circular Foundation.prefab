@@ -811,6 +811,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 666336339678535853}
+  - component: {fileID: -1254826229981490047}
   m_Layer: 0
   m_Name: Colosseum Circular Foundation
   m_TagString: Untagged
@@ -834,6 +835,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1254826229981490047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2194608456829300294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2926ca6a39d740ad569f0784e0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: 
+  localScale: {x: 0, y: 0, z: 0}
 --- !u!1 &2196892170706916828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1918,7 +1933,7 @@ GameObject:
   - component: {fileID: 386053212706492640}
   - component: {fileID: 8254597262064725096}
   m_Layer: 0
-  m_Name: Ground Collider
+  m_Name: Ground Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

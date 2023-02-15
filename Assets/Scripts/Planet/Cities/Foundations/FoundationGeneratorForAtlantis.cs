@@ -376,7 +376,7 @@ public class FoundationGeneratorForAtlantis
         Vector3 ringFocalPoint = Vector3.MoveTowards(ringEdgePoint, cityCenterWithGlobalTop, -1.0f);
 
         bool useMinorVerticalScaler = gapOuterRadius < 150.0f || localTopHeight < 25.0f;
-        city.foundationManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
+        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
     }
 
     private void DetermineWhatToDoWithBottomLevel()

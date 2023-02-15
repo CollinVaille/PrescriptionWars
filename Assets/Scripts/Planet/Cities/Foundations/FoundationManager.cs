@@ -7,7 +7,7 @@ public class FoundationManager
     public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
 
     //All torus foundations have their inner radius = this multiplier * their outer radius.
-    //...Inner radius of ring model: 0.3825, outer radius of ring model: 0.5... 0.3825/0.5 = 0.765
+    //...Inner radius of ring model = 0.3825, outer radius of ring model = 0.5... 0.3825/0.5 = 0.765
     public const float torusAnnulusMultiplier = 0.765f;
 
     public City city;
@@ -17,9 +17,8 @@ public class FoundationManager
 
     public Material largeSlabMaterial, largeGroundMaterial;
     public Material slabMaterial, groundMaterial;
-    public List<FoundationJSON> foundations;
-    public List<Collider> foundationColliders;
-    public List<VerticalScaler> verticalScalers;
+    public List<Foundation> foundations;
+    public List<Collider> foundationGroundColliders; //List of all colliders for the city that belong to a foundation and are used as the foundation's "top ground".
 
     //Main entry points---
 
@@ -170,12 +169,12 @@ public class FoundationManager
         //-X gate
         Vector3 foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, -distanceFromCityCenter);
         GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
-        GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
+        city.verticalScalerManager.GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 180);
 
         //+X gate
         foundationPosition = new Vector3(widestRoadCenteredAt, 0.0f, distanceFromCityCenter);
         GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
-        GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
+        city.verticalScalerManager.GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 0);
 
         //Prepare for Z gates
         city.areaManager.GetWidestCardinalRoad(false, !city.circularCity, out widestRoadWidth, out widestRoadCenteredAt);
@@ -185,72 +184,16 @@ public class FoundationManager
         //-Z gate
         foundationPosition = new Vector3(-distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
         GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
-        GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
+        city.verticalScalerManager.GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, -90);
 
         //+Z gate
         foundationPosition = new Vector3(distanceFromCityCenter, 0.0f, widestRoadCenteredAt);
         GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
-        GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
-    }
-
-    public void GenerateVerticalScalerBesideFoundation(Vector3 foundationPosition, Vector3 foundationScale, bool generateOnNegativeSide, int yAxisRotation)
-    {
-        //Instantiate the vertical scaler
-        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(false), city.transform, this);
-        Transform verticalScalerTransform = verticalScaler.transform;
-
-        //Rotate it
-        verticalScaler.SetYAxisRotation(yAxisRotation);
-
-        //Position it
-        verticalScalerTransform.localPosition = foundationPosition;
-        Vector3 translation = verticalScalerTransform.right * ((foundationScale.x / 2.0f) + (verticalScaler.width / 2.0f));
-        if (generateOnNegativeSide)
-            translation *= -1;
-        verticalScalerTransform.Translate(translation, Space.World);
-        verticalScalerTransform.Translate(verticalScalerTransform.forward * (verticalScaler.width / 2.0f), Space.World);
-
-        //Scale it and connect it to the entrance foundation
-        verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
-    }
-
-    public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPoint, Vector3 edgePoint, float globalBottomLevel, float globalTopLevel, bool minor)
-    {
-        //Adjust parameters
-        globalBottomLevel += 0.05f;
-        edgePoint.y = globalBottomLevel;
-        focalPoint.y = globalBottomLevel;
-
-        //Instantiate the vertical scaler
-        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(minor), city.transform, this);
-        Transform verticalScalerTransform = verticalScaler.transform;
-
-        //Rotate it
-        if(minor)
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(edgePoint - focalPoint).eulerAngles.y), inLocalSpace: false);
-        else
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(focalPoint - edgePoint).eulerAngles.y + 90.0f), inLocalSpace: false);
-
-        //Position
-        Vector3 scalerPosition;
-        if(minor)
-            scalerPosition = edgePoint;
-        else
-            scalerPosition = Vector3.MoveTowards(edgePoint, focalPoint, -(verticalScaler.width / 2.0f) - 1.0f);
-        verticalScaler.transform.position = scalerPosition;
-
-        //Scale it and connect it to the entrance foundation
-        bool platformToLeft = verticalScaler.transform.InverseTransformPoint(focalPoint).x < 0.0f;
-        verticalScaler.ScaleToHeightAndConnect(globalTopLevel - globalBottomLevel, platformToLeft);
-    }
-
-    public void GenerateVerticalScalerByFoundation(Vector3 foundationPosition, Collider[] foundationColliders, float foundationRadius, float globalBottomLevel, float globalTopLevel)
-    {
-
+        city.verticalScalerManager.GenerateVerticalScalerBesideFoundation(foundationPosition, foundationScale, widestRoadCenteredAt > city.radius, 90);
     }
 
     //This function gives the foundation manager the chance to generate a foundation underneath the building before it is created.
-    public FoundationJSON RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
+    public Foundation RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
     {
         //Determine whether building should have a foundation generated underneath it
         float buildingFoundationHeight = city.newCitySpecifications.GetRandomBuildingFoundationHeight();
@@ -261,26 +204,19 @@ public class FoundationManager
             Vector3 foundationScale = Vector3.one * radiusOfBuilding;
             foundationScale.y = buildingFoundationHeight;
             FoundationShape foundationShape = (!hasCardinalRotation || Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
-            FoundationJSON foundationJSON = GenerateNewFoundation(buildingPosition, foundationScale, foundationShape, BuildingFoundationNeedsConnecting());
+            Foundation foundation = GenerateNewFoundation(buildingPosition, foundationScale, foundationShape, BuildingFoundationNeedsConnecting());
 
-            return foundationJSON;
+            return foundation;
         }
         else //Skip foundation
             return null;
     }
 
-    public FoundationJSON GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, FoundationShape shape, bool needsConnecting)
+    public Foundation GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, FoundationShape shape, bool needsConnecting)
     {
-        //Take notes so we can save and restore the foundation later
-        FoundationJSON foundationJSON = new FoundationJSON();
-
-        //Load in the customization
-        foundationJSON.prefab = foundationSelections.GetFoundationPrefab(shape, localScale);
-        foundationJSON.localPosition = localPosition;
-        foundationJSON.localScale = localScale;
-
-        //Instantiate and place the foundation using the customization. This will also add it to the lists it needs to be in.
-        foundationJSON.GenerateFoundation(city);
+        //Create the new foundation
+        string foundationPrefab = foundationSelections.GetFoundationPrefab(shape, localScale);
+        Foundation newFoundation = GenerateNewOrRestoreFoundation(foundationPrefab, localPosition, localScale);
 
         //If requested, tell the bridge system this foundation needs connecting with the rest of the city
         if(needsConnecting)
@@ -292,13 +228,25 @@ public class FoundationManager
                 bridgeDestination = new BridgeDestination(bridgeDestinationPosition, localScale.x / 2.0f);
             else
             {
-                Collider[] slabColliders = foundationJSON.transform.Find("Slab").Find("Ground Collider").GetComponentsInChildren<Collider>();
+                Collider[] slabColliders = newFoundation.transform.Find("Slab").Find("Ground Colliders").GetComponentsInChildren<Collider>();
                 bridgeDestination = new BridgeDestination(bridgeDestinationPosition, slabColliders);
             }
             city.bridgeManager.AddNewDestination(bridgeDestination);
         }
 
-        return foundationJSON;
+        return newFoundation;
+    }
+
+    public Foundation GenerateNewOrRestoreFoundation(string prefab, Vector3 localPosition, Vector3 localScale)
+    {
+        //Instantiate and parent the foundation
+        Foundation foundation = GameObject.Instantiate(Resources.Load<GameObject>("Planet/City/Foundations/" + prefab)).GetComponent<Foundation>();
+        foundation.transform.parent = city.transform;
+
+        //let the instantianted object perform the rest of its generation
+        foundation.GenerateNewOrRestoreFoundation(this, prefab, localPosition, localScale);
+
+        return foundation;
     }
 
     private bool BuildingFoundationNeedsConnecting()
@@ -340,10 +288,7 @@ public class FoundationManagerJSON
     public Vector2 slabMaterialTiling, groundMaterialTiling;
 
     //Foundations
-    public List<FoundationJSON> foundations;
-
-    //Vertical scalers
-    public List<VerticalScalerJSON> verticalScalers;
+    public List<FoundationJSON> foundationJSONs;
 
     public FoundationManagerJSON(FoundationManager foundationManager)
     {
@@ -353,11 +298,9 @@ public class FoundationManagerJSON
         groundMaterial = foundationManager.groundMaterial.name;
         groundMaterialTiling = foundationManager.largeGroundMaterial.mainTextureScale;
 
-        foundations = foundationManager.foundations;
-
-        verticalScalers = new List<VerticalScalerJSON>();
-        foreach (VerticalScaler verticalScaler in foundationManager.verticalScalers)
-            verticalScalers.Add(new VerticalScalerJSON(verticalScaler));
+        foundationJSONs = new List<FoundationJSON>(foundationManager.foundations.Count);
+        foreach (Foundation foundation in foundationManager.foundations)
+            foundationJSONs.Add(new FoundationJSON(foundation));
     }
 
     public void RestoreFoundationManager(FoundationManager foundationManager)
@@ -368,11 +311,8 @@ public class FoundationManagerJSON
         foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMaterial);
         God.CopyMaterialValues(foundationManager.groundMaterial, foundationManager.largeGroundMaterial, groundMaterialTiling.x, groundMaterialTiling.y, false);
 
-        foreach (FoundationJSON foundation in foundations)
-            foundation.GenerateFoundation(foundationManager.city);
-
-        foreach (VerticalScalerJSON verticalScaler in verticalScalers)
-            verticalScaler.RestoreVerticalScaler(foundationManager);
+        foreach (FoundationJSON foundationJSON in foundationJSONs)
+            foundationJSON.RestoreFoundation(foundationManager);
 
         Physics.SyncTransforms();
     }

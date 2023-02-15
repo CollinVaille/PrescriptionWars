@@ -161,6 +161,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1358901500110785162}
+  - component: {fileID: 2864751057750141996}
   m_Layer: 0
   m_Name: Industrial Torus Foundation
   m_TagString: Untagged
@@ -184,6 +185,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2864751057750141996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400912913310712929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2926ca6a39d740ad569f0784e0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: 
+  localScale: {x: 0, y: 0, z: 0}
 --- !u!1 &454244007737493788
 GameObject:
   m_ObjectHideFlags: 0
@@ -3247,7 +3262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7170928338464126524}
   m_Layer: 0
-  m_Name: Bottom Collider
+  m_Name: Bottom Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5484,7 +5499,7 @@ GameObject:
   m_Component:
   - component: {fileID: 966177141608219045}
   m_Layer: 0
-  m_Name: Ground Collider
+  m_Name: Ground Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

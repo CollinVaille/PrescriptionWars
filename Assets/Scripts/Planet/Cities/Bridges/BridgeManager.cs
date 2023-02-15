@@ -334,7 +334,7 @@ public class BridgeManager
     private void GenerateNewVerticalScalerAtEndOfBridge(Vector3 bottomPoint, Vector3 topPoint, int yAxisRotation)
     {
         //Instantiate the vertical scaler
-        VerticalScaler newVerticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(true), city.transform, city.foundationManager);
+        VerticalScaler newVerticalScaler = city.verticalScalerManager.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(true), city.transform);
         Transform verticalScalerTransform = newVerticalScaler.transform;
 
         //Rotate it

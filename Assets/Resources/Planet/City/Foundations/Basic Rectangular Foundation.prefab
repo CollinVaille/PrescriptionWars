@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4586381066146148593}
   - component: {fileID: 4586381066146148592}
   m_Layer: 0
-  m_Name: Ground Collider
+  m_Name: Ground Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,6 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5836096010988838069}
+  - component: {fileID: -5477395373014111858}
   m_Layer: 0
   m_Name: Basic Rectangular Foundation
   m_TagString: Untagged
@@ -159,6 +160,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5477395373014111858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5836096010988838073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2926ca6a39d740ad569f0784e0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: 
+  localScale: {x: 0, y: 0, z: 0}
 --- !u!1 &8132808216651627035
 GameObject:
   m_ObjectHideFlags: 0

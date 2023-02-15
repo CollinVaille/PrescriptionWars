@@ -2,23 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class FoundationJSON
+public class Foundation : MonoBehaviour
 {
-    //Non-serializable (ignored by serializer)
-    public Transform transform;
-
-    //Serializable
+    public FoundationManager foundationManager;
     public string prefab;
-    public Vector3 localPosition;
     public Vector3 localScale;
 
-    //Uses the values in the field variables to instantiate and customize a foundation.
-    public void GenerateFoundation(City city)
+    public void GenerateNewOrRestoreFoundation(FoundationManager foundationManager, string prefab, Vector3 localPosition, Vector3 localScale)
     {
-        //Instantiate and parent the foundation
-        transform = GameObject.Instantiate(Resources.Load<GameObject>("Planet/City/Foundations/" + prefab)).transform;
-        transform.parent = city.transform;
+        //Save passed in data
+        this.foundationManager = foundationManager;
+        this.prefab = prefab;
+        this.localScale = localScale;
+
+        //Then perform the rest of the initialization/generation...
 
         //Get needed variables
         Transform slab = transform.Find("Slab");
@@ -29,18 +26,18 @@ public class FoundationJSON
         SetScale(slab, ground);
         transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-        SetRenderMaterialsIfNeeded(slab, ground, city.foundationManager);
-        SetPlanetMaterialForGround(slab, city.foundationManager);
+        SetRenderMaterialsIfNeeded(slab, ground, foundationManager);
+        SetPlanetMaterialForGround(slab, foundationManager);
+
+        //Add foundation colliders to the foundation collider system (used for things like snapping buildings to the nearest surface)
+        if (foundationManager.foundationGroundColliders == null)
+            foundationManager.foundationGroundColliders = new List<Collider>();
+        foundationManager.foundationGroundColliders.AddRange(slab.Find("Ground Colliders").GetComponentsInChildren<Collider>());
 
         //Add foundation to saving system
-        if (city.foundationManager.foundations == null)
-            city.foundationManager.foundations = new List<FoundationJSON>();
-        city.foundationManager.foundations.Add(this);
-
-        //Add foundation to collider system
-        if (city.foundationManager.foundationColliders == null)
-            city.foundationManager.foundationColliders = new List<Collider>();
-        city.foundationManager.foundationColliders.AddRange(transform.GetComponentsInChildren<Collider>());
+        if (foundationManager.foundations == null)
+            foundationManager.foundations = new List<Foundation>();
+        foundationManager.foundations.Add(this);
     }
 
     private void SetScale(Transform slab, Transform ground)
@@ -77,6 +74,27 @@ public class FoundationJSON
 
     private void SetPlanetMaterialForGround(Transform slab, FoundationManager foundationManager)
     {
-        PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(foundationManager.groundMaterial.name, slab.Find("Ground Collider"));
+        PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(foundationManager.groundMaterial.name, slab.Find("Ground Colliders"));
+    }
+}
+
+
+[System.Serializable]
+public class FoundationJSON
+{
+    public string prefab;
+    public Vector3 localPosition;
+    public Vector3 localScale;
+
+    public FoundationJSON(Foundation foundation)
+    {
+        prefab = foundation.prefab;
+        localPosition = foundation.transform.localPosition;
+        localScale = foundation.localScale;
+    }
+
+    public void RestoreFoundation(FoundationManager foundationManager)
+    {
+        foundationManager.GenerateNewOrRestoreFoundation(prefab, localPosition, localScale);
     }
 }

@@ -268,7 +268,7 @@ public class CityWallManager
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
         if (snapToGround)
-            God.SnapToGround(newWallSection, collidersToCheckAgainst: city.foundationManager.foundationColliders);
+            God.SnapToGround(newWallSection, collidersToCheckAgainst: city.foundationManager.foundationGroundColliders);
 
         //Place fence post correlating to wall section
         if (fencePostPrefab && !gate && !skipFencePost)

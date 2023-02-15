@@ -177,7 +177,7 @@ public class BuildingManager
 
             //Apply the computed location to the building and any foundation underneath the building if applicable...
             //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
-            FoundationJSON buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
+            Foundation buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
             if (buildingFoundation != null) //Has foundation underneath building
             {
                 //Place building on top of foundation
@@ -188,7 +188,7 @@ public class BuildingManager
             {
                 //Place building on whatever is beneath it (could be terrain or foundations previously created)
                 newBuilding.localPosition = buildingPosition;
-                God.SnapToGround(newBuilding, collidersToCheckAgainst: city.foundationManager.foundationColliders);
+                God.SnapToGround(newBuilding, collidersToCheckAgainst: city.foundationManager.foundationGroundColliders);
             }
 
             //Remember building and finally, call set up on it

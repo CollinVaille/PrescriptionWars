@@ -5051,7 +5051,7 @@ GameObject:
   - component: {fileID: 7219759461776784579}
   - component: {fileID: 1433285815063740491}
   m_Layer: 0
-  m_Name: Ground Collider
+  m_Name: Ground Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8296,6 +8296,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7518048183776545934}
+  - component: {fileID: 3791712354717337287}
   m_Layer: 0
   m_Name: Sci-Fi Pipes Circular Foundation
   m_TagString: Untagged
@@ -8319,6 +8320,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3791712354717337287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9160010896613589605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2926ca6a39d740ad569f0784e0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: 
+  localScale: {x: 0, y: 0, z: 0}
 --- !u!1001 &1721030938148706345
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 9208595764215685871}
   - component: {fileID: 584957978696572519}
   m_Layer: 0
-  m_Name: Ground Collider
+  m_Name: Ground Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -586,6 +586,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8335957343640736418}
+  - component: {fileID: -1025283335383052969}
   m_Layer: 0
   m_Name: Carved Circular Foundation
   m_TagString: Untagged
@@ -609,6 +610,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1025283335383052969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7270173830857497673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc2926ca6a39d740ad569f0784e0261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: 
+  localScale: {x: 0, y: 0, z: 0}
 --- !u!1 &7781439945674563271
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public AreaManager areaManager;
     [HideInInspector] public BuildingManager buildingManager;
     [HideInInspector] public FoundationManager foundationManager;
+    [HideInInspector] public VerticalScalerManager verticalScalerManager;
     [HideInInspector] public CityWallManager cityWallManager;
     [HideInInspector] public BridgeManager bridgeManager;
     [HideInInspector] public NewCitySpecifications newCitySpecifications;
@@ -24,6 +25,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         areaManager = new AreaManager(this);
         buildingManager = new BuildingManager(this);
         foundationManager = new FoundationManager(this);
+        verticalScalerManager = new VerticalScalerManager(this);
         cityWallManager = new CityWallManager(this);
         bridgeManager = new BridgeManager(this);
     }
@@ -156,6 +158,7 @@ public class CityJSON
     //Sub-managers
     public BuildingManagerJSON buildingManagerJSON;
     public FoundationManagerJSON foundationManagerJSON;
+    public VerticalScalerManagerJSON verticalScalerManagerJSON;
     public CityWallManagerJSON cityWallManagerJSON;
     public BridgeManagerJSON bridgeManagerJSON;
 
@@ -177,6 +180,7 @@ public class CityJSON
 
         buildingManagerJSON = new BuildingManagerJSON(city.buildingManager);
         foundationManagerJSON = new FoundationManagerJSON(city.foundationManager);
+        verticalScalerManagerJSON = new VerticalScalerManagerJSON(city.verticalScalerManager);
         cityWallManagerJSON = new CityWallManagerJSON(city.cityWallManager);
         bridgeManagerJSON = new BridgeManagerJSON(city.bridgeManager);
     }
@@ -195,6 +199,7 @@ public class CityJSON
 
         buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathSuffix);
         foundationManagerJSON.RestoreFoundationManager(city.foundationManager);
+        verticalScalerManagerJSON.RestoreVerticalScalerManager(city.verticalScalerManager);
         cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
         bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
 

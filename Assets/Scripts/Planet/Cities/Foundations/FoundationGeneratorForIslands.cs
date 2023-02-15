@@ -157,7 +157,7 @@ public class FoundationGeneratorForIslands
     private void GenerateLevel2VerticalScalers(float level1LocalElevation, float level2AvgLocalElevation)
     {
         //If there is no level 2, then don't bother making an elevator to it
-        if (foundationManager.foundationColliders == null || foundationManager.foundationColliders.Count == 0)
+        if (foundationManager.foundationGroundColliders == null || foundationManager.foundationGroundColliders.Count == 0)
             return;
 
         //Otherwise...
@@ -185,7 +185,7 @@ public class FoundationGeneratorForIslands
         float cityElevation = city.transform.position.y;
         float level1GlobalElevation = level1LocalElevation + cityElevation;
         float level2GlobalElevation = placeInGlobal.y;
-        foundationManager.GenerateVerticalScalerWithFocalPoint(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
+        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
 
         //Reserve area around the vertical scaler so that no buildings can spawn there
         Vector3 placeInAreas = city.areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(placeInGlobal));
@@ -208,7 +208,7 @@ public class FoundationGeneratorForIslands
             Vector3 randomOutsidePointInGlobal = GetRandomGlobalPointOutsideOfCity(city);
 
             //Find the nearest foundation collider and point on that collider
-            nearestCollider = GetClosestFoundationColliderAndPoint(foundationManager.foundationColliders, randomOutsidePointInGlobal, out closestPointInGlobal);
+            nearestCollider = GetClosestFoundationColliderAndPoint(foundationManager.foundationGroundColliders, randomOutsidePointInGlobal, out closestPointInGlobal);
 
             //Determine if that nearest point will work...
 
@@ -252,7 +252,7 @@ public class FoundationGeneratorForIslands
         {
             Vector3 tiledFoundationPosition = foundationLocalPosition;
             Vector3 tiledFoundationScale = newFoundationScale;
-            for (int x = 1; x < iterationCount; x++)
+            for (int x = 1; x <= iterationCount; x++)
             {
                 foundationManager.GenerateNewFoundation(tiledFoundationPosition, tiledFoundationScale, FoundationShape.Torus, false);
 

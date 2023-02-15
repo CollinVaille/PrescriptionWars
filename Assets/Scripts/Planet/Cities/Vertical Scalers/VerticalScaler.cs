@@ -4,7 +4,7 @@ using UnityEngine;
 
 //Vertical scalers are things like elevators and ladders that are used to transport pills up and down (and thus can be used to vertically scale walls/structures).
 //They have an additional requirement that their vertical scale be dynamically editable. This is so city foundations of dynamic height can use them as entrances.
-//Vertical scalers belong to a city. Each city keeps a list of all its vertical scalers under its foundation manager (since foundations use them most).
+//Vertical scalers belong to a city. Each city keeps a list of all its vertical scalers under its vertical scaler manager.
 public class VerticalScaler : MonoBehaviour
 {
     //Customization
@@ -13,25 +13,6 @@ public class VerticalScaler : MonoBehaviour
     //Needed for save system (VerticalScalerJSON)
     [HideInInspector] public bool invertConnectorsXPosition;
     [HideInInspector] public string resourcePath;
-
-    public static VerticalScaler InstantiateVerticalScaler(string resourcePath, Transform parent, FoundationManager foundationManager)
-    {
-        //Instantiate it
-        GameObject verticalScalerPrefab = Resources.Load<GameObject>(resourcePath);
-        VerticalScaler verticalScaler = Instantiate(verticalScalerPrefab, parent).GetComponent<VerticalScaler>();
-
-        //Configure it (not all configuration is done here. only configuration that needs to be done the same way in every situation)
-        verticalScaler.name = verticalScaler.name.Substring(0, verticalScaler.name.Length - 7);
-        verticalScaler.resourcePath = resourcePath;
-
-        //Add it to the save system
-        if (foundationManager.verticalScalers == null)
-            foundationManager.verticalScalers = new List<VerticalScaler>();
-        foundationManager.verticalScalers.Add(verticalScaler);
-
-        //Return it
-        return verticalScaler;
-    }
 
     public void ScaleToHeightAndConnect(float heightToScaleTo, bool invertConnectorsXPosition)
     {
@@ -110,9 +91,9 @@ public class VerticalScalerJSON
         invertConnectorsXPosition = verticalScaler.invertConnectorsXPosition;
     }
 
-    public void RestoreVerticalScaler(FoundationManager foundationManager)
+    public void RestoreVerticalScaler(VerticalScalerManager verticalScalerManager)
     {
-        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(resourcePath, foundationManager.city.transform, foundationManager);
+        VerticalScaler verticalScaler = verticalScalerManager.InstantiateVerticalScaler(resourcePath, verticalScalerManager.city.transform);
 
         verticalScaler.transform.localPosition = location;
         verticalScaler.SetYAxisRotation(yAxisRotation);
