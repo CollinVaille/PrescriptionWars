@@ -8,17 +8,20 @@ public class FoundationSelections
 {
     public string basicCircularFoundation, basicRectangularFoundation, basicTorusFoundation;
     public string smallCircularFoundation, smallRectangularFoundation;
-    public string largeCircularFoundation, largeRectangularFoundation;
+    public string largeCircularFoundation, largeRectangularFoundation, largeTorusFoundation;
 
     public FoundationSelections(FoundationOptions foundationOptions)
     {
         basicCircularFoundation = foundationOptions.basicCircularFoundation;
         basicRectangularFoundation = foundationOptions.basicRectangularFoundation;
         basicTorusFoundation = foundationOptions.basicTorusFoundation;
+
         smallCircularFoundation = foundationOptions.smallCircularFoundations[Random.Range(0, foundationOptions.smallCircularFoundations.Length)];
         smallRectangularFoundation = foundationOptions.smallRectangularFoundations[Random.Range(0, foundationOptions.smallRectangularFoundations.Length)];
+
         largeCircularFoundation = foundationOptions.largeCircularFoundations[Random.Range(0, foundationOptions.largeCircularFoundations.Length)];
         largeRectangularFoundation = foundationOptions.largeRectangularFoundations[Random.Range(0, foundationOptions.largeRectangularFoundations.Length)];
+        largeTorusFoundation = foundationOptions.largeTorusFoundations[Random.Range(0, foundationOptions.largeTorusFoundations.Length)];
     }
 
     public string GetFoundationPrefab(FoundationShape foundationShape, Vector3 scale)
@@ -48,7 +51,7 @@ public class FoundationSelections
             else if (foundationShape == FoundationShape.Circular)
                 return largeCircularFoundation;
             else
-                return basicTorusFoundation;
+                return largeTorusFoundation;
         }
     }
 }

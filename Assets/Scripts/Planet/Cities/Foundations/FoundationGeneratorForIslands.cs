@@ -174,7 +174,7 @@ public class FoundationGeneratorForIslands
         float cityElevation = city.transform.position.y;
         float level1GlobalElevation = level1LocalElevation + cityElevation;
         float level2GlobalElevation = placeInGlobal.y;
-        foundationManager.GenerateVerticalScalerBesideFoundationCollider(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation);
+        foundationManager.GenerateVerticalScalerBesideFoundationCollider(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
 
         //Reserve area around the vertical scaler so that no buildings can spawn there
         Vector3 placeInAreas = city.areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(placeInGlobal));

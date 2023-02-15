@@ -44,14 +44,15 @@ public class PlanetGenerator : MonoBehaviour
             return;
 
         //Randomly select
-        int picker = Random.Range(0, 6);
+        int picker = Random.Range(0, 7);
         switch (picker)
         {
             case 0: planet.biome = Planet.Biome.Frozen; break;
             case 1: planet.biome = Planet.Biome.Temperate; break;
             case 2: planet.biome = Planet.Biome.SandyDesert; break;
-            case 3: planet.biome = Planet.Biome.Swamp; break;
-            case 4: planet.biome = Planet.Biome.Hell; break;
+            case 3: planet.biome = Planet.Biome.RockyDesert; break;
+            case 4: planet.biome = Planet.Biome.Swamp; break;
+            case 5: planet.biome = Planet.Biome.Hell; break;
             default: planet.biome = Planet.Biome.Spirit; break;
         }
     }

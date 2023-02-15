@@ -6,5 +6,5 @@ using UnityEngine;
 public class FoundationOptions
 {
     public string basicCircularFoundation, basicRectangularFoundation, basicTorusFoundation;
-    public string[] smallCircularFoundations, smallRectangularFoundations, largeCircularFoundations, largeRectangularFoundations;
+    public string[] smallCircularFoundations, smallRectangularFoundations, largeCircularFoundations, largeRectangularFoundations, largeTorusFoundations;
 }

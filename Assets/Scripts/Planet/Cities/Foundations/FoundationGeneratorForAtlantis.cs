@@ -39,14 +39,20 @@ public class FoundationGeneratorForAtlantis
 
         //Create other variables needed for the upcoming for-loop
         float placementRadius = city.radius * 1.075f;
+        float cityCenterRadiusLimit = Random.Range(15.0f, 45.0f);
+        bool allowOuterWalls = (Random.Range(0, 3) != 0);
+        bool allowInnerWalls = allowOuterWalls && (Random.Range(0, 2) == 0);
         float minimumAnnulusRadius = GetMinimumAnnulusRadiusForLargestRing(), currentAnnulusRadius = 0.0f;
         bool shouldMakeGapForThisIteration = false, previousIterationWasGap = false;
         float outerRadiusOfCurrentGap = 0.0f, outerHeightOfCurrentGap = 0.0f;
-        bool alreadyCompletedOneSizableRing = false, onlyCareAboutOneGoodRing = (Random.Range(0, 2) == 0);
+        bool strictlyAlternateWhenPossible = (Random.Range(0, 3) == 0);
+        bool alreadyCompletedOneSizableRing = false, onlyCareAboutOneGoodRing = strictlyAlternateWhenPossible || (Random.Range(0, 2) == 0);
         bool wouldConsiderLargerRings = (Random.Range(0, 2) == 0);
 
-        //Place concentric rings, one ring per iteration, from outside inwards
-        for (int iterationsCompleted = 0; placementRadius > 40; iterationsCompleted++)
+        //Place concentric rings, one ring per iteration, from outside inwards until we get to the city center.
+        //Once at the city center, we are done with this loop and will had what is placed at the center with a separate function, DecideWhatToDoWithCityCenter.
+        int iterationsCompleted = 0;
+        for (; placementRadius > cityCenterRadiusLimit; iterationsCompleted++)
         {
             float radiusForRingAfterThisOne = placementRadius * radiusMultiplierForEachIteration;
 
@@ -56,7 +62,7 @@ public class FoundationGeneratorForAtlantis
                 GenerateGapRing(placementRadius);
 
                 //Decision making for next iteration
-                shouldMakeGapForThisIteration = (Random.Range(0, 2) == 0);
+                shouldMakeGapForThisIteration = (Random.Range(0, 2) == 0) && !strictlyAlternateWhenPossible;
                 previousIterationWasGap = true;
             }
             
@@ -70,14 +76,14 @@ public class FoundationGeneratorForAtlantis
                     currentRingHeight = CalculateNewRingHeight(outerRadiusOfCurrentGap - placementRadius, outerHeightOfCurrentGap, elevationAngleInDegrees);
 
                     //The generate the bridge
-                    GenerateBridgesForGap(outerRadiusOfCurrentGap, placementRadius, outerHeightOfCurrentGap, currentRingHeight);
+                    GenerateBridgesAndLaddersForGap(outerRadiusOfCurrentGap, placementRadius, outerHeightOfCurrentGap, currentRingHeight);
                 }
 
                 //Tally how much real estate we're about to add to the housing market
                 currentAnnulusRadius += (placementRadius - radiusForRingAfterThisOne);
 
                 //If we've assisted homebuyers enough, add some golf courses next time (giant gaping hellpits where all golfers belong)
-                if(RingShouldEndHere(currentAnnulusRadius, minimumAnnulusRadius, alreadyCompletedOneSizableRing, onlyCareAboutOneGoodRing, wouldConsiderLargerRings))
+                if(RingShouldEndHere(currentAnnulusRadius, minimumAnnulusRadius, alreadyCompletedOneSizableRing, onlyCareAboutOneGoodRing, wouldConsiderLargerRings, strictlyAlternateWhenPossible))
                 {
                     if (!alreadyCompletedOneSizableRing)
                         alreadyCompletedOneSizableRing = true;
@@ -88,11 +94,11 @@ public class FoundationGeneratorForAtlantis
                     outerHeightOfCurrentGap = currentRingHeight;
                 }
 
-                bool placeOuterGate = placementRadius > 100 && (iterationsCompleted == 0 || previousIterationWasGap);
-                bool placeInnerGate = placementRadius > 175 && shouldMakeGapForThisIteration;
+                bool placeOuterWalls = allowOuterWalls && placementRadius > 100 && (iterationsCompleted == 0 || previousIterationWasGap);
+                bool placeInnerWalls = allowInnerWalls && placementRadius > 175 && shouldMakeGapForThisIteration;
 
                 //Finally, after much squabling, place the ring
-                GenerateFoundationRing(placementRadius, currentRingHeight, iterationsCompleted % 2 == 1, placeOuterGate, placeInnerGate);
+                GenerateFoundationRing(placementRadius, currentRingHeight, iterationsCompleted % 2 == 1, placeOuterWalls, placeInnerWalls, true);
 
                 //Take notes for next iteration
                 previousIterationWasGap = false;
@@ -105,15 +111,21 @@ public class FoundationGeneratorForAtlantis
         //Either place some foundations at the city center or make it a gap where nothing can spawn...
 
         //First, determine the height for any foundations placed at the center (which will be needed for the next part)
-        currentRingHeight = CalculateNewRingHeight(outerRadiusOfCurrentGap - placementRadius, outerHeightOfCurrentGap, elevationAngleInDegrees);
+        if(previousIterationWasGap)
+            currentRingHeight = CalculateNewRingHeight(outerRadiusOfCurrentGap - placementRadius, outerHeightOfCurrentGap, elevationAngleInDegrees);
 
         //Then commence determining what foundations to place or hole to make in the center
-        bool foundationAtCityCenter = DecideWhatToDoWithCityCenter(placementRadius, currentRingHeight);
+        float outerRadiusOfPotentialGap = previousIterationWasGap ? outerRadiusOfCurrentGap : placementRadius;
+        float outerHeightOfPotentialGap = previousIterationWasGap ? outerHeightOfCurrentGap : currentRingHeight;
+        bool foundationAtCityCenter = DecideWhatToDoWithCityCenter(placementRadius, currentRingHeight, outerRadiusOfPotentialGap, outerHeightOfPotentialGap, iterationsCompleted % 2 == 1);
         if(foundationAtCityCenter && previousIterationWasGap) //Generate bridges between city center and rest of city
-            GenerateBridgesForGap(outerRadiusOfCurrentGap, placementRadius, outerHeightOfCurrentGap, currentRingHeight);
+            GenerateBridgesAndLaddersForGap(outerRadiusOfCurrentGap, placementRadius, outerHeightOfCurrentGap, currentRingHeight);
+
+        //Finally, determine what to do with the bottom level of the city. Create a floor for the pits? Level as rock, sand, etc.?
+        DetermineWhatToDoWithBottomLevel();
     }
 
-    private void GenerateFoundationRing(float ringOuterRadius, float ringHeight, bool slightlyLowerHeight, bool generateOuterWalls, bool generateInnerWalls)
+    private void GenerateFoundationRing(float ringOuterRadius, float ringHeight, bool slightlyLowerHeight, bool generateOuterWalls, bool generateInnerWalls, bool markAsOpen)
     {
         //Foundation position
         Vector3 foundationPosition = Vector3.zero;
@@ -133,11 +145,14 @@ public class FoundationGeneratorForAtlantis
             GenerateWallRing(ringOuterRadius - wallOffset, ringOuterRadius);
 
         //Mark the area inside the walls as open for things like buildings to spawn on them
-        int buildingRadiusInAreas = Mathf.FloorToInt((ringOuterRadius - wallOffset) / city.areaManager.areaSize);
-        city.areaManager.ReserveAreasWithinThisCircle(cityCenterInAreaCoords.x, cityCenterInAreaCoords.y, buildingRadiusInAreas, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+        if(markAsOpen)
+        {
+            int buildingRadiusInAreas = Mathf.FloorToInt((ringOuterRadius - wallOffset) / city.areaManager.areaSize);
+            city.areaManager.ReserveAreasWithinThisCircle(cityCenterInAreaCoords.x, cityCenterInAreaCoords.y, buildingRadiusInAreas, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+        }
 
         //Generate inner walls
-        if(generateInnerWalls)
+        if (generateInnerWalls)
         {
             float ringInnerRadius = ringOuterRadius * radiusMultiplierForEachIteration;
             GenerateWallRing(ringInnerRadius + wallOffset, ringInnerRadius + wallOffset);
@@ -163,6 +178,12 @@ public class FoundationGeneratorForAtlantis
         //Mark the area within this radius as no man's land
         int gapRadiusInAreas = Mathf.CeilToInt(ringOuterRadius / city.areaManager.areaSize);
         city.areaManager.ReserveAreasWithinThisCircle(cityCenterInAreaCoords.x, cityCenterInAreaCoords.y, gapRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, false, AreaManager.AreaReservationType.Open);
+    }
+
+    private void GenerateBridgesAndLaddersForGap(float gapOuterRadius, float gapInnerRadius, float gapOuterHeight, float gapInnerHeight)
+    {
+        GenerateBridgesForGap(gapOuterRadius, gapInnerRadius, gapOuterHeight, gapInnerHeight);
+        GenerateEscapeLadderOnOutsideOfGap(gapOuterRadius, gapOuterHeight);
     }
 
     private void GenerateBridgesForGap(float gapOuterRadius, float gapInnerRadius, float gapOuterHeight, float gapInnerHeight)
@@ -223,28 +244,34 @@ public class FoundationGeneratorForAtlantis
     }
 
     //Returns whether a foundation was spawned at the city center that could need connecting with a bridge. (That would be the caller's concern.)
-    private bool DecideWhatToDoWithCityCenter(float centerRadius, float centerHeight)
+    private bool DecideWhatToDoWithCityCenter(float centerRadius, float centerHeight, float outerRadiusOfPotentialGap, float outerHeightOfPotentialGap, bool slightlyLowerHeight)
     {
         //So small there is no point in doing anything
         if (centerRadius < 1.0f)
             return false;
 
-        if (Random.Range(0, 2) == 0) //Mark as gap
+        if (centerRadius < 30.0f && Random.Range(0, 2) == 0) //Create some hypnotic trippy ass fountain-like shit at the center with the rings
         {
-            GenerateGapRing(centerRadius);
+            GenerateAscendingRingsAtCenter(centerRadius, centerHeight);
             return false;
         }
-        else //Plug it up with circular foundation and allow maybe a special building to spawn in the center
+        else if (Random.Range(0, 2) == 0) //Mark as gap
+        {
+            GenerateGapRing(centerRadius);
+            GenerateEscapeLadderOnOutsideOfGap(outerRadiusOfPotentialGap, outerHeightOfPotentialGap);
+            return false;
+        }
+        else //Plug it up with a circular foundation and maybe allow some buildings to spawn at the center
         {
             GenerateCircularFoundationAtCenter(centerRadius, centerHeight, Random.Range(0, 2) == 0);
             return true;
         }
     }
 
-    private void GenerateCircularFoundationAtCenter(float radius, float height, bool allowThingsToSpawnAtCenter)
+    private void GenerateCircularFoundationAtCenter(float centerRadius, float centerHeight, bool allowThingsToSpawnAtCenter)
     {
         //Convey to area manager whether buildings should be allowed to spawn at the city center (decided by parameter allowThingsToSpawnAtCenter)
-        float radiusInAreasFloat = radius / city.areaManager.areaSize;
+        float radiusInAreasFloat = centerRadius / city.areaManager.areaSize;
         int radiusInAreas = allowThingsToSpawnAtCenter ? Mathf.FloorToInt(radiusInAreasFloat) : Mathf.CeilToInt(radiusInAreasFloat);
         AreaManager.AreaReservationType centerAreaStatus = allowThingsToSpawnAtCenter ? AreaManager.AreaReservationType.Open : AreaManager.AreaReservationType.ReservedForExtraPerimeter;
         city.areaManager.ReserveAreasWithinThisCircle(cityCenterInAreaCoords.x, cityCenterInAreaCoords.y, radiusInAreas, centerAreaStatus, true, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
@@ -252,15 +279,49 @@ public class FoundationGeneratorForAtlantis
         //Let the building generator know this is a good place to put a building if we decided to allow buildings here
         if(allowThingsToSpawnAtCenter)
         {
-            CityBlock centerBlock = new CityBlock(cityCenterInAreaCoords, Vector2Int.one * ((int)(radius / city.areaManager.areaSize)));
+            CityBlock centerBlock = new CityBlock(cityCenterInAreaCoords, Vector2Int.one * ((int)(centerRadius / city.areaManager.areaSize)));
             city.areaManager.availableCityBlocks.Add(centerBlock);
         }
 
         //Place the actual foundation
-        Vector3 localFoundationScale = Vector3.one * (radius * 2.0f);
-        localFoundationScale.y = height * 2.0f;
-        FoundationShape foundationShape = Random.Range(0, 2) == 0 ? FoundationShape.Circular : FoundationShape.Rectangular;
-        foundationManager.GenerateNewFoundation(Vector3.zero, localFoundationScale, foundationShape, false);
+        Vector3 localFoundationScale = Vector3.one * (centerRadius * 2.1f);
+        localFoundationScale.y = centerHeight * 2.0f;
+        foundationManager.GenerateNewFoundation(Vector3.zero, localFoundationScale, FoundationShape.Circular, false);
+    }
+
+    private void GenerateAscendingRingsAtCenter (float centerRadius, float centerHeight)
+    {
+        //Mark the area within this radius as no man's land
+        int gapRadiusInAreas = Mathf.CeilToInt(centerRadius / city.areaManager.areaSize);
+        city.areaManager.ReserveAreasWithinThisCircle(cityCenterInAreaCoords.x, cityCenterInAreaCoords.y, gapRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, false, AreaManager.AreaReservationType.Open);
+
+        //Create some needed variables before we start placing rings
+        float ringRadius = centerRadius, ringHeight = centerHeight;
+        float targetEndRadius = Random.Range(5.0f, 2.5f);
+        bool constantIncrement = (Random.Range(0, 2) == 0);
+        float ringHeightIncrement = Random.Range(150.0f, 300.0f);
+
+        if (constantIncrement)
+            ringHeightIncrement *= Random.Range(0.2f, 0.35f);
+
+        //Generate concentric rings at the city center from outside, in. One ring per iteration
+        for (; ringRadius > targetEndRadius;)
+        {
+            //Determine the ring's height
+            if (constantIncrement)
+                ringHeight += ringHeightIncrement;
+            else
+                ringHeight += ringHeightIncrement / ringRadius;
+
+            //Generate the decorative ring
+            GenerateFoundationRing(ringRadius, ringHeight, false, false, false, false);
+
+            //Move to next ring
+            ringRadius *= radiusMultiplierForEachIteration;
+        }
+
+        //Plug up the remaining center with a tiny circular foundation
+        GenerateCircularFoundationAtCenter(ringRadius, ringHeight, false);
     }
 
     //Returned number is in degrees. 0 degrees means the city is flat with no elevation changes.
@@ -290,13 +351,51 @@ public class FoundationGeneratorForAtlantis
         return city.buildingManager.GetLongestBuildingLength() + (GetBufferSizeForWallsJustBasedOnCity(city.radius) * 2.0f);
     }
 
-    private bool RingShouldEndHere(float currentAnnulusRadius, float minimumAnnulusRadius, bool alreadyCompletedOneSizableRing, bool onlyCareAboutOneGoodRing, bool wouldConsiderLargerRings)
+    private static bool RingShouldEndHere(float currentAnnulusRadius, float minimumAnnulusRadius, bool alreadyCompletedOneSizableRing, bool onlyCareAboutOneGoodRing, bool wouldConsiderLargerRings, bool strictlyAlternateWhenPossible)
     {
         if (alreadyCompletedOneSizableRing && onlyCareAboutOneGoodRing)
-            return (Random.Range(0, 2) == 0);
+            return strictlyAlternateWhenPossible || (Random.Range(0, 2) == 0);
         else if (currentAnnulusRadius >= minimumAnnulusRadius)
-            return !wouldConsiderLargerRings || Random.Range(0, 2) == 0;
+            return strictlyAlternateWhenPossible || !wouldConsiderLargerRings || Random.Range(0, 3) != 0;
         else
             return false;
+    }
+
+    private void GenerateEscapeLadderOnOutsideOfGap(float gapOuterRadius, float localTopHeight)
+    {
+        float globalTop = localTopHeight + city.transform.position.y;
+        float globalBottom = globalTop - localTopHeight;
+
+        Vector3 pointOutsideCityWithGlobalTop = city.transform.position + Vector3.one * city.radius;
+        pointOutsideCityWithGlobalTop.y = globalTop;
+
+        Vector3 cityCenterWithGlobalTop = city.transform.position;
+        cityCenterWithGlobalTop.y = globalTop;
+
+        Vector3 ringEdgePoint = Vector3.MoveTowards(cityCenterWithGlobalTop, pointOutsideCityWithGlobalTop, gapOuterRadius - 2.0f);
+        ringEdgePoint.y = globalTop;
+
+        Vector3 ringFocalPoint = Vector3.MoveTowards(ringEdgePoint, cityCenterWithGlobalTop, -1.0f);
+
+        city.foundationManager.GenerateVerticalScalerBesideFoundationCollider(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, true);
+    }
+
+    private void DetermineWhatToDoWithBottomLevel()
+    {
+        //Determine if there's an ocean and if so, then if its sea level is close to the height level of our city.
+        bool oceanNearCityElevation;
+        if (Planet.planet.hasOcean)
+            oceanNearCityElevation = (Planet.planet.oceanTransform.position.y + 2.0f - city.transform.position.y) > 0.0f;
+        else
+            oceanNearCityElevation = false;
+
+        //Chance to generate a very short and fat foundation at the bottom center of the city. Makes pits have floors.
+        if (oceanNearCityElevation || Random.Range(0, 2) == 0)
+        {
+            Vector3 floorFoundationScale = Vector3.one * city.radius * 1.95f;
+            floorFoundationScale.y = 0.15f;
+
+            foundationManager.GenerateNewFoundation(Vector3.zero, floorFoundationScale, FoundationShape.Circular, false);
+        }
     }
 }

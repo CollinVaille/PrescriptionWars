@@ -7,7 +7,7 @@ public class FoundationManager
     public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Atlantis;
     public int foundationHeight = 0;
     public FoundationSelections foundationSelections;
 
@@ -210,7 +210,7 @@ public class FoundationManager
         verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
     }
 
-    public void GenerateVerticalScalerBesideFoundationCollider(Vector3 foundationCenter, Vector3 closestPointOnFoundation, float globalBottomLevel, float globalTopLevel)
+    public void GenerateVerticalScalerBesideFoundationCollider(Vector3 foundationCenter, Vector3 closestPointOnFoundation, float globalBottomLevel, float globalTopLevel, bool minor)
     {
         //Adjust parameters
         globalBottomLevel += 0.05f;
@@ -218,14 +218,21 @@ public class FoundationManager
         foundationCenter.y = globalBottomLevel;
 
         //Instantiate the vertical scaler
-        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(false), city.transform, this);
+        VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(minor), city.transform, this);
         Transform verticalScalerTransform = verticalScaler.transform;
 
         //Rotate it
-        verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(foundationCenter - closestPointOnFoundation).eulerAngles.y + 90.0f), inLocalSpace: false);
+        if(minor)
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(closestPointOnFoundation - foundationCenter).eulerAngles.y), inLocalSpace: false);
+        else
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(foundationCenter - closestPointOnFoundation).eulerAngles.y + 90.0f), inLocalSpace: false);
 
         //Position
-        Vector3 scalerPosition = Vector3.MoveTowards(closestPointOnFoundation, foundationCenter, -(verticalScaler.width / 2.0f) - 1.0f);
+        Vector3 scalerPosition;
+        if(minor)
+            scalerPosition = closestPointOnFoundation;
+        else
+            scalerPosition = Vector3.MoveTowards(closestPointOnFoundation, foundationCenter, -(verticalScaler.width / 2.0f) - 1.0f);
         verticalScaler.transform.position = scalerPosition;
 
         //Scale it and connect it to the entrance foundation
