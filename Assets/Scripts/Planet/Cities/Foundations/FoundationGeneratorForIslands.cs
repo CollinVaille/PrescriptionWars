@@ -25,6 +25,8 @@ public class FoundationGeneratorForIslands
 
         //Determine some customization we will use later on
         bool allFoundationsAreSameShape = (Random.Range(0, 2) == 0);
+        //float torusChanceForCirculars = Random.Range(0.0f, 1.0f);
+        float torusChanceForCirculars = 1.0f;
         Vector2Int level2WidthRange = Get2ndLevelFoundationWidthRange(city.radius);
 
         //Determine level 1 and level 2 heights (level 1 is at the feet of the island foundations, level 2 is the top of the island foundations)
@@ -63,32 +65,16 @@ public class FoundationGeneratorForIslands
             //If it does, then go ahead with adding the foundation...
 
             //Create some needed variables upfront
-            bool circularFoundation = allFoundationsAreSameShape ? city.circularCity : (Random.Range(0, 2) == 0);
             int squareMetersLong = areasLong * areaManager.areaSize;
-            bool generateWalls = squareMetersLong > 120;
+            bool circleOrTorusFoundation = allFoundationsAreSameShape ? city.circularCity : Random.Range(0, 2) == 0; //False = rectangular, True = circle or torus
+            bool torusFoundation = circleOrTorusFoundation && squareMetersLong > 100 && level2HeightRange.x > 30.0f && torusChanceForCirculars > Random.Range(0.0f, 1.0f); //False = circle, True = torus
+            bool generateWalls = squareMetersLong > 120 && !torusFoundation;
 
             //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
             areaManager.ReserveAreasWithType(outerAreaStart.x, outerAreaStart.y, areasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.LackingRequiredFoundation);
 
-            //Next, create a smaller concentric subpocket where buildings can spawn inside the larger area we just reserved
-            //We'll call the area in between the two radii where the walls spawn the buffer zone
-            int bufferInAreas = 3;
-            if (generateWalls)
-                bufferInAreas *= 2;
-
-            if (circularFoundation)
-            {
-                int innerCircleRadius = (areasLong / 2) - bufferInAreas;
-                areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, innerCircleRadius, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
-            }
-            else
-            {
-                Vector2Int innerAreaStart = new Vector2Int(outerAreaStart.x + bufferInAreas, outerAreaStart.y + bufferInAreas);
-                areaManager.ReserveAreasWithType(innerAreaStart.x, innerAreaStart.y, areasLong - 2 * bufferInAreas, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
-            }
-
             //Remember how much area we just reserved
-            squareMetersClaimedSoFar += AreaManager.CalculateAreaFromDimensions(circularFoundation, squareMetersLong * 0.5f);
+            squareMetersClaimedSoFar += AreaManager.CalculateAreaFromDimensions(circleOrTorusFoundation, squareMetersLong * 0.5f);
 
             //Calculate the parameters needed to place the foundation
             Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(centerInAreas.x, 0.0f, centerInAreas.y));
@@ -97,14 +83,39 @@ public class FoundationGeneratorForIslands
             foundationScale.y = Mathf.Max(20.0f, Random.Range(level2HeightRange.x, level2HeightRange.y));
 
             //Place the foundation and hook it up with bridges
-            FoundationShape foundationShape = circularFoundation ? FoundationShape.Circular : FoundationShape.Rectangular;
+            FoundationShape foundationShape = circleOrTorusFoundation ? (torusFoundation ? FoundationShape.Torus : FoundationShape.Circular) : FoundationShape.Rectangular;
             foundationManager.GenerateNewFoundation(foundationLocalPosition, foundationScale, foundationShape, true);
+
+            //Next, create a smaller concentric subpocket where buildings can spawn inside the larger area we just reserved
+            //We'll call the area in between the two radii where the walls spawn the buffer zone
+            int bufferInAreas = 3;
+            if (generateWalls)
+                bufferInAreas *= 2;
+
+            if (circleOrTorusFoundation)
+            {
+                int innerCircleRadiusInAreas = (areasLong / 2);
+                if (torusFoundation) //The inner circle from the torus is a greater deduction than the buffer ever could be so don't need to worry about buffer for toruses
+                    innerCircleRadiusInAreas = Mathf.FloorToInt(innerCircleRadiusInAreas * FoundationManager.torusAnnulusMultiplier);
+                else
+                    innerCircleRadiusInAreas -= bufferInAreas;
+
+                areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, innerCircleRadiusInAreas, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+
+                if(torusFoundation)
+                    GenerateInsideOfTorusFoundationRecursive(foundationLocalPosition, foundationScale, 2, foundationScale.y, Random.Range(1, 4), centerInAreas);
+            }
+            else
+            {
+                Vector2Int innerAreaStart = new Vector2Int(outerAreaStart.x + bufferInAreas, outerAreaStart.y + bufferInAreas);
+                areaManager.ReserveAreasWithType(innerAreaStart.x, innerAreaStart.y, areasLong - 2 * bufferInAreas, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+            }
 
             //Create walls that line the edges of the foundation
             if (generateWalls)
             {
                 NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
-                newCityWallRequest.circular = circularFoundation;
+                newCityWallRequest.circular = circleOrTorusFoundation;
                 newCityWallRequest.localCenter = foundationLocalPosition;
                 newCityWallRequest.halfLength = (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f;
                 city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
@@ -174,7 +185,7 @@ public class FoundationGeneratorForIslands
         float cityElevation = city.transform.position.y;
         float level1GlobalElevation = level1LocalElevation + cityElevation;
         float level2GlobalElevation = placeInGlobal.y;
-        foundationManager.GenerateVerticalScalerBesideFoundationCollider(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
+        foundationManager.GenerateVerticalScalerWithFocalPoint(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
 
         //Reserve area around the vertical scaler so that no buildings can spawn there
         Vector3 placeInAreas = city.areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(placeInGlobal));
@@ -216,6 +227,56 @@ public class FoundationGeneratorForIslands
 
         //Kowalski, status report!
         return closestPointInGlobal;
+    }
+
+    private void GenerateInsideOfTorusFoundationRecursive(Vector3 foundationLocalPosition, Vector3 encompassingFoundationScale, float iterationCount, float originalYScale, int verticalFillMode, Vector2Int centerInAreas)
+    {
+        //verticalFillMode code: 1 = maintain same 2nd story height, 2 = every iteration TILE another story on, 3 = every iteration MULTIPLY height by 2
+
+        //Compute the new foundation scale
+        Vector3 newFoundationScale = encompassingFoundationScale * FoundationManager.torusAnnulusMultiplier;
+        newFoundationScale.y = verticalFillMode == 3 ? originalYScale * iterationCount : originalYScale;
+
+        //...and radius
+        float newFoundationRadius = newFoundationScale.x * 0.5f;
+        if (newFoundationRadius < 50.0f) //Torus has gotten too small to continue
+        {
+            //DetermineWhatToDoWithTorusCenter();
+            return;
+        }
+
+        //Generate the new torus foundation
+        if(verticalFillMode == 1 || verticalFillMode == 3)
+            foundationManager.GenerateNewFoundation(foundationLocalPosition, newFoundationScale, FoundationShape.Torus, false);
+        else if(verticalFillMode == 2)
+        {
+            Vector3 tiledFoundationPosition = foundationLocalPosition;
+            Vector3 tiledFoundationScale = newFoundationScale;
+            for (int x = 1; x < iterationCount; x++)
+            {
+                foundationManager.GenerateNewFoundation(tiledFoundationPosition, tiledFoundationScale, FoundationShape.Torus, false);
+
+                tiledFoundationPosition.y += newFoundationScale.y * 0.5f;
+                tiledFoundationScale *= 0.999f;
+                tiledFoundationScale.y = newFoundationScale.y;
+            }
+        }
+
+        //Generate any vertical scalers if needed
+        //if (verticalFillMode == 2 || verticalFillMode == 3)
+            //foundationManager.GenerateVerticalScalerByFoundation(foundationLocalPosition, null, newFoundationRadius, );
+
+        //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
+        int outerRadiusInAreas = Mathf.CeilToInt(newFoundationRadius / city.areaManager.areaSize);
+        city.areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, outerRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.Open);
+
+        //Recurse
+        GenerateInsideOfTorusFoundationRecursive(foundationLocalPosition, newFoundationScale, iterationCount + 1, originalYScale, verticalFillMode, centerInAreas);
+    }
+
+    private void DetermineWhatToDoWithTorusCenter(Vector3 foundationLocalPosition, Vector3 encompassingFoundationScale, Vector2Int centerInAreas)
+    {
+
     }
 
     private static bool TooCloseToPreviousXZPositions(Vector3 potentialPosition, List<Vector3> previousScalerPositions, float distanceThreshold)

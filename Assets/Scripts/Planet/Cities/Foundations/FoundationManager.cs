@@ -6,8 +6,12 @@ public class FoundationManager
 {
     public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
 
+    //All torus foundations have their inner radius = this multiplier * their outer radius.
+    //...Inner radius of ring model: 0.3825, outer radius of ring model: 0.5... 0.3825/0.5 = 0.765
+    public const float torusAnnulusMultiplier = 0.765f;
+
     public City city;
-    public FoundationType foundationType = FoundationType.Atlantis;
+    public FoundationType foundationType = FoundationType.Islands;
     public int foundationHeight = 0;
     public FoundationSelections foundationSelections;
 
@@ -210,12 +214,12 @@ public class FoundationManager
         verticalScaler.ScaleToHeightAndConnect(foundationHeight / 2.0f, !generateOnNegativeSide);
     }
 
-    public void GenerateVerticalScalerBesideFoundationCollider(Vector3 foundationCenter, Vector3 closestPointOnFoundation, float globalBottomLevel, float globalTopLevel, bool minor)
+    public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPoint, Vector3 edgePoint, float globalBottomLevel, float globalTopLevel, bool minor)
     {
         //Adjust parameters
         globalBottomLevel += 0.05f;
-        closestPointOnFoundation.y = globalBottomLevel;
-        foundationCenter.y = globalBottomLevel;
+        edgePoint.y = globalBottomLevel;
+        focalPoint.y = globalBottomLevel;
 
         //Instantiate the vertical scaler
         VerticalScaler verticalScaler = VerticalScaler.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(minor), city.transform, this);
@@ -223,21 +227,26 @@ public class FoundationManager
 
         //Rotate it
         if(minor)
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(closestPointOnFoundation - foundationCenter).eulerAngles.y), inLocalSpace: false);
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(edgePoint - focalPoint).eulerAngles.y), inLocalSpace: false);
         else
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(foundationCenter - closestPointOnFoundation).eulerAngles.y + 90.0f), inLocalSpace: false);
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(focalPoint - edgePoint).eulerAngles.y + 90.0f), inLocalSpace: false);
 
         //Position
         Vector3 scalerPosition;
         if(minor)
-            scalerPosition = closestPointOnFoundation;
+            scalerPosition = edgePoint;
         else
-            scalerPosition = Vector3.MoveTowards(closestPointOnFoundation, foundationCenter, -(verticalScaler.width / 2.0f) - 1.0f);
+            scalerPosition = Vector3.MoveTowards(edgePoint, focalPoint, -(verticalScaler.width / 2.0f) - 1.0f);
         verticalScaler.transform.position = scalerPosition;
 
         //Scale it and connect it to the entrance foundation
-        bool platformToLeft = verticalScaler.transform.InverseTransformPoint(foundationCenter).x < 0.0f;
+        bool platformToLeft = verticalScaler.transform.InverseTransformPoint(focalPoint).x < 0.0f;
         verticalScaler.ScaleToHeightAndConnect(globalTopLevel - globalBottomLevel, platformToLeft);
+    }
+
+    public void GenerateVerticalScalerByFoundation(Vector3 foundationPosition, Collider[] foundationColliders, float foundationRadius, float globalBottomLevel, float globalTopLevel)
+    {
+
     }
 
     //This function gives the foundation manager the chance to generate a foundation underneath the building before it is created.
@@ -279,7 +288,7 @@ public class FoundationManager
             BridgeDestination bridgeDestination;
             Vector3 bridgeDestinationPosition = city.transform.TransformPoint(localPosition);
             bridgeDestinationPosition.y += (localScale.y / 2.0f);
-            if (shape == FoundationShape.Circular)
+            if (shape == FoundationShape.Circular || shape == FoundationShape.Torus) //This treats toruses as convex shapes. To connect a torus to a destination inside it, you'll have to manually create the BridgeDestinationPairing
                 bridgeDestination = new BridgeDestination(bridgeDestinationPosition, localScale.x / 2.0f);
             else
             {

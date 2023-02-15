@@ -10,8 +10,6 @@ public class FoundationGeneratorForAtlantis
 
     //Cached computations
     private Vector2Int cityCenterInAreaCoords;
-    private float radiusMultiplierForEachIteration = 0.765f; //Each ring's radius is computed by multiplying this times the previous ring's radius...
-    //...Outer radius of ring model: 0.5, Inner radius of ring model: 0.3825, 0.3825/0.5 = 0.765
 
     //Main access functions---
 
@@ -54,7 +52,7 @@ public class FoundationGeneratorForAtlantis
         int iterationsCompleted = 0;
         for (; placementRadius > cityCenterRadiusLimit; iterationsCompleted++)
         {
-            float radiusForRingAfterThisOne = placementRadius * radiusMultiplierForEachIteration;
+            float radiusForRingAfterThisOne = placementRadius * FoundationManager.torusAnnulusMultiplier;
 
             //Make gap
             if (shouldMakeGapForThisIteration)
@@ -154,7 +152,7 @@ public class FoundationGeneratorForAtlantis
         //Generate inner walls
         if (generateInnerWalls)
         {
-            float ringInnerRadius = ringOuterRadius * radiusMultiplierForEachIteration;
+            float ringInnerRadius = ringOuterRadius * FoundationManager.torusAnnulusMultiplier;
             GenerateWallRing(ringInnerRadius + wallOffset, ringInnerRadius + wallOffset);
         }
     }
@@ -317,7 +315,7 @@ public class FoundationGeneratorForAtlantis
             GenerateFoundationRing(ringRadius, ringHeight, false, false, false, false);
 
             //Move to next ring
-            ringRadius *= radiusMultiplierForEachIteration;
+            ringRadius *= FoundationManager.torusAnnulusMultiplier;
         }
 
         //Plug up the remaining center with a tiny circular foundation
@@ -377,7 +375,8 @@ public class FoundationGeneratorForAtlantis
 
         Vector3 ringFocalPoint = Vector3.MoveTowards(ringEdgePoint, cityCenterWithGlobalTop, -1.0f);
 
-        city.foundationManager.GenerateVerticalScalerBesideFoundationCollider(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, true);
+        bool useMinorVerticalScaler = gapOuterRadius < 150.0f || localTopHeight < 25.0f;
+        city.foundationManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
     }
 
     private void DetermineWhatToDoWithBottomLevel()
