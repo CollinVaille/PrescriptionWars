@@ -198,25 +198,6 @@ public class Bridge : MonoBehaviour
 
         return transform.TransformPoint(corner);
     }
-
-    public static Vector3 GetClosestPointAmongstColliders(Vector3 inRelationTo, Collider[] boundaryColliders)
-    {
-        Vector3 closestPoint = boundaryColliders[0].ClosestPoint(inRelationTo);
-        float shortestDistance = Vector3.Distance(closestPoint, inRelationTo);
-
-        for (int x = 1; x < boundaryColliders.Length; x++)
-        {
-            Vector3 closestPointOnThisCollider = boundaryColliders[x].ClosestPoint(inRelationTo);
-            float shortestDistanceOnThisCollider = Vector3.Distance(closestPointOnThisCollider, inRelationTo);
-            if (shortestDistanceOnThisCollider < shortestDistance)
-            {
-                closestPoint = closestPointOnThisCollider;
-                shortestDistance = shortestDistanceOnThisCollider;
-            }
-        }
-
-        return closestPoint;
-    }
 }
 
 [System.Serializable]

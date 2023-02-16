@@ -351,6 +351,14 @@ public class God : MonoBehaviour
         //DynamicGI.UpdateEnvironment();
     }
 
+    public static float GetDistanceBetween(Vector3 point1, Vector3 point2, bool ignoreY)
+    {
+        if (ignoreY)
+            point1.y = point2.y; //We can do this safely because Vector3's are pass-by-value
+
+        return Vector3.Distance(point1, point2);
+    }
+
     public static void PlaceDebugMarker(Vector3 position, Transform parent = null, float width = 2.5f, float height = 500.0f, string markerName = "Debug Marker")
     {
         Transform debugMarker = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;

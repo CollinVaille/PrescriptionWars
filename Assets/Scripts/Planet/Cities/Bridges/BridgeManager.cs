@@ -325,7 +325,7 @@ public class BridgeManager
 
     private bool IsCornerTooFarAway(Vector3 corner, Collider[] collidersToHit)
     {
-        Vector3 closestPointOnColliders = Bridge.GetClosestPointAmongstColliders(corner, collidersToHit);
+        Vector3 closestPointOnColliders = Foundation.GetClosestPointAmongstColliders(corner, collidersToHit, false);
         closestPointOnColliders.y = corner.y; //We don't want the y-value to factor into the distance. We're only looking for x-z corners
 
         return Vector3.Distance(corner, closestPointOnColliders) > 0.25f;

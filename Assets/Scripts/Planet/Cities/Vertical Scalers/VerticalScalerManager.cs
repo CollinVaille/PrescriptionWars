@@ -82,9 +82,17 @@ public class VerticalScalerManager
         verticalScaler.ScaleToHeightAndConnect(globalTopLevel - globalBottomLevel, platformToLeft);
     }
 
-    public void GenerateVerticalScalerOnRandomEdge(Vector3 foundationGlobalPosition, float globalBottomLevel, float globalTopLevel, Collider[] foundationColliders = null, float foundationRadius = 0.0f)
+    public void GenerateVerticalScalerOnRandomEdgeOfFoundation(Foundation foundation, float globalBottomLevel, float globalTopLevel)
     {
+        //Get a random point outside the city
+        Vector3 randomOutsidePointInGlobal = city.GetRandomGlobalPointOutsideOfCity();
 
+        //Find the closest edge point the foundation has to it
+        Vector3 topEdgePoint = foundation.GetClosestTopBoundaryPoint(randomOutsidePointInGlobal);
+
+        //Place the vertical scaler at that edge point
+        bool useMinorVerticalScaler = (globalTopLevel - globalBottomLevel) < 15.0f;
+        GenerateVerticalScalerWithFocalPoint(foundation.transform.position, topEdgePoint, globalBottomLevel, globalTopLevel, useMinorVerticalScaler);
     }
 }
 

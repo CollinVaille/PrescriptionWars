@@ -144,6 +144,22 @@ public class City : MonoBehaviour, INavZoneUpdater
         return transform.Find("City Limits").GetComponent<NavigationZone>()
             .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), false);
     }
+
+    public Vector3 GetRandomGlobalPointOutsideOfCity()
+    {
+        //Generate a point in local space 1 unit out from the center of the city that is 0-180 degrees spherically interpolated between the front and back
+        Vector3 randomDirection = Vector3.Slerp(Vector3.forward, Vector3.back, Random.Range(0.0f, 1.0f));
+
+        //Make the 0-180 range now 0-360
+        if (Random.Range(0, 2) == 0)
+            randomDirection = -randomDirection;
+
+        //We have our direction, now change it from 1 unit out to cityRadius+ units out and change from local to global space
+        Vector3 randomPointInGlobal = transform.TransformPoint(randomDirection * radius * 100.0f);
+
+        //Make the point high in the air so that closest points on a collider will be the highest point
+        return randomPointInGlobal + Vector3.up * 1000.0f;
+    }
 }
 
 [System.Serializable]

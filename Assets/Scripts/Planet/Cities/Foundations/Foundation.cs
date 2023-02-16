@@ -1,12 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Foundation : MonoBehaviour
 {
-    public FoundationManager foundationManager;
-    public string prefab;
-    public Vector3 localScale;
+    public FoundationShape foundationShape;
+
+    [HideInInspector] public FoundationManager foundationManager;
+    [HideInInspector] public string prefab;
+    [HideInInspector] public Vector3 localScale;
 
     public void GenerateNewOrRestoreFoundation(FoundationManager foundationManager, string prefab, Vector3 localPosition, Vector3 localScale)
     {
@@ -75,6 +76,59 @@ public class Foundation : MonoBehaviour
     private void SetPlanetMaterialForGround(Transform slab, FoundationManager foundationManager)
     {
         PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(foundationManager.groundMaterial.name, slab.Find("Ground Colliders"));
+    }
+
+    //Returns the closest point in global space on the edge of the foundation with a y value equal of that of the top of the foundation.
+    public Vector3 GetClosestTopBoundaryPoint(Vector3 referencePointInGlobal)
+    {
+        //Determine the fixed y value (will always be top of foundation in global space)
+        float topHeight = transform.position.y + localScale.y * 0.5f;
+
+        //Adjust reference point to have fixed y value
+        Vector3 yAdjustedReferencePoint = referencePointInGlobal;
+        yAdjustedReferencePoint.y = topHeight;
+
+        //Get center with fixed y value
+        Vector3 yAdjustedCenter = transform.position;
+        yAdjustedCenter.y = topHeight;
+        Vector3 closestBoundaryPointInGlobal;
+
+        //Finally, determine the closest boundary point...
+
+        //Determine boundary point based on radius and height
+        if(foundationShape == FoundationShape.Circular || foundationShape == FoundationShape.Torus)
+            closestBoundaryPointInGlobal = Vector3.MoveTowards(yAdjustedCenter, yAdjustedReferencePoint, localScale.x * 0.5f);
+
+        //Determine boundary point based on ground colliders and height
+        else
+        {
+            Collider[] groundColliders = transform.Find("Slab").Find("Ground Colliders").GetComponentsInChildren<Collider>();
+            closestBoundaryPointInGlobal = GetClosestPointAmongstColliders(yAdjustedReferencePoint, groundColliders, true);
+        }
+
+        return closestBoundaryPointInGlobal;
+    }
+
+    public static Vector3 GetClosestPointAmongstColliders(Vector3 referencePointInGlobal, Collider[] collidersToCheck, bool forceColliderUpdate)
+    {
+        if(forceColliderUpdate)
+            Physics.SyncTransforms();
+
+        Vector3 closestPointInGlobal = collidersToCheck[0].ClosestPoint(referencePointInGlobal);
+        float shortestDistance = Vector3.Distance(closestPointInGlobal, referencePointInGlobal);
+
+        for (int x = 1; x < collidersToCheck.Length; x++)
+        {
+            Vector3 closestPointOnThisCollider = collidersToCheck[x].ClosestPoint(referencePointInGlobal);
+            float shortestDistanceOnThisCollider = Vector3.Distance(closestPointOnThisCollider, referencePointInGlobal);
+            if (shortestDistanceOnThisCollider < shortestDistance)
+            {
+                closestPointInGlobal = closestPointOnThisCollider;
+                shortestDistance = shortestDistanceOnThisCollider;
+            }
+        }
+
+        return closestPointInGlobal;
     }
 }
 

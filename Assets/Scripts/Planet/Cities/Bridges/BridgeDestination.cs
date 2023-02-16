@@ -27,7 +27,7 @@ public class BridgeDestination
         Vector3 closestPoint;
 
         if (boundaryColliders != null)
-            closestPoint = Bridge.GetClosestPointAmongstColliders(inRelationTo, boundaryColliders);
+            closestPoint = Foundation.GetClosestPointAmongstColliders(inRelationTo, boundaryColliders, false);
         else
             closestPoint = Vector3.MoveTowards(center, inRelationTo, radius);
 

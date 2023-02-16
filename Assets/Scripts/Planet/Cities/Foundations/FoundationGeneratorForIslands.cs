@@ -25,8 +25,8 @@ public class FoundationGeneratorForIslands
 
         //Determine some customization we will use later on
         bool allFoundationsAreSameShape = (Random.Range(0, 2) == 0);
-        //float torusChanceForCirculars = Random.Range(0.0f, 1.0f);
-        float torusChanceForCirculars = 1.0f;
+        float torusChanceForCirculars = Random.Range(0.0f, 1.0f);
+        float chanceForLevel3 = (Random.Range(0, 1) == 0) ? 1.0f : 0.0f;
         Vector2Int level2WidthRange = Get2ndLevelFoundationWidthRange(city.radius);
 
         //Determine level 1 and level 2 heights (level 1 is at the feet of the island foundations, level 2 is the top of the island foundations)
@@ -78,7 +78,7 @@ public class FoundationGeneratorForIslands
 
             //Calculate the parameters needed to place the foundation
             Vector3 foundationLocalPosition = areaManager.AreaCoordToLocalCoord(new Vector3(centerInAreas.x, 0.0f, centerInAreas.y));
-            foundationLocalPosition.y += level1Height / 2.0f;
+            foundationLocalPosition.y += level1Height * 0.5f;
             Vector3 foundationScale = Vector3.one * squareMetersLong;
             foundationScale.y = Mathf.Max(20.0f, Random.Range(level2HeightRange.x, level2HeightRange.y));
 
@@ -111,13 +111,14 @@ public class FoundationGeneratorForIslands
                 areaManager.ReserveAreasWithType(innerAreaStart.x, innerAreaStart.y, areasLong - 2 * bufferInAreas, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
             }
 
-            //Create walls that line the edges of the foundation
-            if (generateWalls)
+            //After that, run a chance that we continue to a third level
+            if (!torusFoundation && chanceForLevel3 > Random.Range(0.0f, 1.0f))
+                GenerateAnotherLevelToFoundation(foundationLocalPosition, foundationScale, foundationShape);
+
+            //Otherwise, create walls that line the edges of the foundation
+            else if (generateWalls)
             {
-                NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
-                newCityWallRequest.circular = circleOrTorusFoundation;
-                newCityWallRequest.localCenter = foundationLocalPosition;
-                newCityWallRequest.halfLength = (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f;
+                NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circleOrTorusFoundation, foundationLocalPosition, (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f);
                 city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
             }
 
@@ -179,13 +180,13 @@ public class FoundationGeneratorForIslands
     private Vector3 GenerateALevel2VerticalScaler(float level1LocalElevation, List<Vector3> previousScalerPositions)
     {
         //Figure out where to put it and what foundation it is up against
-        Vector3 placeInGlobal = FindAPlaceInGlobalToPutA2ndLevelVerticalScaler(out Collider nearestCollider, previousScalerPositions);
+        Vector3 placeInGlobal = FindAPlaceInGlobalToPutA2ndLevelVerticalScaler(out Foundation nearestFoundation, previousScalerPositions);
 
         //Place it
         float cityElevation = city.transform.position.y;
         float level1GlobalElevation = level1LocalElevation + cityElevation;
         float level2GlobalElevation = placeInGlobal.y;
-        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(nearestCollider.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
+        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(nearestFoundation.transform.position, placeInGlobal, level1GlobalElevation, level2GlobalElevation, false);
 
         //Reserve area around the vertical scaler so that no buildings can spawn there
         Vector3 placeInAreas = city.areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(placeInGlobal));
@@ -195,20 +196,20 @@ public class FoundationGeneratorForIslands
         return placeInGlobal;
     }
 
-    private Vector3 FindAPlaceInGlobalToPutA2ndLevelVerticalScaler(out Collider nearestCollider, List<Vector3> previousScalerPositions)
+    private Vector3 FindAPlaceInGlobalToPutA2ndLevelVerticalScaler(out Foundation nearestFoundation, List<Vector3> previousScalerPositions)
     {
         //These are the variables we need to set before we leave this function (these defaults will never be used but are needed to avoid compilation errors)
         Vector3 closestPointInGlobal = Vector3.zero;
-        nearestCollider = null;
+        nearestFoundation = null;
 
         //Keep trying until we are successful or get the fuck-its
         for (int attempt = 1; attempt <= 400; attempt++)
         {
             //Get a random point outside the city
-            Vector3 randomOutsidePointInGlobal = GetRandomGlobalPointOutsideOfCity(city);
+            Vector3 randomOutsidePointInGlobal = city.GetRandomGlobalPointOutsideOfCity();
 
             //Find the nearest foundation collider and point on that collider
-            nearestCollider = GetClosestFoundationColliderAndPoint(foundationManager.foundationGroundColliders, randomOutsidePointInGlobal, out closestPointInGlobal);
+            nearestFoundation = foundationManager.GetClosestFoundationAndPoint(randomOutsidePointInGlobal, out closestPointInGlobal, true);
 
             //Determine if that nearest point will work...
 
@@ -231,7 +232,7 @@ public class FoundationGeneratorForIslands
 
     private void GenerateInsideOfTorusFoundationRecursive(Vector3 foundationLocalPosition, Vector3 encompassingFoundationScale, float iterationCount, float originalYScale, int verticalFillMode, Vector2Int centerInAreas)
     {
-        //verticalFillMode code: 1 = maintain same 2nd story height, 2 = every iteration TILE another story on, 3 = every iteration MULTIPLY height by 2
+        //verticalFillMode code: 1 = maintain same 2nd story height, 2 = every iteration TILE another story on, 3 = every iteration STRETCH the y-scale higher
 
         //Compute the new foundation scale
         Vector3 newFoundationScale = encompassingFoundationScale * FoundationManager.torusAnnulusMultiplier;
@@ -246,25 +247,31 @@ public class FoundationGeneratorForIslands
         }
 
         //Generate the new torus foundation
+        Foundation newFoundation = null;
         if(verticalFillMode == 1 || verticalFillMode == 3)
-            foundationManager.GenerateNewFoundation(foundationLocalPosition, newFoundationScale, FoundationShape.Torus, false);
+            newFoundation = foundationManager.GenerateNewFoundation(foundationLocalPosition, newFoundationScale, FoundationShape.Torus, false);
         else if(verticalFillMode == 2)
         {
             Vector3 tiledFoundationPosition = foundationLocalPosition;
             Vector3 tiledFoundationScale = newFoundationScale;
             for (int x = 1; x <= iterationCount; x++)
             {
-                foundationManager.GenerateNewFoundation(tiledFoundationPosition, tiledFoundationScale, FoundationShape.Torus, false);
+                newFoundation = foundationManager.GenerateNewFoundation(tiledFoundationPosition, tiledFoundationScale, FoundationShape.Torus, false);
 
-                tiledFoundationPosition.y += newFoundationScale.y * 0.5f;
-                tiledFoundationScale *= 0.999f;
+                tiledFoundationPosition.y += originalYScale * 0.5f;
+                tiledFoundationScale *= Random.Range(0.995f, 0.9999f); //Ever so slightly randomize x,z scale the prevent clipping
                 tiledFoundationScale.y = newFoundationScale.y;
             }
         }
 
         //Generate any vertical scalers if needed
-        //if (verticalFillMode == 2 || verticalFillMode == 3)
-            //foundationManager.GenerateVerticalScalerByFoundation(foundationLocalPosition, null, newFoundationRadius, );
+        if (newFoundation != null && (verticalFillMode == 2 || verticalFillMode == 3))
+        {
+            float globalBottomOfEntireStructure = city.transform.position.y + foundationLocalPosition.y;
+            float globalBottomLevel = globalBottomOfEntireStructure + ((originalYScale * 0.5f) * (iterationCount - 1));
+            float globalTopLevel = globalBottomLevel + originalYScale * 0.5f;
+            city.verticalScalerManager.GenerateVerticalScalerOnRandomEdgeOfFoundation(newFoundation, globalBottomLevel, globalTopLevel);
+        }
 
         //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
         int outerRadiusInAreas = Mathf.CeilToInt(newFoundationRadius / city.areaManager.areaSize);
@@ -274,9 +281,45 @@ public class FoundationGeneratorForIslands
         GenerateInsideOfTorusFoundationRecursive(foundationLocalPosition, newFoundationScale, iterationCount + 1, originalYScale, verticalFillMode, centerInAreas);
     }
 
-    private void DetermineWhatToDoWithTorusCenter(Vector3 foundationLocalPosition, Vector3 encompassingFoundationScale, Vector2Int centerInAreas)
+    private void GenerateAnotherLevelToFoundation(Vector3 baseFoundationLocalPosition, Vector3 baseFoundationScale, FoundationShape foundationShape)
     {
+        float bufferSize = Random.Range(20.0f, 25.0f);
 
+        //Compute the new foundation scale
+        Vector3 newFoundationScale = baseFoundationScale;
+        newFoundationScale.x -= bufferSize;
+        newFoundationScale.z -= bufferSize;
+
+        //If the new scale is too small, then abort making another level
+        if (newFoundationScale.x < 75.0f)
+            return;
+
+        //Compute the new foundation position
+        Vector3 newFoundationLocalPosition = baseFoundationLocalPosition;
+        newFoundationLocalPosition.y += newFoundationScale.y * 0.5f;
+
+        //Place the new foundation
+        Foundation newFoundation = foundationManager.GenerateNewFoundation(newFoundationLocalPosition, newFoundationScale, foundationShape, false);
+
+        //Generate a vertical scaler to transit pills from the previous level to the new one
+        float globalBottomLevel = city.transform.position.y + baseFoundationLocalPosition.y + baseFoundationScale.y * 0.5f;
+        float globalTopLevel = globalBottomLevel + newFoundationScale.y * 0.5f;
+        city.verticalScalerManager.GenerateVerticalScalerOnRandomEdgeOfFoundation(newFoundation, globalBottomLevel, globalTopLevel);
+
+        //Reserve the area of the base foundation as being off-limits (so that buildings don't spawn on the edge)
+        int areasLong = Mathf.CeilToInt(newFoundationScale.x / city.areaManager.areaSize);
+        if(foundationShape == FoundationShape.Circular)
+        {
+            Vector3 centerInAreas = city.areaManager.LocalCoordToAreaCoord(newFoundationLocalPosition);
+            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, areasLong / 2, AreaManager.AreaReservationType.ReservedForExtraPerimeter, false, AreaManager.AreaReservationType.Open);
+        }
+        else
+        {
+            Vector3 startCoordInAreas = city.areaManager.LocalCoordToAreaCoord(newFoundationLocalPosition);
+            startCoordInAreas.x -= areasLong / 2;
+            startCoordInAreas.z -= areasLong / 2;
+            city.areaManager.ReserveAreasWithType((int)startCoordInAreas.x, (int)startCoordInAreas.z, areasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.Open);
+        }
     }
 
     private static bool TooCloseToPreviousXZPositions(Vector3 potentialPosition, List<Vector3> previousScalerPositions, float distanceThreshold)
@@ -294,50 +337,6 @@ public class FoundationGeneratorForIslands
         }
 
         return false;
-    }
-
-    private static Vector3 GetRandomGlobalPointOutsideOfCity(City city)
-    {
-        //Generate a point in local space 1 unit out from the center of the city that is 0-180 degrees spherically interpolated between the front and back
-        Vector3 randomDirection = Vector3.Slerp(Vector3.forward, Vector3.back, Random.Range(0.0f, 1.0f));
-
-        //Make the 0-180 range now 0-360
-        if (Random.Range(0, 2) == 0)
-            randomDirection = -randomDirection;
-
-        //We have our direction, now change it from 1 unit out to cityRadius+ units out and change from local to global space
-        Vector3 randomPointInGlobal = city.transform.TransformPoint(randomDirection * city.radius * 100.0f);
-
-        //Make the point high in the air so that closest points on a collider will be the highest point
-        return randomPointInGlobal + Vector3.up * 1000.0f;
-    }
-
-    private static Collider GetClosestFoundationColliderAndPoint(List<Collider> collidersToSearch, Vector3 referencePointInGlobal, out Vector3 closestPointInGlobal)
-    {
-        //This function assumes the parameter, "collidersToSearch", is not empty...
-
-        //Start with the first collider being the closest
-        Collider closestCollider = collidersToSearch[0];
-        closestPointInGlobal = collidersToSearch[0].ClosestPoint(referencePointInGlobal);
-        float smallestDistance = Vector3.Distance(referencePointInGlobal, closestPointInGlobal);
-
-        //Go through the rest of the colliders and see if any of them are closer
-        for(int x = 0; x < collidersToSearch.Count; x++)
-        {
-            Collider currentCollider = collidersToSearch[x];
-            Vector3 currentClosestPoint = currentCollider.ClosestPoint(referencePointInGlobal);
-            float currentDistance = Vector3.Distance(referencePointInGlobal, currentClosestPoint);
-
-            if (currentDistance < smallestDistance)
-            {
-                closestCollider = currentCollider;
-                closestPointInGlobal = currentClosestPoint;
-                smallestDistance = currentDistance;
-            }
-        }
-
-        //Return what we found
-        return closestCollider;
     }
 
     private static int GetNumberOf2ndLevelScalersWeShouldGenerate(float cityRadius)

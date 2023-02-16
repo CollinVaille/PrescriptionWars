@@ -278,6 +278,34 @@ public class FoundationManager
             default: return 1.0f;
         }
     }
+
+    public Foundation GetClosestFoundationAndPoint(Vector3 referencePointInGlobal, out Vector3 closestPointInGlobal, bool ignoreYWhenSearching)
+    {
+        //Start with the first foundation being the closest
+        Foundation closestFoundation = foundations[0];
+        closestPointInGlobal = foundations[0].GetClosestTopBoundaryPoint(referencePointInGlobal);
+        float shortestDistance = God.GetDistanceBetween(closestPointInGlobal, referencePointInGlobal, ignoreYWhenSearching);
+
+        //See if any of the other foundations can give a closer point
+        for(int x = 1; x < foundations.Count; x++)
+        {
+            //Get data for the next foundation
+            Foundation foundation = foundations[x];
+            Vector3 foundationClosestPoint = foundation.GetClosestTopBoundaryPoint(referencePointInGlobal);
+            float foundationShortestDistance = God.GetDistanceBetween(foundationClosestPoint, referencePointInGlobal, ignoreYWhenSearching);
+
+            //If the distance is the best yet, write that shit down
+            if(foundationShortestDistance < shortestDistance)
+            {
+                shortestDistance = foundationShortestDistance;
+                closestPointInGlobal = foundationClosestPoint;
+                closestFoundation = foundation;
+            }
+        }
+
+        //Return what we found
+        return closestFoundation;
+    }
 }
 
 [System.Serializable]
