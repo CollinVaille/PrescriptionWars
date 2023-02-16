@@ -26,7 +26,7 @@ public class FoundationGeneratorForIslands
         //Determine some customization we will use later on
         bool allFoundationsAreSameShape = (Random.Range(0, 2) == 0);
         float torusChanceForCirculars = Random.Range(0.0f, 1.0f);
-        float chanceForLevel3 = (Random.Range(0, 1) == 0) ? 1.0f : 0.0f;
+        float chanceForLevel3 = (Random.Range(0, 2) == 0) ? Random.Range(0.0f, 1.0f) : 0.0f;
         Vector2Int level2WidthRange = Get2ndLevelFoundationWidthRange(city.radius);
 
         //Determine level 1 and level 2 heights (level 1 is at the feet of the island foundations, level 2 is the top of the island foundations)
@@ -102,7 +102,8 @@ public class FoundationGeneratorForIslands
 
                 areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, innerCircleRadiusInAreas, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
 
-                if(torusFoundation)
+                //Toruses get special handling here. Their level 3+ generation is taken care of in the following function regardless of the value of the chanceForLevel3 variable.
+                if (torusFoundation)
                     GenerateInsideOfTorusFoundationRecursive(foundationLocalPosition, foundationScale, 2, foundationScale.y, Random.Range(1, 4), centerInAreas);
             }
             else
@@ -113,7 +114,7 @@ public class FoundationGeneratorForIslands
 
             //After that, run a chance that we continue to a third level
             if (!torusFoundation && chanceForLevel3 > Random.Range(0.0f, 1.0f))
-                GenerateAnotherLevelToFoundation(foundationLocalPosition, foundationScale, foundationShape);
+                Generate3rdLevelFoundation(foundationLocalPosition, foundationScale, foundationShape, generateWalls);
 
             //Otherwise, create walls that line the edges of the foundation
             else if (generateWalls)
@@ -149,8 +150,10 @@ public class FoundationGeneratorForIslands
         float extraDistanceFromCityToEntrance = level1IsElevated ? 0.0f : 10.0f;
         foundationManager.GenerateEntrancesForCardinalDirections(!level1IsElevated, extraDistanceFromCityCenter: extraDistanceFromCityToEntrance);
 
-        //Make it so that buildings can spawn on level 1 as well
-        areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
+        //Optionally, make it so that buildings can spawn on level 1 as well
+        float level2OrHigherPercentage = squareMetersClaimedSoFar / totalSquareMetersForCity;
+        if(level1IsElevated || level2OrHigherPercentage < Random.Range(0.45f, 0.75f))
+            areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
     }
 
     //Helper functions---
@@ -222,7 +225,7 @@ public class FoundationGeneratorForIslands
 
             //Can't be too close to other vertical scalers that have already been placed
             //(for practical purposes and so they don't physically spawn over each other)
-            if (!TooCloseToPreviousXZPositions(closestPointInGlobal, previousScalerPositions, 50.0f))
+            if (!VerticalScalerManager.TooCloseToPreviousXZPositions(closestPointInGlobal, previousScalerPositions, 50.0f))
                 break;
         }
 
@@ -242,7 +245,14 @@ public class FoundationGeneratorForIslands
         float newFoundationRadius = newFoundationScale.x * 0.5f;
         if (newFoundationRadius < 50.0f) //Torus has gotten too small to continue
         {
-            //DetermineWhatToDoWithTorusCenter();
+            //Mark the center as a place buildings can't go (but if we never created any large spire stuff then its fair game to put shit in the middle)
+            if(iterationCount > 2 || Random.Range(0, 2) == 0)
+            {
+                int outerRadiusInAreas = Mathf.CeilToInt(newFoundationRadius / city.areaManager.areaSize);
+                city.areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, outerRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.Open);
+            }
+
+            //Then call it a job done
             return;
         }
 
@@ -274,14 +284,23 @@ public class FoundationGeneratorForIslands
         }
 
         //Tell the area reservation system that we are claiming this chunk to be taken up by this foundation
-        int outerRadiusInAreas = Mathf.CeilToInt(newFoundationRadius / city.areaManager.areaSize);
-        city.areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, outerRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.Open);
+        float outerRadiusInAreasFloat = newFoundationRadius / city.areaManager.areaSize;
+        if (verticalFillMode == 1) //Buildings can actually spawn on the flat fill mode
+        {
+            int outerRadiusInAreas = Mathf.FloorToInt(outerRadiusInAreasFloat);
+            city.areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, outerRadiusInAreas, AreaManager.AreaReservationType.Open, true, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+        }
+        else //Not a good place for buildings when the fill mode is non-flat
+        {
+            int outerRadiusInAreas = Mathf.CeilToInt(outerRadiusInAreasFloat);
+            city.areaManager.ReserveAreasWithinThisCircle(centerInAreas.x, centerInAreas.y, outerRadiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.Open);
+        }
 
         //Recurse
         GenerateInsideOfTorusFoundationRecursive(foundationLocalPosition, newFoundationScale, iterationCount + 1, originalYScale, verticalFillMode, centerInAreas);
     }
 
-    private void GenerateAnotherLevelToFoundation(Vector3 baseFoundationLocalPosition, Vector3 baseFoundationScale, FoundationShape foundationShape)
+    private void Generate3rdLevelFoundation(Vector3 baseFoundationLocalPosition, Vector3 baseFoundationScale, FoundationShape foundationShape, bool generateWalls)
     {
         float bufferSize = Random.Range(20.0f, 25.0f);
 
@@ -304,39 +323,52 @@ public class FoundationGeneratorForIslands
         //Generate a vertical scaler to transit pills from the previous level to the new one
         float globalBottomLevel = city.transform.position.y + baseFoundationLocalPosition.y + baseFoundationScale.y * 0.5f;
         float globalTopLevel = globalBottomLevel + newFoundationScale.y * 0.5f;
-        city.verticalScalerManager.GenerateVerticalScalerOnRandomEdgeOfFoundation(newFoundation, globalBottomLevel, globalTopLevel);
+        city.verticalScalerManager.GenerateVerticalScalersOnRandomEdgeOfFoundation(2, newFoundation, globalBottomLevel, globalTopLevel);
 
         //Reserve the area of the base foundation as being off-limits (so that buildings don't spawn on the edge)
+        //Then, reserve a small area inside that where buildings can spawn
         int areasLong = Mathf.CeilToInt(newFoundationScale.x / city.areaManager.areaSize);
-        if(foundationShape == FoundationShape.Circular)
+        int bufferInAreas = generateWalls ? 6 : 3;
+        if (foundationShape == FoundationShape.Circular) //CIRCULAR WALLS
         {
             Vector3 centerInAreas = city.areaManager.LocalCoordToAreaCoord(newFoundationLocalPosition);
-            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, areasLong / 2, AreaManager.AreaReservationType.ReservedForExtraPerimeter, false, AreaManager.AreaReservationType.Open);
+            int outerRadiusInAreas = areasLong / 2;
+            int innerRadiusInAreas = outerRadiusInAreas - bufferInAreas;
+
+            //Outer area
+            city.areaManager.ReserveAreasWithinThisCircle(Mathf.RoundToInt(centerInAreas.x), Mathf.RoundToInt(centerInAreas.z), outerRadiusInAreas,
+                AreaManager.AreaReservationType.ReservedForExtraPerimeter, false, AreaManager.AreaReservationType.Open);
+            
+            //Inner area
+            city.areaManager.ReserveAreasWithinThisCircle(Mathf.RoundToInt(centerInAreas.x), Mathf.RoundToInt(centerInAreas.z), innerRadiusInAreas,
+                AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
         }
-        else
+        else //RECTANGULAR WALLS
         {
+            //Outer area
             Vector3 startCoordInAreas = city.areaManager.LocalCoordToAreaCoord(newFoundationLocalPosition);
             startCoordInAreas.x -= areasLong / 2;
             startCoordInAreas.z -= areasLong / 2;
-            city.areaManager.ReserveAreasWithType((int)startCoordInAreas.x, (int)startCoordInAreas.z, areasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.Open);
-        }
-    }
+            city.areaManager.ReserveAreasWithType(Mathf.RoundToInt(startCoordInAreas.x), Mathf.RoundToInt(startCoordInAreas.z), areasLong,
+                AreaManager.AreaReservationType.ReservedForExtraPerimeter, AreaManager.AreaReservationType.Open);
 
-    private static bool TooCloseToPreviousXZPositions(Vector3 potentialPosition, List<Vector3> previousScalerPositions, float distanceThreshold)
-    {
-        //See if any of the positions in the list are too close to the potential position
-        foreach(Vector3 previousPosition in previousScalerPositions)
+            //Inner area
+            int innerAreasLong = areasLong - bufferInAreas * 2;
+            startCoordInAreas = city.areaManager.LocalCoordToAreaCoord(newFoundationLocalPosition);
+            startCoordInAreas.x -= innerAreasLong / 2;
+            startCoordInAreas.z -= innerAreasLong / 2;
+            city.areaManager.ReserveAreasWithType(Mathf.RoundToInt(startCoordInAreas.x), Mathf.RoundToInt(startCoordInAreas.z), innerAreasLong,
+                AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+        }
+
+        //Create walls that line the edges of the new foundation
+        if (generateWalls)
         {
-            //Make y-values the same because we don't want to compare y-values
-            Vector3 previousXZPosition = previousPosition;
-            previousXZPosition.y = potentialPosition.y;
-
-            //Too close?
-            if (Vector3.Distance(potentialPosition, previousXZPosition) < distanceThreshold)
-                return true;
+            float wallsHalfLength = (newFoundationScale.x - (bufferInAreas * city.areaManager.areaSize)) * 0.5f;
+            bool circularWalls = foundationShape == FoundationShape.Circular;
+            NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circularWalls, newFoundationLocalPosition, wallsHalfLength);
+            city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
         }
-
-        return false;
     }
 
     private static int GetNumberOf2ndLevelScalersWeShouldGenerate(float cityRadius)

@@ -82,10 +82,26 @@ public class VerticalScalerManager
         verticalScaler.ScaleToHeightAndConnect(globalTopLevel - globalBottomLevel, platformToLeft);
     }
 
-    public void GenerateVerticalScalerOnRandomEdgeOfFoundation(Foundation foundation, float globalBottomLevel, float globalTopLevel)
+    public void GenerateVerticalScalersOnRandomEdgeOfFoundation(int howMany, Foundation foundation, float globalBottomLevel, float globalTopLevel)
     {
-        //Get a random point outside the city
+        List<Vector3> previousPlacesInGlobal = new List<Vector3>();
+        for (int x = 0; x < howMany; x++)
+            GenerateVerticalScalerOnRandomEdgeOfFoundation(foundation, globalBottomLevel, globalTopLevel, previousPlacesInGlobal);
+    }
+
+    public void GenerateVerticalScalerOnRandomEdgeOfFoundation(Foundation foundation, float globalBottomLevel, float globalTopLevel, List<Vector3> avoidThesePlacesInGlobal = null)
+    {
+        //Get a random point outside the city. Make an effort (but no guarantee) for the point to not be close to certain locations if specified.
         Vector3 randomOutsidePointInGlobal = city.GetRandomGlobalPointOutsideOfCity();
+        if(avoidThesePlacesInGlobal != null)
+        {
+            float distanceThreshold = 200.0f;
+            for (int attempt = 1; TooCloseToPreviousXZPositions(randomOutsidePointInGlobal, avoidThesePlacesInGlobal, distanceThreshold - attempt) && attempt <= 200; attempt++)
+                randomOutsidePointInGlobal = city.GetRandomGlobalPointOutsideOfCity();
+
+            //Now that we have committed to placing a vertical scaler at this point, let's agree not to try this location again later
+            avoidThesePlacesInGlobal.Add(randomOutsidePointInGlobal);
+        }
 
         //Find the closest edge point the foundation has to it
         Vector3 topEdgePoint = foundation.GetClosestTopBoundaryPoint(randomOutsidePointInGlobal);
@@ -93,6 +109,23 @@ public class VerticalScalerManager
         //Place the vertical scaler at that edge point
         bool useMinorVerticalScaler = (globalTopLevel - globalBottomLevel) < 15.0f;
         GenerateVerticalScalerWithFocalPoint(foundation.transform.position, topEdgePoint, globalBottomLevel, globalTopLevel, useMinorVerticalScaler);
+    }
+
+    public static bool TooCloseToPreviousXZPositions(Vector3 potentialPosition, List<Vector3> previousScalerPositions, float distanceThreshold)
+    {
+        //See if any of the positions in the list are too close to the potential position
+        foreach (Vector3 previousPosition in previousScalerPositions)
+        {
+            //Make y-values the same because we don't want to compare y-values
+            Vector3 previousXZPosition = previousPosition;
+            previousXZPosition.y = potentialPosition.y;
+
+            //Too close?
+            if (Vector3.Distance(potentialPosition, previousXZPosition) < distanceThreshold)
+                return true;
+        }
+
+        return false;
     }
 }
 
