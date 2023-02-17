@@ -131,9 +131,18 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static Transform capitalSymbolsParent { get => galaxyManager == null ? null : galaxyManager._capitalSymbolsParent; }
 
     /// <summary>
+    /// Private holder variable for the popup that serves as the galaxy view's pause menu.
+    /// </summary>
+    private NewGalaxyPauseMenu _pauseMenu = null;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain a reference to the galaxy view's popup pause menu.
+    /// </summary>
+    public static NewGalaxyPauseMenu pauseMenu { get => galaxyManager == null ? null : galaxyManager._pauseMenu; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -165,6 +174,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager.starLabelsParentVar = parents[1];
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all capital symbols within the galaxy.
         galaxyManager._capitalSymbolsParent = parents[2];
+
+        //Sets the value of the variable that contains a reference to the popup that serves as the pause menu of the galaxy view.
+        galaxyManager._pauseMenu = pauseMenu;
     }
 
     protected override void Awake()
@@ -182,6 +194,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     protected override void Update()
     {
         base.Update();
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
+            pauseMenu.Open();
     }
 
     /// <summary>

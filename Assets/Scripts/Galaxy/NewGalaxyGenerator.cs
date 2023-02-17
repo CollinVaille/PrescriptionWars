@@ -37,6 +37,10 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The prefab that all planets in every solar system in the galaxy will be instantiated from.")] private GameObject planetPrefab = null;
     [SerializeField, Tooltip("The prefab that all hyperspace lanes connecting solar systems within the galaxy will be instantiated from.")] private GameObject hyperspaceLanePrefab = null;
 
+    [Header("Menus")]
+
+    [SerializeField, Tooltip("The pause menu that the player can interact with to perform a variety of actions such as either resuming or saving and exiting the game.")] private NewGalaxyPauseMenu pauseMenu = null;
+
     //Non-inspector variables.
 
     /// <summary>
@@ -130,7 +134,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent });
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent }, pauseMenu);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();

@@ -127,7 +127,23 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     private static List<NewGalaxyPopupBehaviour> popups = null;
 
     /// <summary>
-    /// Private static property that should be accessed in order to determine if any popup that exists is being dragged, which may be useful information for a camera object such as the main galaxy camera.
+    /// Public static property that should be accessed in order to determine if any popup that exists is currently open and activated.
+    /// </summary>
+    public static bool isAPopupOpen
+    {
+        get
+        {
+            if (popups == null)
+                return false;
+            foreach (NewGalaxyPopupBehaviour popup in popups)
+                if (popup.open)
+                    return true;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Public static property that should be accessed in order to determine if any popup that exists is being dragged, which may be useful information for a camera object such as the main galaxy camera.
     /// </summary>
     public static bool isAPopupBeingDragged
     {
@@ -141,6 +157,16 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
             return false;
         }
     }
+
+    /// <summary>
+    /// Private static property that holds the game time when the previous popup was closed (initialized to 0).
+    /// </summary>
+    private static float previousPopupCloseTime { get; set; } = 0;
+
+    /// <summary>
+    /// Public static property that should be accessed in order to determine if a popup has been closed on the current frame.
+    /// </summary>
+    public static bool popupClosedOnFrame { get => Mathf.Approximately(previousPopupCloseTime, Time.time); }
 
     protected virtual void Awake()
     {
@@ -169,7 +195,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         else if (closing)
             ClosingAnimationUpdate();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup)
+        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup && !popupClosedOnFrame)
             Close();
     }
 
@@ -316,6 +342,9 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     /// </summary>
     protected virtual void EndClosingAnimation()
     {
+        //Logs the time at the beginning of the frame as the time when this popup was closed.
+        previousPopupCloseTime = Time.time;
+
         //Destroys the popup's entire game object if the destroy on close option is enabled/true.
         if (destroyOnClose)
         {
