@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class FoundationManager
 {
-    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis }
+    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis, Hammocks }
 
     //All torus foundations have their inner radius = this multiplier * their outer radius.
     //...Inner radius of ring model = 0.3825, outer radius of ring model = 0.5... 0.3825/0.5 = 0.765
     public const float torusAnnulusMultiplier = 0.765f;
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Hammocks;
     public int foundationHeight = 0;
     public FoundationSelections foundationSelections;
 
@@ -48,7 +48,7 @@ public class FoundationManager
         }
 
         //Either finalize decision to skip foundations...
-        if (foundationHeight < 0)
+        if (foundationHeight <= 0)
             foundationType = FoundationType.NoFoundations;
 
         //Or, commence with choosing a foundation...
@@ -66,6 +66,8 @@ public class FoundationManager
         //Enforce required conditions for certain foundation types
         if (foundationType == FoundationType.Atlantis)
             city.circularCity = true;
+        else if (foundationType == FoundationType.Hammocks)
+            city.circularCity = false;
     }
 
     //The idea here is that certain foundation types create wasted space in the city that cannot be used for buildings.
@@ -101,14 +103,14 @@ public class FoundationManager
 
     private void ProceedWithCreatingFoundationBasedOnType()
     {
-        if (foundationType == FoundationType.SingularSlab)
-            GenerateNewSingleSlabFoundation();
-        else if (foundationType == FoundationType.PerBuilding)
-            GenerateNewPerBuildingFoundations();
-        else if (foundationType == FoundationType.Islands)
-            GenerateNewIslandFoundations();
-        else if (foundationType == FoundationType.Atlantis)
-            GenerateNewAtlantisFoundations();
+        switch(foundationType)
+        {
+            case FoundationType.PerBuilding: GenerateNewPerBuildingFoundations(); return;
+            case FoundationType.Islands: GenerateNewIslandFoundations(); return;
+            case FoundationType.Atlantis: GenerateNewAtlantisFoundations(); return;
+            case FoundationType.Hammocks: GenerateNewHammockFoundations(); return;
+            default: GenerateNewSingleSlabFoundation(); return;
+        }
     }
 
     //Foundation type-specific generation logic---
@@ -152,6 +154,12 @@ public class FoundationManager
     {
         FoundationGeneratorForAtlantis generator = new FoundationGeneratorForAtlantis(this);
         generator.GenerateNewAtlantisFoundations();
+    }
+
+    private void GenerateNewHammockFoundations()
+    {
+        FoundationGeneratorForHammocks generator = new FoundationGeneratorForHammocks(this);
+        generator.GenerateNewHammockFoundations();
     }
 
     //Helper methods---
@@ -256,13 +264,14 @@ public class FoundationManager
 
     private static FoundationType GetRandomNonNullFoundationType()
     {
-        int selection = Random.Range(0, 4);
+        int selection = Random.Range(0, 5);
         switch(selection)
         {
-            case 0: return FoundationType.SingularSlab;
-            case 1: return FoundationType.PerBuilding;
-            case 2: return FoundationType.Islands;
-            default: return FoundationType.Atlantis;
+            case 0: return FoundationType.PerBuilding;
+            case 1: return FoundationType.Islands;
+            case 2: return FoundationType.Atlantis;
+            case 3: return FoundationType.Hammocks;
+            default: return FoundationType.SingularSlab;
         }
     }
 
@@ -275,6 +284,7 @@ public class FoundationManager
             case FoundationType.PerBuilding: return 0.65f;
             case FoundationType.Islands: return 0.8f;
             case FoundationType.Atlantis: return 0.55f;
+            case FoundationType.Hammocks: return 0.5f;
             default: return 1.0f;
         }
     }

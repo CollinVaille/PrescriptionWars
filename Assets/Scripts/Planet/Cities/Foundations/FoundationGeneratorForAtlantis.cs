@@ -123,6 +123,8 @@ public class FoundationGeneratorForAtlantis
         DetermineWhatToDoWithBottomLevel();
     }
 
+    //Helper functions---
+
     private void GenerateFoundationRing(float ringOuterRadius, float ringHeight, bool slightlyLowerHeight, bool generateOuterWalls, bool generateInnerWalls, bool markAsOpen)
     {
         //Foundation position

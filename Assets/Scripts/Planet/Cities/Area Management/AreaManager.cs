@@ -293,9 +293,18 @@ public class AreaManager
     {
         for (int x = startX; x < startX + areasLong; x++)
         {
+            //X boundaries
+            if (x < 0 || x >= areaTaken.GetLength(0))
+                continue;
+
             for (int z = startZ; z < startZ + areasLong; z++)
             {
-                if(overrideRegardlessOfType || areaTaken[x, z] == oldType)
+                //Z boundaries
+                if (z < 0 || z >= areaTaken.GetLength(1))
+                    continue;
+
+                //Reserve the area if conditions match
+                if (overrideRegardlessOfType || areaTaken[x, z] == oldType)
                     areaTaken[x, z] = newType;
             }
         }
