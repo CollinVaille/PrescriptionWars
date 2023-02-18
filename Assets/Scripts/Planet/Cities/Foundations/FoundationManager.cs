@@ -284,7 +284,7 @@ public class FoundationManager
             case FoundationType.PerBuilding: return 0.65f;
             case FoundationType.Islands: return 0.8f;
             case FoundationType.Atlantis: return 0.55f;
-            case FoundationType.Hammocks: return 0.5f;
+            case FoundationType.Hammocks: return 0.35f;
             default: return 1.0f;
         }
     }

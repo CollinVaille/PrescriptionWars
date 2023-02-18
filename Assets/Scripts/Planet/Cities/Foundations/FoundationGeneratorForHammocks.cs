@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ public class FoundationGeneratorForHammocks
     //Status variables used across multiple functions
     private int minimumWidthForWidestHammock = 0;
     private bool metMinimumWidthRequirement = false;
-    private float grounderToucherBonusHeight = 50.0f;
+    private float grounderToucherBonusElevation = Random.Range(20.0f, 50.0f);
 
     //Main access functions---
 
@@ -153,7 +152,7 @@ public class FoundationGeneratorForHammocks
         float xScale = hammockPlan.hammockWidth;
         float yScale;
         if (groundToucher)
-            yScale = (hammockPlan.localTopElevation * 2.0f) + grounderToucherBonusHeight;
+            yScale = (hammockPlan.localTopElevation * 2.0f) + (grounderToucherBonusElevation * 2.0f);
         else
             yScale = Random.Range(31.0f, 45.0f);
         hammockFoundationPlan.scale = new Vector3(xScale, yScale, xScale);
@@ -218,8 +217,13 @@ public class FoundationGeneratorForHammocks
 
     private void GenerateHammocks(List<HammockPlan> hammockPlans)
     {
-        for (int x = 0; x < hammockPlans.Count; x++)
-            GenerateHammock(hammockPlans[x]);
+        for (int hammocksGenerated = 0; hammocksGenerated < hammockPlans.Count; hammocksGenerated++)
+        {
+            GenerateHammock(hammockPlans[hammocksGenerated]);
+
+            if (hammocksGenerated > 0)
+                ConnectHammocks(hammockPlans[hammocksGenerated - 1], hammockPlans[hammocksGenerated]);
+        }
     }
 
     private void GenerateHammock(HammockPlan hammockPlan)
@@ -244,22 +248,113 @@ public class FoundationGeneratorForHammocks
         //At this point we have what we need, so generate the foundation
         Foundation foundation = foundationManager.GenerateNewFoundation(hammockFoundationLocalPosition, hammockFoundationPlan.scale, hammockFoundationPlan.shape, false);
 
-        //Tell the area system that buildings can spawn on the foundations
-        int bufferInAreas = 2;
-        int areasLong = Mathf.FloorToInt(hammockFoundationPlan.scale.x / city.areaManager.areaSize) - bufferInAreas;
-        Vector3 foundationCenterInAreas = city.areaManager.LocalCoordToAreaCoord(foundation.transform.localPosition);
-        if (hammockFoundationPlan.shape == FoundationShape.Rectangular) //Rectangular area
+        //If applicable, tell the area system that buildings can spawn on the foundations
+        if (!hammockFoundationPlan.groundToucher || grounderToucherBonusElevation < 0.1f)
         {
-            int xStart = Mathf.CeilToInt(foundationCenterInAreas.x - areasLong / 2);
-            int zStart = Mathf.CeilToInt(foundationCenterInAreas.z - areasLong / 2);
-            city.areaManager.ReserveAreasWithType(xStart, zStart, areasLong, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
+            int bufferInAreas = 2;
+            int areasLong = Mathf.FloorToInt(hammockFoundationPlan.scale.x / city.areaManager.areaSize) - bufferInAreas;
+            Vector3 foundationCenterInAreas = city.areaManager.LocalCoordToAreaCoord(foundation.transform.localPosition);
+            if (hammockFoundationPlan.shape == FoundationShape.Rectangular) //Rectangular area
+            {
+                int xStart = Mathf.CeilToInt(foundationCenterInAreas.x - areasLong / 2);
+                int zStart = Mathf.CeilToInt(foundationCenterInAreas.z - areasLong / 2);
+                city.areaManager.ReserveAreasWithType(xStart, zStart, areasLong, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
+            }
+            else //Circular area
+            {
+                int centerX = Mathf.CeilToInt(foundationCenterInAreas.x);
+                int centerZ = Mathf.CeilToInt(foundationCenterInAreas.z);
+                city.areaManager.ReserveAreasWithinThisCircle(centerX, centerZ, areasLong / 2, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.LackingRequiredFoundation);
+            }
         }
-        else //Circular area
+
+        //Otherwise, this is a ground toucher that we need to turn into a spire (the spires cannot host buildings)
+        else
+            GenerateAscendingSpire(hammockFoundationLocalPosition, hammockFoundationPlan.scale, hammockFoundationPlan.shape, true);
+    }
+
+    private void GenerateAscendingSpire(Vector3 baseLocalPosition, Vector3 baseScale, FoundationShape baseShape, bool firstIteration)
+    {
+        //Determine new scale
+        Vector3 newScale = baseScale * FoundationManager.torusAnnulusMultiplier;
+        if (firstIteration)
+            newScale.y = newScale.x * 2.0f;
+
+        //If the spire has gotten too small, then stop generation
+        if (newScale.x < 25.0f)
+            return;
+
+        //Determine new position
+        Vector3 newLocalPosition = baseLocalPosition;
+        newLocalPosition.y += baseScale.y * 0.5f;
+
+        //At this point we have everything that we need, so generate spire foundation
+        foundationManager.GenerateNewFoundation(newLocalPosition, newScale, baseShape, false);
+
+        //Then, recurse
+        GenerateAscendingSpire(newLocalPosition, newScale, baseShape, false);
+    }
+
+    private void ConnectHammocks(HammockPlan leftHammock, HammockPlan rightHammock)
+    {
+        //Gather information about the hammock lengths
+        float leftHammockZHalfLength = leftHammock.GetZScaleForHammock() * 0.5f;
+        float rightHammockZHalfLength = rightHammock.GetZScaleForHammock() * 0.5f;
+        float shorterHalfLength = Mathf.Min(leftHammockZHalfLength, rightHammockZHalfLength);
+
+        //Loop for creating bridges, one bridge per iteration. From back (-z) to front (+z)
+        for (float localZPosition = (-shorterHalfLength) + Random.Range(5.0f, 15.0f); localZPosition < shorterHalfLength;)
         {
-            int centerX = Mathf.CeilToInt(foundationCenterInAreas.x);
-            int centerZ = Mathf.CeilToInt(foundationCenterInAreas.z);
-            city.areaManager.ReserveAreasWithinThisCircle(centerX, centerZ, areasLong / 2, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.LackingRequiredFoundation);
+            //Get the closest foundations on the left and right
+            HammockFoundationPlan leftFoundation = leftHammock.GetClosestFoundationToLocalZPosition(localZPosition, out float leftZDistance);
+            HammockFoundationPlan rightFoundation = rightHammock.GetClosestFoundationToLocalZPosition(localZPosition, out float rightZDistance);
+
+            //If we couldn't find any foundations, then something is wrong so abort making bridges
+            if (leftFoundation == null || rightFoundation == null)
+                break;
+
+            //From the foundations, determine the leftside and rightside points to connect with a bridge
+            Vector3 leftBridgePoint = GetBridgePoint(leftHammock, leftFoundation, localZPosition, leftZDistance, false);
+            Vector3 rightBridgePoint = GetBridgePoint(rightHammock, rightFoundation, localZPosition, rightZDistance, true);
+
+            //Tell the bridge manager to connect these two points with a bridge
+            BridgeDestination leftDestination = new BridgeDestination(city.transform.TransformPoint(leftBridgePoint), 0.1f);
+            BridgeDestination rightDestination = new BridgeDestination(city.transform.TransformPoint(rightBridgePoint), 0.1f);
+            city.bridgeManager.AddNewDestinationPairing(new BridgeDestinationPairing(leftDestination, rightDestination));
+
+            //We're done with this bridge, now move further forwards (+z) to the next possible bridge location...
+            localZPosition = Mathf.Max(localZPosition, leftBridgePoint.z, rightBridgePoint.z); //Make sure we at least go to where the current bridge is
+            localZPosition += Mathf.Max(leftFoundation.scale.z, rightFoundation.scale.z); //Then some beyond it
         }
+    }
+
+    private Vector3 GetBridgePoint(HammockPlan hammockPlan, HammockFoundationPlan hammockFoundationPlan, float suggestedZPoint, float zDistanceFromPointToFoundation, bool onLeft)
+    {
+        Vector3 bridgePointInLocal = Vector3.zero;
+
+        //Set x
+        float foundationHalfWidth = hammockFoundationPlan.scale.x * 0.5f;
+        bridgePointInLocal.x = hammockPlan.localXPosition + (onLeft ? -foundationHalfWidth : foundationHalfWidth);
+
+        //Set y
+        bridgePointInLocal.y = GetTopElevationForFoundation(hammockPlan, hammockFoundationPlan);
+
+        //Set z
+        if (zDistanceFromPointToFoundation < 0.1f && hammockFoundationPlan.shape == FoundationShape.Rectangular)
+            bridgePointInLocal.z = suggestedZPoint;
+        else
+            bridgePointInLocal.z = hammockFoundationPlan.localZPosition;
+
+        //We done
+        return bridgePointInLocal;
+    }
+
+    private float GetTopElevationForFoundation(HammockPlan hammockPlan, HammockFoundationPlan hammockFoundationPlan)
+    {
+        if (hammockFoundationPlan.groundToucher && grounderToucherBonusElevation > 0.1f)
+            return hammockPlan.localTopElevation + grounderToucherBonusElevation;
+        else
+            return hammockPlan.localTopElevation;
     }
 }
 
@@ -277,6 +372,30 @@ public class HammockPlan
 
         HammockFoundationPlan leftmostFoundationPlan = foundationsPlans[0];
         return -leftmostFoundationPlan.localZPosition * 2.0f;
+    }
+
+    public HammockFoundationPlan GetClosestFoundationToLocalZPosition(float localZPositionToSearch, out float zDistanceToClosestFoundation)
+    {
+        zDistanceToClosestFoundation = Mathf.Infinity;
+
+        if (foundationsPlans != null && foundationsPlans.Count > 0)
+        {
+            HammockFoundationPlan closestFoundation = null;
+            foreach(HammockFoundationPlan foundationUnderInspection in foundationsPlans)
+            {
+                float zDistanceToFoundation = foundationUnderInspection.DistanceToContainingLocalZPosition(localZPositionToSearch);
+
+                if(zDistanceToFoundation < zDistanceToClosestFoundation)
+                {
+                    zDistanceToClosestFoundation = zDistanceToFoundation;
+                    closestFoundation = foundationUnderInspection;
+                }
+            }
+
+            return closestFoundation;
+        }
+
+        return null;
     }
 }
 
@@ -297,5 +416,21 @@ public class HammockFoundationPlan
         localZPosition = other.localZPosition;
         shape = other.shape;
         groundToucher = other.groundToucher;
+    }
+
+    //If the provided z position is contained within the foundation, returns 0.
+    //Else, it returns the shortest distance from the point to the foundation's boundaries.
+    public float DistanceToContainingLocalZPosition(float localZPositionToSearch)
+    {
+        float zHalfLength = scale.z * 0.5f;
+        float negativeZExtent = localZPosition - zHalfLength;
+        float positiveZExtent = localZPosition + zHalfLength;
+
+        if (negativeZExtent <= localZPositionToSearch && positiveZExtent >= localZPositionToSearch)
+            return 0.0f;
+        else if (localZPositionToSearch < negativeZExtent)
+            return negativeZExtent - localZPositionToSearch;
+        else
+            return localZPositionToSearch - positiveZExtent;
     }
 }
