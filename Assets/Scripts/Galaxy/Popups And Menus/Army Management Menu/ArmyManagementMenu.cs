@@ -531,9 +531,10 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         //Plays the sound effect for pressing a button in the unit inspector.
         AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
 
-        StartCoroutine(ConfirmRenamingActionCoroutine());
+        //StartCoroutine(ConfirmRenamingActionCoroutine());
     }
 
+    /*
     /// <summary>
     /// This method should be called on the click of the rename button in the unit inspector and confirms that the player wants to rename the selected ground unit.
     /// </summary>
@@ -585,6 +586,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
             confirmationPopupScript.DestroyConfirmationPopup();
         }
     }
+    */
 
     /// <summary>
     /// This method should be called in order to rename the selected ground unit and update the selected unit list button's text.

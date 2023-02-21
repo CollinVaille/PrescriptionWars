@@ -140,6 +140,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static NewGalaxyPauseMenu pauseMenu { get => galaxyManager == null ? null : galaxyManager._pauseMenu; }
 
     /// <summary>
+    /// Private holder variable for the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
+    /// </summary>
+    private Transform _confirmationPopupsParent = null;
+    /// <summary>
+    /// Public static property that should be used in order to access the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
+    /// </summary>
+    public static Transform confirmationPopupsParent { get => galaxyManager == null ? null : galaxyManager._confirmationPopupsParent; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
     public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu)
@@ -174,6 +183,8 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager.starLabelsParentVar = parents[1];
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all capital symbols within the galaxy.
         galaxyManager._capitalSymbolsParent = parents[2];
+        //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
+        galaxyManager._confirmationPopupsParent = parents[3];
 
         //Sets the value of the variable that contains a reference to the popup that serves as the pause menu of the galaxy view.
         galaxyManager._pauseMenu = pauseMenu;

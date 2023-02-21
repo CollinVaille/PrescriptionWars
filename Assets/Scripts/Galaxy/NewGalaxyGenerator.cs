@@ -29,6 +29,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the star labels in the galaxy. Specified through the inspector.")] private Transform starLabelsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the hyperspace lanes within the galaxy. Specified through the inspector.")] private Transform hyperspaceLanesParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the capital symbols in the galaxy. Specified through the inspector.")] private Transform capitalSymbolsParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the confirmation popups within the galaxy scene. Specified through the inspector.")] private Transform confirmationPopupsParent = null;
 
     [Header("Prefabs")]
 
@@ -134,7 +135,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent }, pauseMenu);
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent }, pauseMenu);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();

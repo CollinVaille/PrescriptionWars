@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
 {
@@ -51,20 +52,113 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
     }
 
     /// <summary>
-    /// Public method that should be called by an event trigger whenever the exit to menu button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup where the player can choose to either save and exit, exit without saving, or cancel.
-    /// </summary>
-    public void OnClickExitToMenuButton()
-    {
-        //Plays the appropriate sound effect for clicking a center button.
-        AudioManager.PlaySFX(centerButtonClickSFX);
-    }
-
-    /// <summary>
     /// Public method that should be called by an event trigger whenever the pointer enters a center button and plays the appropriate sound effect.
     /// </summary>
     public void OnPointerEnterCenterButton()
     {
         //Plays the appropriate sound effect for the pointer entering a center button.
         AudioManager.PlaySFX(centerButtonHighlightedSFX);
+    }
+
+    /// <summary>
+    /// Public method that should be called by an event trigger whenever the exit to menu button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup where the player can choose to either save and exit, exit without saving, or cancel.
+    /// </summary>
+    public void OnClickExitToMenuButton()
+    {
+        //Plays the appropriate sound effect for clicking a center button.
+        AudioManager.PlaySFX(centerButtonClickSFX);
+
+        //Exits to the main menu.
+        StartCoroutine(ConfirmExitToMenu());
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player wants to exit to the main menu and also asks them whether they would like to save their game.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmExitToMenu()
+    {
+        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Dropdown Confirmation Popup")).GetComponent<GalaxyDropdownConfirmationPopup>();
+        string topText = "Exit to Menu";
+        confirmationPopupScript.CreateConfirmationPopup(topText);
+        confirmationPopupScript.AddDropdownOption("Exit Without Saving");
+        confirmationPopupScript.AddDropdownOption("Save And Exit");
+        confirmationPopupScript.SetDropdownOptionSelected("Exit Without Saving");
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            if (confirmationPopupScript.GetReturnValue().Equals("Exit Without Saving"))
+            {
+                ExitToMenu();
+            }
+            else
+            {
+                GalaxySaveSystem.SaveGalaxy();
+                ExitToMenu();
+            }
+        }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to exit to the main menu.
+    /// </summary>
+    private void ExitToMenu()
+    {
+        SceneManager.LoadScene(sceneName: "Main Menu");
+    }
+
+    /// <summary>
+    /// Public method that should be called by an event trigger whenever the exit to menu button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup where the player can choose to either save and exit, exit without saving, or cancel.
+    /// </summary>
+    public void OnClickExitToDesktopButton()
+    {
+        //Plays the sound effect for clicking a button.
+        AudioManager.PlaySFX(centerButtonClickSFX);
+
+        //Exits to the desktop if the player confirms it.
+        StartCoroutine(ConfirmExitToDesktopAction());
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player wants to exit to the desktop and also asks them whether they would like to save their game.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmExitToDesktopAction()
+    {
+        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Dropdown Confirmation Popup")).GetComponent<GalaxyDropdownConfirmationPopup>();
+        string topText = "Exit to Desktop";
+        confirmationPopupScript.CreateConfirmationPopup(topText);
+        confirmationPopupScript.AddDropdownOption("Exit Without Saving");
+        confirmationPopupScript.AddDropdownOption("Save And Exit");
+        confirmationPopupScript.SetDropdownOptionSelected("Exit Without Saving");
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            if(confirmationPopupScript.GetReturnValue().Equals("Exit Without Saving"))
+            {
+                ExitToDesktop();
+            }
+            else
+            {
+                GalaxySaveSystem.SaveGalaxy();
+                ExitToDesktop();
+            }
+        }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to close/quit the application and exit to the desktop.
+    /// </summary>
+    private void ExitToDesktop()
+    {
+        Application.Quit();
     }
 }

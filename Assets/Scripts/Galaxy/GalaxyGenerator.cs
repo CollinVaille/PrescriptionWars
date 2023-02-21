@@ -55,7 +55,7 @@ public class GalaxyGenerator : MonoBehaviour
     [SerializeField] private GameObject planetShipPrefab = null;
     [SerializeField] private GameObject galaxyConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxyInputFieldConfirmationPopupPrefab = null;
-    [SerializeField] private GameObject galaxyDropdownConfirmationPopupPrefab = null;
+    //[SerializeField] private GameObject galaxyDropdownConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxyPillSkinConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxyColorPickerConfirmationPopupPrefab = null;
     [SerializeField] private GameObject galaxySpritePickerConfirmationPopupPrefab = null;
@@ -179,7 +179,7 @@ public class GalaxyGenerator : MonoBehaviour
 
         //Prefabs.
         GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab = galaxyInputFieldConfirmationPopupPrefab;
-        GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
+        //GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab = galaxyDropdownConfirmationPopupPrefab;
         GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab = galaxyConfirmationPopupPrefab;
         GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab = galaxyPillSkinConfirmationPopupPrefab;
         GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab = galaxyColorPickerConfirmationPopupPrefab;

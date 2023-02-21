@@ -25,9 +25,6 @@ public class GalaxyDropdownConfirmationPopup : GalaxyConfirmationPopupBehaviour
     //The string that indicates what option the user has selected when pressing the confirm button.
     private string returnValue;
 
-    //The prefab that galaxy dropdown confirmation popups must be instantiated from (value assigned in the start method of the galaxy generator class).
-    public static GameObject galaxyDropdownConfirmationPopupPrefab;
-
     // Start is called before the first frame update
     public override void Start()
     {

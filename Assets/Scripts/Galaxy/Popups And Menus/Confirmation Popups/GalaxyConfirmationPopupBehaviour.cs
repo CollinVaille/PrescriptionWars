@@ -24,7 +24,7 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 
     private bool answered = false;
 
-    public static List<GalaxyConfirmationPopupBehaviour> galaxyConfirmationPopups = new List<GalaxyConfirmationPopupBehaviour>();
+    private static List<GalaxyConfirmationPopupBehaviour> galaxyConfirmationPopups = null;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -51,16 +51,17 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
     {
         topText.text = popupTopText;
 
-        transform.parent = GalaxyManager.confirmationPopupParent;
+        transform.parent = NewGalaxyManager.confirmationPopupsParent;
         transform.localScale = Vector3.one;
         transform.localPosition = Vector3.zero;
 
+        if (galaxyConfirmationPopups == null)
+            galaxyConfirmationPopups = new List<GalaxyConfirmationPopupBehaviour>();
         galaxyConfirmationPopups.Add(this);
     }
 
     public void DestroyConfirmationPopup()
     {
-        galaxyConfirmationPopups.Remove(this);
         Destroy(gameObject);
     }
 
@@ -88,7 +89,7 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
 
     public static bool IsAGalaxyConfirmationPopupOpen()
     {
-        return galaxyConfirmationPopups.Count > 0;
+        return galaxyConfirmationPopups != null && galaxyConfirmationPopups.Count > 0;
     }
 
     public bool IsAnswered()
@@ -99,5 +100,12 @@ public class GalaxyConfirmationPopupBehaviour : MonoBehaviour
     public GalaxyConfirmationPopupAnswer GetAnswer()
     {
         return answer;
+    }
+
+    protected virtual void OnDestroy()
+    {
+        galaxyConfirmationPopups.Remove(this);
+        if (galaxyConfirmationPopups.Count == 0)
+            galaxyConfirmationPopups = null;
     }
 }

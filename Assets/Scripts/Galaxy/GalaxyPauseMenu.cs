@@ -163,10 +163,11 @@ public class GalaxyPauseMenu : MonoBehaviour
         AudioManager.PlaySFX(clickButtonSFX);
 
         //Exits to the main menu.
-        StartCoroutine(ConfirmExitToMenu());
+        //StartCoroutine(ConfirmExitToMenu());
     }
 
     //Confirms that the player wishes to exit to the main menu.
+    /*
     IEnumerator ConfirmExitToMenu()
     {
         GameObject confirmationPopup = Instantiate(GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab);
@@ -194,6 +195,7 @@ public class GalaxyPauseMenu : MonoBehaviour
 
         confirmationPopupScript.DestroyConfirmationPopup();
     }
+    */
 
     //Exits to the main menu.
     private void ExitToMenu()
@@ -208,10 +210,11 @@ public class GalaxyPauseMenu : MonoBehaviour
         AudioManager.PlaySFX(clickButtonSFX);
 
         //Exits to the desktop if the player confirms it.
-        StartCoroutine(ConfirmExitToDesktopAction());
+        //StartCoroutine(ConfirmExitToDesktopAction());
     }
 
     //Confirms that the player wishes to exit to the desktop.
+    /*
     IEnumerator ConfirmExitToDesktopAction()
     {
         GameObject confirmationPopup = Instantiate(GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab);
@@ -239,6 +242,7 @@ public class GalaxyPauseMenu : MonoBehaviour
 
         confirmationPopupScript.DestroyConfirmationPopup();
     }
+    */
 
     //Closes or quits the application and exits to the desktop.
     private void ExitToDesktop()
