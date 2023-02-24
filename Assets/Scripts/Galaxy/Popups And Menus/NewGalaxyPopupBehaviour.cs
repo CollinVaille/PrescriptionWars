@@ -195,7 +195,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         else if (closing)
             ClosingAnimationUpdate();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup && !popupClosedOnFrame)
+        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup && !GalaxyConfirmationPopupBehaviour.isAConfirmationPopupOpen && !popupClosedOnFrame)
             Close();
     }
 

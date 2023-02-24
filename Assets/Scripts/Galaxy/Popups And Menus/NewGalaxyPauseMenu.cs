@@ -78,7 +78,7 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
     /// <returns></returns>
     private IEnumerator ConfirmExitToMenu()
     {
-        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Dropdown Confirmation Popup")).GetComponent<GalaxyDropdownConfirmationPopup>();
+        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(GalaxyDropdownConfirmationPopup.dropdownConfirmationPopupPrefab).GetComponent<GalaxyDropdownConfirmationPopup>();
         string topText = "Exit to Menu";
         confirmationPopupScript.CreateConfirmationPopup(topText);
         confirmationPopupScript.AddDropdownOption("Exit Without Saving");
@@ -87,9 +87,9 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
 
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            if (confirmationPopupScript.GetReturnValue().Equals("Exit Without Saving"))
+            if (confirmationPopupScript.returnValue.Equals("Exit Without Saving"))
             {
                 ExitToMenu();
             }
@@ -129,18 +129,17 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
     /// <returns></returns>
     private IEnumerator ConfirmExitToDesktopAction()
     {
-        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(Resources.Load<GameObject>("Galaxy/Prefabs/Dropdown Confirmation Popup")).GetComponent<GalaxyDropdownConfirmationPopup>();
-        string topText = "Exit to Desktop";
-        confirmationPopupScript.CreateConfirmationPopup(topText);
+        GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(GalaxyDropdownConfirmationPopup.dropdownConfirmationPopupPrefab).GetComponent<GalaxyDropdownConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Exit to Desktop");
         confirmationPopupScript.AddDropdownOption("Exit Without Saving");
         confirmationPopupScript.AddDropdownOption("Save And Exit");
         confirmationPopupScript.SetDropdownOptionSelected("Exit Without Saving");
 
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            if(confirmationPopupScript.GetReturnValue().Equals("Exit Without Saving"))
+            if(confirmationPopupScript.returnValue.Equals("Exit Without Saving"))
             {
                 ExitToDesktop();
             }
@@ -150,6 +149,57 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
                 ExitToDesktop();
             }
         }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Public method that should be called by an event trigger whenever the save button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup to confirm that the player wants to overwrite the current save file (if applicable) before then confirming that the player acknowledges they've saved the game.
+    /// </summary>
+    public void OnClickSaveButton()
+    {
+        //Plays the sound effect for clicking a button.
+        AudioManager.PlaySFX(centerButtonClickSFX);
+
+        if (GalaxySaveSystem.SaveExists(NewGalaxyManager.saveName))
+            StartCoroutine(ConfirmOverwritingSaveFileAction());
+        else
+        {
+            GalaxySaveSystem.SaveGalaxy();
+            StartCoroutine(ConfirmAcknowledgementOfSavingAction());
+        }
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player wants to overwrite the current save file before then launching another confirmation popup that confirms that the player acknowledges that they've saved the game if they confirm the overwriting action.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmOverwritingSaveFileAction()
+    {
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Overwrite Existing Save", "There is already a save file named \"" + NewGalaxyManager.saveName + "\" would you like to continue saving and overwrite this existing save file?");
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            GalaxySaveSystem.SaveGalaxy();
+            StartCoroutine(ConfirmAcknowledgementOfSavingAction());
+        }
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player acknowledges that their game has been saved successfully.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmAcknowledgementOfSavingAction()
+    {
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Game Saved", "Your game has been saved successfully.", true);
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         confirmationPopupScript.DestroyConfirmationPopup();
     }

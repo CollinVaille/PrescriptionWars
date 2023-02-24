@@ -623,7 +623,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private IEnumerator ConfirmDisbandingActionCoroutine()
     {
         //Creates the confirmation popup.
-        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         string topText = "Disband " + UnitListButtonSelected.TypeOfButton.ToString();
         string bodyText = "Are you sure that you want to disband " + UnitListButtonSelected.AssignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
@@ -632,7 +632,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             DisbandSelectedGroundUnit();
 
         //Destroys the confirmation popup.
@@ -678,7 +678,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             ChangeSelectedGroundUnitAssignedPillSkin(confirmationPopupScript.ReturnValue);
 
         //Destroys the confirmation popup.
@@ -731,7 +731,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             ChangeSelectedGroundUnitIconColor(confirmationPopupScript.ColorSelected);
 
         //Destroys the confirmation popup.
@@ -797,7 +797,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
             ChangeSelectedGroundUnitArmyIcon(confirmationPopupScript.SpriteSelectedName);
 
         //Destroys the confirmation popup.
@@ -867,7 +867,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private IEnumerator ConfirmArmyCreationFailureDueToMaxArmyCount()
     {
         //Creates the confirmation popup to confirm the user acknowledges the failure to create an army.
-        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         confirmationPopupScript.CreateConfirmationPopup("Army Creation Failure", PlanetSelected.planetName + " has already reached the maximum number of armies allowed to be stationed on the planet. Delete or move an existing army to a different planet in order to make room for creating a new army on this planet.", true);
 
         //Waits until the player has answered the confirmation popup and acknowledged the failure to create a new army.
@@ -895,14 +895,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private IEnumerator ConfirmAssigningSquadLeaderActionCoroutine()
     {
         //Creates the confirmation popup.
-        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + UnitListButtonSelected.AssignedGroundUnit.name + " as the squad leader of " + UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.name + "?", UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader);
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //Assigns the selected pill as the squad leader if needed.
-        if (!UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader && confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (!UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader && confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.squadLeader = UnitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
             SquadButton parentSquadButton = null;
@@ -950,7 +950,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             UnitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID = confirmationPopupScript.returnValue;
             //Gets the general of the army (could be null if there is no general).
@@ -1013,7 +1013,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             GalaxySpecialPill specialPill = GalaxyManager.planets[planetSelectedID].owner.GetSpecialPill(confirmationPopupScript.returnValue);
             if(specialPill != null)
@@ -1046,7 +1046,7 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private IEnumerator ConfirmDemotingSpecialPillIntoServiceFailureDueToSquadCapacityReachedActionCoroutine()
     {
         //Creates the confirmation popup.
-        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         confirmationPopupScript.CreateConfirmationPopup("Demotion Failure", UnitListButtonSelected.AssignedGroundUnit.name + " is at maximum capacity and cannot have any more squad members.", true);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -1074,14 +1074,14 @@ public class ArmyManagementMenu : GalaxyPopupBehaviour, IGalaxyTooltipHandler
     private IEnumerator ConfirmPromotingToSpecialPillActionCoroutine()
     {
         //Creates the confirmation popup.
-        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
         confirmationPopupScript.CreateConfirmationPopup("Promote To Special Pill", "Are you sure that you want to promote " + UnitListButtonSelected.AssignedGroundUnit.name + " to a special pill? This action will remove " + UnitListButtonSelected.AssignedGroundUnit.name + " from their assigned squad.");
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //Assigns the selected pill as the squad leader if needed.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             SquadButton squadButton = null;
             for(int siblingIndex = UnitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)

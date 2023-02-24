@@ -140,9 +140,9 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
 
-        NewGalaxyManager.saveName = "Test Save";
+        /*NewGalaxyManager.saveName = "Test Save";
         GalaxySaveSystem.SaveGalaxy();
-        Debug.Log("Saved");
+        Debug.Log("Saved");*/
 
         //Destroys the galaxy generator script after galaxy generation completion.
         Destroy(this);

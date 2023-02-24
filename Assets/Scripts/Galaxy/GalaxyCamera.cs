@@ -30,7 +30,7 @@ public class GalaxyCamera : MonoBehaviour
     private void Update ()
     {
         //WASD and scrollwheel movement
-        if (!CheatConsole.IsInputFieldFocused && GalaxyManager.activeInHierarchy && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen())
+        if (!CheatConsole.IsInputFieldFocused && GalaxyManager.activeInHierarchy && !GalaxyConfirmationPopup.isAConfirmationPopupOpen)
         {
             movementVector.x = Input.GetAxis("Horizontal");
             movementVector.y = Input.GetAxis("Vertical");

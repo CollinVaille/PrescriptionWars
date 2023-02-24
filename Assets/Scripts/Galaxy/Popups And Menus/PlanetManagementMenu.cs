@@ -264,7 +264,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         int indexToDemolish = buildingsListTextStartIndex + num;
 
         //Creates the confirmation popup.
-        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
+        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Demolish Building";
         string bodyText = "Are you sure that you want to demolish a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingsCompleted[indexToDemolish].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.planetName + "?";
@@ -274,7 +274,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirmed their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
             DemolishBuilding(indexToDemolish);
 
         //Destroys the confirmation popup.
@@ -305,7 +305,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         int indexToCancel = buildingQueueListTextStartIndex + num;
 
         //Creates the confirmation popup.
-        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.galaxyConfirmationPopupPrefab);
+        GameObject confirmationPopup = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab);
         GalaxyConfirmationPopup confirmationPopupScript = confirmationPopup.GetComponent<GalaxyConfirmationPopup>();
         string topText = "Cancel Building Queued";
         string bodyText = "Are you sure that you want to cancel building a " + GeneralHelperMethods.GetEnumText(planetSelected.cities[citySelected].buildingQueue.buildingsQueued[indexToCancel].type.ToString()) + " in the city " + planetSelected.cities[citySelected].cityName + " on planet " + planetSelected.planetName + "?";
@@ -315,7 +315,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirmed their action, it carries out the logic behind it.
-        if(confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+        if(confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
             CancelBuildingQueued(indexToCancel);
 
         //Destroys the confirmation popup.

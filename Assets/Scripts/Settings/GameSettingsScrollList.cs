@@ -160,7 +160,7 @@ public class GameSettingsScrollList : MonoBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             GalaxyGameSettings.interiorHyperspaceLaneStaticColor = confirmationPopupScript.ColorSelected;
             interiorHyperspaceLaneStaticColorImage.color = GalaxyGameSettings.interiorHyperspaceLaneStaticColor;
@@ -186,7 +186,7 @@ public class GameSettingsScrollList : MonoBehaviour
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
             GalaxyGameSettings.borderHyperspaceLaneStaticColor = confirmationPopupScript.ColorSelected;
             borderHyperspaceLaneStaticColorImage.color = GalaxyGameSettings.borderHyperspaceLaneStaticColor;

@@ -165,7 +165,7 @@ public class GalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandl
     //Indicates whether the popup should close due to the player pressing escape.
     public virtual bool ShouldClose()
     {
-        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).popupClosedOnFrame && !GalaxyConfirmationPopup.IsAGalaxyConfirmationPopupOpen();
+        return Input.GetKeyDown(KeyCode.Escape) && transform.GetSiblingIndex() == transform.parent.childCount - 1 && !GalaxyHelperMethods.GetParentGalaxyView(transform).popupClosedOnFrame && !GalaxyConfirmationPopup.isAConfirmationPopupOpen;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

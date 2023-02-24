@@ -25,11 +25,30 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Private holder variable that contains the name of the current save.
     /// </summary>
-    private string saveNameVar;
+    private string _saveName = null;
     /// <summary>
     /// Public property that should be used both to access and mutate the name of the current save.
     /// </summary>
-    public static string saveName { get => galaxyManager.saveNameVar; set => galaxyManager.saveNameVar = value; }
+    public static string saveName 
+    {
+        get
+        {
+            if (galaxyManager._saveName != null && !galaxyManager._saveName.Equals(""))
+                return galaxyManager._saveName;
+            int saveNameCreationAttempts = 0;
+            while (true)
+            {
+                string saveNameCreationAttempt = saveNameCreationAttempts == 0 ? playerEmpire.name : playerEmpire.name + " " + (saveNameCreationAttempts + 1);
+                if (!GalaxySaveSystem.SaveExists(saveNameCreationAttempt))
+                {
+                    galaxyManager._saveName = saveNameCreationAttempt;
+                    return galaxyManager._saveName;
+                }
+                saveNameCreationAttempts++;
+            }
+        }
+        set => galaxyManager._saveName = value;
+    }
 
     /// <summary>
     /// Private holder variable for the list of solar systems that are in the galaxy.
@@ -147,6 +166,11 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// Public static property that should be used in order to access the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
     /// </summary>
     public static Transform confirmationPopupsParent { get => galaxyManager == null ? null : galaxyManager._confirmationPopupsParent; }
+
+    /// <summary>
+    /// Publicly accessible static property that should be accessed in order to obtain a reference to the current game's player empire.
+    /// </summary>
+    public static NewEmpire playerEmpire { get => galaxyManager == null || empires == null || playerID < 0 || playerID >= empires.Count ? null : empires[playerID]; }
 
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.

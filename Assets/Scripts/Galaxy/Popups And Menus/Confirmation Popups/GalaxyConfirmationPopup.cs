@@ -15,7 +15,10 @@ public class GalaxyConfirmationPopup : GalaxyConfirmationPopupBehaviour
 
     //Non-inspector variables.
 
-    public static GameObject galaxyConfirmationPopupPrefab;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain the confirmation popup prefab that all confirmation popups should be instantiated from.
+    /// </summary>
+    public static GameObject confirmationPopupPrefab { get => Resources.Load<GameObject>("Galaxy/Prefabs/Confirmation Popups/Confirmation Popup"); }
 
     /// <summary>
     /// Indicates whether the confirmation popup can have only one possible answer (answer = okay, which is acknowledgement, answer is technically cancel).
