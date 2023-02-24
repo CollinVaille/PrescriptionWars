@@ -8,7 +8,7 @@ public static class GalaxySaveSystem
     /// <summary>
     /// Publicly accessible static property that returns the extension on all save files for the game.
     /// </summary>
-    public const string saveFileExtension = "rxws";
+    public const string saveFileExtension = "pwars";
 
     /// <summary>
     /// This public static function takes the galaxy manager as an argument and should be called in order to save the galaxy data into a prescription wars save file.

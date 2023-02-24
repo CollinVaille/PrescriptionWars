@@ -154,7 +154,7 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
     }
 
     /// <summary>
-    /// Public method that should be called by an event trigger whenever the save button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup to confirm that the player wants to overwrite the current save file (if applicable) before then confirming that the player acknowledges they've saved the game.
+    /// Public method that should be called by an event trigger in the inspector whenever the save button is pressed and plays the appropriate sound effect for pressing a center button before launching a confirmation popup to confirm that the player wants to overwrite the current save file (if applicable) before then confirming that the player acknowledges they've saved the game.
     /// </summary>
     public void OnClickSaveButton()
     {
@@ -200,6 +200,47 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
         confirmationPopupScript.CreateConfirmationPopup("Game Saved", "Your game has been saved successfully.", true);
 
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Public method that should be called by an event trigger in the inspector whenever the save as button is clicked and it launches an input field confirmation popup that prompts the player to enter a save name before then attempting to save the game under that name.
+    /// </summary>
+    public void OnClickSaveAsButton()
+    {
+        //Plays the sound effect for clicking a button.
+        AudioManager.PlaySFX(centerButtonClickSFX);
+
+        //Starts the save as confirming coroutine.
+        StartCoroutine(ConfirmSaveAsAction());
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player wants to save the game under the name specified by them in the confirmation popup's input field before then confirming that the player wants to overwrite the existing save with that name if necessary before then launching another confirmation popup that confirms that the player acknowledges that their game has saved successfully.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmSaveAsAction()
+    {
+        GalaxyInputFieldConfirmationPopup confirmationPopupScript = Instantiate(GalaxyInputFieldConfirmationPopup.inputFieldConfirmationPopupPrefab).GetComponent<GalaxyInputFieldConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Save As");
+        confirmationPopupScript.SetPlaceHolderText("Enter save name...");
+        confirmationPopupScript.inputFieldText = NewGalaxyManager.saveName;
+        confirmationPopupScript.specialCharactersAllowed = false;
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        {
+            NewGalaxyManager.saveName = confirmationPopupScript.inputFieldText;
+            if (GalaxySaveSystem.SaveExists(NewGalaxyManager.saveName))
+                StartCoroutine(ConfirmOverwritingSaveFileAction());
+            else
+            {
+                GalaxySaveSystem.SaveGalaxy();
+                StartCoroutine(ConfirmAcknowledgementOfSavingAction());
+            }
+        }
 
         confirmationPopupScript.DestroyConfirmationPopup();
     }

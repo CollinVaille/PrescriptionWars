@@ -57,10 +57,10 @@ public class LoadGameMenu : GalaxyMenuBehaviour
     private void PopulateScrollList()
     {
         //Gets the file path of every save game file in the application's persistent data path.
-        string[] saveNames = Directory.GetFiles(Application.persistentDataPath + "/", "*.prescriptionwarssave");
+        string[] saveNames = Directory.GetFiles(Application.persistentDataPath + "/", "*." + GalaxySaveSystem.saveFileExtension);
         //Substring method is used to extract the name of the save game file from the file path.
         for (int saveNameIndex = 0; saveNameIndex < saveNames.Length; saveNameIndex++)
-            saveNames[saveNameIndex] = saveNames[saveNameIndex].Substring((Application.persistentDataPath + "/").Length, saveNames[saveNameIndex].Length - ((Application.persistentDataPath + "/").Length + ".prescriptionwarssave".Length));
+            saveNames[saveNameIndex] = saveNames[saveNameIndex].Substring((Application.persistentDataPath + "/").Length, saveNames[saveNameIndex].Length - ((Application.persistentDataPath + "/").Length + ("." + GalaxySaveSystem.saveFileExtension).Length));
 
         //Loops through each save name and instantiates a new loadGameScrollListButton to represent it in the load game menu scroll list.
         foreach (string saveName in saveNames)
