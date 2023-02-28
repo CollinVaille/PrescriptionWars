@@ -41,6 +41,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("Menus")]
 
     [SerializeField, Tooltip("The pause menu that the player can interact with to perform a variety of actions such as either resuming or saving and exiting the game.")] private NewGalaxyPauseMenu pauseMenu = null;
+    [SerializeField, Tooltip("The settings menu that the player can interact with to change a variety of settings including game, video, and audio settings.")] private NewGalaxySettingsMenu settingsMenu = null;
 
     //Non-inspector variables.
 
@@ -135,7 +136,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent }, pauseMenu);
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent }, pauseMenu, settingsMenu);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();

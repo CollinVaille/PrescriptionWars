@@ -159,6 +159,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static NewGalaxyPauseMenu pauseMenu { get => galaxyManager == null ? null : galaxyManager._pauseMenu; }
 
     /// <summary>
+    /// Private holder variable for the popup that serves as the galaxy view's settings menu.
+    /// </summary>
+    private NewGalaxySettingsMenu _settingsMenu = null;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain a reference to the galaxy view's popup settings menu.
+    /// </summary>
+    public static NewGalaxySettingsMenu settingsMenu { get => galaxyManager == null ? null : galaxyManager._settingsMenu; }
+
+    /// <summary>
     /// Private holder variable for the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
     /// </summary>
     private Transform _confirmationPopupsParent = null;
@@ -175,7 +184,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -212,6 +221,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains a reference to the popup that serves as the pause menu of the galaxy view.
         galaxyManager._pauseMenu = pauseMenu;
+
+        //Sets the value of the variable that contains a reference to the popup that serves as the settings menu of the galaxy view.
+        galaxyManager._settingsMenu = settingsMenu;
     }
 
     protected override void Awake()

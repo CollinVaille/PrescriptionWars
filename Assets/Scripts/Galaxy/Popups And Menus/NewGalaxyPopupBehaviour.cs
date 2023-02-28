@@ -173,7 +173,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         //Sets the parent canvas reference variable.
         parentCanvas = GetComponentInParent<Canvas>();
         //Sets the canvas group reference property.
-        canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup = GetComponent<CanvasGroup>() == null ? gameObject.AddComponent<CanvasGroup>() : GetComponent<CanvasGroup>();
         //Initializes the list of popups if it has not been initialized yet.
         if (popups == null)
             popups = new List<NewGalaxyPopupBehaviour>();
@@ -246,7 +246,14 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         if (openingAnimationType == OpeningAnimationType.Instant)
         {
             EndOpeningAnimation();
-            return;
+        }
+        else if (openingAnimationType == OpeningAnimationType.Expand)
+        {
+            transform.localScale = Vector3.zero;
+        }
+        else if (openingAnimationType == OpeningAnimationType.Fade)
+        {
+            canvasGroup.alpha = 0;
         }
     }
 
@@ -496,6 +503,8 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     /// </summary>
     protected virtual void OnEnable()
     {
+        //Makes this popup the top popup.
+        transform.SetAsLastSibling();
         //Instantiates a new raycast blocker background if needed.
         if (raycastBlockerBackground)
             CreateRaycastBlockerBackgroundImage();

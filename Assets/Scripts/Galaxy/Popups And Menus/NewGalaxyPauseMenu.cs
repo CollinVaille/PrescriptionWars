@@ -41,14 +41,16 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
     }
 
     /// <summary>
-    /// Public method that should be called by an event trigger whenever the resume button is pressed and plays the sound effect for pressing a center button before resuming the game by closing the pause menu.
+    /// Public method that should be called by an event trigger whenever the settings button is pressed and plays the appropriate sound effect for pressing a center button before launching the settings menu.
     /// </summary>
-    public void OnClickResumeButton()
+    public void OnClickSettingsButton()
     {
         //Plays the appropriate sound effect for clicking a center button.
         AudioManager.PlaySFX(centerButtonClickSFX);
-        //Closes the pause menu and resumes the game.
-        Close();
+
+        //Opens up the settings menu if its not already open or opening.
+        if(!NewGalaxyManager.settingsMenu.open && !NewGalaxyManager.settingsMenu.opening)
+            NewGalaxyManager.settingsMenu.Open();
     }
 
     /// <summary>
