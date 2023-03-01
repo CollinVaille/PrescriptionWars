@@ -11,9 +11,12 @@ public class GalaxyData
     public List<EmpireData> empires = null;
     public List<HyperspaceLaneData> hyperspaceLanes = null;
     public int playerID = -1;
+    public int turnNumber = -1;
+    public float galaxyLocalYRotation = 0;
 
     //Info.
     public string galaxyShape = null;
+    public string saveName = null;
 
     public GalaxyData(NewGalaxyManager galaxyManager)
     {
@@ -35,8 +38,14 @@ public class GalaxyData
         foreach (HyperspaceLane hyperspaceLane in NewGalaxyManager.hyperspaceLanes)
             hyperspaceLanes.Add(new HyperspaceLaneData(hyperspaceLane));
 
+        playerID = NewGalaxyManager.playerID;
+
+        turnNumber = NewGalaxyManager.turnNumber;
+
+        galaxyLocalYRotation = NewGalaxyManager.galaxyManager.transform.localRotation.eulerAngles.y;
+
         galaxyShape = NewGalaxyManager.galaxyShape;
 
-        playerID = NewGalaxyManager.playerID;
+        saveName = NewGalaxyManager.saveName;
     }
 }

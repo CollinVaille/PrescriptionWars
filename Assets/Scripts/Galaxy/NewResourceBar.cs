@@ -9,6 +9,10 @@ public class NewResourceBar : MonoBehaviour
 
     [SerializeField] private Image flagImage = null;
 
+    [Header("Text Components")]
+
+    [SerializeField] private Text turnNumberText = null;
+
     [Header("Tooltip Components")]
 
     [SerializeField] private GalaxyTooltip empireNameTooltip = null;
@@ -73,6 +77,30 @@ public class NewResourceBar : MonoBehaviour
         }
         //Updates the flag image sprite to match the player empire's flag sprite.
         resourceBar.flagImage.sprite = NewGalaxyManager.empires[NewGalaxyManager.playerID].flag.sprite;
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to update all empire dependent components on the resource bar (such as the flag and empire name tooltip).
+    /// </summary>
+    public static void UpdateAllEmpireDependentComponents()
+    {
+        UpdateEmpireNameTooltip();
+        UpdateFlag();
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to update the text component on the resource bar that displays the number of turns that have passed since the current game started.
+    /// </summary>
+    public static void UpdateTurnNumberText()
+    {
+        //Logs a warning and returns if the resource bar static instance variable is null and has not been initialized in the awake method.
+        if (resourceBar == null)
+        {
+            Debug.LogWarning("Cannot update the flag on the resource bar because the static instance variable has not been initialzed in the awake method yet.");
+            return;
+        }
+        //Updates the turn number text to accurately display the number of turns that have passed since the start of the current game.
+        resourceBar.turnNumberText.text = "Turn: " + NewGalaxyManager.turnNumber;
     }
 
     /// <summary>

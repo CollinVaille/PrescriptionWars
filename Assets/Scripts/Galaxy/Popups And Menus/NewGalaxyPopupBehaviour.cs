@@ -215,6 +215,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     public virtual void Close()
     {
         //Ends the current opening animation if there is one and also switches the closing animation type to instant if the popup was closing.
+        ClosingAnimationType closingAnimationTypeTemp = closingAnimationType;
         if (opening)
         {
             EndOpeningAnimation();
@@ -228,6 +229,8 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
                 Destroy(raycastBlockerBackgroundImage.gameObject);
             BeginClosingAnimation();
         }
+        //Restores the initial closing animation type in case it was tampered with due to the close function being called while the popup was still opening.
+        closingAnimationType = closingAnimationTypeTemp;
     }
 
     /// <summary>

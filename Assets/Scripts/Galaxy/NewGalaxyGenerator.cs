@@ -136,7 +136,7 @@ public class NewGalaxyGenerator : MonoBehaviour
         RenderSettings.skybox = skyboxMaterial;
 
         //Initializes the galaxy manager.
-        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent }, pauseMenu, settingsMenu);
+        NewGalaxyManager.InitializeFromGalaxyGenerator(gameObject.GetComponent<NewGalaxyManager>(), saveGameData != null ? saveGameData.saveName : null, skyboxMaterial, solarSystems, planets, empires, hyperspaceLanes, saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape, saveGameData != null ? saveGameData.playerID : 0, new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent }, pauseMenu, settingsMenu, saveGameData != null ? saveGameData.turnNumber : 0); ;
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -334,6 +334,8 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Generates the solar systems of the galaxy from the galaxy save game data that has been loaded in from the load game menu if it exists.
         if (saveGameData != null)
         {
+            //Sets the local y rotation of the galaxy from the save data.
+            transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, saveGameData.galaxyLocalYRotation, transform.localRotation.eulerAngles.z);
             //Loops through each solar system that was stored in the galaxy save game data and creates it.
             for(int solarSystemIndex = 0; solarSystemIndex < saveGameData.solarSystems.Count; solarSystemIndex++)
             {
@@ -377,7 +379,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 }
 
                 //Initializes the solar system using the saved data of the solar system and the star that was just instantiated from the same save data.
-                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystemPlanets, solarSystems.Count);
+                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystemPlanets, solarSystems.Count, -1 * saveGameData.galaxyLocalYRotation);
 
                 //Adds the solar system to the list of solar systems within the galaxy.
                 solarSystems.Add(solarSystem);

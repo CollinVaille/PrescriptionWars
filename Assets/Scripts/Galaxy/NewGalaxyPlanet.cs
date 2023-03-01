@@ -473,6 +473,32 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
+    /// Public method that should be called by the galaxy manager whenever the turn is in the process of ending and updates the hyperspace lane positioning.
+    /// </summary>
+    public void EndTurnUpate()
+    {
+        //Updates the hyperspace lane positioning if needed.
+        if (farthestPlanetFromTheStar)
+        {
+            Physics.SyncTransforms();
+            foreach (HyperspaceLane hyperspaceLane in solarSystem.hyperspaceLanes)
+            {
+                if(planetaryOrbitOutline != null)
+                {
+                    GalaxySolarSystem connectingSolarSystem = hyperspaceLane.solarSystems[0] == solarSystem ? hyperspaceLane.solarSystems[1] : hyperspaceLane.solarSystems[0];
+                    hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutline.transform.GetChild(0).GetComponent<SphereCollider>().ClosestPoint(connectingSolarSystem.transform.position));
+                }
+                else
+                {
+                    hyperspaceLane.SetSolarSystemPosition(solarSystem, solarSystem.transform.position);
+                }
+            }
+        }
+        //Updates the planet's orbital position around the star.
+        planetaryOrbitRotation -= (NewGalaxyManager.basePlanetaryOrbitalSpeed * Time.deltaTime) / Mathf.Pow(2, planetaryOrbitProximityToStar - 1);
+    }
+
+    /// <summary>
     /// Public method that should be called by the planet's solar system whenever the planet becomes the capital planet of the empire.
     /// </summary>
     public void OnBecameEmpireCapitalPlanet()

@@ -1,9 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewGalaxyManager :  GalaxyViewBehaviour
 {
+    [Header("Button Components")]
+
+    [SerializeField] private Button endTurnButton = null;
+
+    [Header("SFX Options")]
+
+    [SerializeField] private AudioClip clickEndTurnButtonSFX = null;
+
+    [Header("Options")]
+
+    [SerializeField] private float endTurnProcessLength = 3;
+    [SerializeField] private float solarSystemOrbitSpeed = 2;
+    [SerializeField] private float _basePlanetaryOrbitalSpeed = 10;
+
     /// <summary>
     /// Private holder variable of the material that should be applied to the galaxy skybox.
     /// </summary>
@@ -116,11 +131,27 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Private holder variable for the player's empire ID (index in the list of empires within the galaxy).
     /// </summary>
-    private int playerIDVar = -1;
+    private int _playerID = -1;
     /// <summary>
     /// Public static property that should be used to access the player's empire ID (index in the list of empires within the galaxy).
     /// </summary>
-    public static int playerID { get => galaxyManager == null ? -1 : galaxyManager.playerIDVar; }
+    public static int playerID
+    {
+        get => galaxyManager == null ? -1 : galaxyManager._playerID;
+        set
+        {
+            //Checks if the galaxy manager static reference is null and if so then a warning is logged to the console before returning.
+            if(galaxyManager == null)
+            {
+                Debug.LogWarning("Cannot set the playerID in the galaxy manager if the galaxy scene is not currently open.");
+                return;
+            }
+            //Sets the playerID int to its new specified value.
+            galaxyManager._playerID = value;
+            //Updates all empire dependent components on the resource bar.
+            NewResourceBar.UpdateAllEmpireDependentComponents();
+        }
+    }
 
     /// <summary>
     /// Private holder variable for the transform of the game object that serves as the parent object for all planet labels within the galaxy.
@@ -182,12 +213,71 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static NewEmpire playerEmpire { get => galaxyManager == null || empires == null || playerID < 0 || playerID >= empires.Count ? null : empires[playerID]; }
 
     /// <summary>
+    /// Private holder variable that indicates how many turns have passed since the start of the game.
+    /// </summary>
+    private int _turnNumber = -1;
+    /// <summary>
+    /// Publicly accessible static property that should be accessed in order to determine how many turns have passed since the start of the game.
+    /// </summary>
+    public static int turnNumber
+    {
+        get => galaxyManager == null ? -1 : galaxyManager._turnNumber;
+        private set
+        {
+            //Logs a warning to the console before returning if the galaxy manager static instance is null, which should effectively mean that the galaxy scene is not currently active in the game.
+            if(galaxyManager == null)
+            {
+                Debug.LogWarning("Cannot update the turn number of the game if there is no valid game currently to set the turn number on. Galaxy manager static instance is null.");
+                return;
+            }
+            //Sets the value of the variable that indicates the game's turn number to the specified value.
+            galaxyManager._turnNumber = value;
+            //Updates the text on the resource bar that indicates the number of turns that have passed since the current game started.
+            NewResourceBar.UpdateTurnNumberText();
+        }
+    }
+    /// <summary>
+    /// Private holder variable that indicates whether the current turn is in the process of ending.
+    /// </summary>
+    private bool _turnEnding = false;
+    /// <summary>
+    /// Publicly accessible static property that indicates whether the current turn is in the process of ending.
+    /// </summary>
+    public static bool turnEnding
+    {
+        get => galaxyManager == null ? false : galaxyManager._turnEnding;
+        private set
+        {
+            //Sets whether or not the end turn button is interactable based on if the turn is currently ending or not.
+            galaxyManager.endTurnButton.interactable = !value;
+            //Increments the turn number if the turn is no longer ending.
+            turnNumber = galaxyManager._turnEnding && !value ? turnNumber + 1 : turnNumber;
+            //Resets the variable that indicates how much time has passed since the turn started ending.
+            galaxyManager.turnEndingTimeElapsed = 0;
+            //Sets the variable that indicates whether or not the current turn is ending to the specified value.
+            galaxyManager._turnEnding = value;
+        }
+    }
+    /// <summary>
+    /// Private holder variable that indicates how much time has passed since the turn started ending.
+    /// </summary>
+    private float turnEndingTimeElapsed = 0;
+
+    /// <summary>
+    /// Publicly accessible static float property that should be accessed in order to determine the base planetary orbital speed before proximity to star calculations come into play.
+    /// </summary>
+    public static float basePlanetaryOrbitalSpeed { get => galaxyManager == null ? 0 : galaxyManager._basePlanetaryOrbitalSpeed; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, int turnNumber)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
+
+        //Sets the value of the variable that holds the name of the game save.
+        galaxyManager._saveName = saveName;
 
         //Sets the value of the variable that holds the skybox material of the galaxy.
         galaxyManager.skyboxMaterialVar = skyboxMaterial;
@@ -208,7 +298,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager.galaxyShapeVar = galaxyShape;
 
         //Sets the value of the variable that contains the player's empire ID (index in the list of empires within the galaxy).
-        galaxyManager.playerIDVar = playerID;
+        galaxyManager._playerID = playerID;
 
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all planet labels within the galaxy.
         galaxyManager.planetLabelsParentVar = parents[0];
@@ -224,6 +314,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains a reference to the popup that serves as the settings menu of the galaxy view.
         galaxyManager._settingsMenu = settingsMenu;
+
+        //Sets the value of the variable that indicates how many turns have passed since the start of the game.
+        galaxyManager._turnNumber = turnNumber;
     }
 
     protected override void Awake()
@@ -242,7 +335,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
+        if (turnEnding)
+            EndTurnUpdate();
+        else if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
             pauseMenu.Open();
     }
 
@@ -253,5 +348,38 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     {
         //Resets the static galaxy manager instance variable to null.
         galaxyManagerVar = null;
+    }
+
+    /// <summary>
+    /// This public method should be called by an event trigger created in the inspector whenever the end turn button is pressed and it goes through all of the logic needed for a turn ending.
+    /// </summary>
+    public void OnClickEndTurnButton()
+    {
+        //Plays the appropriate sound effect for clicking the end turn button.
+        AudioManager.PlaySFX(clickEndTurnButtonSFX);
+        //Logs that the turn is currently ending.
+        turnEnding = true;
+    }
+
+    /// <summary>
+    /// This private method should be called by the update method whenever the current turn is in the process of ending.
+    /// </summary>
+    private void EndTurnUpdate()
+    {
+        //Adds the amount of time that has passed since the last frame to the variable that indicates how much time has passed since the turn started ending.
+        turnEndingTimeElapsed += Time.deltaTime;
+        //Rotates the galaxy.
+        transform.Rotate(new Vector3(0, -1 * (solarSystemOrbitSpeed * Time.deltaTime), 0));
+        //Syncs the transforms to update them before calling the EndTurnUpdate functions on other objects.
+        Physics.SyncTransforms();
+        //Calls the end turn update function on each solar system which should fix the name label positioning of the star and the planets in the systems.
+        foreach (GalaxySolarSystem solarSystem in solarSystems)
+            solarSystem.EndTurnUpdate();
+        //Calls the end turn update function on each planet which should fix the hyperspace lane positioning.
+        foreach (NewGalaxyPlanet planet in planets)
+            planet.EndTurnUpate();
+        //Ends the end turn process if the appropriate amount of time has elapsed.
+        if (turnEndingTimeElapsed >= endTurnProcessLength)
+            turnEnding = false;
     }
 }

@@ -163,7 +163,7 @@ public class GalaxySolarSystem : MonoBehaviour
     /// This public method should be called by the GenerateSolarSystems method in the galaxy generator in order to initialize the solar system from save data that has been statically passed over from the load game menu.
     /// </summary>
     /// <param name="solarSystemData"></param>
-    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star, List<NewGalaxyPlanet> planets, int ID)
+    public void InitializeFromSaveData(GalaxySolarSystemData solarSystemData, GalaxyStar star, List<NewGalaxyPlanet> planets, int ID, float localYRotation)
     {
         //Loads in the local position from the solar system save data.
         transform.localPosition = new Vector3(solarSystemData.localPosition[0], solarSystemData.localPosition[1], solarSystemData.localPosition[2]);
@@ -175,6 +175,8 @@ public class GalaxySolarSystem : MonoBehaviour
         planetsVar = planets;
         //Sets the variable that indicates the ID of the solar system.
         IDVar = ID;
+        //Sets the local y rotation of the solar system.
+        transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, localYRotation, transform.localRotation.eulerAngles.z);
         //Initializes the hyperspace lane IDs list.
         hyperspaceLaneIDsVar = solarSystemData.hyperspaceLaneIDs;
     }
@@ -314,6 +316,14 @@ public class GalaxySolarSystem : MonoBehaviour
     {
         if (capitalPlanet != null)
             capitalPlanet.OnBecameEmpireNoncapitalPlanet();
+    }
+
+    /// <summary>
+    /// Public method that should be called by the galaxy manager in its EndTurnUpdate method and it updates the local y rotation of the solar system to be the opposite local y rotation of the galaxy in order to ensure the labels are the correct orientation.
+    /// </summary>
+    public void EndTurnUpdate()
+    {
+        transform.localRotation = new Quaternion(transform.localRotation.x, -1 * NewGalaxyManager.galaxyManager.transform.localRotation.y, transform.localRotation.z, transform.localRotation.w);
     }
 }
 
