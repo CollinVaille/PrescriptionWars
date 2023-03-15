@@ -12,6 +12,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     [SerializeField, Tooltip("The game object that has the rings renderer applied to it.")] private GameObject rings = null;
     [SerializeField, Tooltip("The transform that marks the location at which the planet label should be placed.")] private Transform planetLabelLocation = null;
     [SerializeField, Tooltip("The transform that marks the location at which the capital symbol should be placed if the planet is the capital of its solar system.")] private Transform capitalSymbolLocation = null;
+    [SerializeField, Tooltip("The transform that serves as the parent of all of the other transforms on the planet that mark a 3D location for 2D UI to be positioned.")] private Transform UILocationsParent = null;
 
     //Non-inspector variables.
 
@@ -357,6 +358,8 @@ public class NewGalaxyPlanet : MonoBehaviour
     {
         Initialize(solarSystem, ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, new DualColorSet(new Color(planetData.cloudColorCombo[0], planetData.cloudColorCombo[1], planetData.cloudColorCombo[2], planetData.cloudColorCombo[3]), new Color(planetData.cloudColorCombo[4], planetData.cloudColorCombo[5], planetData.cloudColorCombo[6], planetData.cloudColorCombo[7])), new Color(planetData.cityColor[0], planetData.cityColor[1], planetData.cityColor[2], planetData.cityColor[3]), new DualColorSet(new Color(planetData.ringColorCombo[0], planetData.ringColorCombo[1], planetData.ringColorCombo[2], planetData.ringColorCombo[3]), new Color(planetData.ringColorCombo[4], planetData.ringColorCombo[5], planetData.ringColorCombo[6], planetData.ringColorCombo[7])), starLight);
         ownerIDVar = planetData.ownerID;
+        //Ensures the planet name is positioned directly underneath the planet and the capital symbol positioned directly above the planet.
+        UILocationsParent.localRotation = Quaternion.Euler(UILocationsParent.localRotation.eulerAngles.x, -transform.rotation.eulerAngles.y, UILocationsParent.localRotation.eulerAngles.z);
     }
 
     /// <summary>
@@ -473,7 +476,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     }
 
     /// <summary>
-    /// Public method that should be called by the galaxy manager whenever the turn is in the process of ending and updates the hyperspace lane positioning.
+    /// Public method that should be called by the solar system whenever the turn is in the process of ending and updates the hyperspace lane positioning and ensures the planet name is positioned directly underneath the planet and the capital symbol positioned directly above the planet.
     /// </summary>
     public void EndTurnUpate()
     {
@@ -496,6 +499,8 @@ public class NewGalaxyPlanet : MonoBehaviour
         }
         //Updates the planet's orbital position around the star.
         planetaryOrbitRotation -= (NewGalaxyManager.basePlanetaryOrbitalSpeed * Time.deltaTime) / Mathf.Pow(2, planetaryOrbitProximityToStar - 1);
+        //Updates the local rotation on the 3D transforms that marks locations for 2D UI elements, which ensures the planet name is positioned directly underneath the planet and the capital symbol positioned directly above the planet.
+        UILocationsParent.localRotation = Quaternion.Euler(UILocationsParent.localRotation.eulerAngles.x, -transform.rotation.eulerAngles.y, UILocationsParent.localRotation.eulerAngles.z);
     }
 
     /// <summary>

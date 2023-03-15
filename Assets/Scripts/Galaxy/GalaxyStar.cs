@@ -152,6 +152,9 @@ public class GalaxyStar : MonoBehaviour
 
         //Calls the universal initialize method and passes in the needed data.
         Initialize(solarSystem, starData.starType, starData.starName);
+
+        //Ensures the star name is positioned directly underneath the star.
+        starLabelLocation.parent.localRotation = Quaternion.Euler(starLabelLocation.parent.localRotation.eulerAngles.x, -transform.rotation.eulerAngles.y, starLabelLocation.parent.localRotation.eulerAngles.z);
     }
 
     /// <summary>
@@ -208,6 +211,15 @@ public class GalaxyStar : MonoBehaviour
         {
             starNameLabel.gameObject.SetActive(solarSystemVar.visible && NewGalaxyCamera.starNameLabelsVisible);
         }
+    }
+
+    /// <summary>
+    /// Public method that should be called by the solar system in its EndTurnUpdate method and ensures the star name is positioned directly underneath the star at all times during the end turn process.
+    /// </summary>
+    public void EndTurnUpdate()
+    {
+        //Ensures the star name is positioned directly underneath the star.
+        starLabelLocation.parent.localRotation = Quaternion.Euler(starLabelLocation.parent.localRotation.eulerAngles.x, -transform.rotation.eulerAngles.y, starLabelLocation.parent.localRotation.eulerAngles.z);
     }
 
     /// <summary>

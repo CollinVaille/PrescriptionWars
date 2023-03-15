@@ -375,9 +375,6 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         //Calls the end turn update function on each solar system which should fix the name label positioning of the star and the planets in the systems.
         foreach (GalaxySolarSystem solarSystem in solarSystems)
             solarSystem.EndTurnUpdate();
-        //Calls the end turn update function on each planet which should fix the hyperspace lane positioning.
-        foreach (NewGalaxyPlanet planet in planets)
-            planet.EndTurnUpate();
         //Ends the end turn process if the appropriate amount of time has elapsed.
         if (turnEndingTimeElapsed >= endTurnProcessLength)
             turnEnding = false;

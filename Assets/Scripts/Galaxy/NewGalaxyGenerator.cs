@@ -379,7 +379,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 }
 
                 //Initializes the solar system using the saved data of the solar system and the star that was just instantiated from the same save data.
-                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystemPlanets, solarSystems.Count, -1 * saveGameData.galaxyLocalYRotation);
+                solarSystem.InitializeFromSaveData(saveGameData.solarSystems[solarSystemIndex], star, solarSystemPlanets, solarSystems.Count);
 
                 //Adds the solar system to the list of solar systems within the galaxy.
                 solarSystems.Add(solarSystem);
