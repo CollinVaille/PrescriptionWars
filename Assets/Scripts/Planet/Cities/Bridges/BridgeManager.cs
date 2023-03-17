@@ -136,7 +136,7 @@ public class BridgeManager
         //Determine if the distance is too short for a bridge
         float gapLength = Vector3.Distance(pairing.destination1EdgePoint, pairing.destination2EdgePoint);
 
-        if (gapLength < 0.05f)
+        if (gapLength < 0.1f)
             return;
 
         //Proceed with generation...
@@ -153,44 +153,58 @@ public class BridgeManager
 
         //If it is too steep and the distance is sufficient enough, have the lower point draw a flat line of bridge sections to the upper point's x, z location.
         //Once there, put up a vertical scaler (like a ladder) to cover the y difference.
-        float unsignedBridgeXZRotation = Mathf.DeltaAngle(bridgeXZRotation.magnitude, 0.0f);
-        if (unsignedBridgeXZRotation > 15.0f && Mathf.Abs(specs.point2.y - specs.point1.y) > 1.5f)
+        float unsignedBridgeXZRotation = Mathf.Abs(Mathf.DeltaAngle(bridgeXZRotation.magnitude, 0.0f));
+        float unsignedHeightDifference = Mathf.Abs(specs.point2.y - specs.point1.y);
+        if (unsignedBridgeXZRotation > 15.0f && unsignedHeightDifference > 0.25f)
         {
-            Vector3 bottomPoint, topPoint;
+            //Declare needed variables
+            Vector3 bottomPointOfScaler, topPointOfScaler, bridgePointWithoutScaler, centerOfUpperDestination;
             Vector3 verticalScalerRotation = bridgeRotation;
 
-            if (specs.point1.y < specs.point2.y) //Generate vertical scaler at destination 2
+            //Compute the location data for the new bridge and vertical scaler (i.e. ladder or elevator)
+            if (specs.point1.y < specs.point2.y) //Will generate vertical scaler at destination 2
             {
                 specs.verticalScalerAtDestination2 = true;
 
-                bottomPoint = specs.point2;
-                bottomPoint.y = specs.point1.y;
-                topPoint = specs.point2;
+                bridgePointWithoutScaler = specs.point1;
+                centerOfUpperDestination = specs.bridgeDestinationPairing.destination2.center;
 
-                specs.point2 = bottomPoint;
+                bottomPointOfScaler = specs.point2;
+                bottomPointOfScaler.y = specs.point1.y;
+                topPointOfScaler = specs.point2;
 
                 specs.point2Padding = 0.0f;
 
                 verticalScalerRotation.y = verticalScalerRotation.y + 180.0f;
             }
-            else //Generate vertical scaler at destination 1
+            else //Will generate vertical scaler at destination 1
             {
                 specs.verticalScalerAtDestination1 = true;
 
-                bottomPoint = specs.point1;
-                bottomPoint.y = specs.point2.y;
-                topPoint = specs.point1;
+                bridgePointWithoutScaler = specs.point2;
+                centerOfUpperDestination = specs.bridgeDestinationPairing.destination1.center;
 
-                specs.point1 = bottomPoint;
+                bottomPointOfScaler = specs.point1;
+                bottomPointOfScaler.y = specs.point2.y;
+                topPointOfScaler = specs.point1;
 
                 specs.point1Padding = 0.0f;
             }
 
-            GenerateNewVerticalScalerAtEndOfBridge(bottomPoint, topPoint, (int)city.transform.InverseTransformDirection(verticalScalerRotation).y);
-        }
-        //Otherwise, draw an angle bridge between the points
+            //Generate the vertical scaler
+            Vector3 bridgePointByScaler = GenerateNewVerticalScalerAtEndOfBridge(bottomPointOfScaler, topPointOfScaler, (int)city.transform.InverseTransformDirection(verticalScalerRotation).y, bridgePointWithoutScaler, centerOfUpperDestination);
 
-        GenerateNewBridgeSectionsBetweenPoints(specs);
+            //Based on the exact data of where the vertical scaler was generated, adjust the positioning of the bridge
+            if (specs.verticalScalerAtDestination2)
+                specs.point2 = bridgePointByScaler;
+            else
+                specs.point1 = bridgePointByScaler;
+        }
+        //Otherwise, draw an angle bridge between the points...
+
+        //Proceed with generating the bridge sections
+        if(Vector3.Distance(specs.point1, specs.point2) > 0.25f)
+            GenerateNewBridgeSectionsBetweenPoints(specs);
     }
 
     //This will take the points provided as is and draw bridge sections between them.
@@ -331,20 +345,48 @@ public class BridgeManager
         return Vector3.Distance(corner, closestPointOnColliders) > 0.25f;
     }
 
-    private void GenerateNewVerticalScalerAtEndOfBridge(Vector3 bottomPoint, Vector3 topPoint, int yAxisRotation)
+    private Vector3 GenerateNewVerticalScalerAtEndOfBridge(Vector3 bottomPointOfScaler, Vector3 topPointOfScaler, int yAxisRotation, Vector3 oppositePointOnBridge, Vector3 centerOfUpperDestination)
     {
+        bool minorScaler = (topPointOfScaler.y - bottomPointOfScaler.y < 10.0f) || Vector3.Distance(oppositePointOnBridge, bottomPointOfScaler) < 10.0f;
+
         //Instantiate the vertical scaler
-        VerticalScaler newVerticalScaler = city.verticalScalerManager.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(true), city.transform);
+        VerticalScaler newVerticalScaler = city.verticalScalerManager.InstantiateVerticalScaler(city.cityType.GetVerticalScaler(minorScaler), city.transform);
         Transform verticalScalerTransform = newVerticalScaler.transform;
 
         //Rotate it
         newVerticalScaler.SetYAxisRotation(yAxisRotation);
 
         //Position it
-        verticalScalerTransform.position = bottomPoint;
+        if (minorScaler)
+            verticalScalerTransform.position = Vector3.MoveTowards(bottomPointOfScaler, oppositePointOnBridge, 1.0f);
+        else
+            verticalScalerTransform.position = Vector3.MoveTowards(bottomPointOfScaler, oppositePointOnBridge, newVerticalScaler.width * 0.5f);
+
+        //Determine how the top part of the vertical scaler will be oriented to connect with the top platform
+        bool invertTopConnector = verticalScalerTransform.InverseTransformPoint(centerOfUpperDestination).x < 0.0f;
 
         //Scale it and connect it to the entrance foundation
-        newVerticalScaler.ScaleToHeightAndConnect(topPoint.y - bottomPoint.y, false);
+        newVerticalScaler.ScaleToHeightAndConnect(topPointOfScaler.y - bottomPointOfScaler.y, invertTopConnector);
+
+        //If its a major vertical scaler like an elevator, generate a platform both at the foot of the elevator and at the top
+        if(!minorScaler)
+        {
+            //Bottom platform
+            Vector3 foundationScale = new Vector3(newVerticalScaler.width * 1.5f, 2.0f, newVerticalScaler.width * 1.5f);
+            Vector3 foundationPosition = city.transform.InverseTransformPoint(verticalScalerTransform.position - Vector3.up * foundationScale.y * 0.55f);
+            city.foundationManager.GenerateNewFoundation(foundationPosition, foundationScale, FoundationShape.Circular, false);
+
+            //Top platform
+            //foundationScale = new Vector3(newVerticalScaler.width * 1.2f, 2.0f, newVerticalScaler.width * 1.2f);
+            //foundationPosition = city.transform.InverseTransformPoint(verticalScalerTransform.position - Vector3.up * foundationScale.y * 0.55f);
+            //city.foundationManager.GenerateNewFoundation(foundationPosition, foundationScale, FoundationShape.Rectangular, false);
+        }
+
+        //Return the point where the bridge should end and the vertical scaler begins
+        if (minorScaler)
+            return bottomPointOfScaler;
+        else
+            return Vector3.MoveTowards(bottomPointOfScaler, oppositePointOnBridge, newVerticalScaler.width);
     }
 }
 

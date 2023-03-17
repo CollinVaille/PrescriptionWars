@@ -40,7 +40,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     //If its a new city, the cityLocation parameter is ignored and a new position is chosen. Else, its a restored city and the cityLocation is reused.
     public void ReserveTerrainLocation(bool newCity, Vector3 cityLocation)
     {
-        TerrainReservationOptions options = new TerrainReservationOptions(newCity, (int)(radius * 1.2f));
+        TerrainReservationOptions options = new TerrainReservationOptions(newCity, (int)(radius * 1.2f), circularCity);
         options.flatten = true;
 
         //Reserve location for city

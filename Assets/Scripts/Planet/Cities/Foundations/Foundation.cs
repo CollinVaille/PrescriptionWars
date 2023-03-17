@@ -44,7 +44,7 @@ public class Foundation : MonoBehaviour
     private void SetScale(Transform slab, Transform ground)
     {
         //Scale the x, y, z of the slab
-        slab.localScale = localScale - Vector3.up * 0.025f;
+        slab.localScale = localScale;
 
         //Scale the x, z of the ground
         Vector3 groundScale = ground.localScale.x * localScale;
@@ -53,8 +53,11 @@ public class Foundation : MonoBehaviour
 
         //Adjust the y position of the ground
         Vector3 groundPosition = ground.localPosition;
-        groundPosition.y = groundPosition.y * localScale.y - 0.005f;
+        groundPosition.y = groundPosition.y * localScale.y;
         ground.localPosition = groundPosition;
+
+        //Make sure there is no clipping (use world space instead of local space so we know the coordinates won't get skewed)
+        ground.position += Vector3.up * 0.005f;
     }
 
     private void SetRenderMaterialsIfNeeded(Transform slab, Transform ground, FoundationManager foundationManager)

@@ -7,7 +7,7 @@ public class TerrainReservationOptions
     public bool newGeneration;
 
     //General options (new or restored)
-    public bool flatten = false;
+    public bool flatten = false, circular = false;
     public int radius;
 
     //Options for new generation
@@ -17,9 +17,10 @@ public class TerrainReservationOptions
     //Options for restorations
     public Vector3 position;
 
-    public TerrainReservationOptions(bool newGeneration, int radius)
+    public TerrainReservationOptions(bool newGeneration, int radius, bool circular)
     {
         this.newGeneration = newGeneration;
         this.radius = radius;
+        this.circular = circular;
     }
 }

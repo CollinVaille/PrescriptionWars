@@ -9,9 +9,12 @@ public class NewBridgeSpecs
     public Collider[] point1Colliders, point2Colliders;
     public int bridgePrefabIndex;
     public bool verticalScalerAtDestination1 = false, verticalScalerAtDestination2 = false;
+    public BridgeDestinationPairing bridgeDestinationPairing;
 
     public NewBridgeSpecs(BridgeDestinationPairing bridgeDestinationPairing, int bridgePrefabIndex)
     {
+        this.bridgeDestinationPairing = bridgeDestinationPairing;
+
         point1 = bridgeDestinationPairing.destination1EdgePoint;
         point2 = bridgeDestinationPairing.destination2EdgePoint;
 

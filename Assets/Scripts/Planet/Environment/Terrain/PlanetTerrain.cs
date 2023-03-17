@@ -457,7 +457,7 @@ public class PlanetTerrain : MonoBehaviour
         //Now that we have concluded which area(s) to reserve, reserve it/them...
         int minHeightForReservation = options.newGeneration ? options.heightRange.x + 1 : (int)options.position.y;
 
-        ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options.radius, options.flatten);
+        ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options.radius, options.flatten, options.circular);
 
         //Compute the starting point of the area we just reserved (in world coordinates)
         Vector2 globalCoords = ConvertFromAreaToGlobalUnits(xCoord, zCoord);
@@ -507,7 +507,7 @@ public class PlanetTerrain : MonoBehaviour
         return true;
     }
 
-    private void ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, int radius, bool flatten)
+    private void ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, int radius, bool flatten, bool circular)
     {
         //The Mathf.Min caps the city size to that of the entire terrain
         int areasLong = Mathf.Min(Mathf.CeilToInt(radius * 2.0f / areaSize), areaSteepness.GetLength(0) - 2);
@@ -528,44 +528,49 @@ public class PlanetTerrain : MonoBehaviour
         //Flatten selected areas (all to the sample height of the center of the selection)
         if (flatten)
         {
-            int selectionSize = areaSize * areasLong;
+            FlattenSelectedAreasInRectangle(areasLong, xStart, zStart, minHeight);
+        }
+    }
 
-            float[,] heights = new float[selectionSize, selectionSize];
+    private void FlattenSelectedAreasInRectangle(int areasLong, int xStart, int zStart, int minHeight)
+    {
+        int selectionSize = areaSize * areasLong;
 
-            //Figure out what height to level the selection to (sample height from middle of selection)
-            float newHeight = terrain.terrainData.GetHeight((int)(xStart * areaSize + selectionSize * 0.5f),
-                                                            (int)(zStart * areaSize + selectionSize * 0.5f));
+        float[,] heights = new float[selectionSize, selectionSize];
 
-            //Make sure height is above min height
-            if (newHeight < minHeight)
-                newHeight = minHeight;
+        //Figure out what height to level the selection to (sample height from middle of selection)
+        float newHeight = terrain.terrainData.GetHeight((int)(xStart * areaSize + selectionSize * 0.5f),
+                                                        (int)(zStart * areaSize + selectionSize * 0.5f));
 
-            //Convert from world coordinates to terrain heightmap coordinates
-            newHeight /= 512.0f;
+        //Make sure height is above min height
+        if (newHeight < minHeight)
+            newHeight = minHeight;
 
-            //Set every point in the area to have that height except boundary points transition back to normal terrain
-            for (int x = 0; x < heights.GetLength(0); x++)
+        //Convert from world coordinates to terrain heightmap coordinates
+        newHeight /= 512.0f;
+
+        //Set every point in the area to have that height except boundary points transition back to normal terrain
+        for (int x = 0; x < heights.GetLength(0); x++)
+        {
+            for (int z = 0; z < heights.GetLength(1); z++)
             {
-                for (int z = 0; z < heights.GetLength(1); z++)
+                float edgePercentage = TerrainEdgePercentage(x, z, selectionSize, selectionSize / 4);
+
+                if (edgePercentage == 0)
+                    heights[x, z] = newHeight;
+                else
                 {
-                    float edgePercentage = TerrainEdgePercentage(x, z, selectionSize, selectionSize / 4);
+                    float oldHeight = terrain.terrainData.GetHeight(xStart * areaSize + z,
+                                                                    zStart * areaSize + x)
+                                                                    / 512.0f;
 
-                    if (edgePercentage == 0)
-                        heights[x, z] = newHeight;
-                    else
-                    {
-                        float oldHeight = terrain.terrainData.GetHeight(xStart * areaSize + z,
-                                                                        zStart * areaSize + x)
-                                                                        / 512.0f;
-
-                        heights[x, z] = Mathf.Lerp(newHeight, oldHeight, edgePercentage);
-                    }
+                    heights[x, z] = Mathf.Lerp(newHeight, oldHeight, edgePercentage);
                 }
             }
-
-            //Apply changes to terrain
-            terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
         }
+
+        //Apply changes to terrain
+        terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
     }
 
     //Return the index of the texture that is painted at the specified point

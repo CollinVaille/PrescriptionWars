@@ -350,7 +350,6 @@ public class FoundationGeneratorForHammocks
                 city.areaManager.ReserveAreasWithinThisCircle(centerX, centerZ, areasLong / 2, newAreaType, false, AreaManager.AreaReservationType.LackingRequiredFoundation);
             }
         }
-
         //Otherwise, this is a ground toucher that we need to turn into a spire (the spires cannot host buildings)
         else
         {
@@ -359,6 +358,16 @@ public class FoundationGeneratorForHammocks
             //After generating the spire, connect it to the rest of the hammock with vertical scalers
             GenerateVerticalScalerForSpire(hammockFoundationPlan, negZNeighbor, hammockPlan);
             GenerateVerticalScalerForSpire(hammockFoundationPlan, posZNeighbor,  hammockPlan);
+        }
+
+        //Generate mid-section bridge for torus foundations
+        if (hammockFoundationPlan.shape == FoundationShape.Torus)
+        {
+            float zOffset = hammockFoundationPlan.scale.z * 0.5f * FoundationManager.torusAnnulusMultiplier;
+            Vector3 smallerZBridgePoint = new Vector3(hammockPlan.localXPosition, hammockPlan.localTopElevation, hammockFoundationPlan.localZPosition - zOffset);
+            Vector3 biggerZBridgePoint = new Vector3(hammockPlan.localXPosition, hammockPlan.localTopElevation, hammockFoundationPlan.localZPosition + zOffset);
+
+            ConnectPointsWithBridge(smallerZBridgePoint, biggerZBridgePoint);
         }
 
         //Take care of connecting the foundation to the next foundation if needed
@@ -386,7 +395,7 @@ public class FoundationGeneratorForHammocks
         //Compute scaling and positioning data for the connector
         Vector3 circularConnectorScale = Vector3.one * Random.Range(25.0f, 35.0f);
         float circularConnectorZPosition = (negZFoundation.localZPosition + posZFoundation.localZPosition) * 0.5f;
-        Vector3 circularConnectorPosition = new Vector3(hammockPlan.localXPosition, negZTopElevation - circularConnectorScale.y * 0.5f - 0.001f, circularConnectorZPosition);
+        Vector3 circularConnectorPosition = new Vector3(hammockPlan.localXPosition, negZTopElevation - circularConnectorScale.y * 0.5f - 0.002f, circularConnectorZPosition);
 
         //Finally, place the connector
         foundationManager.GenerateNewFoundation(circularConnectorPosition, circularConnectorScale, FoundationShape.Circular, false);
@@ -537,11 +546,11 @@ public class FoundationGeneratorForHammocks
         }
     }
 
-    private void ConnectPointsWithBridge(Vector3 leftBridgePoint, Vector3 rightBridgePoint)
+    private void ConnectPointsWithBridge(Vector3 leftLocalBridgePoint, Vector3 rightLocalBridgePoint)
     {
         //Tell the bridge manager to connect these two points with a bridge
-        BridgeDestination leftDestination = new BridgeDestination(city.transform.TransformPoint(leftBridgePoint), 0.1f);
-        BridgeDestination rightDestination = new BridgeDestination(city.transform.TransformPoint(rightBridgePoint), 0.1f);
+        BridgeDestination leftDestination = new BridgeDestination(city.transform.TransformPoint(leftLocalBridgePoint), 0.1f);
+        BridgeDestination rightDestination = new BridgeDestination(city.transform.TransformPoint(rightLocalBridgePoint), 0.1f);
         city.bridgeManager.AddNewDestinationPairing(new BridgeDestinationPairing(leftDestination, rightDestination));
     }
 

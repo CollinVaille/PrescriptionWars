@@ -191,6 +191,9 @@ public class BuildingManager
                 God.SnapToGround(newBuilding, collidersToCheckAgainst: city.foundationManager.foundationGroundColliders);
             }
 
+            //Bump building up a slight bit, so that the floor of the building is not clipping through the ground
+            newBuilding.position += Vector3.up * 0.05f;
+
             //Remember building and finally, call set up on it
             buildings.Add(newBuilding.GetComponent<Building>());
             newBuilding.GetComponent<Building>().SetUpBuilding(
