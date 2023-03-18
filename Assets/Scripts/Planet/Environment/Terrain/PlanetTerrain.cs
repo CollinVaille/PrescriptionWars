@@ -118,7 +118,7 @@ public class PlanetTerrain : MonoBehaviour
                                               amplitudeOffsetZ + z * amplitudeGroundScale / length);
 
                 //Terrain boundaries
-                float terrainEdgePercentage = TerrainEdgePercentage(x, z, width, boundaryWidth);
+                float terrainEdgePercentage = GetEdgePercentageRectangular(x, z, width, boundaryWidth);
                 if (terrainEdgePercentage > 0)
                 {
                     if (customization.lowBoundaries) //Edge of terrain goes to 0 height
@@ -150,19 +150,19 @@ public class PlanetTerrain : MonoBehaviour
     //Returns percentage (0-1) to very edge of map if within boundary width
     //where 0 = beginning of boundary and 1 = very edge of map
     //Used to make smooth map boundaries
-    private float TerrainEdgePercentage (float x, float z, int terrainWidth, int boundaryWidth)
+    private float GetEdgePercentageRectangular (float x, float z, int outerWidth, int edgeWidth)
     {
         float[] boundaryPercentages = new float[] { 0, 0, 0, 0 };
 
-        if (x < boundaryWidth)
-            boundaryPercentages[0] = 1 - x / boundaryWidth;
-        else if (terrainWidth < x + boundaryWidth)
-            boundaryPercentages[2] = 1 - (terrainWidth - x) / boundaryWidth;
+        if (x < edgeWidth)
+            boundaryPercentages[0] = 1 - x / edgeWidth;
+        else if (outerWidth < x + edgeWidth)
+            boundaryPercentages[2] = 1 - (outerWidth - x) / edgeWidth;
 
-        if (z < boundaryWidth)
-            boundaryPercentages[1] = 1 - z / boundaryWidth;
-        else if (terrainWidth < z + boundaryWidth)
-            boundaryPercentages[3] = 1 - (terrainWidth - z) / boundaryWidth;
+        if (z < edgeWidth)
+            boundaryPercentages[1] = 1 - z / edgeWidth;
+        else if (outerWidth < z + edgeWidth)
+            boundaryPercentages[3] = 1 - (outerWidth - z) / edgeWidth;
 
         float max = boundaryPercentages[0];
         for (int boundary = 1; boundary < 4; boundary++)
@@ -172,6 +172,21 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         return max;
+    }
+
+    //private float GetEdgePercentageRectangularWithBoundaryCheck(float x, float z, int outerWidth, int edgeWidth, int )
+
+    //Where 0, 0 is the center of the circle
+    private float GetEdgePercentageCircular(int x, int z, int innerRadius, int outerRadius)
+    {
+        int pointRadius = Mathf.CeilToInt(Mathf.Sqrt((x * x) + (z * z)));
+
+        if (pointRadius < innerRadius)
+            return 0.0f;
+        else if (pointRadius > outerRadius)
+            return 1.0f;
+        else
+            return ((pointRadius - innerRadius) * 1.0f) / (outerRadius - innerRadius);
     }
 
     private void GenerateHill (float[,] heights, int xStart, int zStart, int xLength, int zLength, float height)
@@ -353,7 +368,7 @@ public class PlanetTerrain : MonoBehaviour
         {
             for (int z = zStart; z < zStart + areaSize; z++)
             {
-                if (TerrainEdgePercentage(x, z, terrainData.heightmapResolution, customization.smallTerrain ? 125 : 250) > 0)
+                if (GetEdgePercentageRectangular(x, z, terrainData.heightmapResolution, customization.smallTerrain ? 125 : 250) > 0)
                     return new Vector2Int(9999, 9999);
 
                 //Steepness...
@@ -417,7 +432,7 @@ public class PlanetTerrain : MonoBehaviour
         int xCoord, zCoord;
 
         //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
-        if (options.flatten)
+        if (options.terrainModification != TerrainReservationOptions.TerrainResModType.NoChange)
             options.radius *= 2;
 
         if (options.newGeneration) //New generation
@@ -457,20 +472,20 @@ public class PlanetTerrain : MonoBehaviour
         //Now that we have concluded which area(s) to reserve, reserve it/them...
         int minHeightForReservation = options.newGeneration ? options.heightRange.x + 1 : (int)options.position.y;
 
-        ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options.radius, options.flatten, options.circular);
+        float reservationHeight = ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options);
 
         //Compute the starting point of the area we just reserved (in world coordinates)
         Vector2 globalCoords = ConvertFromAreaToGlobalUnits(xCoord, zCoord);
-        Vector3 worldPosition = new Vector3(globalCoords.x, 9999.0f, globalCoords.y);
+        Vector3 worldPosition = new Vector3(globalCoords.x, reservationHeight, globalCoords.y);
 
         //Translate from starting point to center point of area
-        worldPosition.x += areaSize / 2;
-        worldPosition.z += areaSize / 2;
+        worldPosition.x += areaSize / 2.0f;
+        worldPosition.z += areaSize / 2.0f;
 
-        //Compute the y value
-        RaycastHit raycastHit;
-        Physics.Raycast(worldPosition, Vector3.down, out raycastHit);
-        worldPosition.y = raycastHit.point.y;
+        //Auto-compute the y value
+        //RaycastHit raycastHit;
+        //Physics.Raycast(worldPosition, Vector3.down, out raycastHit);
+        //worldPosition.y = raycastHit.point.y;
 
         //Return computed, height-adjusted, center point
         return worldPosition;
@@ -507,10 +522,10 @@ public class PlanetTerrain : MonoBehaviour
         return true;
     }
 
-    private void ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, int radius, bool flatten, bool circular)
+    private float ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, TerrainReservationOptions options)
     {
         //The Mathf.Min caps the city size to that of the entire terrain
-        int areasLong = Mathf.Min(Mathf.CeilToInt(radius * 2.0f / areaSize), areaSteepness.GetLength(0) - 2);
+        int areasLong = Mathf.Min(Mathf.CeilToInt(options.radius * 2.0f / areaSize), areaSteepness.GetLength(0) - 2);
 
         int xStart = xCoord - (areasLong / 2); //Leftmost x included
         int zStart = zCoord - (areasLong / 2); //Bottommost z included
@@ -526,37 +541,91 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         //Flatten selected areas (all to the sample height of the center of the selection)
-        if (flatten)
-        {
-            FlattenSelectedAreasInRectangle(areasLong, xStart, zStart, minHeight);
-        }
+        return ApplyModificationsToSelectedAreas(areasLong, xStart, zStart, minHeight, options);
     }
 
-    private void FlattenSelectedAreasInRectangle(int areasLong, int xStart, int zStart, int minHeight)
+    private float ApplyModificationsToSelectedAreas(int areasLong, int xStart, int zStart, int minHeight, TerrainReservationOptions options)
     {
-        int selectionSize = areaSize * areasLong;
-
-        float[,] heights = new float[selectionSize, selectionSize];
+        int outerWidth = areaSize * areasLong;
 
         //Figure out what height to level the selection to (sample height from middle of selection)
-        float newHeight = terrain.terrainData.GetHeight((int)(xStart * areaSize + selectionSize * 0.5f),
-                                                        (int)(zStart * areaSize + selectionSize * 0.5f));
+        float newHeight = terrain.terrainData.GetHeight((int)(xStart * areaSize + outerWidth * 0.5f),
+                                                        (int)(zStart * areaSize + outerWidth * 0.5f));
+
+        if (options.terrainModification == TerrainReservationOptions.TerrainResModType.NoChange)
+            return newHeight;
+
+        float edgeWidthAsPercentageOfOuterWidth = 0.25f;
+        float[,] heights = new float[outerWidth, outerWidth];
 
         //Make sure height is above min height
         if (newHeight < minHeight)
             newHeight = minHeight;
+        float maxHeight = newHeight + options.relativeMaxHeight;
 
         //Convert from world coordinates to terrain heightmap coordinates
         newHeight /= 512.0f;
+        maxHeight /= 512.0f;
+
+        //Cache some needed info before proceeding with terrain modifications
+        bool circular = options.circular;
+        bool flattenEdgesCeilMiddle = options.terrainModification == TerrainReservationOptions.TerrainResModType.FlattenEdgesCeilMiddle;
+        bool applyMaxHeightToPoint = false;
+
+        //Compute things we need if its a circular selection
+        int selectionRadius = Mathf.FloorToInt(outerWidth * 0.5f);
+        int outerRadius = Mathf.FloorToInt(selectionRadius * 0.675f);
+        int innerRadius = Mathf.FloorToInt(outerRadius * (1 - edgeWidthAsPercentageOfOuterWidth));
+        int innerInnerRadius = Mathf.FloorToInt(innerRadius * (1 - edgeWidthAsPercentageOfOuterWidth));
+        int innerInnerInnerRadius = Mathf.FloorToInt(innerInnerRadius * (1 - edgeWidthAsPercentageOfOuterWidth));
+
+        //Compute things we need if its a rectangular selection
+        int outerEdgeWidth = Mathf.CeilToInt(outerWidth * edgeWidthAsPercentageOfOuterWidth);
+        int innerInnerWidth = Mathf.CeilToInt((outerWidth - outerEdgeWidth) * (1 - edgeWidthAsPercentageOfOuterWidth));
+        int innerInnerEdgeWidth = Mathf.CeilToInt(outerWidth - innerInnerWidth);
+
+        int halfOfOuterEdgeWidth = Mathf.FloorToInt(outerEdgeWidth * 0.5f);
+        //int innerEdgeOffset = Mathf.FloorToInt((outerEdgeWidth + innerInnerEdgeWidth) * 0.5f);
+        int innerEdgeOffset = Mathf.FloorToInt((outerWidth - innerInnerWidth) * 0.5f);
 
         //Set every point in the area to have that height except boundary points transition back to normal terrain
         for (int x = 0; x < heights.GetLength(0); x++)
         {
             for (int z = 0; z < heights.GetLength(1); z++)
             {
-                float edgePercentage = TerrainEdgePercentage(x, z, selectionSize, selectionSize / 4);
+                //Determing how close point is to the edge
+                float edgePercentage;
+                if(circular)
+                    edgePercentage = GetEdgePercentageCircular(x - selectionRadius, z - selectionRadius, innerRadius, outerRadius);
+                else
+                    edgePercentage = GetEdgePercentageRectangular(x, z, outerWidth, outerEdgeWidth);
 
-                if (edgePercentage == 0)
+                //If we have multiple layers of edges, then do the same for inner edges
+                if(flattenEdgesCeilMiddle) //Flatten edges
+                {
+                    float innerEdgePercentage;
+                    if (circular)
+                        innerEdgePercentage = GetEdgePercentageCircular(x - selectionRadius, z - selectionRadius, innerInnerInnerRadius, innerInnerRadius);
+                    else
+                        innerEdgePercentage = GetEdgePercentageRectangular(x - innerEdgeOffset, z - innerEdgeOffset, innerInnerWidth, innerInnerEdgeWidth);
+
+                    if (edgePercentage < 0.0001f)
+                    {
+                        applyMaxHeightToPoint = true;
+
+                        if (circular)
+                            edgePercentage = 1.0f - innerEdgePercentage;
+                        else if(innerEdgePercentage < 0.0001f)
+                            edgePercentage = 1.0f;
+                    }
+                    else if(applyMaxHeightToPoint)
+                        applyMaxHeightToPoint = false;
+                }
+                else if (applyMaxHeightToPoint)
+                    applyMaxHeightToPoint = false;
+
+                //Finally, compute the new height using the edge percentage data
+                if (edgePercentage < 0.001f)
                     heights[x, z] = newHeight;
                 else
                 {
@@ -566,11 +635,19 @@ public class PlanetTerrain : MonoBehaviour
 
                     heights[x, z] = Mathf.Lerp(newHeight, oldHeight, edgePercentage);
                 }
+
+                //...And clamp the result
+                if (applyMaxHeightToPoint && heights[x, z] > maxHeight) //Ceil middle area points
+                    heights[x, z] = maxHeight;
             }
         }
 
+        //Debug.Log(a + " vs " + b);
+
         //Apply changes to terrain
         terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
+
+        return newHeight * 512.0f;
     }
 
     //Return the index of the texture that is painted at the specified point

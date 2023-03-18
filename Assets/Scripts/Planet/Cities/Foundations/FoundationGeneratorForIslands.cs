@@ -32,7 +32,7 @@ public class FoundationGeneratorForIslands
         //Determine level 1 and level 2 heights (level 1 is at the feet of the island foundations, level 2 is the top of the island foundations)
         bool level1IsElevated = (Random.Range(0, 2) == 0) || city.newCitySpecifications.lowerBuildingsMustHaveFoundations;
         float level1Height;
-        Vector2 level2HeightRange = (new Vector2(Random.Range(0.8f, 1.0f), Random.Range(1.0f, 1.2f))) * foundationManager.foundationHeight;
+        Vector2 level2HeightRange = (new Vector2(Random.Range(1.0f, 1.1f), Random.Range(1.1f, 1.35f))) * foundationManager.foundationHeight;
 
         if (level1IsElevated) //Level 1 is elevated (making level 2 even higher)
             level1Height = foundationManager.foundationHeight;

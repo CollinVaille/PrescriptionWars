@@ -8,11 +8,12 @@ public class FoundationManager
 
     //All torus foundations have their inner radius = this multiplier * their outer radius.
     //...Inner radius of ring model = 0.3825, outer radius of ring model = 0.5... 0.3825/0.5 = 0.765
-    public const float torusAnnulusMultiplier = 0.765f;
+    public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Hammocks;
     public int foundationHeight = 0;
+    public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
 
     public Material largeSlabMaterial, largeGroundMaterial;
@@ -64,10 +65,19 @@ public class FoundationManager
         }
 
         //Enforce required conditions for certain foundation types
-        if (foundationType == FoundationType.Atlantis)
+        if (foundationType == FoundationType.Islands)
+            nothingBelowFoundationHeight = city.newCitySpecifications.lowerBuildingsMustHaveFoundations;
+        else if (foundationType == FoundationType.Atlantis)
+        {
             city.circularCity = true;
+            nothingBelowFoundationHeight = Random.Range(0, 2) == 0;
+        }
         else if (foundationType == FoundationType.Hammocks)
+        {
             city.circularCity = false;
+            nothingBelowFoundationHeight = true;
+            city.foundationManager.foundationHeight += Random.Range(60, 80); //Hammocks need to be high up in the air
+        }
     }
 
     //The idea here is that certain foundation types create wasted space in the city that cannot be used for buildings.
@@ -141,7 +151,7 @@ public class FoundationManager
 
         //Tell building construction to create foundations underneath each building at this height range
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
-        city.newCitySpecifications.buildingFoundationHeightRange = new Vector2(Random.Range(0.9f, 1.0f), Random.Range(1.0f, 1.1f)) * foundationHeight;
+        city.newCitySpecifications.buildingFoundationHeightRange = new Vector2(Random.Range(1.0f, 1.1f), Random.Range(1.1f, 1.2f)) * foundationHeight;
     }
 
     private void GenerateNewIslandFoundations()
@@ -289,6 +299,28 @@ public class FoundationManager
         }
     }
 
+    //Can be called on new planet or restored planet
+    public TerrainReservationOptions.TerrainResModType GetTerrainModificationTypeForCity()
+    {
+        if (foundationType == FoundationType.NoFoundations)
+            return TerrainReservationOptions.TerrainResModType.Flatten;
+        else if (nothingBelowFoundationHeight)
+            return TerrainReservationOptions.TerrainResModType.FlattenEdgesCeilMiddle;
+        else
+            return TerrainReservationOptions.TerrainResModType.Flatten;
+
+        /* switch(foundationType)
+        {
+            case FoundationType.Islands:
+            case FoundationType.Hammocks:
+            case FoundationType.PerBuilding:
+            case FoundationType.Atlantis:
+                return TerrainReservationOptions.TerrainResModType.FlattenEdgesCeilMiddle;
+            default:
+                return TerrainReservationOptions.TerrainResModType.Flatten;
+        }   */
+    }
+
     public Foundation GetClosestFoundationAndPoint(Vector3 referencePointInGlobal, out Vector3 closestPointInGlobal, bool ignoreYWhenSearching)
     {
         //Start with the first foundation being the closest
@@ -321,6 +353,9 @@ public class FoundationManager
 [System.Serializable]
 public class FoundationManagerJSON
 {
+    //General
+    FoundationManager.FoundationType foundationType;
+
     //Materials
     public string slabMaterial, groundMaterial;
     public Vector2 slabMaterialTiling, groundMaterialTiling;
@@ -330,6 +365,8 @@ public class FoundationManagerJSON
 
     public FoundationManagerJSON(FoundationManager foundationManager)
     {
+        foundationType = foundationManager.foundationType;
+
         slabMaterial = foundationManager.slabMaterial.name;
         slabMaterialTiling = foundationManager.largeSlabMaterial.mainTextureScale;
 
@@ -343,6 +380,8 @@ public class FoundationManagerJSON
 
     public void RestoreFoundationManager(FoundationManager foundationManager)
     {
+        foundationManager.foundationType = foundationType;
+
         foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMaterial);
         God.CopyMaterialValues(foundationManager.slabMaterial, foundationManager.largeSlabMaterial, slabMaterialTiling.x, slabMaterialTiling.y, false);
 

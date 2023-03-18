@@ -33,7 +33,7 @@ public class FoundationGeneratorForAtlantis
 
         //Determine elevation data for the rings
         float currentRingHeight = foundationManager.foundationHeight / 2.0f;
-        float elevationAngleInDegrees = DetermineElevationAngleBetweenRings();
+        float elevationAngleInDegrees = DetermineElevationAngleBetweenRings(!foundationManager.nothingBelowFoundationHeight);
 
         //Create other variables needed for the upcoming for-loop
         float placementRadius = city.radius * 1.075f;
@@ -327,10 +327,17 @@ public class FoundationGeneratorForAtlantis
     //Returned number is in degrees. 0 degrees means the city is flat with no elevation changes.
     //A positive number means the inner rings are progressively higher in elevation. A negative number means they are progressively lower in elevation.
     //The number itself is the angle the bridge is at that connects each ring to the next.
-    private static float DetermineElevationAngleBetweenRings()
+    private static float DetermineElevationAngleBetweenRings(bool canGoLower)
     {
         if(Random.Range(0, 2) == 0) //Chance for non-zero angle
-            return Random.Range(-14.0f, 14.0f); //Any higher or lower and connecting bridges would use ladders which we don't want
+        {
+            float angle = Random.Range(0.0f, 14.0f); //Any higher and connecting bridges would use ladders which we don't want
+
+            if (Random.Range(0, 2) == 0 && canGoLower)
+                angle = -angle;
+
+            return angle;
+        }
         else //Zero angle, meaning flat city
             return 0.0f;
     }
@@ -377,8 +384,16 @@ public class FoundationGeneratorForAtlantis
 
         Vector3 ringFocalPoint = Vector3.MoveTowards(ringEdgePoint, cityCenterWithGlobalTop, -1.0f);
 
-        bool useMinorVerticalScaler = gapOuterRadius < 150.0f || localTopHeight < 25.0f;
-        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
+        //Check if something is in the way. If we hit ground where we expect the bottom to be, then proceed.
+        if (Physics.Raycast(ringEdgePoint + Vector3.up * 9000.0f, Vector3.down, out RaycastHit raycastHit))
+        {
+            //Something is in the way so give up trying to make a ladder/elevator here
+            if (raycastHit.point.y > globalBottom + 2.0f)
+                return;
+
+            bool useMinorVerticalScaler = gapOuterRadius < 150.0f || localTopHeight < 25.0f;
+            city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
+        }
     }
 
     private void DetermineWhatToDoWithBottomLevel()

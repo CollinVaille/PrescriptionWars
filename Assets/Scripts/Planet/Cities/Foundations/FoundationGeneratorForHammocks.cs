@@ -30,9 +30,6 @@ public class FoundationGeneratorForHammocks
         //We want to be able to control where the walls are ourselves here
         city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
 
-        //Hammocks need to be high up in the air
-        foundationManager.foundationHeight += Random.Range(60, 80);
-
         //Start with buildings being allowed to generate nowhere
         city.areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
 

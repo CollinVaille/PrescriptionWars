@@ -9,6 +9,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public GameObject mapMarkerPrefab;
     [HideInInspector] public CityType cityType;
     [HideInInspector] public bool circularCity = false;
+    [HideInInspector] public TerrainReservationOptions.TerrainResModType terrainModifications = TerrainReservationOptions.TerrainResModType.NoChange;
 
     //Relegate other aspects of city management to specialized managers (to declutter code)
     [HideInInspector] public AreaManager areaManager;
@@ -40,18 +41,19 @@ public class City : MonoBehaviour, INavZoneUpdater
     //If its a new city, the cityLocation parameter is ignored and a new position is chosen. Else, its a restored city and the cityLocation is reused.
     public void ReserveTerrainLocation(bool newCity, Vector3 cityLocation)
     {
-        TerrainReservationOptions options = new TerrainReservationOptions(newCity, (int)(radius * 1.2f), circularCity);
-        options.flatten = true;
+        TerrainReservationOptions options = new TerrainReservationOptions(newCity, circularCity, (int)(radius * 1.2f), foundationManager.foundationHeight * 0.5f - 0.25f);
 
         //Reserve location for city
         if (newCity)
         {
             options.heightRange = new Vector2Int((int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4), 500);
             options.preferredSteepness = Random.Range(0, 10);
+            terrainModifications = foundationManager.GetTerrainModificationTypeForCity();
         }
         else
             options.position = cityLocation;
 
+        options.terrainModification = terrainModifications;
         cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(options);
 
         /* if(newCity)
@@ -169,6 +171,8 @@ public class CityJSON
     public string name;
     public int radius;
     public int cityTypeIndex;
+    public bool circularCity;
+    public TerrainReservationOptions.TerrainResModType terrainModifications;
     public Vector3 cityLocation;
 
     //Sub-managers
@@ -192,6 +196,8 @@ public class CityJSON
             }
         }
 
+        circularCity = city.circularCity;
+        terrainModifications = city.terrainModifications;
         cityLocation = city.transform.position;
 
         buildingManagerJSON = new BuildingManagerJSON(city.buildingManager);
@@ -211,6 +217,8 @@ public class CityJSON
         city.cityType = CityGenerator.generator.cityTypes[cityTypeIndex];
         string cityTypePathSuffix = city.cityType.name + "/";
 
+        city.circularCity = circularCity;
+        city.terrainModifications = terrainModifications;
         city.ReserveTerrainLocation(false, cityLocation);
 
         buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathSuffix);
