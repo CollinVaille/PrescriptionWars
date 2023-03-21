@@ -447,6 +447,11 @@ public class FoundationGeneratorForHammocks
 
         //Finally, place the vertical scaler
         city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(globalCenterOfSpire, globalCenterOfVerticalScaler, globalBottomElevation, globalTopElevation, false);
+
+        //After finally, reserve area around the vertical scaler so that no buildings can spawn there
+        Vector3 placeInAreas = city.areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(globalCenterOfVerticalScaler));
+        int radiusInAreas = 20 / city.areaManager.areaSize;
+        city.areaManager.ReserveAreasWithinThisCircle((int)placeInAreas.x, (int)placeInAreas.z, radiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.LackingRequiredFoundation);
     }
 
     private void ConnectHammocks(HammockPlan leftHammock, HammockPlan rightHammock)
@@ -527,7 +532,7 @@ public class FoundationGeneratorForHammocks
         for (int bridgesPlaced = 0; bridgesPlaced < bridgesToPlace; bridgesPlaced++)
         {
             Vector3 newLocalFoundationPosition = Vector3.MoveTowards(leftLocalBridgePoint, rightLocalBridgePoint, bridgeWidth * (0.5f + bridgesPlaced));
-            newLocalFoundationPosition.y -= bridgeFoundationScale.y * 0.5f - Random.Range(0.001f, 0.002f);
+            newLocalFoundationPosition.y -= bridgeFoundationScale.y * 0.5f - Random.Range(0.01f, 0.02f);
 
             foundationManager.GenerateNewFoundation(newLocalFoundationPosition, bridgeFoundationScale, shape, false);
         }
@@ -592,10 +597,11 @@ public class FoundationGeneratorForHammocks
         localVerticalScalerPoint.y = 0.0f;
 
         //Convert from local to global
-        float globalTopElevation = city.transform.position.y + localTopElevation;
-        float globalBottomElevation = city.transform.position.y;
         Vector3 globalFoundationCenter = city.transform.TransformPoint(localFoundationCenter);
         Vector3 globalVerticalScalerPoint = city.transform.TransformPoint(localVerticalScalerPoint);
+        float globalTopElevation = city.transform.position.y + localTopElevation;
+        //float globalBottomElevation = city.transform.position.y;
+        float globalBottomElevation = PlanetTerrain.planetTerrain.SnapToTerrainAndFlattenAreaAroundPoint(globalVerticalScalerPoint.x, globalVerticalScalerPoint.z).y;
 
         //Finally, generate the damn thing
         city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(globalFoundationCenter, globalVerticalScalerPoint, globalBottomElevation, globalTopElevation, false);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class PlanetNameGenerator
 {
-    private static string[] planetNames;
+    private static string[] planetNames, planetNamePrefixes, planetNameSuffixes;
     private static List<string> planetNamesGenerated = new List<string>();
 
     /// <summary>
@@ -17,10 +17,10 @@ public static class PlanetNameGenerator
             ReadInPlanetNames();
 
         //Pick a random name
-        string planetName = planetNames[UnityEngine.Random.Range(0, planetNames.Length)];
+        string planetName = GetARandomNameThatCouldBeRedundant();
 
         //Add roman numeral onto end for variation
-        if (UnityEngine.Random.Range(0, 10) == 0)
+        if (UnityEngine.Random.Range(0, 30) == 0)
         {
             string[] numerals = new string[] { "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
             planetName += " " + numerals[UnityEngine.Random.Range(0, numerals.Length)];
@@ -31,6 +31,14 @@ public static class PlanetNameGenerator
 
         planetNamesGenerated.Add(planetName);
         return planetName;
+    }
+
+    private static string GetARandomNameThatCouldBeRedundant()
+    {
+        if(Random.Range(0, 4) == 0)
+            return planetNames[UnityEngine.Random.Range(0, planetNames.Length)];
+        else
+            return planetNamePrefixes[UnityEngine.Random.Range(0, planetNamePrefixes.Length)] + planetNameSuffixes[UnityEngine.Random.Range(0, planetNameSuffixes.Length)];
     }
 
     /// <summary>
@@ -55,6 +63,8 @@ public static class PlanetNameGenerator
     private static void ReadInPlanetNames()
     {
         planetNames = GeneralHelperMethods.GetLinesFromFile("Location Names/Planet Names");
+        planetNamePrefixes = GeneralHelperMethods.GetLinesFromFile("Location Names/Planet Name Prefixes");
+        planetNameSuffixes = GeneralHelperMethods.GetLinesFromFile("Location Names/Planet Name Suffixes");
     }
 
     /// <summary>

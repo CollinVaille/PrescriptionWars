@@ -612,11 +612,7 @@ public class PlanetTerrain : MonoBehaviour
                     if (edgePercentage < 0.0001f)
                     {
                         applyMaxHeightToPoint = true;
-
-                        if (circular)
-                            edgePercentage = 1.0f - innerEdgePercentage;
-                        else if(innerEdgePercentage < 0.0001f)
-                            edgePercentage = 1.0f;
+                        edgePercentage = 1.0f - innerEdgePercentage;
                     }
                     else if(applyMaxHeightToPoint)
                         applyMaxHeightToPoint = false;
@@ -648,6 +644,59 @@ public class PlanetTerrain : MonoBehaviour
         terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
 
         return newHeight * 512.0f;
+    }
+
+    public Vector3 SnapToTerrainAndFlattenAreaAroundPoint(float globalX, float globalZ, float radiusToFlatten = 100.0f)
+    {
+        Vector3 point = new Vector3(globalX, 9999.0f, globalZ);
+
+        Ray ray = new Ray(point, Vector3.down);
+        Collider groundToCollideWith = terrain.GetComponent<Collider>();
+        if (groundToCollideWith.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+        {
+            point.y = hitInfo.point.y - 0.05f;
+            FlattenAreaAroundPoint(point, radiusToFlatten);
+        }
+
+        point.y = hitInfo.point.y + 0.1f;
+        return point;
+    }
+
+    private void FlattenAreaAroundPoint(Vector3 centerPointInWorldSpace, float radiusToFlatten)
+    {
+        //Convert from world coordinates to terrain heightmap coordinates
+        float newHeight = centerPointInWorldSpace.y / 512.0f;
+        float positionOffset = -radiusToFlatten;
+        Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(centerPointInWorldSpace.x + positionOffset, centerPointInWorldSpace.z + positionOffset);
+
+        int areasLong = Mathf.Min(Mathf.CeilToInt(radiusToFlatten * 2.0f / areaSize), areaSteepness.GetLength(0) - 2); //The Mathf.Min caps the city size to that of the entire terrain
+        int widthInTerrainUnits = areaSize * areasLong;
+        int edgeWidthInTerrainUnits = (int)(widthInTerrainUnits * 0.25f);
+        float[,] heights = new float[widthInTerrainUnits, widthInTerrainUnits];
+
+        //Set every point in the area to have that height except boundary points transition back to normal terrain
+        for (int x = 0; x < heights.GetLength(0); x++)
+        {
+            for (int z = 0; z < heights.GetLength(1); z++)
+            {
+                //Determing how close point is to the edge
+                float edgePercentage = GetEdgePercentageRectangular(x, z, widthInTerrainUnits, edgeWidthInTerrainUnits);
+
+                //Finally, compute the new height using the edge percentage data
+                if (edgePercentage < 0.001f)
+                    heights[x, z] = newHeight;
+                else
+                {
+                    float oldHeight = terrain.terrainData.GetHeight(areaCoords.x * areaSize + z,
+                                                                    areaCoords.y * areaSize + x)
+                                                                    / 512.0f;
+
+                    heights[x, z] = Mathf.Lerp(newHeight, oldHeight, edgePercentage);
+                }
+            }
+        }
+
+        terrain.terrainData.SetHeights(areaCoords.x * areaSize, areaCoords.y * areaSize, heights);
     }
 
     //Return the index of the texture that is painted at the specified point

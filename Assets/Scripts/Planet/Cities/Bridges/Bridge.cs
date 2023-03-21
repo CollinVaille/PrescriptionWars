@@ -56,14 +56,14 @@ public class Bridge : MonoBehaviour
 
         if (useSubstructure)
         {
-            if (Physics.Raycast(substructure.position + Vector3.down * 1.0f, Vector3.down, out RaycastHit hit))
+            bool hitSomething = Physics.Raycast(substructure.position + Vector3.down * 1.0f, Vector3.down, out RaycastHit hit);
+            float topY = transform.position.y;
+            float bottomY = hitSomething ? hit.point.y : 6969.0f;
+            float yDiff = topY - bottomY;
+
+            if (hitSomething && yDiff < 75.0f)
             {
                 usingSubstructure = true;
-
-                //Gather needed variables
-                float topY = transform.position.y;
-                float bottomY = hit.point.y;
-                float yDiff = topY - bottomY;
 
                 //Will use this at the end, but need to get the information now
                 Transform tileablePart = substructure.Find("Tile This Downwards");
