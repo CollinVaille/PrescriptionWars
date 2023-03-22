@@ -371,7 +371,6 @@ public class FoundationGeneratorForAtlantis
     private void GenerateEscapeLadderOnOutsideOfGap(float gapOuterRadius, float localTopHeight)
     {
         float globalTop = localTopHeight + city.transform.position.y;
-        float globalBottom = globalTop - localTopHeight;
 
         Vector3 pointOutsideCityWithGlobalTop = city.transform.position + Vector3.one * city.radius;
         pointOutsideCityWithGlobalTop.y = globalTop;
@@ -384,16 +383,17 @@ public class FoundationGeneratorForAtlantis
 
         Vector3 ringFocalPoint = Vector3.MoveTowards(ringEdgePoint, cityCenterWithGlobalTop, -1.0f);
 
-        //Check if something is in the way. If we hit ground where we expect the bottom to be, then proceed.
-        if (Physics.Raycast(ringEdgePoint + Vector3.up * 9000.0f, Vector3.down, out RaycastHit raycastHit))
-        {
-            //Something is in the way so give up trying to make a ladder/elevator here
-            if (raycastHit.point.y > globalBottom + 2.0f)
-                return;
+        //Determine where the bottom should be
+        float globalBottom = PlanetTerrain.planetTerrain.SnapToTerrainAndFlattenAreaAroundPoint(ringEdgePoint.x, ringEdgePoint.z).y;
+        
+        //Is the gap deep enough to even warrant a vertical scaler?
+        float heightDifference = globalTop - globalBottom;
+        if (heightDifference < 2.0f)
+            return;
 
-            bool useMinorVerticalScaler = gapOuterRadius < 150.0f || localTopHeight < 25.0f;
-            city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
-        }
+        //Proceed with generating the vertical scaler
+        bool useMinorVerticalScaler = gapOuterRadius < 150.0f || heightDifference < 15.0f;
+        city.verticalScalerManager.GenerateVerticalScalerWithFocalPoint(ringFocalPoint, ringEdgePoint, globalBottom, globalTop, useMinorVerticalScaler);
     }
 
     private void DetermineWhatToDoWithBottomLevel()
@@ -406,7 +406,7 @@ public class FoundationGeneratorForAtlantis
             oceanNearCityElevation = false;
 
         //Chance to generate a very short and fat foundation at the bottom center of the city. Makes pits have floors.
-        if (oceanNearCityElevation || Random.Range(0, 2) == 0)
+        if (oceanNearCityElevation || (city.terrainModifications == TerrainReservationOptions.TerrainResModType.Flatten && Random.Range(0, 2) == 0))
         {
             Vector3 floorFoundationScale = Vector3.one * city.radius * 1.95f;
             floorFoundationScale.y = 0.15f;

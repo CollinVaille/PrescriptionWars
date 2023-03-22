@@ -39,7 +39,7 @@ public abstract class PlanetLight : Interactable
     }
 
     //Instance-----------------------
-
+    public Transform objectRoot;
     protected bool on = false;
 
     public override void Interact(Pill interacting)
@@ -73,4 +73,6 @@ public abstract class PlanetLight : Interactable
     }
 
     protected override string GetInteractionVerb() { return on ? "Turn Off" : "Turn On"; }
+
+    public Transform GetObjectRoot() { return objectRoot ? objectRoot : transform; }
 }

@@ -16,6 +16,7 @@ public class CityLightManager
     public void GenerateNewCityLights()
     {
         int targetPlacementCount = Mathf.CeilToInt(city.foundationManager.GetEstimatedUsableSquareMetersForCity() * 0.00004f);
+        float highestAllowedPlacementHeightInGlobal = city.buildingManager.GetHighestBuildingElevationInLocal() + city.transform.position.y + 20.0f;
 
         int attempt = 1, lightsPlaced = 0;
         for (; attempt <= 200 && lightsPlaced < targetPlacementCount; attempt++)
@@ -25,7 +26,7 @@ public class CityLightManager
             if (NewCityLightPlaceTooCloseToOtherLights(newPlaceInGlobal, 125.0f))
                 continue;
 
-            if (NewCityLightPlaceClashesWithOtherStuff(newPlaceInGlobal, out float yCoordInGlobal))
+            if (NewCityLightPlaceClashesWithOtherStuff(newPlaceInGlobal, highestAllowedPlacementHeightInGlobal, out float yCoordInGlobal))
                 continue;
 
             newPlaceInGlobal.y = yCoordInGlobal;
@@ -58,7 +59,7 @@ public class CityLightManager
         }
     }
 
-    public bool NewCityLightPlaceClashesWithOtherStuff(Vector3 globalCoordinate, out float yCoordInGlobal)
+    public bool NewCityLightPlaceClashesWithOtherStuff(Vector3 globalCoordinate, float highestAllowedHeightInGlobal, out float yCoordInGlobal)
     {
         globalCoordinate.y = 6969.69f;
 
@@ -76,10 +77,14 @@ public class CityLightManager
             if (hitCollider.GetComponentInParent<VerticalScaler>())
                 return true;
 
+            if (hitCollider.GetComponentInParent<WallSection>())
+                return true;
+
             if (hitCollider.GetComponent<Terrain>() && city.foundationManager.foundationType != FoundationManager.FoundationType.NoFoundations)
                 return true;
 
-            if (yCoordInGlobal > city.transform.position.y + city.foundationManager.foundationHeight * 1.1f && city.foundationManager.foundationType == FoundationManager.FoundationType.Hammocks)
+            //Prevent lights from being placed on the top of tall spires
+            if (yCoordInGlobal > highestAllowedHeightInGlobal)
                 return true;
 
             return false;
@@ -124,5 +129,29 @@ public class CityLightManager
 
         //Add it to the automatic lighting system
         PlanetLight.AddAutomaticLight(newPlanetLight);
+    }
+}
+
+[System.Serializable]
+public class CityLightManagerJSON
+{
+    public string cityLightPrefab;
+    public List<Vector3> cityLightGlobalPositions;
+
+    public CityLightManagerJSON(CityLightManager cityLightManager)
+    {
+        cityLightPrefab = cityLightManager.cityLightPrefab.name;
+
+        cityLightGlobalPositions = new List<Vector3>();
+        foreach (PlanetLight cityLight in cityLightManager.cityLights)
+            cityLightGlobalPositions.Add(cityLight.GetObjectRoot().position);
+    }
+
+    public void RestoreCityLightManager(CityLightManager cityLightManager, string cityTypePathSuffix)
+    {
+        cityLightManager.cityLightPrefab = Resources.Load<GameObject>("Planet/City/Lights/" + cityTypePathSuffix + cityLightPrefab);
+
+        foreach (Vector3 cityLightGlobalPosition in cityLightGlobalPositions)
+            cityLightManager.GenerateCityLight(cityLightGlobalPosition);
     }
 }

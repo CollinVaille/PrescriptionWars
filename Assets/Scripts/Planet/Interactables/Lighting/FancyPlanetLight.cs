@@ -16,20 +16,24 @@ public class FancyPlanetLight : PlanetLight
     private AudioSource audioSource;
     private int flickerCode = 0;
 
-    private void Start()
+    private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        God.god.ManageAudioSource(audioSource);
 
         if (lightRenderers != null && lightRenderers[0] != null)
             offMaterial = lightRenderers[0].sharedMaterial;
 
         lightIntensities = new float[lights.Length];
-        for(int x = 0; x < lights.Length; x++)
+        for (int x = 0; x < lights.Length; x++)
         {
             if (lights[x])
                 lightIntensities[x] = lights[x].intensity;
         }
+    }
+
+    private void Start()
+    {
+        God.god.ManageAudioSource(audioSource);
     }
 
     protected override void TurnOn(AudioSource interactingAudioSource)

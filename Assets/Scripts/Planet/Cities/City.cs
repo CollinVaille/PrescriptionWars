@@ -186,6 +186,7 @@ public class CityJSON
     public VerticalScalerManagerJSON verticalScalerManagerJSON;
     public CityWallManagerJSON cityWallManagerJSON;
     public BridgeManagerJSON bridgeManagerJSON;
+    public CityLightManagerJSON cityLightManagerJSON;
 
     public CityJSON(City city)
     {
@@ -210,6 +211,7 @@ public class CityJSON
         verticalScalerManagerJSON = new VerticalScalerManagerJSON(city.verticalScalerManager);
         cityWallManagerJSON = new CityWallManagerJSON(city.cityWallManager);
         bridgeManagerJSON = new BridgeManagerJSON(city.bridgeManager);
+        cityLightManagerJSON = new CityLightManagerJSON(city.cityLightManager);
     }
 
     public void RestoreCity(City city)
@@ -231,6 +233,7 @@ public class CityJSON
         verticalScalerManagerJSON.RestoreVerticalScalerManager(city.verticalScalerManager);
         cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
         bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
+        cityLightManagerJSON.RestoreCityLightManager(city.cityLightManager, cityTypePathSuffix);
 
         //After the city has been regenerated, build the nav mesh to pathfind through it
         city.GenerateNavMesh();

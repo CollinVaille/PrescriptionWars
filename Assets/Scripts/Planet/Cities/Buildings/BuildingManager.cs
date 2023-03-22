@@ -362,6 +362,20 @@ public class BuildingManager
         defaultWallMaterial = Resources.Load<Material>("Planet/City/Materials/" + city.cityType.defaultWallMaterial);
         defaultFloorMaterial = Resources.Load<Material>("Planet/City/Materials/" + city.cityType.defaultFloorMaterial);
     }
+
+    public float GetHighestBuildingElevationInLocal()
+    {
+        float highestLocalHeight = Mathf.NegativeInfinity;
+
+        foreach(Building building in buildings)
+        {
+            float buildingHeightInLocal = building.transform.localPosition.y;
+            if (buildingHeightInLocal > highestLocalHeight)
+                highestLocalHeight = buildingHeightInLocal;
+        }
+
+        return highestLocalHeight;
+    }
 }
 
 [System.Serializable]
