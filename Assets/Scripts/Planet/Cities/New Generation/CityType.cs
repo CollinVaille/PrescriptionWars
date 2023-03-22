@@ -36,6 +36,9 @@ public class CityType
     //Vertical scalers
     public string minorVerticalScaler, majorVerticalScaler;
 
+    //City lights
+    public string[] lights;
+
     public string GetVerticalScaler(bool minor)
     {
         return "Planet/City/Vertical Scalers/" + (minor ? minorVerticalScaler : majorVerticalScaler);

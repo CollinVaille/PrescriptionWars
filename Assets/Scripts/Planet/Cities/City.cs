@@ -18,6 +18,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     [HideInInspector] public VerticalScalerManager verticalScalerManager;
     [HideInInspector] public CityWallManager cityWallManager;
     [HideInInspector] public BridgeManager bridgeManager;
+    [HideInInspector] public CityLightManager cityLightManager;
     [HideInInspector] public NewCitySpecifications newCitySpecifications;
 
     //Called after city has been generated or regenerated
@@ -29,6 +30,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         verticalScalerManager = new VerticalScalerManager(this);
         cityWallManager = new CityWallManager(this);
         bridgeManager = new BridgeManager(this);
+        cityLightManager = new CityLightManager(this);
     }
 
     public void AfterCityGeneratedOrRestored()
@@ -123,6 +125,9 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Generate bridges
         bridgeManager.GenerateNewBridges();
+
+        //Generate the public lighting that illuminates the city at night
+        cityLightManager.GenerateNewCityLights();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
 

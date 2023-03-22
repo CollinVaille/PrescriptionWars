@@ -335,6 +335,13 @@ public class FoundationManager
         }
     }
 
+    public float GetEstimatedUsableSquareMetersForCity()
+    {
+        float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
+        float usablePercentage = GetEstimatedUsableSquareMeterPercentageForCity();
+        return totalSquareMetersForCity * usablePercentage;
+    }
+
     private static float GetMinimumSquareMetersForFoundationType(FoundationType foundationType)
     {
         switch(foundationType)

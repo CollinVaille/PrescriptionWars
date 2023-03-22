@@ -114,6 +114,10 @@ public class CityGenerator : MonoBehaviour
         TrimToRandomSubset(city.bridgeManager.bridgePrefabPaths, Random.Range(1, 4));
         city.bridgeManager.bridgePrefabPaths.Add("Special Connector");
 
+        //Lights--------------------------------------------------------------------------------------------------------------
+        string cityLight = cityType.lights[Random.Range(0, cityType.lights.Length)];
+        city.cityLightManager.cityLightPrefab = Resources.Load<GameObject>("Planet/City/Lights/" + cityTypePathSuffix + cityLight);
+
     }
 
     private CityType SelectCityType()
