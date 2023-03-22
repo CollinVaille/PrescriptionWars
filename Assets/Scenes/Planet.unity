@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.54742074, g: 0.4965406, b: 0.5879422, a: 1}
+  m_IndirectSpecularColor: {r: 0.63903314, g: 0.54203063, b: 0.4150817, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9983,7 +9983,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 2.2011103e-38, y: NaN, z: NaN, w: NaN}
+  m_BoundingSphereOverride: {x: 4.5905e-41, y: 0, z: 0, w: 6e-45}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetName: 
-  biome: 6
+  biome: 0
   biomeSubType: 1
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
@@ -21691,6 +21691,7 @@ MonoBehaviour:
     minorVerticalScaler: Rusty Ladder With Platform
     majorVerticalScaler: Rickety Elevator
   foundationOptions:
+    testFoundation: 
     basicCircularFoundation: Basic Circular Foundation
     basicRectangularFoundation: Basic Rectangular Foundation
     basicTorusFoundation: Basic Torus Foundation
@@ -21704,6 +21705,7 @@ MonoBehaviour:
     - Colosseum Circular Foundation
     - Hippodrome Circular Foundation
     - Sci-Fi Pipes Circular Foundation
+    - Temple Circular Foundation
     largeRectangularFoundations:
     - Colonnade Rectangular Foundation
     largeTorusFoundations:

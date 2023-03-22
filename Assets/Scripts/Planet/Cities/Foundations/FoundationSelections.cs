@@ -6,12 +6,15 @@ public enum FoundationShape { Rectangular, Circular, Torus }
 
 public class FoundationSelections
 {
+    public string testFoundation;
     public string basicCircularFoundation, basicRectangularFoundation, basicTorusFoundation;
     public string smallCircularFoundation, smallRectangularFoundation;
     public string largeCircularFoundation, largeRectangularFoundation, largeTorusFoundation;
 
     public FoundationSelections(FoundationOptions foundationOptions)
     {
+        testFoundation = foundationOptions.testFoundation;
+
         basicCircularFoundation = foundationOptions.basicCircularFoundation;
         basicRectangularFoundation = foundationOptions.basicRectangularFoundation;
         basicTorusFoundation = foundationOptions.basicTorusFoundation;
@@ -26,6 +29,9 @@ public class FoundationSelections
 
     public string GetFoundationPrefab(FoundationShape foundationShape, Vector3 scale)
     {
+        if(!string.IsNullOrEmpty(testFoundation))
+            return testFoundation;
+
         if (scale.y / 2.0f < 15.0f) //Foundation is short so just choose a basic shape. Fancy patterns would look smashed with this y scale
         {
             if (foundationShape == FoundationShape.Rectangular)

@@ -11,7 +11,7 @@ public class FoundationManager
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.Pyramid;
+    public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
@@ -94,7 +94,7 @@ public class FoundationManager
             newSquareMetersForCity = minimumSquareMeters;
 
         float newRadiusForCity = AreaManager.CalculateHalfLengthFromArea(city.circularCity, newSquareMetersForCity);
-        Debug.Log(newSquareMetersForCity);
+        //Debug.Log(newSquareMetersForCity);
 
         //Debug.Log("from " + ((int)city.radius) + " to " + ((int)newRadiusForCity) + " with usage percent " + usablePercentage);
         city.radius = (int)newRadiusForCity;
@@ -122,10 +122,10 @@ public class FoundationManager
         switch(foundationType)
         {
             case FoundationType.PerBuilding: GenerateNewPerBuildingFoundations(); return;
-            case FoundationType.Islands: GenerateNewIslandFoundations(); return;
-            case FoundationType.Atlantis: GenerateNewAtlantisFoundations(); return;
-            case FoundationType.Hammocks: GenerateNewHammockFoundations(); return;
-            case FoundationType.Pyramid: GenerateNewPyramidFoundations(); return;
+            case FoundationType.Islands: (new FoundationGeneratorForIslands(this)).GenerateNewIslandFoundations(); return;
+            case FoundationType.Atlantis: (new FoundationGeneratorForAtlantis(this)).GenerateNewAtlantisFoundations(); return;
+            case FoundationType.Hammocks: (new FoundationGeneratorForHammocks(this)).GenerateNewHammockFoundations(); return;
+            case FoundationType.Pyramid: (new FoundationGeneratorForPyramid(this)).GenerateNewPyramidFoundations(); return;
             default: GenerateNewSingleSlabFoundation(); return;
         }
     }
@@ -159,30 +159,10 @@ public class FoundationManager
         //city.buildingSpecifications.foundationHeightRange = Vector2.one * foundationHeight;
         city.newCitySpecifications.buildingFoundationHeightRange = new Vector2(Random.Range(1.0f, 1.1f), Random.Range(1.1f, 1.2f)) * foundationHeight;
     }
-    private void GenerateNewIslandFoundations()
-    {
-        FoundationGeneratorForIslands generator = new FoundationGeneratorForIslands(this);
-        generator.GenerateNewIslandFoundations();
-    }
-    private void GenerateNewAtlantisFoundations()
-    {
-        FoundationGeneratorForAtlantis generator = new FoundationGeneratorForAtlantis(this);
-        generator.GenerateNewAtlantisFoundations();
-    }
-    private void GenerateNewHammockFoundations()
-    {
-        FoundationGeneratorForHammocks generator = new FoundationGeneratorForHammocks(this);
-        generator.GenerateNewHammockFoundations();
-    }
-    private void GenerateNewPyramidFoundations()
-    {
-        FoundationGeneratorForPyramid generator = new FoundationGeneratorForPyramid(this);
-        generator.GenerateNewPyramidFoundations();
-    }
 
     //Helper methods---
 
-    public void GenerateEntrancesForCardinalDirections(bool entrancesNeedConnecting, float extraDistanceFromCityCenter = 0.0f, float overrideDistanceFromCityCenter = 0.0f, float foundationLocalY = 0.0f, bool reserveArea = false)
+    public void GenerateEntrancesForCardinalDirections(bool entrancesNeedConnecting, float extraDistanceFromCityCenter = 0.0f, float overrideDistanceFromCityCenter = 0.0f, float foundationLocalY = 0.0f, bool reserveArea = false, bool forceEntranceToCenter = false)
     {
         FoundationShape foundationShape = (Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
         float distanceFromCityCenter = overrideDistanceFromCityCenter > 1.0f ? overrideDistanceFromCityCenter : (city.radius * 1.075f) + extraDistanceFromCityCenter;
@@ -191,6 +171,8 @@ public class FoundationManager
 
         //Prepare for X gates
         city.areaManager.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
+        if (forceEntranceToCenter)
+            widestRoadCenteredAt = 0.0f;
         Vector3 foundationScale = Vector3.one * Mathf.Clamp(widestRoadWidth * 2.0f, 20.0f, 30.0f);
         foundationScale.y = foundationHeight - 0.05f;
 
@@ -200,6 +182,8 @@ public class FoundationManager
 
         //Prepare for Z gates
         city.areaManager.GetWidestCardinalRoad(false, !city.circularCity, out widestRoadWidth, out widestRoadCenteredAt);
+        if (forceEntranceToCenter)
+            widestRoadCenteredAt = 0.0f;
         foundationScale = Vector3.one * Mathf.Clamp(widestRoadWidth * 2.0f, 20.0f, 30.0f);
         foundationScale.y = foundationHeight - 0.05f;
 

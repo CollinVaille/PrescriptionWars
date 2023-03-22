@@ -76,6 +76,6 @@ public class FoundationGeneratorForPyramid : MonoBehaviour
 
         //Generate entrance for going from the previous level to this level
         float entranceDistanceFromCenter = foundationScale.x * 0.5f;
-        foundationManager.GenerateEntrancesForCardinalDirections(false, overrideDistanceFromCityCenter: entranceDistanceFromCenter, foundationLocalY: foundationLocalPosition.y + 0.02f, reserveArea: true);
+        foundationManager.GenerateEntrancesForCardinalDirections(false, overrideDistanceFromCityCenter: entranceDistanceFromCenter, foundationLocalY: foundationLocalPosition.y + 0.02f, reserveArea: true, forceEntranceToCenter: true);
     }
 }
