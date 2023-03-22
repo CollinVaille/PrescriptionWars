@@ -4,6 +4,42 @@ using UnityEngine;
 
 public abstract class PlanetLight : Interactable
 {
+    //Static-------------------------
+    private static List<PlanetLight> automaticLights;
+
+    public static void ClearAllAutomaticLights()
+    {
+        if(automaticLights != null)
+        {
+            automaticLights.Clear();
+            automaticLights = null;
+        }
+    }
+
+    public static void AddAutomaticLight(PlanetLight lightToAdd)
+    {
+        if (automaticLights == null)
+            automaticLights = new List<PlanetLight>();
+
+        automaticLights.Add(lightToAdd);
+    }
+
+    public static void UpdateAutomaticLights(bool turnOn)
+    {
+        if (automaticLights == null)
+            return;
+
+        foreach(PlanetLight automaticLight in automaticLights)
+        {
+            if (turnOn)
+                automaticLight.TurnOn(null);
+            else
+                automaticLight.TurnOff(null);
+        }
+    }
+
+    //Instance-----------------------
+
     protected bool on = false;
 
     public override void Interact(Pill interacting)

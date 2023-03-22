@@ -283,6 +283,9 @@ public class Planet : MonoBehaviour
 
             windingClocks = false;
 
+            //Switch off automatic lights for the day
+            PlanetLight.UpdateAutomaticLights(false);
+
             //Morning---------------------------------------------------------------------------------------------
             timeOfDay = TimeOfDay.Morning;
             for (; dayProgression < dayLength / 3; dayProgression += Time.deltaTime)
@@ -407,6 +410,9 @@ public class Planet : MonoBehaviour
             //Finalize transition to nighttime ocean
             if (hasOcean)
                 ocean.SetColor("_ReflectColor", nightOceanColor);
+
+            //Switch on automatic lights for the night
+            PlanetLight.UpdateAutomaticLights(true);
 
             //Night---------------------------------------------------------------------------------------------
             timeOfDay = TimeOfDay.Night;

@@ -67,6 +67,7 @@ public class CheapPlanetLight : PlanetLight
         else
             lightSource.enabled = false;
     }
+
     private IEnumerator FlickerLight ()
     {
         int flickerKey = ++flickerCode;

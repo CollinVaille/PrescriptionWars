@@ -79,6 +79,9 @@ public class CityLightManager
             if (hitCollider.GetComponent<Terrain>() && city.foundationManager.foundationType != FoundationManager.FoundationType.NoFoundations)
                 return true;
 
+            if (yCoordInGlobal > city.transform.position.y + city.foundationManager.foundationHeight * 1.1f && city.foundationManager.foundationType == FoundationManager.FoundationType.Hammocks)
+                return true;
+
             return false;
         }
         else
@@ -111,9 +114,15 @@ public class CityLightManager
         newLight.transform.parent = city.transform;
         newLight.transform.position = globalCoordinate;
 
-        //Add it to the list of lights to manage
+        //Get the component on it that actually controls the lighting (needed for next parts)
+        PlanetLight newPlanetLight = newLight.GetComponentInChildren<PlanetLight>();
+
+        //Add it to the save system
         if (cityLights == null)
             cityLights = new List<PlanetLight>();
-        cityLights.Add(newLight.GetComponentInChildren<PlanetLight>());
+        cityLights.Add(newPlanetLight);
+
+        //Add it to the automatic lighting system
+        PlanetLight.AddAutomaticLight(newPlanetLight);
     }
 }
