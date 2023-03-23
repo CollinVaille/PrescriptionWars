@@ -21,7 +21,8 @@ public class PlanetGenerator : MonoBehaviour
         planet.SetOcean(-10, Planet.OceanType.Normal); //By default ocean is disabled (negative height disables ocean)
 
         //This also generates the sun based on the biome
-        GenerateBiome(planet, out TerrainCustomization terrainCustomization);
+        GenerateBiomeNEW(planet, out TerrainCustomization terrainCustomization);
+        //GenerateBiomeOLD(planet, out terrainCustomization);
 
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
@@ -57,7 +58,103 @@ public class PlanetGenerator : MonoBehaviour
         }
     }
 
-    private void GenerateBiome(Planet planet, out TerrainCustomization terrainCustomization)
+    private void GenerateBiomeNEW(Planet planet, out TerrainCustomization terrainCustomization)
+    {
+        string biomeName = GeneralHelperMethods.GetEnumText(planet.biome.ToString());
+        string subBiomeJsonAsString = GeneralHelperMethods.GetTextFromFile("Planet/Environment/Sub Biomes/" + biomeName + "/" + GetRandomSubBiome(planet.biome));
+        SubBiomeJSON subBiomeJSON = JsonUtility.FromJson<SubBiomeJSON>(subBiomeJsonAsString);
+
+        GeneratePlanetFromSubBiome(planet, subBiomeJSON, out terrainCustomization);
+    }
+
+    private static string GetRandomSubBiome(Planet.Biome biome)
+    {
+        return "Jagged Sea";
+    }
+
+    private void GeneratePlanetFromSubBiome(Planet planet, SubBiomeJSON subBiomeJSON, out TerrainCustomization terrainCustomization)
+    {
+        terrainCustomization = new TerrainCustomization();
+
+        GenerateSun(planet, GetRandomValueFromRange(subBiomeJSON.sunIntensityRange));
+
+        if (System.Enum.TryParse<AudioReverbPreset>(subBiomeJSON.reverbPreset, out AudioReverbPreset audioReverbPreset))
+            planet.GetComponent<AudioReverbZone>().reverbPreset = audioReverbPreset;
+
+        planet.SetUnderwaterColor(subBiomeJSON.underwaterColor);
+
+        if (!System.Enum.TryParse<Planet.OceanType>(subBiomeJSON.oceanMaterial, out Planet.OceanType oceanType))
+            oceanType = Planet.OceanType.Normal;
+        planet.SetOcean(GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType);
+
+        terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange);
+
+        terrainCustomization.groundTexture = planet.LoadTexture(subBiomeJSON.groundTexture);
+        terrainCustomization.cliffTexture = planet.LoadTexture(subBiomeJSON.cliffTexture);
+        terrainCustomization.seabedTexture = planet.LoadTexture(subBiomeJSON.seabedTexture);
+
+        string terrainSculptingFileName = GetOneOf(subBiomeJSON.terrainSculpting);
+        string terrainSculptingJSONAsString = GeneralHelperMethods.GetTextFromFile("Planet/Environment/Terrain Sculpting/" + terrainSculptingFileName);
+        TerrainSculptingJSON terrainSculptingJSON = JsonUtility.FromJson<TerrainSculptingJSON>(terrainSculptingJSONAsString);
+
+        terrainCustomization.lowBoundaries = terrainSculptingJSON.lowBoundariesChance > Random.Range(0.0f, 1.0f);
+        terrainCustomization.noiseGroundScale = GetRandomValueFromRange(terrainSculptingJSON.noiseGroundScaleRange);
+        terrainCustomization.amplitudeGroundScale = GetRandomValueFromRange(terrainSculptingJSON.amplitudeGroundScaleRange);
+        terrainCustomization.amplitudePower = GetRandomValueFromRange(terrainSculptingJSON.amplitudePowerRange);
+        terrainCustomization.noiseStrength = GetRandomValueFromRange(terrainSculptingJSON.noiseStrengthRange);
+
+        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType planetMaterialType))
+            planet.LoadGroundMaterial(planetMaterialType);
+
+        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.seabedMaterial), out planetMaterialType))
+            planet.LoadSeabedMaterial(planetMaterialType);
+
+        RenderSettings.fog = subBiomeJSON.fogChance > Random.Range(0.0f, 1.0f);
+
+        if (System.Enum.TryParse<FogMode>(subBiomeJSON.fogMode, out FogMode fogMode))
+            RenderSettings.fogMode = fogMode;
+
+        RenderSettings.fogDensity = GetRandomValueFromRange(subBiomeJSON.fogDensityRange);
+        RenderSettings.fogColor = subBiomeJSON.fogColor;
+
+        planet.LoadSkybox(true, subBiomeJSON.daySkybox);
+        planet.LoadSkybox(false, subBiomeJSON.nightSkybox);
+
+        planet.dayAmbience = planet.LoadAmbience(subBiomeJSON.dayAmbience);
+        planet.nightAmbience = planet.LoadAmbience(subBiomeJSON.nightAmbience);
+    }
+
+    private float GetRandomValueFromRange(float[] range)
+    {
+        if (range == null || range.Length == 0)
+            return 0.0f;
+
+        if (range.Length == 1)
+            return range[0];
+
+        return Random.Range(range[0], range[1]);
+    }
+
+    private int GetRandomValueFromRange(int[] range)
+    {
+        if (range == null || range.Length == 0)
+            return 0;
+
+        if (range.Length == 1)
+            return range[0];
+
+        return Random.Range(range[0], range[1]);
+    }
+
+    private string GetOneOf(string[] options)
+    {
+        if (options == null || options.Length == 0)
+            return null;
+
+        return options[Random.Range(0, options.Length)];
+    }
+
+    private void GenerateBiomeOLD(Planet planet, out TerrainCustomization terrainCustomization)
     {
         terrainCustomization = new TerrainCustomization();
 
@@ -533,4 +630,48 @@ public class PlanetGenerator : MonoBehaviour
         //Sunlight intensity
         planet.sun.GetComponent<Light>().intensity = sunType.intensity;
     }
+}
+
+[System.Serializable]
+public class SubBiomeJSON
+{
+    public float[] sunIntensityRange;
+    
+    public string reverbPreset = "Arena";
+    
+    public Color underwaterColor = Color.magenta;
+    public int[] oceanHeightRange;
+    public string oceanMaterial;
+    public float[] seabedRelativeHeightRange;
+
+    public string[] groundTexture;
+    public string[] cliffTexture;
+    public string[] seabedTexture;
+
+    public string[] terrainSculpting;
+
+    public string[] groundMaterial;
+    public string[] seabedMaterial;
+
+    public float fogChance = 0.0f;
+    public string fogMode = "Exponential";
+    public float[] fogDensityRange;
+    public Color fogColor = Color.magenta;
+
+    public string[] daySkybox;
+    public string[] nightSkybox;
+
+    public string[] dayAmbience;
+    public string[] nightAmbience;
+}
+
+
+[System.Serializable]
+public class TerrainSculptingJSON
+{
+    public float lowBoundariesChance = 1.0f;
+    public float[] noiseGroundScaleRange;
+    public float[] amplitudeGroundScaleRange;
+    public int[] amplitudePowerRange;
+    public float[] noiseStrengthRange;
 }

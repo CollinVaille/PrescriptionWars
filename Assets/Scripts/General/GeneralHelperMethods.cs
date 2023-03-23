@@ -9,6 +9,12 @@ public class GeneralHelperMethods
 
     private static Dictionary<string, string[]> textFileCache;
 
+    public static string GetTextFromFile(string fullResourcePath)
+    {
+        TextAsset textFile = Resources.Load<TextAsset>(fullResourcePath);
+        return textFile.text;
+    }
+
     //Returns one line randomly picked from text file- WITHOUT CARRIAGE RETURN!
     public static string GetLineFromFile (string resourcePath, bool cacheLines = true)
     {
@@ -34,8 +40,7 @@ public class GeneralHelperMethods
         string[] delimiters = new string[] { "\r\n" };
 
         //Read in lines from text file
-        TextAsset textFile = Resources.Load<TextAsset>("General/Text/" + resourcePath);
-        lines = textFile.text.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+        lines = GetTextFromFile("General/Text/" + resourcePath).Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
 
         //Cache lines
         if (cacheLines)

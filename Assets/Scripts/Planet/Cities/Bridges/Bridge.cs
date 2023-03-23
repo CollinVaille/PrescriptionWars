@@ -61,12 +61,12 @@ public class Bridge : MonoBehaviour
             float bottomY = hitSomething ? hit.point.y : 6969.0f;
             float yDiff = topY - bottomY;
 
-            if (hitSomething && yDiff < 75.0f)
+            Transform tileablePart = substructure.Find("Tile This Downwards");
+            if (hitSomething && (yDiff < 75.0f || !tileablePart))
             {
                 usingSubstructure = true;
 
                 //Will use this at the end, but need to get the information now
-                Transform tileablePart = substructure.Find("Tile This Downwards");
                 float previousSubstructureYScale = substructure.localScale.y;
 
                 //Unparent from bridge to prevent its scale and rotation from being not messed up

@@ -354,7 +354,7 @@ public class BridgeManager
         Transform verticalScalerTransform = newVerticalScaler.transform;
 
         //Rotate it
-        newVerticalScaler.SetYAxisRotation(yAxisRotation);
+        newVerticalScaler.SetYAxisRotation(minorScaler ? yAxisRotation : yAxisRotation + 90);
 
         //Position it
         if (minorScaler)
