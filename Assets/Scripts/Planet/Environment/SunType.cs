@@ -22,31 +22,36 @@ class SunType
 
     //NEW SUN SYSTEM------------------------------------------------------------
 
-    public SunType(float intensity) { CreateSunType(intensity, Color.white); }
+    public SunType(float intensity) { CreateSunType(intensity, Color.white, false); }
 
-    public SunType(float intensity, Color sunColor) { CreateSunType(intensity, sunColor); }
+    public SunType(float intensity, Color sunColor) { CreateSunType(intensity, sunColor, true); }
 
-    private void CreateSunType(float intensity, Color sunColor)
+    private void CreateSunType(float intensity, Color sunColor, bool usePassedInColor)
     {
         //Remember intensity
         this.intensity = intensity;
 
         //Determine sunlight color
-        sunlightColor = Color.white;
-        if (intensity > 1)
+        if (usePassedInColor)
+            sunlightColor = sunColor;
+        else
         {
-            sunlightColor.b = 2 - intensity;
-            sunlightColor.g = 2 - intensity;
-        }
-        else if (intensity < 1)
-        {
-            sunlightColor.r = intensity;
-            sunlightColor.g = Random.Range(intensity, 1.0f);
-        }
+            sunlightColor = Color.white;
+            if (intensity > 1)
+            {
+                sunlightColor.b = 2 - intensity;
+                sunlightColor.g = 2 - intensity;
+            }
+            else if (intensity < 1)
+            {
+                sunlightColor.r = intensity;
+                sunlightColor.g = Random.Range(intensity, 1.0f);
+            }
 
-        //Warm temperate suns most likely have full green value, meaning yellowish hue
-        if (intensity > 1.0f && intensity < 1.15f && Random.Range(0, 4) != 0)
-            sunlightColor.g = 1;
+            //Warm temperate suns most likely have full green value, meaning yellowish hue
+            if (intensity > 1.0f && intensity < 1.15f && Random.Range(0, 4) != 0)
+                sunlightColor.g = 1;
+        }
 
         //Determine flare name
         DetermineFlareName();

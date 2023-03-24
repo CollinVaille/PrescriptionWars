@@ -7,7 +7,6 @@ public class Planet : MonoBehaviour
 {
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
     public enum Biome { Unknown, Frozen, Temperate, SandyDesert, RockyDesert, Swamp, Hell, Spirit }
-    public enum BiomeSubType { Default, Forest }
     public enum OceanType { Normal, Frozen, Lava, Glowing, Murky }
 
     public static Planet planet;
@@ -17,8 +16,8 @@ public class Planet : MonoBehaviour
 
     //General
     [HideInInspector] public string planetName = "";
+    public string subBiome;
     public Biome biome = Biome.Unknown;
-    [HideInInspector] public BiomeSubType biomeSubType = BiomeSubType.Default;
     public PlanetGenerator generator;
 
     //Day/night cycle
@@ -111,6 +110,9 @@ public class Planet : MonoBehaviour
                 case "Deep Dusk":
                 case "Brown Cloud":
                     cubemapName = "Deep Dusk Equirect"; break;
+                case "Blue Galaxy 1":
+                case "Blue Galaxy 2":
+                    cubemapName = "AllSky_Space_AnotherPlanet Equirect"; break;
                 default:
                     cubemapName = "Sky_Day_BlueSky_Equirect"; break;
             }
@@ -161,7 +163,7 @@ public class Planet : MonoBehaviour
         seaLevel = height;
 
         //Set enabled
-        hasOcean = oceanTransform.position.y > 0;
+        hasOcean = oceanTransform.position.y > 0.0f;
         oceanTransform.gameObject.SetActive(hasOcean);
 
         //Set type... default is OceanType.Normal
@@ -561,7 +563,6 @@ public class PlanetJSON
         //General
         planetName = planet.planetName;
         biome = planet.biome;
-        biomeSubType = planet.biomeSubType;
 
         //Sun
         sunFlare = planet.sun.GetComponent<Light>().flare.name;
@@ -604,7 +605,6 @@ public class PlanetJSON
         //General
         planet.planetName = planetName;
         planet.biome = biome;
-        planet.biomeSubType = biomeSubType;
 
         //Sun
         planet.sun.GetComponent<Light>().flare = Resources.Load<Flare>("Planet/Environment/Lens Flares/" + sunFlare);
@@ -638,7 +638,6 @@ public class PlanetJSON
     //General
     public string planetName;
     public Planet.Biome biome;
-    public Planet.BiomeSubType biomeSubType;
 
     //Sun
     public string sunFlare;

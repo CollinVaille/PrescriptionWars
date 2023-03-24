@@ -21,8 +21,7 @@ public class PlanetGenerator : MonoBehaviour
         planet.SetOcean(-10, Planet.OceanType.Normal); //By default ocean is disabled (negative height disables ocean)
 
         //This also generates the sun based on the biome
-        GenerateBiomeNEW(planet, out TerrainCustomization terrainCustomization);
-        //GenerateBiomeOLD(planet, out terrainCustomization);
+        CustomizePlanetBasedOnBiome(planet, out TerrainCustomization terrainCustomization);
 
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
@@ -31,7 +30,8 @@ public class PlanetGenerator : MonoBehaviour
         //FINALLY, GIVE IT A FUCKING NAME AND SAVE THE BITCH---------------------------------------------------------
 
         //Temp name
-        planet.planetName = GeneralHelperMethods.GetLineFromFile("Location Names/Planet Names");
+        planet.planetName = PlanetNameGenerator.GeneratePlanetName();
+        //planet.planetName = GeneralHelperMethods.GetLineFromFile("Location Names/Planet Names");
 
         //SavePlanet();
     }
@@ -44,70 +44,242 @@ public class PlanetGenerator : MonoBehaviour
         if (planet.biome != Planet.Biome.Unknown)
             return;
 
+        planet.biome = GetRandomBiome();
+    }
+
+    public static Planet.Biome GetRandomBiome()
+    {
         //Randomly select
         int picker = Random.Range(0, 7);
         switch (picker)
         {
-            case 0: planet.biome = Planet.Biome.Frozen; break;
-            case 1: planet.biome = Planet.Biome.Temperate; break;
-            case 2: planet.biome = Planet.Biome.SandyDesert; break;
-            case 3: planet.biome = Planet.Biome.RockyDesert; break;
-            case 4: planet.biome = Planet.Biome.Swamp; break;
-            case 5: planet.biome = Planet.Biome.Hell; break;
-            default: planet.biome = Planet.Biome.Spirit; break;
+            case 0: return Planet.Biome.Frozen;
+            case 1: return Planet.Biome.Temperate;
+            case 2: return Planet.Biome.SandyDesert;
+            case 3: return Planet.Biome.RockyDesert;
+            case 4: return Planet.Biome.Swamp;
+            case 5: return Planet.Biome.Hell;
+            default: return Planet.Biome.Spirit;
         }
     }
 
-    private void GenerateBiomeNEW(Planet planet, out TerrainCustomization terrainCustomization)
+    private void CustomizePlanetBasedOnBiome(Planet planet, out TerrainCustomization terrainCustomization)
     {
-        string biomeName = GeneralHelperMethods.GetEnumText(planet.biome.ToString());
-        string subBiomeJsonAsString = GeneralHelperMethods.GetTextFromFile("Planet/Environment/Sub Biomes/" + biomeName + "/" + GetRandomSubBiome(planet.biome));
-        SubBiomeJSON subBiomeJSON = JsonUtility.FromJson<SubBiomeJSON>(subBiomeJsonAsString);
+        //Get biome
+        string biomeName = GetBiomeName(planet.biome);
 
+        //Get sub biome
+        SubBiomeJSON subBiomeJSON;
+        if (string.IsNullOrEmpty(Planet.planet.subBiome))
+            subBiomeJSON = GetSubBiomeWithDegreeOfRandomness(biomeName, Random.Range(0.0f, 1.0f));
+        else
+            subBiomeJSON = GetSubBiome(biomeName, Planet.planet.subBiome);
+
+        //Generate the planet based on that sub biome
         GeneratePlanetFromSubBiome(planet, subBiomeJSON, out terrainCustomization);
     }
 
-    private static string GetRandomSubBiome(Planet.Biome biome)
+    private static SubBiomeJSON GetSubBiomeWithDegreeOfRandomness(string biomeName, float randomness)
     {
-        return "Jagged Sea";
+        SubBiomeJSON targetSubBiomeJSON = GetRandomUnalteredSubBiomeOfBiome(biomeName);
+
+        Debug.Log("Randomness: " + randomness);
+
+        if (Mathf.Approximately(randomness, 0.0f))
+            return targetSubBiomeJSON;
+
+        SubBiomeJSON referenceSubBiomeJSON;
+        if(randomness < Random.Range(0.5f, 1.0f))
+            referenceSubBiomeJSON = GetRandomUnalteredSubBiomeOfBiome(biomeName);
+        else
+            referenceSubBiomeJSON = GetRandomUnalteredSubBiomeOfBiome(GetBiomeName(GetRandomBiome()));
+
+        for (int attemptsAtRandomization = 0; attemptsAtRandomization < 100 && randomness > 0.0f; attemptsAtRandomization++)
+            randomness -= PerformRandomModificationToTargetSubBiome(targetSubBiomeJSON, referenceSubBiomeJSON, randomness);
+
+        return targetSubBiomeJSON;
+    }
+
+    private static float PerformRandomModificationToTargetSubBiome(SubBiomeJSON targetSubBiomeJSON, SubBiomeJSON referenceSubBiomeJSON, float allowedRandomness)
+    {
+        int changeType = Random.Range(0, 11);
+
+        switch(changeType)
+        {
+            case 0:
+                if(allowedRandomness > 0.15f)
+                {
+                    targetSubBiomeJSON.fogChance = referenceSubBiomeJSON.fogChance;
+                    targetSubBiomeJSON.fogMode = referenceSubBiomeJSON.fogMode;
+                    targetSubBiomeJSON.fogDensityRange = referenceSubBiomeJSON.fogDensityRange;
+                    return 0.15f;
+                }
+                break;
+
+            case 1:
+                if (allowedRandomness > 0.2f)
+                {
+                    targetSubBiomeJSON.fogColor = referenceSubBiomeJSON.fogColor;
+                    targetSubBiomeJSON.sunColor = referenceSubBiomeJSON.sunColor;
+                    targetSubBiomeJSON.sunIntensityRange = referenceSubBiomeJSON.sunIntensityRange;
+                    return 0.2f;
+                }
+                break;
+
+            case 2:
+                if (allowedRandomness > 0.1f)
+                {
+                    targetSubBiomeJSON.oceanHeightRange = referenceSubBiomeJSON.oceanHeightRange;
+                    return 0.1f;
+                }
+                break;
+
+            case 3:
+                if (allowedRandomness > 0.25f)
+                {
+                    targetSubBiomeJSON.underwaterColor = referenceSubBiomeJSON.underwaterColor;
+                    targetSubBiomeJSON.oceanMaterial = referenceSubBiomeJSON.oceanMaterial;
+                    targetSubBiomeJSON.seabedTexture = referenceSubBiomeJSON.seabedTexture;
+                    targetSubBiomeJSON.seabedMetallicness = referenceSubBiomeJSON.seabedMetallicness;
+                    targetSubBiomeJSON.seabedSmoothness = referenceSubBiomeJSON.seabedSmoothness;
+                    targetSubBiomeJSON.seabedMaterial = referenceSubBiomeJSON.seabedMaterial;
+                    targetSubBiomeJSON.wetSeabedMaterial = referenceSubBiomeJSON.wetSeabedMaterial;
+                    targetSubBiomeJSON.drySeabedMaterial = referenceSubBiomeJSON.drySeabedMaterial;
+                    return 0.25f;
+                }
+                break;
+
+            case 4:
+                if (allowedRandomness > 0.1f)
+                {
+                    targetSubBiomeJSON.cliffTexture = referenceSubBiomeJSON.cliffTexture;
+                    targetSubBiomeJSON.cliffMetallicness = referenceSubBiomeJSON.cliffMetallicness;
+                    targetSubBiomeJSON.cliffSmoothness = referenceSubBiomeJSON.cliffSmoothness;
+                    return 0.1f;
+                }
+                break;
+
+            case 5:
+                if (allowedRandomness > 0.25f)
+                {
+                    targetSubBiomeJSON.groundTexture = referenceSubBiomeJSON.groundTexture;
+                    targetSubBiomeJSON.groundMetallicness = referenceSubBiomeJSON.groundMetallicness;
+                    targetSubBiomeJSON.groundSmoothness = referenceSubBiomeJSON.groundSmoothness;
+                    targetSubBiomeJSON.groundMaterial = referenceSubBiomeJSON.groundMaterial;
+                    return 0.25f;
+                }
+                break;
+
+            case 6:
+                if (allowedRandomness > 0.2f)
+                {
+                    targetSubBiomeJSON.idealTreeCountRange = referenceSubBiomeJSON.idealTreeCountRange;
+                    targetSubBiomeJSON.treeNames = referenceSubBiomeJSON.treeNames;
+                    targetSubBiomeJSON.maxTreeSteepnessRange = referenceSubBiomeJSON.maxTreeSteepnessRange;
+                    return 0.2f;
+                }
+                break;
+
+            case 7:
+            case 8:
+            case 9:
+            default:
+                if (allowedRandomness > 0.15f)
+                {
+                    targetSubBiomeJSON.terrainSculpting = referenceSubBiomeJSON.terrainSculpting;
+                    return 0.15f;
+                }
+                break;
+        }
+
+        return 0.0f;
+    }
+
+    private static SubBiomeJSON GetRandomUnalteredSubBiomeOfBiome(string biomeName)
+    {
+        string subBiomeName = GeneralHelperMethods.GetLineFromFile("Planet/Environment/Sub Biomes/Sub Biome Lists/" + biomeName, startPathFromGeneralTextFolder: false);
+        return GetSubBiome(biomeName, subBiomeName);
+    }
+
+    private static SubBiomeJSON GetSubBiome(string biomeName, string subBiomeName)
+    {
+        string subBiomeJsonAsString = GeneralHelperMethods.GetTextAsset("Planet/Environment/Sub Biomes/" + biomeName + "/" + subBiomeName, startPathFromGeneralTextFolder: false).text;
+        return JsonUtility.FromJson<SubBiomeJSON>(subBiomeJsonAsString);
     }
 
     private void GeneratePlanetFromSubBiome(Planet planet, SubBiomeJSON subBiomeJSON, out TerrainCustomization terrainCustomization)
     {
         terrainCustomization = new TerrainCustomization();
 
-        GenerateSun(planet, GetRandomValueFromRange(subBiomeJSON.sunIntensityRange));
+        float sunIntensity = GetRandomValueFromRange(subBiomeJSON.sunIntensityRange);
+
+        if (GetColorIfSpecified(subBiomeJSON.sunColor, out Color sunColor))
+            GenerateSun(planet, sunIntensity, sunColor);
+        else
+            GenerateSun(planet, sunIntensity);
 
         if (System.Enum.TryParse<AudioReverbPreset>(subBiomeJSON.reverbPreset, out AudioReverbPreset audioReverbPreset))
             planet.GetComponent<AudioReverbZone>().reverbPreset = audioReverbPreset;
 
-        planet.SetUnderwaterColor(subBiomeJSON.underwaterColor);
+        if(GetColorIfSpecified(subBiomeJSON.underwaterColor, out Color underWaterColor))
+            planet.SetUnderwaterColor(underWaterColor);
 
         if (!System.Enum.TryParse<Planet.OceanType>(subBiomeJSON.oceanMaterial, out Planet.OceanType oceanType))
             oceanType = Planet.OceanType.Normal;
         planet.SetOcean(GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType);
 
-        terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange);
+        terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
 
         terrainCustomization.groundTexture = planet.LoadTexture(subBiomeJSON.groundTexture);
         terrainCustomization.cliffTexture = planet.LoadTexture(subBiomeJSON.cliffTexture);
-        terrainCustomization.seabedTexture = planet.LoadTexture(subBiomeJSON.seabedTexture);
+        if (subBiomeJSON.seabedHasSameTextureAsGround)
+            terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
+        else if (subBiomeJSON.seabedHasSameTextureAsCliff)
+            terrainCustomization.seabedTexture = terrainCustomization.cliffTexture;
+        else
+            terrainCustomization.seabedTexture = planet.LoadTexture(subBiomeJSON.seabedTexture);
+
+        terrainCustomization.groundMetallic = subBiomeJSON.groundMetallicness;
+        terrainCustomization.groundSmoothness = subBiomeJSON.groundSmoothness;
+        terrainCustomization.cliffMetallic = subBiomeJSON.cliffMetallicness;
+        terrainCustomization.cliffSmoothness = subBiomeJSON.cliffSmoothness;
+        terrainCustomization.seabedMetallic = subBiomeJSON.seabedMetallicness;
+        terrainCustomization.seabedSmoothness = subBiomeJSON.seabedSmoothness;
 
         string terrainSculptingFileName = GetOneOf(subBiomeJSON.terrainSculpting);
-        string terrainSculptingJSONAsString = GeneralHelperMethods.GetTextFromFile("Planet/Environment/Terrain Sculpting/" + terrainSculptingFileName);
+        string terrainSculptingJSONAsString = GeneralHelperMethods.GetTextAsset("Planet/Environment/Terrain Sculpting/" + terrainSculptingFileName, startPathFromGeneralTextFolder: false).text;
         TerrainSculptingJSON terrainSculptingJSON = JsonUtility.FromJson<TerrainSculptingJSON>(terrainSculptingJSONAsString);
 
         terrainCustomization.lowBoundaries = terrainSculptingJSON.lowBoundariesChance > Random.Range(0.0f, 1.0f);
-        terrainCustomization.noiseGroundScale = GetRandomValueFromRange(terrainSculptingJSON.noiseGroundScaleRange);
-        terrainCustomization.amplitudeGroundScale = GetRandomValueFromRange(terrainSculptingJSON.amplitudeGroundScaleRange);
-        terrainCustomization.amplitudePower = GetRandomValueFromRange(terrainSculptingJSON.amplitudePowerRange);
-        terrainCustomization.noiseStrength = GetRandomValueFromRange(terrainSculptingJSON.noiseStrengthRange);
+        terrainCustomization.horizonHeightIsCeiling = terrainSculptingJSON.horizonHeightIsCeilingChance > Random.Range(0.0f, 1.0f);
+        terrainCustomization.noiseGroundScale = GetRandomValueFromRange(terrainSculptingJSON.noiseGroundScaleRange, defaultValue: 40);
+        terrainCustomization.amplitudeGroundScale = GetRandomValueFromRange(terrainSculptingJSON.amplitudeGroundScaleRange, defaultValue: 8);
+        terrainCustomization.amplitudePower = GetRandomValueFromRange(terrainSculptingJSON.amplitudePowerRange, defaultValue: 3);
+        terrainCustomization.noiseStrength = GetRandomValueFromRange(terrainSculptingJSON.noiseStrengthRange, defaultValue: 0.5f);
 
-        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType planetMaterialType))
-            planet.LoadGroundMaterial(planetMaterialType);
+        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType groundMaterialType))
+            planet.LoadGroundMaterial(groundMaterialType);
 
-        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.seabedMaterial), out planetMaterialType))
-            planet.LoadSeabedMaterial(planetMaterialType);
+        if(subBiomeJSON.seabedHasSameMaterialAsGround)
+            planet.LoadSeabedMaterial(groundMaterialType);
+        else if (subBiomeJSON.seabedMaterial != null && subBiomeJSON.seabedMaterial.Length > 0)
+        {
+            if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.seabedMaterial), out PlanetMaterialType seabedMaterialType))
+                planet.LoadSeabedMaterial(seabedMaterialType);
+        }
+        else
+        {
+            if(planet.hasOcean)
+            {
+                if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.wetSeabedMaterial), out PlanetMaterialType seabedMaterialType))
+                    planet.LoadSeabedMaterial(seabedMaterialType);
+            }
+            else
+            {
+                if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.drySeabedMaterial), out PlanetMaterialType seabedMaterialType))
+                    planet.LoadSeabedMaterial(seabedMaterialType);
+            }
+        }
 
         RenderSettings.fog = subBiomeJSON.fogChance > Random.Range(0.0f, 1.0f);
 
@@ -115,19 +287,25 @@ public class PlanetGenerator : MonoBehaviour
             RenderSettings.fogMode = fogMode;
 
         RenderSettings.fogDensity = GetRandomValueFromRange(subBiomeJSON.fogDensityRange);
-        RenderSettings.fogColor = subBiomeJSON.fogColor;
+        if (GetColorIfSpecified(subBiomeJSON.fogColor, out Color fogColor))
+            RenderSettings.fogColor = fogColor;
 
-        planet.LoadSkybox(true, subBiomeJSON.daySkybox);
-        planet.LoadSkybox(false, subBiomeJSON.nightSkybox);
+        string daySkybox = GetOneOf(subBiomeJSON.daySkybox);
+        planet.LoadSkybox(true, daySkybox);
+        planet.LoadSkybox(false, subBiomeJSON.nightHasSameSkyboxAsDay ? daySkybox : GetOneOf(subBiomeJSON.nightSkybox));
 
         planet.dayAmbience = planet.LoadAmbience(subBiomeJSON.dayAmbience);
         planet.nightAmbience = planet.LoadAmbience(subBiomeJSON.nightAmbience);
+
+        terrainCustomization.idealTreeCount = GetRandomValueFromRange(subBiomeJSON.idealTreeCountRange);
+        terrainCustomization.SetTreeNames(subBiomeJSON.treeNames != null ? subBiomeJSON.treeNames : new string[] { "Palm Tree" });
+        terrainCustomization.maxTreeSteepness = GetRandomValueFromRange(subBiomeJSON.maxTreeSteepnessRange, defaultValue: 30);
     }
 
-    private float GetRandomValueFromRange(float[] range)
+    private float GetRandomValueFromRange(float[] range, float defaultValue = 0.0f)
     {
         if (range == null || range.Length == 0)
-            return 0.0f;
+            return defaultValue;
 
         if (range.Length == 1)
             return range[0];
@@ -135,10 +313,10 @@ public class PlanetGenerator : MonoBehaviour
         return Random.Range(range[0], range[1]);
     }
 
-    private int GetRandomValueFromRange(int[] range)
+    private int GetRandomValueFromRange(int[] range, int defaultValue = 0)
     {
         if (range == null || range.Length == 0)
-            return 0;
+            return defaultValue;
 
         if (range.Length == 1)
             return range[0];
@@ -154,454 +332,19 @@ public class PlanetGenerator : MonoBehaviour
         return options[Random.Range(0, options.Length)];
     }
 
-    private void GenerateBiomeOLD(Planet planet, out TerrainCustomization terrainCustomization)
+    private bool GetColorIfSpecified(HumanFriendlyColorJSON colorJSON, out Color color)
     {
-        terrainCustomization = new TerrainCustomization();
-
-        if (planet.biome == Planet.Biome.Frozen) //Frozen
+        if (colorJSON == null || (colorJSON.r == 0 && colorJSON.g == 0 && colorJSON.b == 0 && Mathf.Approximately(colorJSON.a, 0.0f)))
         {
-            //Sun
-            if (Random.Range(0, 3) == 0)
-                GenerateSun(planet, Random.Range(0.05f, 0.5f));
-            else if (Random.Range(0, 2) == 0)
-                GenerateSun(planet, Random.Range(0.2f, 0.6f));
-            else
-                GenerateSun(planet, Random.Range(0.3f, 0.85f));
-
-            //Terrain textures
-            terrainCustomization.groundTexture = planet.LoadTexture("Snow", "Snow 0087", "Snow 0096");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Deep Freeze", "Snow 0126", "Age of the Canyon", "Glacier");
-            terrainCustomization.seabedTexture = terrainCustomization.cliffTexture;
-
-            //Terrain heightmap
-            terrainCustomization.lowBoundaries = Random.Range(0, 4) == 0;
-            terrainCustomization.noiseGroundScale = Random.Range(30, 50);
-            terrainCustomization.amplitudeGroundScale = Random.Range(5, 15);
-            terrainCustomization.amplitudePower = Random.Range(2, 5);
-            terrainCustomization.noiseStrength = Random.Range(0.35f, 0.75f);
-
-            //Reverb
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Hangar;
-
-            //Footsteps
-            planet.LoadGroundMaterial(PlanetMaterialType.Snow);
-            planet.LoadSeabedMaterial(planet.groundMaterial);
-
-            //Water
-            if (Random.Range(0, 2) == 0)
-            {
-                if (Random.Range(0, planet.sun.GetComponent<Light>().intensity) < 0.35f)
-                    planet.SetOcean(Random.Range(1, 10), Planet.OceanType.Frozen);
-                else
-                {
-                    planet.SetOcean(Random.Range(1, 10), Planet.OceanType.Normal);
-                    planet.SetUnderwaterColor(new Color(0 / 255.0f, 27 / 255.0f, 108 / 255.0f, 0.5f));
-                }
-            }
-
-            //Seabed height relative to water level
-            terrainCustomization.seabedHeight = planet.oceanTransform.position.y - Random.Range(1.5f, 3.0f);
-
-            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
+            color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+            return false;
         }
-        else if (planet.biome == Planet.Biome.Temperate) //Temperate
-        {
-            //Sun
-            GenerateSun(planet, Random.Range(0.85f, 1.15f));
 
-            //Terrain textures
-            terrainCustomization.groundTexture = planet.LoadTexture("Grass 0043", "Grass 0103", "Common Ground", "Twisted Hills");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Rock Grassy 0030", "Cliffs 0120", "Age of the Canyon");
-
-            //Terrain heightmap
-            terrainCustomization.lowBoundaries = Random.Range(0, 2) == 0;
-            terrainCustomization.noiseGroundScale = Random.Range(30, 50);
-            terrainCustomization.amplitudeGroundScale = Random.Range(7, 10);
-            terrainCustomization.amplitudePower = Random.Range(0, 4) != 0 ? 3 : Random.Range(2, 5);
-            terrainCustomization.noiseStrength = Random.Range(0.4f, 0.6f);
-
-            //Basic sound
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Plain;
-            planet.LoadGroundMaterial(PlanetMaterialType.Grass);
-
-            //Water
-            planet.SetUnderwaterColor(new Color(0 / 255.0f, 48 / 255.0f, 255 / 255.0f, 0.5f));
-            if (Random.Range(0, 3) != 0)
-            {
-                //Set water level
-                planet.SetOcean(Random.Range(1, 10), Planet.OceanType.Normal);
-
-                //Set seabed
-                if (Random.Range(0, 3) != 0) //Beach
-                {
-                    terrainCustomization.seabedTexture = planet.LoadTexture("Sahara", "Soil Beach 0052", "Soil Beach 0079");
-                    planet.LoadSeabedMaterial(PlanetMaterialType.Swamp);
-
-                    //Set seabed height to be above water
-                    terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(1.5f, 3.0f);
-                }
-                else //Rock shore
-                {
-                    terrainCustomization.seabedTexture = planet.LoadTexture("Rock Grassy 0030", "Cliffs 0120", "Age of the Canyon");
-                    planet.LoadSeabedMaterial(PlanetMaterialType.Rock);
-
-                    //Set seabed height to be around water level
-                    terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(-1.5f, 1.5f);
-                }
-            }
-            else //No water so make seabed appear like ground
-            {
-                terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
-                planet.LoadSeabedMaterial(planet.groundMaterial);
-            }
-
-            //Trees
-            if (Random.Range(0, 1) == 0)
-            {
-                if (Random.Range(0, 1) == 0) //Jungle trees
-                {
-                    terrainCustomization.SetTreeNames("Jungle Tree");
-                    terrainCustomization.maxTreeSteepness = 20;
-
-                    if (Random.Range(0, 1) == 0) //Thick forest
-                    {
-                        planet.biomeSubType = Planet.BiomeSubType.Forest;
-
-                        terrainCustomization.groundTexture = planet.LoadTexture("Common Ground", "Darkland Forest");
-                        terrainCustomization.cliffTexture = planet.LoadTexture("Faulted Range", "Fractured Flow");
-
-                        if (!planet.hasOcean)
-                            terrainCustomization.seabedHeight = -10;
-
-                        terrainCustomization.idealTreeCount = 450;
-                    }
-                    else //Sparse forest
-                        terrainCustomization.idealTreeCount = Random.Range(100, 200);
-                }
-                else if (planet.hasOcean && Random.Range(0, 2) == 0) //Palm trees
-                {
-                    terrainCustomization.idealTreeCount = Random.Range(50, 200);
-                    terrainCustomization.SetTreeNames("Palm Tree");
-                }
-                else
-                {
-                    terrainCustomization.idealTreeCount = Random.Range(100, 250);
-                    terrainCustomization.SetTreeNames("Oak Tree");
-                }
-            }
-
-            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
-        }
-        else if (planet.biome == Planet.Biome.SandyDesert) //Sandy desert
-        {
-            //Sun
-            if (Random.Range(0, 3) == 0)
-                GenerateSun(planet, Random.Range(1.0f, 1.3f));
-            else
-                GenerateSun(planet, Random.Range(1.0f, 1.2f));
-
-            //Terrain textures
-            terrainCustomization.groundTexture = planet.LoadTexture("Sahara", "Soil Beach 0052", "Soil Beach 0079");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Rocks Arid 0038", "Age of the Canyon");
-            terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
-
-            //Terrain heightmap & Water
-            if(Random.Range(0, 2) == 0) //Desert canyon
-            {
-                terrainCustomization.lowBoundaries = false;
-                terrainCustomization.horizonHeightIsCeiling = true;
-                terrainCustomization.noiseGroundScale = Random.Range(3, 7);
-                terrainCustomization.amplitudeGroundScale = 10;
-                terrainCustomization.amplitudePower = 1;
-                terrainCustomization.noiseStrength = Random.Range(0.75f, 1.75f);
-            }
-            else if(Random.Range(0, 2) == 0) //Large rolling dunes, i.e. "a sea of sand"
-            {
-                terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
-                terrainCustomization.noiseGroundScale = Random.Range(5, 9);
-                terrainCustomization.amplitudeGroundScale = Random.Range(5, 15);
-                terrainCustomization.amplitudePower = 1;
-                terrainCustomization.noiseStrength = Random.Range(0.2f, 0.35f);
-            }
-            else //Mountainous desert with room for good variety
-            {
-                terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
-                terrainCustomization.noiseGroundScale = Random.Range(30, 50);
-                terrainCustomization.amplitudeGroundScale = Random.Range(7, 10);
-                terrainCustomization.amplitudePower = Random.Range(3, 5);
-                terrainCustomization.noiseStrength = Random.Range(0.4f, 0.75f);
-
-                if (Random.Range(0, 2) == 0)
-                    planet.SetOcean(Random.Range(1, 7), Planet.OceanType.Normal);
-            }
-
-            //Reverb
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Mountains;
-
-            //Water
-            planet.SetUnderwaterColor(new Color(0 / 255.0f, 70 / 255.0f, 115 / 255.0f, 0.5f));
-
-            //Footsteps
-            planet.LoadGroundMaterial(PlanetMaterialType.Sand);
-            planet.LoadSeabedMaterial(planet.hasOcean ? PlanetMaterialType.Swamp : PlanetMaterialType.Sand); //Make sand near water sound wet
-
-            FinishNormalBiomeSetUp(planet, planet.sun.GetComponent<Light>().intensity);
-        }
-        else if (planet.biome == Planet.Biome.RockyDesert) //Rocky desert
-            RockyDesertBiome.GenerateBiome(planet, this, out terrainCustomization);
-        else if (planet.biome == Planet.Biome.Swamp) //Swamp
-        {
-            GenerateSun(planet, Random.Range(1.0f, 1.2f), SunType.GetColorRGB(185, 145, 0));
-
-            terrainCustomization.groundTexture = planet.LoadTexture("Sulfur Wasteland");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Rock Grassy 0030");
-            terrainCustomization.seabedTexture = planet.LoadTexture("Egg Veins", "Carburetor Resin");
-
-            if (Random.Range(0, 2) == 0)
-                planet.LoadSkybox(true, "SkyMorning");
-            else
-                planet.LoadSkybox(true, "SkySunset");
-            planet.LoadSkybox(false, "SkyEarlyDusk");
-
-            planet.dayAmbience = planet.LoadAmbience("Dank Swamp");
-            planet.nightAmbience = planet.dayAmbience;
-
-            RenderSettings.fog = true;
-            RenderSettings.fogDensity = Random.Range(0.01f, 0.03f);
-            RenderSettings.fogColor = SunType.GetColorRGB(108, 100, 4);
-
-            //Terrain heightmap
-            terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
-            terrainCustomization.amplitudePower = 4;
-            terrainCustomization.noiseStrength = Random.Range(0.55f, 0.75f);
-
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Alley;
-
-            planet.LoadGroundMaterial(PlanetMaterialType.Swamp);
-            planet.LoadSeabedMaterial(planet.groundMaterial);
-
-            //Change water color
-            planet.SetUnderwaterColor(new Color(72 / 255.0f, 108 / 255.0f, 39 / 255.0f, 0.5f));
-
-            planet.SetOcean(Random.Range(7, 15), Planet.OceanType.Normal);
-
-            //Seabed height relative to water level
-            terrainCustomization.seabedHeight = planet.oceanTransform.position.y - Random.Range(1.5f, 3.0f);
-
-            //Trees
-            terrainCustomization.idealTreeCount = Random.Range(250, 450);
-            terrainCustomization.SetTreeNames("Jungle Tree");
-            terrainCustomization.maxTreeSteepness = 20;
-        }
-        else if (planet.biome == Planet.Biome.Hell) //Hell
-        {
-            GenerateSun(planet, Random.Range(1.3f, 1.75f), SunType.GetColorRGB(255, 76, 0));
-
-            terrainCustomization.groundTexture = planet.LoadTexture("Searing Gorge", "Pele's Lake", "Lava Cracks");
-            terrainCustomization.cliffTexture = planet.LoadTexture("Slumbering Volcano");
-            terrainCustomization.seabedTexture = planet.LoadTexture("Noxious Melt", "Mt Etna", "Iodine Atmosphere");
-
-            terrainCustomization.groundMetallic = 1;
-            terrainCustomization.groundSmoothness = 0.85f;
-
-            terrainCustomization.cliffMetallic = 1;
-
-            terrainCustomization.seabedMetallic = 1;
-            terrainCustomization.seabedSmoothness = 1;
-
-            planet.LoadSkybox(true, "AllSky_Space_AnotherPlanet", "Gloomy", "RedYellowNebular", "RedOrangeYellowNebular");
-            planet.LoadSkybox(false, planet.daySkybox.name);
-
-            planet.dayAmbience = planet.LoadAmbience("Large Eerie Reverberant Space", "Dark Empty Hissing");
-            planet.nightAmbience = planet.dayAmbience;
-
-            RenderSettings.fog = true;
-            RenderSettings.fogDensity = 0.0035f;
-            RenderSettings.fogColor = SunType.GetColorRGB(67, 52, 52);
-
-            planet.SetUnderwaterColor(new Color(255 / 255.0f, 78 / 255.0f, 0 / 255.0f, 0.5f));
-
-            //Terrain heightmap
-            if (Random.Range(0, 3) == 0) //Lava ocean expanse
-            {
-                terrainCustomization.lowBoundaries = Random.Range(0, 3) != 0;
-                terrainCustomization.amplitudePower = 5;
-                terrainCustomization.amplitudeGroundScale = Random.Range(2, 5);
-                terrainCustomization.noiseGroundScale = Random.Range(25, 35);
-                terrainCustomization.noiseStrength = Random.Range(1.15f, 1.35f);
-
-                planet.SetOcean(Random.Range(7, 15), Planet.OceanType.Lava);
-            }
-            else //Lava mountains
-            {
-                terrainCustomization.lowBoundaries = Random.Range(0, 3) == 0;
-                terrainCustomization.amplitudePower = 3;
-                terrainCustomization.amplitudeGroundScale = Random.Range(2, 5);
-                terrainCustomization.noiseGroundScale = Random.Range(25, 35);
-                terrainCustomization.noiseStrength = Random.Range(1.65f, 1.9f);
-
-                planet.SetOcean(Random.Range(10, 20), Planet.OceanType.Lava);
-            }
-
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Arena;
-
-            planet.LoadGroundMaterial(PlanetMaterialType.Rock, PlanetMaterialType.MartianDirt);
-            planet.LoadSeabedMaterial(planet.groundMaterial);
-
-            //Rock is molten just at very edge of lava
-            terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(0.25f, 0.5f);
-        }
-        else if (planet.biome == Planet.Biome.Spirit) //Spirit
-        {
-            if (Random.Range(0, 2) == 0) //Warm rock
-            {
-                GenerateSun(planet, Random.Range(1.3f, 1.5f), SunType.GetColorRGB(210, 240, 255));
-
-                terrainCustomization.groundTexture = planet.LoadTexture("Sputnik");
-                planet.LoadGroundMaterial(PlanetMaterialType.Rock);
-            }
-            else //Cool snow
-            {
-                GenerateSun(planet, Random.Range(1.1f, 1.3f), SunType.GetColorRGB(210, 240, 255));
-
-                terrainCustomization.groundTexture = planet.LoadTexture("Snow");
-                planet.LoadGroundMaterial(PlanetMaterialType.Snow);
-            }
-
-            terrainCustomization.cliffTexture = planet.LoadTexture("Dead Sea", "Blue Quartz");
-            terrainCustomization.seabedTexture = planet.LoadTexture("Magnified Frost");
-
-            terrainCustomization.cliffMetallic = 1;
-            terrainCustomization.cliffSmoothness = 1;
-
-            terrainCustomization.seabedMetallic = 0.2f;
-            terrainCustomization.seabedSmoothness = 0.8f;
-
-            planet.LoadSeabedMaterial(PlanetMaterialType.Snow);
-
-            planet.LoadSkybox(true, "Blue Galaxy 1", "Blue Galaxy 2");
-            planet.LoadSkybox(false, planet.daySkybox.name);
-
-            planet.dayAmbience = planet.LoadAmbience("Airy Ambience");
-            planet.nightAmbience = planet.dayAmbience;
-
-            RenderSettings.fog = false;
-
-            planet.SetUnderwaterColor(new Color(0 / 255.0f, 136 / 255.0f, 255 / 255.0f, 0.5f));
-            planet.SetOcean(Random.Range(7, 15), Planet.OceanType.Glowing);
-
-            terrainCustomization.lowBoundaries = Random.Range(0, 4) != 0;
-            terrainCustomization.amplitudePower = 5;
-            terrainCustomization.amplitudeGroundScale = Random.Range(4, 6);
-            terrainCustomization.noiseGroundScale = Random.Range(20, 40);
-            terrainCustomization.noiseStrength = Random.Range(1.1f, 1.2f);
-
-            planet.GetComponent<AudioReverbZone>().reverbPreset = AudioReverbPreset.Arena;
-
-            //Seabed glows just above edge of glowing water
-            terrainCustomization.seabedHeight = planet.oceanTransform.position.y + Random.Range(0.65f, 0.9f);
-        }
+        color = new Color(colorJSON.r / 255.0f, colorJSON.g / 255.0f, colorJSON.b / 255.0f, colorJSON.a);
+        return true;
     }
 
-    //For Frozen, Temperate, and Desert only
-    private void FinishNormalBiomeSetUp(Planet planet, float intensity)
-    {
-        //Fog (more likely for cold planets, impossible for hot planets)
-        float fogFactor = Random.Range(0, intensity * 5);
-        if (fogFactor < 1.5f && intensity < Random.Range(0.7f, 1.05f))
-        {
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Exponential;
-            if (fogFactor < 0.5f && intensity < 0.6f)   //Heavy fog (only for frigid planets)
-                RenderSettings.fogDensity = Random.Range(0.025f, 0.15f);
-            else //Light fog
-                RenderSettings.fogDensity = Random.Range(0.005f, 0.025f);
-        }
-        else
-            RenderSettings.fog = false;
-
-        //Skyboxes and ambient noise (selections depend on temperature and fog)
-        SelectDaySkyboxAndAmbience(planet, intensity);
-        SelectNightSkyboxAndAmbience(planet, intensity);
-    }
-
-    //For Frozen, Temperate, and Desert only
-    private void SelectDaySkyboxAndAmbience(Planet planet, float intensity)
-    {
-        //If there's fog, fog dominates skybox and ambience choice
-        if (RenderSettings.fog)
-        {
-            planet.LoadSkybox(true, "SkyCloudy", "SkyHaloSky", "AllSky_Overcast4_Low");
-            planet.dayAmbience = planet.LoadAmbience("Howling Wind");
-
-            return;
-        }
-
-        //Otherwise, temperature dictates skybox and ambience choice...
-
-        if (planet.biome == Planet.Biome.Frozen) //Cold
-        {
-            planet.LoadSkybox(true, "Cold Sunset", "AllSky_Overcast4_Low");
-            planet.dayAmbience = planet.LoadAmbience("Light Winter Wind");
-        }
-        else if (planet.biome == Planet.Biome.Temperate) //Temperate
-        {
-            planet.LoadSkybox(true, "Epic_GloriousPink", "Epic_BlueSunset", "SkyBrightMorning", "Day_BlueSky_Nothing", "Blue Cloud");
-
-            if (planet.biomeSubType == Planet.BiomeSubType.Forest)
-                planet.dayAmbience = planet.LoadAmbience("Rainforest");
-            else
-                planet.dayAmbience = planet.LoadAmbience("Morning Country Birds", "Quiet Lake with Birds");
-        }
-        else //Hot
-        {
-            planet.LoadSkybox(true, "SkySunset", "SkyMorning", "Desert Sky Morning", "Desert World Sky", "Brown Cloud");
-            planet.dayAmbience = planet.LoadAmbience("Howling Wind");
-        }
-    }
-
-    //For Frozen, Temperate, and Desert only
-    private void SelectNightSkyboxAndAmbience(Planet planet, float intensity)
-    {
-        //Temperature dictates skybox and ambience choice...
-
-        if (planet.biome == Planet.Biome.Frozen) //Cold
-        {
-            if (RenderSettings.fog)
-                planet.LoadSkybox(false, "Cold Night", "Night Moon Burst");
-            else
-                planet.LoadSkybox(false, "SkyNight", "Cartoon Base NightSky", "BlueGreenNebular", "Blue Galaxy 1", "Blue Galaxy 2");
-
-            //Ambience
-            if (RenderSettings.fog && RenderSettings.fogDensity > 0.05f && intensity < 0.55f)
-                planet.nightAmbience = planet.LoadAmbience("Blizzard");
-            else
-                planet.nightAmbience = planet.LoadAmbience("Howling Wind", "Light Winter Wind");
-        }
-        else if (planet.biome == Planet.Biome.Temperate) //Temperate
-        {
-            if (RenderSettings.fog)
-                planet.LoadSkybox(false, "SkyEarlyDusk", "Cartoon Base NightSky");
-            else
-                planet.LoadSkybox(false, "SkyMidnight", "SkyNight", "SkyEarlyDusk", "Galaxy Field 1", "Galaxy Field 2");
-
-            //Ambience (biome sub types and fog play a factor here)
-            if (planet.biomeSubType == Planet.BiomeSubType.Forest)
-                planet.nightAmbience = planet.LoadAmbience("Rainforest");
-            else if (RenderSettings.fog)
-                planet.nightAmbience = planet.LoadAmbience("Howling Wind");
-            else
-                planet.nightAmbience = planet.LoadAmbience("Summer Night");
-        }
-        else //Hot (don't worry about fog; impossible for hot planets)
-        {
-            if (Random.Range(0, 2) == 0)
-                planet.LoadSkybox(false, "Deep Dusk");
-            else
-                planet.LoadSkybox(false, "Yellow Galaxy", "Spiral Galaxy");
-            planet.nightAmbience = planet.LoadAmbience("Summer Night");
-        }
-    }
+    private static string GetBiomeName(Planet.Biome biome) { return GeneralHelperMethods.GetEnumText(biome.ToString()); }
 
     //SUN GENERATION----------------------------------------------------------------------------------------
 
@@ -636,10 +379,11 @@ public class PlanetGenerator : MonoBehaviour
 public class SubBiomeJSON
 {
     public float[] sunIntensityRange;
+    public HumanFriendlyColorJSON sunColor;
     
     public string reverbPreset = "Arena";
     
-    public Color underwaterColor = Color.magenta;
+    public HumanFriendlyColorJSON underwaterColor;
     public int[] oceanHeightRange;
     public string oceanMaterial;
     public float[] seabedRelativeHeightRange;
@@ -647,22 +391,39 @@ public class SubBiomeJSON
     public string[] groundTexture;
     public string[] cliffTexture;
     public string[] seabedTexture;
+    public bool seabedHasSameTextureAsGround = false;
+
+    public float groundMetallicness = 0.0f;
+    public float groundSmoothness = 0.0f;
+    public float cliffMetallicness = 0.0f;
+    public float cliffSmoothness = 0.0f;
+    public float seabedMetallicness = 0.0f;
+    public float seabedSmoothness = 0.0f;
 
     public string[] terrainSculpting;
 
     public string[] groundMaterial;
     public string[] seabedMaterial;
+    public string[] wetSeabedMaterial;
+    public string[] drySeabedMaterial;
+    public bool seabedHasSameMaterialAsGround = false;
+    public bool seabedHasSameTextureAsCliff = false;
 
     public float fogChance = 0.0f;
     public string fogMode = "Exponential";
     public float[] fogDensityRange;
-    public Color fogColor = Color.magenta;
+    public HumanFriendlyColorJSON fogColor;
 
     public string[] daySkybox;
     public string[] nightSkybox;
+    public bool nightHasSameSkyboxAsDay = false;
 
     public string[] dayAmbience;
     public string[] nightAmbience;
+
+    public int[] idealTreeCountRange;
+    public string[] treeNames;
+    public int[] maxTreeSteepnessRange;
 }
 
 
@@ -670,8 +431,16 @@ public class SubBiomeJSON
 public class TerrainSculptingJSON
 {
     public float lowBoundariesChance = 1.0f;
+    public float horizonHeightIsCeilingChance = 0.0f;
     public float[] noiseGroundScaleRange;
     public float[] amplitudeGroundScaleRange;
     public int[] amplitudePowerRange;
     public float[] noiseStrengthRange;
+}
+
+[System.Serializable]
+public class HumanFriendlyColorJSON
+{
+    public int r = 0, g = 0, b = 0;
+    public float a = 0.0f;
 }

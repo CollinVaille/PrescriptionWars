@@ -9,24 +9,26 @@ public class GeneralHelperMethods
 
     private static Dictionary<string, string[]> textFileCache;
 
-    public static string GetTextFromFile(string fullResourcePath)
+    public static TextAsset GetTextAsset(string resourcePath, bool startPathFromGeneralTextFolder = true)
     {
-        TextAsset textFile = Resources.Load<TextAsset>(fullResourcePath);
-        return textFile.text;
+        if (startPathFromGeneralTextFolder)
+            return Resources.Load<TextAsset>("General/Text/" + resourcePath);
+        else
+            return Resources.Load<TextAsset>(resourcePath);
     }
 
     //Returns one line randomly picked from text file- WITHOUT CARRIAGE RETURN!
-    public static string GetLineFromFile (string resourcePath, bool cacheLines = true)
+    public static string GetLineFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true)
     {
         //Returns possible lines WITHOUT carriage return
-        string[] possibleLines = GetLinesFromFile(resourcePath, cacheLines);
+        string[] possibleLines = GetLinesFromFile(resourcePath, cacheLines: cacheLines, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder);
 
         //Choose a line and return it
         return possibleLines[Random.Range(0, possibleLines.Length)];
     }
 
     //Returns all lines from text file- WITHOUT ANY CARRIAGE RETURNS!
-    public static string[] GetLinesFromFile (string resourcePath, bool cacheLines = true)
+    public static string[] GetLinesFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true)
     {
         //First, see if lines are already cached
         string[] lines = GetLinesFromCache(resourcePath);
@@ -39,8 +41,11 @@ public class GeneralHelperMethods
         //Since carriage return is part of delimiter, it is not included in parsed strings
         string[] delimiters = new string[] { "\r\n" };
 
-        //Read in lines from text file
-        lines = GetTextFromFile("General/Text/" + resourcePath).Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
+        //Get string from text file
+        string fileContentsAsString = GetTextAsset(resourcePath, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder).text;
+
+        //Parse string into lines
+        lines = fileContentsAsString.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);
 
         //Cache lines
         if (cacheLines)

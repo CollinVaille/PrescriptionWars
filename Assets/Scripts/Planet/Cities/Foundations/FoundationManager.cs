@@ -213,10 +213,18 @@ public class FoundationManager
 
         if(flatten)
         {
+            float previousLocalYPosition = foundationPosition.y;
+
             foundationPosition = city.transform.TransformPoint(foundationPosition);
             foundationPosition = PlanetTerrain.planetTerrain.SnapToTerrainAndFlattenAreaAroundPoint(foundationPosition.x, foundationPosition.z);
             foundationPosition = city.transform.InverseTransformPoint(foundationPosition);
+
+            float yChange = foundationPosition.y - previousLocalYPosition;
+            foundationScale.y += yChange * 2.0f; //need to multiply it by 2 because half of the foundation is underground
         }
+
+        if (foundationScale.y < 0.5f)
+            return;
 
         GenerateNewFoundation(foundationPosition, foundationScale, foundationShape, entrancesNeedConnecting);
 
