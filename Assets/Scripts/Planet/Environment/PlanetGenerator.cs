@@ -134,7 +134,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 3:
-                if (allowedRandomness > 0.25f)
+                if (allowedRandomness > 0.25f && referenceSubBiomeJSON.seabedTexture != null && referenceSubBiomeJSON.seabedTexture.Length > 0)
                 {
                     targetSubBiomeJSON.underwaterColor = referenceSubBiomeJSON.underwaterColor;
                     targetSubBiomeJSON.oceanMaterial = referenceSubBiomeJSON.oceanMaterial;
@@ -149,7 +149,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 4:
-                if (allowedRandomness > 0.1f)
+                if (allowedRandomness > 0.1f && referenceSubBiomeJSON.cliffTexture != null && referenceSubBiomeJSON.cliffTexture.Length > 0)
                 {
                     targetSubBiomeJSON.cliffTexture = referenceSubBiomeJSON.cliffTexture;
                     targetSubBiomeJSON.cliffMetallicness = referenceSubBiomeJSON.cliffMetallicness;
@@ -159,7 +159,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 5:
-                if (allowedRandomness > 0.25f)
+                if (allowedRandomness > 0.25f && referenceSubBiomeJSON.groundTexture != null && referenceSubBiomeJSON.groundTexture.Length > 0)
                 {
                     targetSubBiomeJSON.groundTexture = referenceSubBiomeJSON.groundTexture;
                     targetSubBiomeJSON.groundMetallicness = referenceSubBiomeJSON.groundMetallicness;
