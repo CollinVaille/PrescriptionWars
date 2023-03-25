@@ -681,7 +681,7 @@ public class GalaxyGenerator : MonoBehaviour
                 return frozenMaterials[UnityEngine.Random.Range(0, frozenMaterials.Count)];
             case Planet.Biome.Temperate:
                 return temperateMaterials[UnityEngine.Random.Range(0, temperateMaterials.Count)];
-            case Planet.Biome.SandyDesert:
+            case Planet.Biome.Desert:
                 return desertMaterials[UnityEngine.Random.Range(0, desertMaterials.Count)];
             case Planet.Biome.Swamp:
                 return swampMaterials[UnityEngine.Random.Range(0, swampMaterials.Count)];
@@ -707,7 +707,7 @@ public class GalaxyGenerator : MonoBehaviour
             case 1:
                 return Planet.Biome.Temperate;
             case 2:
-                return Planet.Biome.SandyDesert;
+                return Planet.Biome.Desert;
             case 3:
                 return Planet.Biome.Swamp;
             case 4:

@@ -431,7 +431,7 @@ public class PlanetManagementMenu : GalaxyPopupBehaviour
                 return frozenCitySprite;
             case Planet.Biome.Temperate:
                 return temperateCitySprite;
-            case Planet.Biome.SandyDesert:
+            case Planet.Biome.Desert:
                 return desertCitySprite;
             case Planet.Biome.Swamp:
                 return swampCitySprite;

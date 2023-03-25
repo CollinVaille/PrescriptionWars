@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Planet : MonoBehaviour
 {
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
-    public enum Biome { Unknown, Frozen, Temperate, SandyDesert, RockyDesert, Swamp, Hell, Spirit }
+    public enum Biome { Unknown, Frozen, Temperate, Desert, Swamp, Hell, Spirit }
     public enum OceanType { Normal, Frozen, Lava, Glowing, Murky }
 
     public static Planet planet;
@@ -104,6 +104,7 @@ public class Planet : MonoBehaviour
                 case "Epic_BlueSunset":
                     cubemapName = "Epic_BlueSunset_EquiRect_flat"; break;
                 case "Epic_GloriousPink":
+                case "Desert Sky Morning":
                     cubemapName = "Epic_GloriousPink_EquiRect"; break;
                 case "AllSky_Space_AnotherPlanet":
                     cubemapName = "AllSky_Space_AnotherPlanet Equirect"; break;

@@ -50,15 +50,14 @@ public class PlanetGenerator : MonoBehaviour
     public static Planet.Biome GetRandomBiome()
     {
         //Randomly select
-        int picker = Random.Range(0, 7);
+        int picker = Random.Range(0, 6);
         switch (picker)
         {
             case 0: return Planet.Biome.Frozen;
             case 1: return Planet.Biome.Temperate;
-            case 2: return Planet.Biome.SandyDesert;
-            case 3: return Planet.Biome.RockyDesert;
-            case 4: return Planet.Biome.Swamp;
-            case 5: return Planet.Biome.Hell;
+            case 2: return Planet.Biome.Desert;
+            case 3: return Planet.Biome.Swamp;
+            case 4: return Planet.Biome.Hell;
             default: return Planet.Biome.Spirit;
         }
     }
@@ -231,7 +230,8 @@ public class PlanetGenerator : MonoBehaviour
         terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
 
         terrainCustomization.groundTexture = planet.LoadTexture(subBiomeJSON.groundTexture);
-        terrainCustomization.cliffTexture = planet.LoadTexture(subBiomeJSON.cliffTexture);
+        terrainCustomization.cliffTexture = subBiomeJSON.cliffHasSameTextureAsGround ? terrainCustomization.groundTexture : planet.LoadTexture(subBiomeJSON.cliffTexture);
+
         if (subBiomeJSON.seabedHasSameTextureAsGround)
             terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
         else if (subBiomeJSON.seabedHasSameTextureAsCliff)
@@ -391,6 +391,7 @@ public class SubBiomeJSON
     public string[] groundTexture;
     public string[] cliffTexture;
     public string[] seabedTexture;
+    public bool cliffHasSameTextureAsGround = false;
     public bool seabedHasSameTextureAsGround = false;
 
     public float groundMetallicness = 0.0f;
