@@ -93,13 +93,14 @@ public class PlanetGenerator : MonoBehaviour
         else
             referenceSubBiomeJSON = GetRandomUnalteredSubBiomeOfBiome(GetBiomeName(GetRandomBiome()));
 
+        bool referenceFromSameBiome = referenceSubBiomeJSON.biomeName.Equals(targetSubBiomeJSON.biomeName);
         for (int attemptsAtRandomization = 0; attemptsAtRandomization < 100 && randomness > 0.0f; attemptsAtRandomization++)
-            randomness -= PerformRandomModificationToTargetSubBiome(targetSubBiomeJSON, referenceSubBiomeJSON, randomness);
+            randomness -= PerformRandomModificationToTargetSubBiome(targetSubBiomeJSON, referenceSubBiomeJSON, randomness, referenceFromSameBiome);
 
         return targetSubBiomeJSON;
     }
 
-    private static float PerformRandomModificationToTargetSubBiome(SubBiomeJSON targetSubBiomeJSON, SubBiomeJSON referenceSubBiomeJSON, float allowedRandomness)
+    private static float PerformRandomModificationToTargetSubBiome(SubBiomeJSON targetSubBiomeJSON, SubBiomeJSON referenceSubBiomeJSON, float allowedRandomness, bool referenceFromSameBiome)
     {
         int changeType = Random.Range(0, 11);
 
@@ -134,7 +135,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 3:
-                if (allowedRandomness > 0.25f && referenceSubBiomeJSON.seabedTexture != null && referenceSubBiomeJSON.seabedTexture.Length > 0)
+                if (allowedRandomness > 0.25f && referenceFromSameBiome && referenceSubBiomeJSON.seabedTexture != null && referenceSubBiomeJSON.seabedTexture.Length > 0)
                 {
                     targetSubBiomeJSON.underwaterColor = referenceSubBiomeJSON.underwaterColor;
                     targetSubBiomeJSON.oceanMaterial = referenceSubBiomeJSON.oceanMaterial;
@@ -149,7 +150,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 4:
-                if (allowedRandomness > 0.1f && referenceSubBiomeJSON.cliffTexture != null && referenceSubBiomeJSON.cliffTexture.Length > 0)
+                if (allowedRandomness > 0.1f && referenceFromSameBiome && referenceSubBiomeJSON.cliffTexture != null && referenceSubBiomeJSON.cliffTexture.Length > 0)
                 {
                     targetSubBiomeJSON.cliffTexture = referenceSubBiomeJSON.cliffTexture;
                     targetSubBiomeJSON.cliffMetallicness = referenceSubBiomeJSON.cliffMetallicness;
@@ -159,7 +160,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 5:
-                if (allowedRandomness > 0.25f && referenceSubBiomeJSON.groundTexture != null && referenceSubBiomeJSON.groundTexture.Length > 0)
+                if (allowedRandomness > 0.25f && referenceFromSameBiome && referenceSubBiomeJSON.groundTexture != null && referenceSubBiomeJSON.groundTexture.Length > 0)
                 {
                     targetSubBiomeJSON.groundTexture = referenceSubBiomeJSON.groundTexture;
                     targetSubBiomeJSON.groundMetallicness = referenceSubBiomeJSON.groundMetallicness;
@@ -170,7 +171,7 @@ public class PlanetGenerator : MonoBehaviour
                 break;
 
             case 6:
-                if (allowedRandomness > 0.2f)
+                if (allowedRandomness > 0.2f && referenceFromSameBiome)
                 {
                     targetSubBiomeJSON.idealTreeCountRange = referenceSubBiomeJSON.idealTreeCountRange;
                     targetSubBiomeJSON.treeNames = referenceSubBiomeJSON.treeNames;
@@ -197,7 +198,12 @@ public class PlanetGenerator : MonoBehaviour
     private static SubBiomeJSON GetRandomUnalteredSubBiomeOfBiome(string biomeName)
     {
         string subBiomeName = GeneralHelperMethods.GetLineFromFile("Planet/Environment/Sub Biomes/Sub Biome Lists/" + biomeName, startPathFromGeneralTextFolder: false);
-        return GetSubBiome(biomeName, subBiomeName);
+        SubBiomeJSON subBiomeJSON = GetSubBiome(biomeName, subBiomeName);
+
+        subBiomeJSON.biomeName = biomeName;
+        subBiomeJSON.subBiomeName = subBiomeName;
+        
+        return subBiomeJSON;
     }
 
     private static SubBiomeJSON GetSubBiome(string biomeName, string subBiomeName)
@@ -378,6 +384,9 @@ public class PlanetGenerator : MonoBehaviour
 [System.Serializable]
 public class SubBiomeJSON
 {
+    public string biomeName;
+    public string subBiomeName;
+
     public float[] sunIntensityRange;
     public HumanFriendlyColorJSON sunColor;
     
