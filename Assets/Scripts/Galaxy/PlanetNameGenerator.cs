@@ -35,7 +35,7 @@ public static class PlanetNameGenerator
 
     private static string GetARandomNameThatCouldBeRedundant()
     {
-        if(Random.Range(0, 4) == 0)
+        if(Random.Range(0, 10) == 0)
             return planetNames[UnityEngine.Random.Range(0, planetNames.Length)];
         else
             return planetNamePrefixes[UnityEngine.Random.Range(0, planetNamePrefixes.Length)] + planetNameSuffixes[UnityEngine.Random.Range(0, planetNameSuffixes.Length)];

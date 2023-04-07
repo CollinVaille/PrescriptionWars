@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.60540617, g: 0.5490479, b: 0.6446497, a: 1}
+  m_IndirectSpecularColor: {r: 0.42979622, g: 0.5002178, b: 0.5687746, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14372,7 +14372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planetName: 
   subBiome: 
-  biome: 6
+  biome: 0
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
   moon: {fileID: 0}
@@ -21597,7 +21597,7 @@ MonoBehaviour:
     - Slate Tile Floor
     foundationChance: 0.4
     foundationHeightRange: {x: 10, y: 50, z: 20, w: 85}
-  - name: Sandy Desert
+  - name: Desert
     biome: 3
     wallMaterials:
     - Sand Wall
@@ -21617,7 +21617,7 @@ MonoBehaviour:
     foundationChance: 0.33
     foundationHeightRange: {x: 10, y: 50, z: 35, w: 75}
   - name: Spirit
-    biome: 7
+    biome: 6
     wallMaterials:
     - Metal Wall Panel
     floorMaterials:
@@ -21629,7 +21629,7 @@ MonoBehaviour:
     foundationChance: 0.8
     foundationHeightRange: {x: 15, y: 70, z: 15, w: 175}
   - name: Hell
-    biome: 6
+    biome: 5
     wallMaterials:
     - Metal Wall Panel
     floorMaterials:
@@ -21641,7 +21641,7 @@ MonoBehaviour:
     foundationChance: 0.9
     foundationHeightRange: {x: 0, y: 200, z: 0, w: 350}
   - name: Swamp
-    biome: 5
+    biome: 4
     wallMaterials: []
     floorMaterials: []
     slabMaterials: []
@@ -21701,8 +21701,10 @@ MonoBehaviour:
     - Hourglass Circular Foundation
     - Carved Circular Foundation
     - Pavilion Circular Foundation
+    - Vase Circular Foundation
     smallRectangularFoundations:
     - Pilaster Rectangular Foundation
+    - Tower Rectangular Foundation
     largeCircularFoundations:
     - Colosseum Circular Foundation
     - Hippodrome Circular Foundation
@@ -21710,6 +21712,7 @@ MonoBehaviour:
     - Temple Circular Foundation
     largeRectangularFoundations:
     - Colonnade Rectangular Foundation
+    - Courthouse Rectangular Foundation
     largeTorusFoundations:
     - Industrial Torus Foundation
 --- !u!1 &1754296268
