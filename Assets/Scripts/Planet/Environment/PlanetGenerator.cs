@@ -17,9 +17,6 @@ public class PlanetGenerator : MonoBehaviour
 
         //THEN, GENERATE BIOME----------------------------------------------------------------------------
 
-        //Set up stuff for biomes
-        planet.SetOcean(-10, Planet.OceanType.Normal); //By default ocean is disabled (negative height disables ocean)
-
         //This also generates the sun based on the biome
         CustomizePlanetBasedOnBiome(planet, out TerrainCustomization terrainCustomization);
 
@@ -31,7 +28,6 @@ public class PlanetGenerator : MonoBehaviour
 
         //Temp name
         planet.planetName = PlanetNameGenerator.GeneratePlanetName();
-        //planet.planetName = GeneralHelperMethods.GetLineFromFile("Location Names/Planet Names");
 
         //SavePlanet();
     }
@@ -163,6 +159,8 @@ public class PlanetGenerator : MonoBehaviour
                 if (allowedRandomness > 0.25f && referenceFromSameBiome && referenceSubBiomeJSON.groundTexture != null && referenceSubBiomeJSON.groundTexture.Length > 0)
                 {
                     targetSubBiomeJSON.groundTexture = referenceSubBiomeJSON.groundTexture;
+                    targetSubBiomeJSON.ground2Texture = referenceSubBiomeJSON.ground2Texture;
+                    targetSubBiomeJSON.ground2TextureScaleRange = referenceSubBiomeJSON.ground2TextureScaleRange;
                     targetSubBiomeJSON.groundMetallicness = referenceSubBiomeJSON.groundMetallicness;
                     targetSubBiomeJSON.groundSmoothness = referenceSubBiomeJSON.groundSmoothness;
                     targetSubBiomeJSON.groundMaterial = referenceSubBiomeJSON.groundMaterial;
@@ -229,13 +227,26 @@ public class PlanetGenerator : MonoBehaviour
         if(GetColorIfSpecified(subBiomeJSON.underwaterColor, out Color underWaterColor))
             planet.SetUnderwaterColor(underWaterColor);
 
-        if (!System.Enum.TryParse<Planet.OceanType>(subBiomeJSON.oceanMaterial, out Planet.OceanType oceanType))
-            oceanType = Planet.OceanType.Normal;
-        planet.SetOcean(GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType);
+        if (!System.Enum.TryParse<Planet.OceanType>(subBiomeJSON.oceanType, out Planet.OceanType oceanType))
+            oceanType = Planet.OceanType.Water;
+
+        string oceanMaterialSelection = GetOneOf(subBiomeJSON.oceanMaterial);
+        if (oceanMaterialSelection == null)
+            oceanMaterialSelection = "Water";
+
+        planet.SetOcean(GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType, oceanMaterialSelection);
 
         terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
 
         terrainCustomization.groundTexture = planet.LoadTexture(subBiomeJSON.groundTexture);
+
+        string ground2Texture = GetOneOf(subBiomeJSON.ground2Texture);
+        if(!string.IsNullOrEmpty(ground2Texture))
+        {
+            terrainCustomization.ground2Texture = planet.LoadTexture(ground2Texture);
+            terrainCustomization.ground2TextureScale = GetRandomValueFromRange(subBiomeJSON.ground2TextureScaleRange, 100.0f);
+        }
+
         terrainCustomization.cliffTexture = subBiomeJSON.cliffHasSameTextureAsGround ? terrainCustomization.groundTexture : planet.LoadTexture(subBiomeJSON.cliffTexture);
 
         if (subBiomeJSON.seabedHasSameTextureAsGround)
@@ -394,10 +405,13 @@ public class SubBiomeJSON
     
     public HumanFriendlyColorJSON underwaterColor;
     public int[] oceanHeightRange;
-    public string oceanMaterial;
+    public string oceanType = "Water";
+    public string[] oceanMaterial;
     public float[] seabedRelativeHeightRange;
 
     public string[] groundTexture;
+    public string[] ground2Texture;
+    public float[] ground2TextureScaleRange;
     public string[] cliffTexture;
     public string[] seabedTexture;
     public bool cliffHasSameTextureAsGround = false;
@@ -451,6 +465,6 @@ public class TerrainSculptingJSON
 [System.Serializable]
 public class HumanFriendlyColorJSON
 {
-    public int r = 0, g = 0, b = 0;
-    public float a = 0.0f;
+    public int r = 0, g = 0, b = 0; //0-255
+    public float a = 0.0f; //0-1
 }

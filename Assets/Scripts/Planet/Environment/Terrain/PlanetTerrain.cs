@@ -208,10 +208,6 @@ public class PlanetTerrain : MonoBehaviour
 
         List<TerrainLayer> terrainTextureList = new List<TerrainLayer>();
 
-        TerrainLayer groundLayer = new TerrainLayer();
-        groundLayer.diffuseTexture = customization.groundTexture;
-        groundLayer.tileSize = new Vector2(2, 2);
-
         TerrainLayer cliffLayer = new TerrainLayer();
         cliffLayer.diffuseTexture = customization.cliffTexture;
         cliffLayer.tileSize = new Vector2(2, 2);
@@ -220,17 +216,35 @@ public class PlanetTerrain : MonoBehaviour
         seabedLayer.diffuseTexture = customization.seabedTexture;
         seabedLayer.tileSize = new Vector2(2, 2);
 
-        TerrainLayerEffects(groundLayer, cliffLayer, seabedLayer);
+        TerrainLayer groundLayer = new TerrainLayer();
+        groundLayer.diffuseTexture = customization.groundTexture;
+        groundLayer.tileSize = new Vector2(2, 2);
 
-        terrainTextureList.Add(groundLayer);
+        bool hasGround2Layer = customization.ground2Texture;
+        TerrainLayer ground2Layer = new TerrainLayer();
+        if (hasGround2Layer)
+        {
+            ground2Layer.diffuseTexture = customization.ground2Texture;
+            ground2Layer.tileSize = new Vector2(2, 2);
+        }
+
+        TerrainLayerEffects(groundLayer, cliffLayer, seabedLayer, ground2Layer);
+
         terrainTextureList.Add(cliffLayer);
         terrainTextureList.Add(seabedLayer);
+        terrainTextureList.Add(groundLayer);
+        if (hasGround2Layer)
+            terrainTextureList.Add(ground2Layer);
 
         terrainData.terrainLayers = terrainTextureList.ToArray();
 
         //Use terrain layers to paint terrain-----------------------------------------------------------------------
 
         float[,,] splatmapData = new float[terrainData.alphamapWidth, terrainData.alphamapHeight, terrainData.alphamapLayers];
+
+        int centralTerrainWidth = (int)(terrainData.alphamapWidth * 0.75f);
+        int transitionZoneWidth = terrainData.alphamapWidth - centralTerrainWidth;
+        int transitionOffset = (int)(transitionZoneWidth * 0.5f);
 
         int heightmapX, heightmapZ;
         for (int x = 0; x < terrainData.alphamapWidth; x++)
@@ -242,9 +256,11 @@ public class PlanetTerrain : MonoBehaviour
 
                 if (terrainData.GetHeight(heightmapX, heightmapZ) < customization.seabedHeight) //SEABED
                 {
-                    splatmapData[x, z, 0] = 0; //Ground
-                    splatmapData[x, z, 1] = 0; //Cliff
-                    splatmapData[x, z, 2] = 1; //Seabed
+                    splatmapData[x, z, 0] = 0; //Cliff
+                    splatmapData[x, z, 1] = 1; //Seabed
+                    splatmapData[x, z, 2] = 0; //Ground
+                    if (hasGround2Layer)
+                        splatmapData[x, z, 3] = 0; //Ground 2
                 }
                 else
                 {
@@ -253,15 +269,31 @@ public class PlanetTerrain : MonoBehaviour
 
                     if (terrainSteepness > 35) //CLIFF
                     {
-                        splatmapData[x, z, 0] = 0; //Ground
-                        splatmapData[x, z, 1] = 1; //Cliff
-                        splatmapData[x, z, 2] = 0; //Seabed
+                        splatmapData[x, z, 0] = 1; //Cliff
+                        splatmapData[x, z, 1] = 0; //Seabed
+                        splatmapData[x, z, 2] = 0; //Ground
+                        if (hasGround2Layer)
+                            splatmapData[x, z, 3] = 0; //Ground 2
                     }
                     else //GROUND
                     {
-                        splatmapData[x, z, 0] = 1; //Ground
-                        splatmapData[x, z, 1] = 0; //Cliff
-                        splatmapData[x, z, 2] = 0; //Seabed
+                        splatmapData[x, z, 0] = 0; //Cliff
+                        splatmapData[x, z, 1] = 0; //Seabed
+                        if (hasGround2Layer)
+                        {
+                            //Use perlin noise to "randomly" fade between the two ground textures
+                            float ground2Percentage = Mathf.PerlinNoise(offsets.ground2OffsetX + x * customization.ground2TextureScale / 2048.0f,
+                                           offsets.ground2OffsetZ + z * customization.ground2TextureScale / 2048.0f);
+
+                            //Make sure only the first ground texture is present at the terrain edges since the horizons only have the first texture
+                            ground2Percentage *= (1.0f - GetEdgePercentageRectangular(z - transitionOffset, x - transitionOffset, centralTerrainWidth, transitionZoneWidth));
+
+                            //Apply computed opacity values to the ground textures
+                            splatmapData[x, z, 2] = 1.0f - ground2Percentage; //Ground
+                            splatmapData[x, z, 3] = ground2Percentage; //Ground 2
+                        }
+                        else
+                            splatmapData[x, z, 2] = 1; //Ground
                     }
                 }
             }
@@ -270,11 +302,9 @@ public class PlanetTerrain : MonoBehaviour
         terrainData.SetAlphamaps(0, 0, splatmapData);
     }
 
-    private void TerrainLayerEffects (TerrainLayer groundLayer, TerrainLayer cliffLayer, TerrainLayer seabedLayer)
+    private void TerrainLayerEffects (TerrainLayer cliffLayer, TerrainLayer seabedLayer, TerrainLayer groundLayer, TerrainLayer ground2Layer = null)
     {
         //Apply customization of metallic and smoothness properties to terrain layers
-        groundLayer.metallic = customization.groundMetallic;
-        groundLayer.smoothness = customization.groundSmoothness;
 
         cliffLayer.metallic = customization.cliffMetallic;
         cliffLayer.smoothness = customization.cliffSmoothness;
@@ -282,8 +312,17 @@ public class PlanetTerrain : MonoBehaviour
         seabedLayer.metallic = customization.seabedMetallic;
         seabedLayer.smoothness = customization.seabedSmoothness;
 
+        groundLayer.metallic = customization.groundMetallic;
+        groundLayer.smoothness = customization.groundSmoothness;
+
+        if (ground2Layer)
+        {
+            ground2Layer.metallic = customization.groundMetallic;
+            ground2Layer.smoothness = customization.groundSmoothness;
+        }
+
         //Update horizon to have same effects as terrain
-        if(Planet.planet.hasOcean && customization.lowBoundaries)
+        if (Planet.planet.hasOcean && customization.lowBoundaries)
         {
             horizonMaterial.SetFloat("_Metallic", seabedLayer.metallic);
             horizonMaterial.SetFloat("_Glossiness", seabedLayer.smoothness);

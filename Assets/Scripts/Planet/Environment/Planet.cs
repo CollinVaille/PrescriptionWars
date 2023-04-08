@@ -7,7 +7,7 @@ public class Planet : MonoBehaviour
 {
     public enum TimeOfDay { Unknown, Morning, Day, Evening, Night }
     public enum Biome { Unknown, Frozen, Temperate, Desert, Swamp, Hell, Spirit }
-    public enum OceanType { Normal, Frozen, Lava, Glowing, Murky }
+    public enum OceanType { Water, Frozen, Lava }
 
     public static Planet planet;
     public static bool newPlanet = true;
@@ -34,6 +34,7 @@ public class Planet : MonoBehaviour
     public Transform oceanTransform;
     [HideInInspector] public bool hasOcean = true;
     public Material ice;
+    [HideInInspector] public string oceanMaterialName;
 
     //Audio
     [HideInInspector] public float ambientVolume = 1;
@@ -151,16 +152,17 @@ public class Planet : MonoBehaviour
 
     private void LoadWaterCubemap (string mapName)
     {
-        oceanTransform.GetComponent<Renderer>().sharedMaterial.SetTexture("_Cube", Resources.Load<Cubemap>("Planet/Environment/Cubemaps/" + mapName));
+        oceanTransform.GetComponent<Renderer>().material.SetTexture("_Cube", Resources.Load<Cubemap>("Planet/Environment/Cubemaps/" + mapName));
     }
 
-    public void SetOcean (int height, OceanType oceanType, string iceTexture = "")
+    public void SetOcean (int height, OceanType oceanType, string oceanMaterial = "Water", string iceTexture = "")
     {
         this.oceanType = oceanType;
+        this.oceanMaterialName = oceanMaterial;
 
         //Set height
         Vector3 newPosition = oceanTransform.position;
-        newPosition.y = height;
+        newPosition.y = height > 0 ? height : -1000;
         oceanTransform.position = newPosition;
         seaLevel = height;
 
@@ -168,7 +170,7 @@ public class Planet : MonoBehaviour
         hasOcean = oceanTransform.position.y > 0.0f;
         oceanTransform.gameObject.SetActive(hasOcean);
 
-        //Set type... default is OceanType.Normal
+        //Set type... default is OceanType.Water
         if (oceanType == OceanType.Frozen)
         {
             if(iceTexture.Equals("")) //Generate new ice texture
@@ -176,12 +178,14 @@ public class Planet : MonoBehaviour
             else //Load old ice texture
                 FreezeOcean(iceTexture);
         }
-        else if(oceanType == OceanType.Lava)
-            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Lava");
-        else if (oceanType == OceanType.Glowing)
-            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Glowing Water");
-        else if(oceanType == OceanType.Murky)
-            oceanTransform.GetComponent<Renderer>().sharedMaterial = Resources.Load<Material>("Planet/Environment/Ocean/Murky Water");
+
+        //Set material
+        if (oceanType != OceanType.Frozen)
+        {
+            //Set ocean material
+            Material customOceanMaterial = Resources.Load<Material>("Planet/Environment/Ocean/" + oceanMaterial);
+            oceanTransform.GetComponent<Renderer>().material.CopyPropertiesFromMaterial(customOceanMaterial);
+        }
     }
 
     private void FreezeOcean (params string[] textureNames)
@@ -196,7 +200,7 @@ public class Planet : MonoBehaviour
         //Set visuals
         Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
         ice.SetTexture("_MainTex", iceTexture);
-        oceanTransform.GetComponent<Renderer>().sharedMaterial = ice;
+        oceanTransform.GetComponent<Renderer>().material = ice;
 
         //Otherwise ocean will be animated like it is moving water
         hasOcean = false;
@@ -267,7 +271,7 @@ public class Planet : MonoBehaviour
         Color nightFogColor = dayFogColor / 3;
 
         //Ocean
-        Material ocean = oceanTransform.GetComponent<Renderer>().sharedMaterial;
+        Material ocean = oceanTransform.GetComponent<Renderer>().material;
         Color dayOceanColor = new Color(48 / 255.0f, 60 / 255.0f, 67 / 255.0f);
         Color nightOceanColor = new Color(8 / 255.0f, 8 / 255.0f, 8 / 255.0f);
         Vector2 oceanOffset = Vector2.zero;
@@ -574,8 +578,9 @@ public class PlanetJSON
         //Ocean
         oceanHeight = planet.oceanTransform.position.y;
         oceanType = planet.oceanType;
+        oceanMaterialName = planet.oceanMaterialName;
         underwaterColor = PlanetPauseMenu.pauseMenu.HUD.Find("Underwater").GetComponent<Image>().color;
-        iceTexture = planet.oceanTransform.GetComponent<Renderer>().sharedMaterial.mainTexture.name;
+        iceTexture = planet.oceanTransform.GetComponent<Renderer>().material.mainTexture.name;
 
         //Audio
         reverb = planet.GetComponent<AudioReverbZone>().reverbPreset;
@@ -614,7 +619,7 @@ public class PlanetJSON
         planet.sun.GetComponent<Light>().intensity = sunIntensity;
 
         //Ocean
-        planet.SetOcean((int)oceanHeight, oceanType, iceTexture);
+        planet.SetOcean((int)oceanHeight, oceanType, oceanMaterialName, iceTexture);
         planet.SetUnderwaterColor(underwaterColor);
 
         //Audio
@@ -649,6 +654,7 @@ public class PlanetJSON
     //Ocean
     public float oceanHeight;
     public Planet.OceanType oceanType;
+    public string oceanMaterialName;
     public Color underwaterColor;
     public string iceTexture;
 

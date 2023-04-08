@@ -17,8 +17,9 @@ public class TerrainCustomization
     public string[] treeNames;
 
     //Layers
-    public Texture2D groundTexture, cliffTexture, seabedTexture;
+    public Texture2D groundTexture, ground2Texture, cliffTexture, seabedTexture;
     public float groundMetallic, groundSmoothness, cliffMetallic, cliffSmoothness, seabedMetallic, seabedSmoothness;
+    public float ground2TextureScale; //Inverse scale of how large patches of ground 2 texture should be
 
     //Misc
     public bool lowBoundaries, smallTerrain;
@@ -52,6 +53,7 @@ public class TerrainCustomization
         treeNames[0] = "Palm Tree";
 
         groundTexture = null;
+        ground2Texture = null;
         cliffTexture = null;
         seabedTexture = null;
         groundMetallic = 0;

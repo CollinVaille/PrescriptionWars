@@ -93,9 +93,9 @@ public class PlanetMapManager : MonoBehaviour
         //Update water
         if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
         {
-            realWater = Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial;
+            realWater = Planet.planet.oceanTransform.GetComponent<Renderer>().material;
             mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
-            Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = mapWater;
+            Planet.planet.oceanTransform.GetComponent<Renderer>().material = mapWater;
         }
 
         //Update camera
@@ -109,7 +109,7 @@ public class PlanetMapManager : MonoBehaviour
 
         //Update water
         if (Planet.planet.hasOcean && Planet.planet.oceanType != Planet.OceanType.Frozen)
-            Planet.planet.oceanTransform.GetComponent<Renderer>().sharedMaterial = realWater;
+            Planet.planet.oceanTransform.GetComponent<Renderer>().material = realWater;
 
         //Update camera
         God.god.SetActiveCamera(Player.player.GetCamera(), false);

@@ -6,13 +6,15 @@
 
 	"underwaterColor": {"r":0, "g":136, "b":255, "a":0.5},
 	"oceanHeightRange": [7, 15],
-	"oceanMaterial": "Glowing",
+	"oceanMaterial": ["Glowing Water"],
 	"seabedRelativeHeightRange": [0.65, 0.9],
 
-	"groundTexture": ["Snow"],
+	"groundTexture": ["Sputnik"],
 	"cliffTexture": ["Dead Sea", "Blue Quartz"],
 	"seabedTexture": ["Magnified Frost"],
 
+	"groundMetallicness": 1.0,
+	"groundSmoothness": 0.3,
 	"cliffMetallicness": 1.0,
 	"cliffSmoothness": 1.0,
 	"seabedMetallicness": 0.2,
@@ -20,7 +22,7 @@
 
 	"terrainSculpting": ["Original Spirit Terrain"],
 
-	"groundMaterial": ["Snow"],
+	"groundMaterial": ["Rock"],
 	"seabedMaterial": ["Snow"],
 
 	"daySkybox": ["Blue Galaxy 1", "Blue Galaxy 2"],

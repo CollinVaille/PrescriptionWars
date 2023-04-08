@@ -22,6 +22,8 @@ public class PlanetTerrainJSON
 
         //Customization: Layers
         groundTexture = planetTerrain.customization.groundTexture.name;
+        Texture2D ground2Tex = planetTerrain.customization.ground2Texture;
+        ground2Texture = ground2Tex ? ground2Tex.name : null;
         cliffTexture = planetTerrain.customization.cliffTexture.name;
         seabedTexture = planetTerrain.customization.seabedTexture.name;
         groundMetallic = planetTerrain.customization.groundMetallic;
@@ -30,6 +32,7 @@ public class PlanetTerrainJSON
         cliffSmoothness = planetTerrain.customization.cliffSmoothness;
         seabedMetallic = planetTerrain.customization.seabedMetallic;
         seabedSmoothness = planetTerrain.customization.seabedSmoothness;
+        ground2TextureScale = planetTerrain.customization.ground2TextureScale;
 
         //Customization: Misc
         lowBoundaries = planetTerrain.customization.lowBoundaries;
@@ -41,6 +44,8 @@ public class PlanetTerrainJSON
         noiseOffsetZ = planetTerrain.offsets.noiseOffsetZ;
         amplitudeOffsetX = planetTerrain.offsets.amplitudeOffsetX;
         amplitudeOffsetZ = planetTerrain.offsets.amplitudeOffsetZ;
+        ground2OffsetX = planetTerrain.offsets.ground2OffsetX;
+        ground2OffsetZ = planetTerrain.offsets.ground2OffsetZ;
     }
 
     public void RestorePlanetTerrain(PlanetTerrain planetTerrain, PlanetJSON savedPlanet)
@@ -59,6 +64,8 @@ public class PlanetTerrainJSON
 
         //Customization: Layers
         customization.groundTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + groundTexture);
+        if(!string.IsNullOrEmpty(ground2Texture))
+            customization.ground2Texture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + ground2Texture);
         customization.cliffTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + cliffTexture);
         customization.seabedTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + seabedTexture);
         customization.groundMetallic = groundMetallic;
@@ -67,6 +74,7 @@ public class PlanetTerrainJSON
         customization.cliffSmoothness = cliffSmoothness;
         customization.seabedMetallic = seabedMetallic;
         customization.seabedSmoothness = seabedSmoothness;
+        customization.ground2TextureScale = ground2TextureScale;
 
         //Customization: Misc
         customization.lowBoundaries = lowBoundaries;
@@ -74,7 +82,7 @@ public class PlanetTerrainJSON
         customization.seabedHeight = seabedHeight;
 
         //Offsets
-        TerrainOffsets offsets = new TerrainOffsets(noiseOffsetX, noiseOffsetZ, amplitudeOffsetX, amplitudeOffsetZ);
+        TerrainOffsets offsets = new TerrainOffsets(noiseOffsetX, noiseOffsetZ, amplitudeOffsetX, amplitudeOffsetZ, ground2OffsetX, ground2OffsetZ);
 
         //Now that all terrain parameters have been restored, use them to regenerate the terrain
         planetTerrain.RegenerateTerrain(customization, offsets, savedPlanet);
@@ -91,8 +99,9 @@ public class PlanetTerrainJSON
     public string[] treeNames;
 
     //Customization: Layers
-    public string groundTexture, cliffTexture, seabedTexture;
+    public string groundTexture, ground2Texture, cliffTexture, seabedTexture;
     public float groundMetallic, groundSmoothness, cliffMetallic, cliffSmoothness, seabedMetallic, seabedSmoothness;
+    public float ground2TextureScale;
 
     //Customization: Misc
     public bool lowBoundaries, smallTerrain;
@@ -101,4 +110,5 @@ public class PlanetTerrainJSON
     //Offsets
     public float noiseOffsetX, noiseOffsetZ;
     public float amplitudeOffsetX, amplitudeOffsetZ;
+    public float ground2OffsetX, ground2OffsetZ;
 }
