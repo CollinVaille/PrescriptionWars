@@ -10,6 +10,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     [SerializeField, Tooltip("The game object that has the planet renderer applied to it.")] private GameObject planet = null;
     [SerializeField, Tooltip("The game object that has the atmosphere renderer applied to it.")] private GameObject atmosphere = null;
     [SerializeField, Tooltip("The game object that has the rings renderer applied to it.")] private GameObject rings = null;
+    [SerializeField, Tooltip("The light source that influences the shadowing over the planet.")] private LightSource lightSource = null;
     [SerializeField, Tooltip("The transform that marks the location at which the planet label should be placed.")] private Transform planetLabelLocation = null;
     [SerializeField, Tooltip("The transform that marks the location at which the capital symbol should be placed if the planet is the capital of its solar system.")] private Transform capitalSymbolLocation = null;
     [SerializeField, Tooltip("The transform that serves as the parent of all of the other transforms on the planet that mark a 3D location for 2D UI to be positioned.")] private Transform UILocationsParent = null;
@@ -286,11 +287,14 @@ public class NewGalaxyPlanet : MonoBehaviour
         planet.transform.localRotation = Quaternion.Euler(planet.transform.localRotation.eulerAngles.x, planet.transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), planet.transform.localRotation.eulerAngles.z);
 
         //Updates the planet name label's position.
-        planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
-        planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
+        if(planetNameLabel != null && planetNameLabel.gameObject.activeInHierarchy)
+        {
+            planetNameLabel.transform.position = Camera.main.WorldToScreenPoint(planetLabelLocation.transform.position);
+            planetNameLabel.transform.localPosition = (Vector2)planetNameLabel.transform.localPosition;
+        }
 
         //Updates the capital symbol image's position.
-        if(capitalSymbolImage != null)
+        if(capitalSymbolImage != null && capitalSymbolImage.gameObject.activeInHierarchy)
         {
             capitalSymbolImage.transform.position = Camera.main.WorldToScreenPoint(capitalSymbolLocation.transform.position);
             capitalSymbolImage.transform.localPosition = (Vector2)capitalSymbolImage.transform.localPosition;
@@ -343,7 +347,7 @@ public class NewGalaxyPlanet : MonoBehaviour
         primaryRingColor = ringColorCombo[0];
         secondaryRingColor = ringColorCombo[1];
         //Initializes the light source of the planet to the light being emitted from the star in the solar system.
-        gameObject.GetComponent<LightSource>().Sun = starLight.gameObject;
+        lightSource.Sun = starLight.gameObject;
 
         //Adds the OnGalaxyGenerationCompletion function to the list of functions to be executed once the galaxy has completely finished generating.
         NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
@@ -431,6 +435,7 @@ public class NewGalaxyPlanet : MonoBehaviour
             planet.SetActive(solarSystem.visible && planetsVisible);
             atmosphere.SetActive(solarSystem.visible && planetsVisible);
             rings.SetActive(solarSystem.visible && hasRings && planetsVisible);
+            lightSource.enabled = solarSystem.visible && planetsVisible;
             if(planetNameLabel != null)
                 planetNameLabel.gameObject.SetActive(solarSystem.visible && planetsVisible);
             if (capitalSymbolImage != null)
