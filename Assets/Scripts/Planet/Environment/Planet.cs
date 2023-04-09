@@ -102,6 +102,7 @@ public class Planet : MonoBehaviour
                     cubemapName = "AllSky_Overcast4_Low"; break;
                 case "Blue Cloud":
                 case "Cold Sunset":
+                case "Clouds1":
                     cubemapName = "Cold Sunset Equirect"; break;
                 case "Epic_BlueSunset":
                     cubemapName = "Epic_BlueSunset_EquiRect_flat"; break;
