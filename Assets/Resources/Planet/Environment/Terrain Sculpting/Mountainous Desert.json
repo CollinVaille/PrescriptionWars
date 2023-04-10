@@ -1,7 +1,12 @@
 {
 	"lowBoundariesChance": 0.75,
-	"noiseGroundScaleRange": [30, 50],
-	"amplitudeGroundScaleRange": [7, 10],
-	"amplitudePowerRange": [3, 5],
-	"noiseStrengthRange": [0.4, 0.75]
+
+	"layers": [
+		{
+			"noiseGroundScaleRange": [30, 50],
+			"amplitudeGroundScaleRange": [7, 10],
+			"amplitudePowerRange": [3, 5],
+			"noiseStrengthRange": [0.4, 0.75]
+		}
+	]
 }

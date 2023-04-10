@@ -268,11 +268,13 @@ public class PlanetGenerator : MonoBehaviour
         TerrainSculptingJSON terrainSculptingJSON = JsonUtility.FromJson<TerrainSculptingJSON>(terrainSculptingJSONAsString);
 
         terrainCustomization.lowBoundaries = terrainSculptingJSON.lowBoundariesChance > Random.Range(0.0f, 1.0f);
-        terrainCustomization.horizonHeightIsCeiling = terrainSculptingJSON.horizonHeightIsCeilingChance > Random.Range(0.0f, 1.0f);
-        terrainCustomization.noiseGroundScale = GetRandomValueFromRange(terrainSculptingJSON.noiseGroundScaleRange, defaultValue: 40);
-        terrainCustomization.amplitudeGroundScale = GetRandomValueFromRange(terrainSculptingJSON.amplitudeGroundScaleRange, defaultValue: 8);
-        terrainCustomization.amplitudePower = GetRandomValueFromRange(terrainSculptingJSON.amplitudePowerRange, defaultValue: 3);
-        terrainCustomization.noiseStrength = GetRandomValueFromRange(terrainSculptingJSON.noiseStrengthRange, defaultValue: 0.5f);
+
+        terrainCustomization.terrainSculptingLayers = new List<TerrainSculptingLayerSelectionJSON>();
+        for(int x = 0; x < terrainSculptingJSON.layers.Length; x++)
+        {
+            if(Random.Range(0.0f, 1.0f) < terrainSculptingJSON.layers[x].chance || terrainSculptingJSON.layers.Length == 1)
+                terrainCustomization.terrainSculptingLayers.Add(new TerrainSculptingLayerSelectionJSON(terrainSculptingJSON.layers[x]));
+        }
 
         if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType groundMaterialType))
             planet.LoadGroundMaterial(groundMaterialType);
@@ -319,7 +321,7 @@ public class PlanetGenerator : MonoBehaviour
         terrainCustomization.maxTreeSteepness = GetRandomValueFromRange(subBiomeJSON.maxTreeSteepnessRange, defaultValue: 30);
     }
 
-    private float GetRandomValueFromRange(float[] range, float defaultValue = 0.0f)
+    public static float GetRandomValueFromRange(float[] range, float defaultValue = 0.0f)
     {
         if (range == null || range.Length == 0)
             return defaultValue;
@@ -330,7 +332,7 @@ public class PlanetGenerator : MonoBehaviour
         return Random.Range(range[0], range[1]);
     }
 
-    private int GetRandomValueFromRange(int[] range, int defaultValue = 0)
+    public static int GetRandomValueFromRange(int[] range, int defaultValue = 0)
     {
         if (range == null || range.Length == 0)
             return defaultValue;
@@ -341,7 +343,7 @@ public class PlanetGenerator : MonoBehaviour
         return Random.Range(range[0], range[1]);
     }
 
-    private string GetOneOf(string[] options)
+    private static string GetOneOf(string[] options)
     {
         if (options == null || options.Length == 0)
             return null;
@@ -349,7 +351,7 @@ public class PlanetGenerator : MonoBehaviour
         return options[Random.Range(0, options.Length)];
     }
 
-    private bool GetColorIfSpecified(HumanFriendlyColorJSON colorJSON, out Color color)
+    private static bool GetColorIfSpecified(HumanFriendlyColorJSON colorJSON, out Color color)
     {
         if (colorJSON == null || (colorJSON.r == 0 && colorJSON.g == 0 && colorJSON.b == 0 && Mathf.Approximately(colorJSON.a, 0.0f)))
         {
@@ -455,12 +457,26 @@ public class SubBiomeJSON
 public class TerrainSculptingJSON
 {
     public float lowBoundariesChance = 1.0f;
+    public TerrainSculptingLayerOptionsJSON[] layers;
+}
+
+[System.Serializable]
+public class TerrainSculptingLayerOptionsJSON
+{
+    public string comments;
+    public string editType;
+    public string condition;
+    public float chance = 1.0f;
+
     public float horizonHeightIsCeilingChance = 0.0f;
     public float[] noiseGroundScaleRange;
     public float[] amplitudeGroundScaleRange;
     public int[] amplitudePowerRange;
     public float[] noiseStrengthRange;
 }
+
+public enum TerrainSculptingType { Overwrite, Add, Subtract }
+public enum TerrainSculptingCondition { Unconditional, AboveHorizon, BelowHorizon }
 
 [System.Serializable]
 public class HumanFriendlyColorJSON

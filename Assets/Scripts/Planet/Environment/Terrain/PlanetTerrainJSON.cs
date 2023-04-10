@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -6,14 +6,8 @@ public class PlanetTerrainJSON
 {
     public PlanetTerrainJSON(PlanetTerrain planetTerrain)
     {
-        //Customization: Main Heightmap Config
-        noiseGroundScale = planetTerrain.customization.noiseGroundScale;
-        amplitudeGroundScale = planetTerrain.customization.amplitudeGroundScale;
-        amplitudePower = planetTerrain.customization.amplitudePower;
-        noiseStrength = planetTerrain.customization.noiseStrength;
-
-        //Customization: Optional Heightmap Config
-        horizonHeightIsCeiling = planetTerrain.customization.horizonHeightIsCeiling;
+        //Customization: Heightmap Config
+        terrainSculptingLayers = planetTerrain.customization.terrainSculptingLayers;
 
         //Customization: Trees
         idealTreeCount = planetTerrain.customization.idealTreeCount;
@@ -50,12 +44,10 @@ public class PlanetTerrainJSON
 
     public void RestorePlanetTerrain(PlanetTerrain planetTerrain, PlanetJSON savedPlanet)
     {
-        //Customization: Main Heightmap Config
-        TerrainCustomization customization = new TerrainCustomization(noiseGroundScale, amplitudeGroundScale,
-            amplitudePower, noiseStrength);
+        TerrainCustomization customization = new TerrainCustomization();
 
-        //Customization: Optional Heightmap Config
-        customization.horizonHeightIsCeiling = horizonHeightIsCeiling;
+        //Customization: Heightmap Config
+        customization.terrainSculptingLayers = terrainSculptingLayers;
 
         //Customization: Trees
         customization.idealTreeCount = idealTreeCount;
@@ -89,10 +81,7 @@ public class PlanetTerrainJSON
     }
 
     //Customization: Heightmap
-    public float noiseGroundScale, amplitudeGroundScale;
-    public int amplitudePower;
-    public float noiseStrength;
-    public bool horizonHeightIsCeiling;
+    public List<TerrainSculptingLayerSelectionJSON> terrainSculptingLayers;
 
     //Customization: Trees
     public int idealTreeCount, maxTreeSteepness;

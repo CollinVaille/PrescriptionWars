@@ -1,22 +1,16 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainCustomization
 {
-    //Main Heightmap Config
-    [Tooltip("Inverse X-Z scale of noise")] public float noiseGroundScale;
-    [Tooltip("Inverse X-Z scale of amplitude")] public float amplitudeGroundScale;
-    [Tooltip("How dramatic the height difference is between landforms")] public int amplitudePower;
-    [Tooltip("How big the hills are")] public float noiseStrength;
-
-    //Optional Heightmap Config
-    [Tooltip("Usually false. Set to true if you want terrain height to cap at horizon height.")] public bool horizonHeightIsCeiling;
+    //Heightmap
+    public List<TerrainSculptingLayerSelectionJSON> terrainSculptingLayers;
 
     //Trees
     public int idealTreeCount, maxTreeSteepness;
     public string[] treeNames;
 
-    //Layers
+    //Texture layers
     public Texture2D groundTexture, ground2Texture, cliffTexture, seabedTexture;
     public float groundMetallic, groundSmoothness, cliffMetallic, cliffSmoothness, seabedMetallic, seabedSmoothness;
     public float ground2TextureScale; //Inverse scale of how large patches of ground 2 texture should be
@@ -25,28 +19,10 @@ public class TerrainCustomization
     public bool lowBoundaries, smallTerrain;
     public float seabedHeight;
 
-    //Remember old terrain customization (for purpose of regenerating terrain to be like old one)
-    public TerrainCustomization(float noiseGroundScale, float amplitudeGroundScale, int amplitudePower, float noiseStrength)
-    {
-        InitializeParametersToDefaults();
-
-        this.noiseGroundScale = noiseGroundScale;
-        this.amplitudeGroundScale = amplitudeGroundScale;
-        this.amplitudePower = amplitudePower;
-        this.noiseStrength = noiseStrength;
-    }
-
-    //Generate default customization (for purpose of generating new random terrain)
     public TerrainCustomization() { InitializeParametersToDefaults(); }
 
     public void InitializeParametersToDefaults()
     {
-        noiseGroundScale = 40;
-        amplitudeGroundScale = 8;
-        amplitudePower = 3;
-        noiseStrength = 0.5f;
-        horizonHeightIsCeiling = false;
-
         idealTreeCount = 0;
         maxTreeSteepness = 30;
         treeNames = new string[1];
@@ -69,4 +45,36 @@ public class TerrainCustomization
     }
 
     public void SetTreeNames(params string[] newNames) { treeNames = newNames; }
+}
+
+[System.Serializable]
+public class TerrainSculptingLayerSelectionJSON
+{
+    public TerrainSculptingType sculptingType;
+    public TerrainSculptingCondition sculptingCondition;
+
+    //Main Heightmap Config
+    [Tooltip("Inverse X-Z scale of noise")] public float noiseGroundScale;
+    [Tooltip("Inverse X-Z scale of amplitude")] public float amplitudeGroundScale;
+    [Tooltip("How dramatic the height difference is between landforms")] public int amplitudePower;
+    [Tooltip("How big the hills are")] public float noiseStrength;
+
+    //Optional Heightmap Config
+    [Tooltip("Usually false. Set to true if you want terrain height to cap at horizon height.")] public bool horizonHeightIsCeiling;
+
+    //Generate default sculpting (for purpose of generating new random terrain)
+    public TerrainSculptingLayerSelectionJSON(TerrainSculptingLayerOptionsJSON terrainSculptingLayerOptionsJSON)
+    {
+        if (!System.Enum.TryParse<TerrainSculptingType>(terrainSculptingLayerOptionsJSON.editType, out sculptingType))
+            sculptingType = TerrainSculptingType.Add;
+
+        if (!System.Enum.TryParse<TerrainSculptingCondition>(terrainSculptingLayerOptionsJSON.condition, out sculptingCondition))
+            sculptingCondition = TerrainSculptingCondition.Unconditional;
+
+        horizonHeightIsCeiling = terrainSculptingLayerOptionsJSON.horizonHeightIsCeilingChance > Random.Range(0.0f, 1.0f);
+        noiseGroundScale = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseGroundScaleRange, defaultValue: 40);
+        amplitudeGroundScale = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudeGroundScaleRange, defaultValue: 8);
+        amplitudePower = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudePowerRange, defaultValue: 3);
+        noiseStrength = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseStrengthRange, defaultValue: 0.5f);
+    }
 }

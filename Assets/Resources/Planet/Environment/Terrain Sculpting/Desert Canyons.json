@@ -1,8 +1,23 @@
 {
 	"lowBoundariesChance": 0.0,
-	"horizonHeightIsCeilingChance": 1.0,
-	"noiseGroundScaleRange": [3, 7],
-	"amplitudeGroundScaleRange": [10],
-	"amplitudePowerRange": [1],
-	"noiseStrengthRange": [0.75, 1.75]
+
+	"layers": [
+		{
+			"comments": "base edit: flat top with deep canyons cutting down",
+			"horizonHeightIsCeilingChance": 1.0,
+			"noiseGroundScaleRange": [3, 7],
+			"amplitudeGroundScaleRange": [10],
+			"amplitudePowerRange": [1],
+			"noiseStrengthRange": [0.75, 1.75]
+		},
+		{
+			"comments": "add hills",
+			"chance": 0.5,
+
+			"noiseGroundScaleRange": [5, 9],
+			"amplitudeGroundScaleRange": [5, 15],
+			"amplitudePowerRange": [1],
+			"noiseStrengthRange": [0.05, 0.1]
+		}
+	]
 }

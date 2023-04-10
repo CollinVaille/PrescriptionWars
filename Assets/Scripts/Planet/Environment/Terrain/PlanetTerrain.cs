@@ -91,53 +91,84 @@ public class PlanetTerrain : MonoBehaviour
         float amplitudeOffsetX = offsets.amplitudeOffsetX;
         float amplitudeOffsetZ = offsets.amplitudeOffsetZ;
 
-        //Ground scales (smaller actually kinda means larger)
-        float noiseGroundScale = customization.noiseGroundScale; //Scale of small bumps in terrain
-        float amplitudeGroundScale = customization.amplitudeGroundScale; //Scale of larger land features
-
-        //Other customization
-        float noiseStrength = customization.noiseStrength;
-        int amplitudePower = customization.amplitudePower;
-        bool terrainIgnoresHorizonHeight = !customization.horizonHeightIsCeiling;
-
         float boundaryHeight = 0.25f;
         int boundaryWidth = customization.smallTerrain ? 125 : 250;
 
-        float noise, amplitude;
-
-        for (int x = 0; x < width; x++)
+        List<TerrainSculptingLayerSelectionJSON> sculptingLayers = customization.terrainSculptingLayers;
+        int numberOfSculptingLayers = sculptingLayers.Count;
+        for (int sculptingLayerIndex = 0; sculptingLayerIndex < numberOfSculptingLayers; sculptingLayerIndex++)
         {
-            for (int z = 0; z < length; z++)
+            TerrainSculptingLayerSelectionJSON sculptingLayer = sculptingLayers[sculptingLayerIndex];
+
+            //Ground scales (smaller actually kinda means larger)
+            float noiseGroundScale = sculptingLayer.noiseGroundScale; //Scale of small bumps in terrain
+            float amplitudeGroundScale = sculptingLayer.amplitudeGroundScale; //Scale of larger land features
+
+            //Other customization
+            float noiseStrength = sculptingLayer.noiseStrength;
+            int amplitudePower = sculptingLayer.amplitudePower;
+            bool terrainIgnoresHorizonHeight = !sculptingLayer.horizonHeightIsCeiling;
+
+            float noise, amplitude;
+            TerrainSculptingType terrainSculptingType = sculptingLayerIndex == 0 ? TerrainSculptingType.Overwrite : sculptingLayer.sculptingType;
+            TerrainSculptingCondition terrainSculptingCondition = sculptingLayerIndex == 0 ? TerrainSculptingCondition.Unconditional : sculptingLayer.sculptingCondition;
+
+            for (int x = 0; x < width; x++)
             {
-                //Base terrain noise (small bumps)
-                noise = Mathf.PerlinNoise(noiseOffsetX + x * noiseGroundScale / width,
-                                           noiseOffsetZ + z * noiseGroundScale / length) * noiseStrength;
-
-                //Randomly amplify the noise to differentiate terrain (large land features)
-                amplitude = Mathf.PerlinNoise(amplitudeOffsetX + x * amplitudeGroundScale / width,
-                                              amplitudeOffsetZ + z * amplitudeGroundScale / length);
-
-                //Terrain boundaries
-                float terrainEdgePercentage = GetEdgePercentageRectangular(x, z, width, boundaryWidth);
-                if (terrainEdgePercentage > 0)
+                for (int z = 0; z < length; z++)
                 {
-                    if (customization.lowBoundaries) //Edge of terrain goes to 0 height
+                    //First, check if we should even apply this layer's edits
+                    if(terrainSculptingCondition == TerrainSculptingCondition.BelowHorizon)
                     {
-                        noise -= terrainEdgePercentage * 0.6f;
-                        amplitude = Mathf.Max(amplitude - terrainEdgePercentage * 2.0f, 0);
+                        if (heights[z, x] > 0.25f)
+                            continue;
                     }
-                    else //Edge of terrain is mountain range that is capped to a certain height
+                    else if (terrainSculptingCondition == TerrainSculptingCondition.AboveHorizon)
                     {
-                        noise += terrainEdgePercentage * 0.6f;
-                        amplitude += terrainEdgePercentage * 0.6f;
+                        if (heights[z, x] < 0.25f)
+                            continue;
                     }
-                }
 
-                //Apply computation
-                if (terrainEdgePercentage == 0 && terrainIgnoresHorizonHeight) //Unrestricted height
-                    heights[z, x] = noise * Mathf.Pow(amplitude, amplitudePower);
-                else //Height restricted to border height
-                    heights[z, x] = Mathf.Min(noise * Mathf.Pow(amplitude, amplitudePower), boundaryHeight);
+                    //Base terrain noise (small bumps)
+                    noise = Mathf.PerlinNoise(noiseOffsetX + x * noiseGroundScale / width,
+                                               noiseOffsetZ + z * noiseGroundScale / length) * noiseStrength;
+
+                    //Randomly amplify the noise to differentiate terrain (large land features)
+                    amplitude = Mathf.PerlinNoise(amplitudeOffsetX + x * amplitudeGroundScale / width,
+                                                  amplitudeOffsetZ + z * amplitudeGroundScale / length);
+
+                    //Terrain boundaries
+                    float terrainEdgePercentage = GetEdgePercentageRectangular(x, z, width, boundaryWidth);
+                    if (terrainEdgePercentage > 0)
+                    {
+                        if (customization.lowBoundaries) //Edge of terrain goes to 0 height
+                        {
+                            noise -= terrainEdgePercentage * 0.6f;
+                            amplitude = Mathf.Max(amplitude - terrainEdgePercentage * 2.0f, 0);
+                        }
+                        else //Edge of terrain is mountain range that is capped to a certain height
+                        {
+                            noise += terrainEdgePercentage * 0.6f;
+                            amplitude += terrainEdgePercentage * 0.6f;
+                        }
+                    }
+
+                    //Finalize layer computation
+                    float layerValue = noise * Mathf.Pow(amplitude, amplitudePower);
+
+                    //Determine how to mold layer with other layers
+                    if (terrainSculptingType == TerrainSculptingType.Add)
+                        layerValue = heights[z, x] + layerValue;
+                    else if (terrainSculptingType == TerrainSculptingType.Subtract)
+                        layerValue = heights[z, x] - layerValue;
+                    //else, its overwrite--which we don't need to do anything for
+
+                    //Apply layer to other layers
+                    if (terrainEdgePercentage == 0 && terrainIgnoresHorizonHeight) //Unrestricted height
+                        heights[z, x] = layerValue;
+                    else //Height restricted to border height
+                        heights[z, x] = Mathf.Min(layerValue, boundaryHeight);
+                }
             }
         }
 
@@ -228,7 +259,7 @@ public class PlanetTerrain : MonoBehaviour
             ground2Layer.tileSize = new Vector2(2, 2);
         }
 
-        TerrainLayerEffects(groundLayer, cliffLayer, seabedLayer, ground2Layer);
+        TerrainLayerEffects(cliffLayer, seabedLayer, groundLayer, ground2Layer);
 
         terrainTextureList.Add(cliffLayer);
         terrainTextureList.Add(seabedLayer);
