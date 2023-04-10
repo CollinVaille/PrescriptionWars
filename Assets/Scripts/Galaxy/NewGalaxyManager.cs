@@ -200,6 +200,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static NewGalaxySettingsMenu settingsMenu { get => galaxyManager == null ? null : galaxyManager._settingsMenu; }
 
     /// <summary>
+    /// Private holder variable for the cheat console that the player can access to cheat in the galaxy view of the game.
+    /// </summary>
+    private NewCheatConsole _cheatConsole = null;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain a reference to the galaxy view's cheat console that allows the player to cheat mid game on the galaxy view.
+    /// </summary>
+    public static NewCheatConsole cheatConsole { get => galaxyManager == null ? null : galaxyManager._cheatConsole; }
+
+    /// <summary>
     /// Private holder variable for the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
     /// </summary>
     private Transform _confirmationPopupsParent = null;
@@ -270,7 +279,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, int turnNumber)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -313,6 +322,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains a reference to the popup that serves as the settings menu of the galaxy view.
         galaxyManager._settingsMenu = settingsMenu;
+
+        //Sets the value of the variable that contains a reference to the cheat console that allows the player to cheat mid game on the galaxy view.
+        galaxyManager._cheatConsole = cheatConsole;
 
         //Sets the value of the variable that indicates how many turns have passed since the start of the game.
         galaxyManager._turnNumber = turnNumber;
