@@ -348,8 +348,13 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         if (turnEnding)
             EndTurnUpdate();
-        else if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
-            pauseMenu.Open();
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
+                pauseMenu.Open();
+            if (Input.GetKeyDown(KeyCode.BackQuote))
+                cheatConsole.Toggle();
+        }
     }
 
     /// <summary>

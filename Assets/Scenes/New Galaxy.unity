@@ -411,7 +411,7 @@ MonoBehaviour:
   starLabelsParent: {fileID: 1811397256}
   hyperspaceLanesParent: {fileID: 299827072}
   capitalSymbolsParent: {fileID: 1699646804}
-  confirmationPopupsParent: {fileID: 0}
+  confirmationPopupsParent: {fileID: 860079233}
   solarSystemPrefab: {fileID: 5304551580979001723, guid: f99881c263ec996479ad2767cdff7d19,
     type: 3}
   starTypePrefabs:
@@ -889,7 +889,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 1963657590}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1
@@ -9773,6 +9773,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputField: {fileID: 1413876702}
+  historyLogParent: {fileID: 1963657590}
+  historyLogVerticalLayoutGroup: {fileID: 1963657592}
   closeSFX: {fileID: 0}
   clickCloseButtonSFX: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8, type: 3}
   hoverCloseButtonSFX: {fileID: 8300000, guid: cfd5226b743e1584a96a0a0a04b6ae96, type: 3}
@@ -12211,7 +12213,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -93, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2143960139
 MonoBehaviour:
