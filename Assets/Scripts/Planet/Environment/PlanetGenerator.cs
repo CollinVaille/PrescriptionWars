@@ -238,23 +238,23 @@ public class PlanetGenerator : MonoBehaviour
 
         terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
 
-        terrainCustomization.groundTexture = planet.LoadTexture(subBiomeJSON.groundTexture);
+        terrainCustomization.groundTexture = Planet.LoadTexture(subBiomeJSON.groundTexture);
 
         string ground2Texture = GetOneOf(subBiomeJSON.ground2Texture);
         if(!string.IsNullOrEmpty(ground2Texture))
         {
-            terrainCustomization.ground2Texture = planet.LoadTexture(ground2Texture);
+            terrainCustomization.ground2Texture = Planet.LoadTexture(ground2Texture);
             terrainCustomization.ground2TextureScale = GetRandomValueFromRange(subBiomeJSON.ground2TextureScaleRange, 100.0f);
         }
 
-        terrainCustomization.cliffTexture = subBiomeJSON.cliffHasSameTextureAsGround ? terrainCustomization.groundTexture : planet.LoadTexture(subBiomeJSON.cliffTexture);
+        terrainCustomization.cliffTexture = subBiomeJSON.cliffHasSameTextureAsGround ? terrainCustomization.groundTexture : Planet.LoadTexture(subBiomeJSON.cliffTexture);
 
         if (subBiomeJSON.seabedHasSameTextureAsGround)
             terrainCustomization.seabedTexture = terrainCustomization.groundTexture;
         else if (subBiomeJSON.seabedHasSameTextureAsCliff)
             terrainCustomization.seabedTexture = terrainCustomization.cliffTexture;
         else
-            terrainCustomization.seabedTexture = planet.LoadTexture(subBiomeJSON.seabedTexture);
+            terrainCustomization.seabedTexture = Planet.LoadTexture(subBiomeJSON.seabedTexture);
 
         terrainCustomization.groundMetallic = subBiomeJSON.groundMetallicness;
         terrainCustomization.groundSmoothness = subBiomeJSON.groundSmoothness;

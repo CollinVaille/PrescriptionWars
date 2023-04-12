@@ -5,29 +5,30 @@
 	"reverbPreset": "Mountains",
 
 	"underwaterColor": {"r":27, "g":62, "b":93, "a":0.5},
-	"oceanHeightRange": [60, 85],
-	"seabedRelativeHeightRange": [5, 7],
+	"oceanHeightRange": [1],
+	"seabedRelativeHeightRange": [0.5, 1.0],
 
-	"groundTexture": ["Glacier", "Ice 0041", "Blue Quartz"],
-	"cliffHasSameTextureAsGround": true,
-	"seabedTexture": ["Soil Beach 0052", "Soil Beach 0079", "Sahara"],
+	"groundTexture": ["Snow"],
+	"cliffTexture": ["Deep Freeze", "Blue Quartz", "Glacier", "Chiseled Ice"],
+	"seabedTexture": ["Magnified Frost"],
 
 	"groundSmoothness": 0.5,
-	"cliffSmoothness": 0.5,
-	"seabedSmoothness": 0.2,
+	"cliffSmoothness": 1.0,
+	"seabedSmoothness": 1.0,
 
-	"terrainSculpting": ["Desert Canyons"],
+	"terrainSculpting": ["The Icebergs"],
 
-	"groundMaterial": ["Rock"],
-	"seabedMaterial": ["Sand"],
+	"groundMaterial": ["Snow"],
+	"seabedMaterial": ["Swamp"],
 
 	"fogChance": 1.0,
 	"fogMode": "Exponential",
-	"fogDensityRange": [0.0001, 0.005],
+	"fogDensityRange": [0.001],
+	"fogColor": {"r":106, "g":68, "b":60},
 
-	"daySkybox": ["Cold Sunset", "Clouds1", "Desert Sky Morning"],
-	"nightSkybox": ["Deep Dusk"],
+	"daySkybox": ["AllSky_FantasySky_Mid"],
+	"nightSkybox": ["Epic_SunsetDark"],
 
-	"dayAmbience": ["Light Winter Wind"],
-	"nightAmbience": ["Howling Wind", "Light Winter Wind"]
+	"dayAmbience": ["Sirens In Darkness"],
+	"nightAmbience": ["Sirens In Darkness"]
 }

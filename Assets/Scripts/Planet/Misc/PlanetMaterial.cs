@@ -155,12 +155,12 @@ public class PlanetMaterial : MonoBehaviour
         {
             int newTerrainTextureIndex = PlanetTerrain.planetTerrain.GetTextureIndexAtPoint(atPosition);
 
-            if (newTerrainTextureIndex == 0) //Ground (so grass, snow, sand, mud, etc)
-                return Planet.planet.groundMaterial;
-            else if (newTerrainTextureIndex == 1) //Cliff (rock)
+            if (newTerrainTextureIndex == 0) //Cliff (rock)
                 return PlanetMaterialType.Rock;
-            else //Seabed
+            else if (newTerrainTextureIndex == 1) //Seabed
                 return Planet.planet.seabedMaterial;
+            else //Ground (so grass, snow, sand, mud, etc)
+                return Planet.planet.groundMaterial;
         }
         else if (ThisThingIsPartOfHorizon(transformWithMaterial)) //Hit the horizon
         {

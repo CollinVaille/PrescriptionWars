@@ -117,6 +117,10 @@ public class Planet : MonoBehaviour
                 case "Blue Galaxy 1":
                 case "Blue Galaxy 2":
                     cubemapName = "AllSky_Space_AnotherPlanet Equirect"; break;
+                case "AllSky_FantasySky_Mid":
+                    cubemapName = "AllSky_FantasySky_Mid"; break;
+                case "Epic_SunsetDark":
+                    cubemapName = "Epic_SunsetDark_EquiRect_flat"; break;
                 default:
                     cubemapName = "Sky_Day_BlueSky_Equirect"; break;
             }
@@ -131,7 +135,7 @@ public class Planet : MonoBehaviour
         return Resources.Load<AudioClip>("Planet/Environment/Ambience/" + clipNames[Random.Range(0, clipNames.Length)]);
     }
 
-    public Texture2D LoadTexture (params string[] textureNames)
+    public static Texture2D LoadTexture (params string[] textureNames)
     {
         return Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
     }

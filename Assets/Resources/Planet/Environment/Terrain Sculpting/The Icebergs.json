@@ -1,0 +1,34 @@
+{
+	"lowBoundariesChance": 1.0,
+
+	"layers": [
+		{
+			"comments": "massive, towering icebergs",
+			"noiseGroundScaleRange": [0.02, 0.5],
+			"amplitudeGroundScaleRange": [6, 10],
+			"amplitudePowerRange": [9, 11],
+			"noiseStrengthRange": [30, 50]
+		},
+		{
+			"comments": "very minor fluctuations in the height of the snow at ground level. this gives the ground a variety between snow, wet shoreline, and water",
+			"noiseGroundScaleRange": [10, 20],
+			"amplitudeGroundScaleRange": [5, 15],
+			"amplitudePowerRange": [1],
+			"noiseStrengthRange": [0.01]
+		},
+		{
+			"comments": "ice spikes",
+			"noiseGroundScaleRange": [0.0005, 0.002],
+			"amplitudeGroundScaleRange": [75, 125],
+			"amplitudePowerRange": [18, 22],
+			"noiseStrengthRange": [0.15, 0.35]
+		},
+		{
+			"comments": "tiny snow drifts",
+			"noiseGroundScaleRange": [0.0005, 0.002],
+			"amplitudeGroundScaleRange": [75, 125],
+			"amplitudePowerRange": [9, 11],
+			"noiseStrengthRange": [0.005, 0.025]
+		}
+	]
+}

@@ -50,7 +50,7 @@ public class PlanetTerrain : MonoBehaviour
 
         //Generate cities after terrain heightmap and area system have been set up
         //But also before painting so painting reflects any elevation changes made by city generation
-        Planet.planet.GenerateCities(savedPlanet);
+        //Planet.planet.GenerateCities(savedPlanet);
         //Temporary---------------------------------------------------------------------------------------------------
         //Transform spawn = Instantiate(spawnZonePrefab, Vector3.zero, Quaternion.identity).transform;
         //Transform spawn2 = Instantiate(badGuySpawnZonePrefab, ReserveTerrainPosition(Random.Range(0, 3),
@@ -339,17 +339,21 @@ public class PlanetTerrain : MonoBehaviour
 
         cliffLayer.metallic = customization.cliffMetallic;
         cliffLayer.smoothness = customization.cliffSmoothness;
+        ApplyNormalMapToTerrainLayerIfApplicable(cliffLayer);
 
         seabedLayer.metallic = customization.seabedMetallic;
         seabedLayer.smoothness = customization.seabedSmoothness;
+        ApplyNormalMapToTerrainLayerIfApplicable(seabedLayer);
 
         groundLayer.metallic = customization.groundMetallic;
         groundLayer.smoothness = customization.groundSmoothness;
+        ApplyNormalMapToTerrainLayerIfApplicable(groundLayer);
 
         if (ground2Layer)
         {
             ground2Layer.metallic = customization.groundMetallic;
             ground2Layer.smoothness = customization.groundSmoothness;
+            ApplyNormalMapToTerrainLayerIfApplicable(ground2Layer);
         }
 
         //Update horizon to have same effects as terrain
@@ -363,6 +367,16 @@ public class PlanetTerrain : MonoBehaviour
             horizonMaterial.SetFloat("_Metallic", groundLayer.metallic);
             horizonMaterial.SetFloat("_Glossiness", groundLayer.smoothness);
         }
+    }
+
+    private void ApplyNormalMapToTerrainLayerIfApplicable(TerrainLayer terrainLayer)
+    {
+        if (!terrainLayer || !terrainLayer.diffuseTexture)
+            return;
+
+        Texture2D normalMapTexture = Planet.LoadTexture(terrainLayer.diffuseTexture.name + " Normal");
+        if (normalMapTexture)
+            terrainLayer.normalMapTexture = normalMapTexture;
     }
 
     private void SetHorizons ()
