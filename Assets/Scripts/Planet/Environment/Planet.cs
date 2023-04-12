@@ -121,6 +121,8 @@ public class Planet : MonoBehaviour
                     cubemapName = "AllSky_FantasySky_Mid"; break;
                 case "Epic_SunsetDark":
                     cubemapName = "Epic_SunsetDark_EquiRect_flat"; break;
+                case "Day Sun Horizon FogHigh":
+                    cubemapName = "Day Sun Horizon FogHigh"; break;
                 default:
                     cubemapName = "Sky_Day_BlueSky_Equirect"; break;
             }
