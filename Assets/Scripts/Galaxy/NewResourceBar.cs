@@ -12,6 +12,8 @@ public class NewResourceBar : MonoBehaviour
     [Header("Text Components")]
 
     [SerializeField] private Text turnNumberText = null;
+    [SerializeField] private Text creditsText = null;
+    [SerializeField] private Text prescriptionsText = null;
 
     [Header("Tooltip Components")]
 
@@ -61,7 +63,7 @@ public class NewResourceBar : MonoBehaviour
             return;
         }
         //Updates the empire name tooltip's text to match the player empire's name.
-        resourceBar.empireNameTooltip.Text = NewGalaxyManager.empires[NewGalaxyManager.playerID].name;
+        resourceBar.empireNameTooltip.Text = NewGalaxyManager.playerEmpire.name;
     }
 
     /// <summary>
@@ -76,7 +78,37 @@ public class NewResourceBar : MonoBehaviour
             return;
         }
         //Updates the flag image sprite to match the player empire's flag sprite.
-        resourceBar.flagImage.sprite = NewGalaxyManager.empires[NewGalaxyManager.playerID].flag.sprite;
+        resourceBar.flagImage.sprite = NewGalaxyManager.playerEmpire.flag.sprite;
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to update the amount of credits that the resource bar shows the player as having.
+    /// </summary>
+    public static void UpdateCredits()
+    {
+        //Logs a warning and returns if the resource bar static instance variable is null and has not been initialized in the awake method.
+        if (resourceBar == null)
+        {
+            Debug.LogWarning("Cannot update the credits on the resource bar because the static instance variable has not been initialzed in the awake method yet.");
+            return;
+        }
+        //Updates the credits text to accurately display the number of credits that the player empire has.
+        resourceBar.creditsText.text = (int)NewGalaxyManager.playerEmpire.credits + " +" + (int)NewGalaxyManager.playerEmpire.creditsPerTurn;
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to update the amount of prescriptions that the resource bar shows the player as having.
+    /// </summary>
+    public static void UpdatePrescriptions()
+    {
+        //Logs a warning and returns if the resource bar static instance variable is null and has not been initialized in the awake method.
+        if (resourceBar == null)
+        {
+            Debug.LogWarning("Cannot update the prescriptions on the resource bar because the static instance variable has not been initialzed in the awake method yet.");
+            return;
+        }
+        //Updates the prescriptions text to accurately display the number of prescriptions that the player empire has.
+        resourceBar.prescriptionsText.text = (int)NewGalaxyManager.playerEmpire.prescriptions + " +" + (int)NewGalaxyManager.playerEmpire.prescriptionsPerTurn;
     }
 
     /// <summary>
@@ -86,6 +118,17 @@ public class NewResourceBar : MonoBehaviour
     {
         UpdateEmpireNameTooltip();
         UpdateFlag();
+        UpdateCredits();
+        UpdatePrescriptions();
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to update all resource dependent components on the resource bar (such as the credits text and prescriptions text).
+    /// </summary>
+    public static void UpdateAllResourceDependentComponents()
+    {
+        UpdateCredits();
+        UpdatePrescriptions();
     }
 
     /// <summary>
@@ -96,7 +139,7 @@ public class NewResourceBar : MonoBehaviour
         //Logs a warning and returns if the resource bar static instance variable is null and has not been initialized in the awake method.
         if (resourceBar == null)
         {
-            Debug.LogWarning("Cannot update the flag on the resource bar because the static instance variable has not been initialzed in the awake method yet.");
+            Debug.LogWarning("Cannot update the turn number on the resource bar because the static instance variable has not been initialzed in the awake method yet.");
             return;
         }
         //Updates the turn number text to accurately display the number of turns that have passed since the start of the current game.
@@ -110,6 +153,9 @@ public class NewResourceBar : MonoBehaviour
     {
         UpdateFlag();
         UpdateEmpireNameTooltip();
+        UpdateCredits();
+        UpdatePrescriptions();
+        UpdateTurnNumberText();
     }
 
     /// <summary>

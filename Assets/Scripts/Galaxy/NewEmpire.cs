@@ -151,6 +151,66 @@ public class NewEmpire
         }
     }
 
+    /// <summary>
+    /// Private variable that holds the amount of credits (currency) that the empire has.
+    /// </summary>
+    private float _credits = 0;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the amount of credits that the empire has. The setter also updates the resource bar if the empire is the player empire.
+    /// </summary>
+    public float credits
+    {
+        get => _credits;
+        set
+        {
+            //Sets the empire's amount of credits to the specified amount.
+            _credits = value;
+            //Updates the number of credits displayed on the resource bar if the empire is the player empire.
+            if (isPlayerEmpire)
+                NewResourceBar.UpdateCredits();
+        }
+    }
+    /// <summary>
+    /// Publicly accessible property that should be used in order to determine how many credits the empire is currently earning or losing per turn.
+    /// </summary>
+    public float creditsPerTurn
+    {
+        get
+        {
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// Private variable that holds the amount of prescriptions that the empire has.
+    /// </summary>
+    private float _prescriptions = 0;
+    /// <summary>
+    /// Public property that should be used both to access and mutate the amount of prescriptions that the empire has. The setter also updates the resource bar if the empire is the player empire.
+    /// </summary>
+    public float prescriptions
+    {
+        get => _prescriptions;
+        set
+        {
+            //Sets the empire's amount of prescriptions to the specified amount.
+            _prescriptions = value;
+            //Updates the number of prescriptions displayed on the resource bar if the empire is the player empire.
+            if (isPlayerEmpire)
+                NewResourceBar.UpdatePrescriptions();
+        }
+    }
+    /// <summary>
+    /// Publicly accessible property that should be used in order to determine how many prescriptions the empire is currently earning or losing per turn.
+    /// </summary>
+    public float prescriptionsPerTurn
+    {
+        get
+        {
+            return 0;
+        }
+    }
+
     public NewEmpire(EmpireData empireData)
     {
         nameVar = empireData.name;
@@ -161,9 +221,11 @@ public class NewEmpire
         _capitalSystemID = empireData.capitalSystemID;
         solarSystemIDsVar = empireData.solarSystemIDs;
         planetIDsVar = empireData.planetIDs;
+        _credits = empireData.credits;
+        _prescriptions = empireData.prescriptions;
     }
 
-    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs)
+    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions)
     {
         nameVar = name;
         cultureVar = culture;
@@ -173,6 +235,8 @@ public class NewEmpire
         _capitalSystemID = capitalSystemID;
         solarSystemIDsVar = solarSystemIDs;
         planetIDsVar = planetIDs;
+        _credits = credits;
+        _prescriptions = prescriptions;
     }
 
     /// <summary>
@@ -263,6 +327,8 @@ public class EmpireData
     public int capitalSystemID;
     public List<int> solarSystemIDs = null;
     public List<int> planetIDs = null;
+    public float credits;
+    public float prescriptions;
 
     public EmpireData(NewEmpire empire)
     {
@@ -274,5 +340,7 @@ public class EmpireData
         capitalSystemID = empire.capitalSystemID;
         solarSystemIDs = empire.solarSystemIDs;
         planetIDs = empire.planetIDs;
+        credits = empire.credits;
+        prescriptions = empire.prescriptions;
     }
 }

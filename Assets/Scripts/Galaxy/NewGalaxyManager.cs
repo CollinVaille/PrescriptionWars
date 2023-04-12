@@ -272,6 +272,30 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     private float turnEndingTimeElapsed = 0;
 
     /// <summary>
+    /// Private holder variable that indicates whether or not the game is in observation mode. Observation mode is where the player empire is still controlled by a bot, making it to where all empires in the game are controlled by a bot.
+    /// </summary>
+    private bool _observationModeEnabled = false;
+    /// <summary>
+    /// Public static property that should be used both to access and mutate whether or not the game is currently in observation mode. Observation mode is where the player empire is still controlled by a bot, making it to where all empires in the game are controlled by a bot.
+    /// </summary>
+    public static bool observationModeEnabled
+    {
+        get => galaxyManager == null ? false : galaxyManager._observationModeEnabled;
+        set
+        {
+            //Returns if there is no valid galaxy to toggle observation mode on.
+            if(galaxyManager == null)
+            {
+                Debug.LogWarning("Cannot toggle observation mode if there is no galaxy to toggle observation mode on.");
+                return;
+            }
+
+            //Sets observation mode being enabled to the specified value.
+            galaxyManager._observationModeEnabled = value;
+        }
+    }
+
+    /// <summary>
     /// Publicly accessible static float property that should be accessed in order to determine the base planetary orbital speed before proximity to star calculations come into play.
     /// </summary>
     public static float basePlanetaryOrbitalSpeed { get => galaxyManager == null ? 0 : galaxyManager._basePlanetaryOrbitalSpeed; }
@@ -279,7 +303,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -307,6 +331,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains the player's empire ID (index in the list of empires within the galaxy).
         galaxyManager._playerID = playerID;
+
+        //Sets the value of the variable that indicates whether or not the game is in observation mode.
+        galaxyManager._observationModeEnabled = observationModeEnabled;
 
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all planet labels within the galaxy.
         galaxyManager.planetLabelsParentVar = parents[0];

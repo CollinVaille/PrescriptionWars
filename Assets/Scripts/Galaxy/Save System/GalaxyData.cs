@@ -13,6 +13,7 @@ public class GalaxyData
     public int playerID = -1;
     public int turnNumber = -1;
     public float galaxyLocalYRotation = 0;
+    public bool observationModeEnabled = false;
 
     //Info.
     public string galaxyShape = null;
@@ -43,6 +44,8 @@ public class GalaxyData
         turnNumber = NewGalaxyManager.turnNumber;
 
         galaxyLocalYRotation = NewGalaxyManager.galaxyManager.transform.localRotation.eulerAngles.y;
+
+        observationModeEnabled = NewGalaxyManager.observationModeEnabled;
 
         galaxyShape = NewGalaxyManager.galaxyShape;
 

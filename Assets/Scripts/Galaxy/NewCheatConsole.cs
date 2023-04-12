@@ -149,7 +149,7 @@ public class NewCheatConsole : MonoBehaviour
                 //Checks if the argument count is incorrect and returns and tells the player if so.
                 if (args != null && args.Length > 0)
                     return "Invalid cheat command format. The \"" + command + "\" cheat command does not take any arguments.";
-                return "Cheat commands:\nclear\nplay_empire_culture <culture name> || pec <culture name>\nplay_empire_id <empire ID> || peid <empire ID>";
+                return "Cheat commands:\nclear\nobserve\nplay_empire_culture <culture name> || pec <culture name>\nplay_empire_id <empire ID> || peid <empire ID>\nset_credits <credits amount> || sc <credits amount>\nset_prescriptions <prescriptions amount> || sp <prescriptions amount>";
             //Checks if the player entered the "clear" command.
             case "clear":
                 //Checks if the argument count is incorrect and returns and tells the player if so.
@@ -158,6 +158,14 @@ public class NewCheatConsole : MonoBehaviour
                 //Clears the cheat console's history and returns with a successful message.
                 ClearHistory();
                 return "Success. The cheat console's history has been cleared.";
+            //Checks if the player entered the "observe" command.
+            case "observe":
+                //Checks if the argument count is incorrect and returns and tells the player if so.
+                if (args != null && args.Length > 0)
+                    return "Invalid cheat command format. The \"" + command + "\" cheat command does not take any arguments.";
+                //Toggles whether or not the game is in observation mode where a bot also controls the player's empire.
+                NewGalaxyManager.observationModeEnabled = !NewGalaxyManager.observationModeEnabled;
+                return NewGalaxyManager.observationModeEnabled ? "Success. The player is now in observation mode and is observing the empire belonging to empire ID " + NewGalaxyManager.playerID + "." : "Success. The player is no longer in observation mode and is fully controlling the empire belonging to empire ID " + NewGalaxyManager.playerID + ".";
             //Checks if the player entered the "pec" or "play_empire_culture" command.
             case "pec":
             case "play_empire_culture":
@@ -222,6 +230,38 @@ public class NewCheatConsole : MonoBehaviour
                 //Switches the player's control over to the empire belonging to the player's specified empire ID and returns and tells the user that their cheat command was successful.
                 NewGalaxyManager.playerID = IDSelected;
                 return "Success. Player has switched over to control the empire belonging to empire ID \"" + IDSelected + ".\"";
+            //Checks if the player entered the "sc" or "set_credits" command.
+            case "sc":
+            case "set_credits":
+                //Checks if the argument count is incorrect and returns and tells the player if so.
+                if (args == null || args.Length != 1)
+                    return "Invalid cheat command format. The \"" + command + "\" cheat command takes one argument that is a float that expresses the value to which the player's credits should be set to.";
+
+                //Converts the first argument string into a float, if not possible then return and tell the user they failed to enter a valid float.
+                float credits = 0;
+                if (!float.TryParse(args[0], out credits))
+                    return "Invalid cheat command argument. \"" + args[0] + "\" is not a valid float.";
+
+                //Sets the player empire's number of credits to the value specified by the player in the first command argument.
+                NewGalaxyManager.playerEmpire.credits = credits;
+                //Returns and tells the player their credits were successfully set to the specified value.
+                return "Success. The player's empire now has " + NewGalaxyManager.playerEmpire.credits + " credits at its disposal.";
+            //Checks if the player entered the "sp" or "set_prescriptions" command.
+            case "sp":
+            case "set_prescriptions":
+                //Checks if the argument count is incorrect and returns and tells the player if so.
+                if (args == null || args.Length != 1)
+                    return "Invalid cheat command format. The \"" + command + "\" cheat command takes one argument that is a float that expresses the value to which the player's precriptions should be set to.";
+
+                //Converts the first argument string into a float, if not possible then return and tell the user they failed to enter a valid float.
+                float prescriptions = 0;
+                if (!float.TryParse(args[0], out prescriptions))
+                    return "Invalid cheat command argument. \"" + args[0] + "\" is not a valid float.";
+
+                //Sets the player empire's number of prescriptions to the value specified by the player in the first command argument.
+                NewGalaxyManager.playerEmpire.prescriptions = prescriptions;
+                //Returns and tells the player their prescriptions were successfully set to the specified value.
+                return "Success. The player's empire now has " + NewGalaxyManager.playerEmpire.prescriptions + " prescriptions at its disposal.";
         }
 
         //Informs the player that they entered an invalid command and tells them how to obtain the list of valid cheat commands to enter.
