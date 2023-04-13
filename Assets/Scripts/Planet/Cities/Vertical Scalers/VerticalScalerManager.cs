@@ -49,7 +49,7 @@ public class VerticalScalerManager
         verticalScalerTransform.Translate(verticalScalerTransform.forward * (verticalScaler.width / 2.0f), Space.World);
 
         //Scale it and connect it to the entrance foundation
-        verticalScaler.ScaleToHeightAndConnect(city.foundationManager.foundationHeight / 2.0f, !generateOnNegativeSide);
+        verticalScaler.ScaleToHeightAndConnect(foundationScale.y * 0.5f, !generateOnNegativeSide);
     }
 
     public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPoint, Vector3 edgePoint, float globalBottomLevel, float globalTopLevel, bool minor)

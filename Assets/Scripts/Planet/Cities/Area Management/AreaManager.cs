@@ -269,6 +269,35 @@ public class AreaManager
         return true;
     }
 
+    //Returns true as long the area is within the bounding box of the city--it ignores what the status of the area is otherwise.
+    //This is used as a last-ditch option for placing down critical buildings when a good spot couldn't be found with SafeToGenerate(...).
+    public bool HalfwaySafeToGenerate(int startX, int startZ, int areasLong, bool ignoreCircularPerimeter, bool overrideBuildings)
+    {
+        for (int x = startX; x < startX + areasLong; x++)
+        {
+            for (int z = startZ; z < startZ + areasLong; z++)
+            {
+                //Lower boundaries
+                if (x < 0 || z < 0)
+                    return false;
+
+                //Upper boundaries
+                if (x >= areaTaken.GetLength(0) || z >= areaTaken.GetLength(1))
+                    return false;
+
+                //Circular boundary
+                if (!ignoreCircularPerimeter && city.circularCity && !IsWithinCircularCityPerimeter(x, z))
+                    return false;
+
+                //Occupation check
+                if (!overrideBuildings && areaTaken[x, z] == AreaReservationType.ReservedByBuilding)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     public void ReserveAreasWithType(int startX, int startZ, int areasLong, AreaReservationType newType, AreaReservationType oldType)
     {
         ReserveTheseAreas(startX, startZ, areasLong, newType, false, oldType);

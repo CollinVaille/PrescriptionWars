@@ -50,7 +50,7 @@ public class PlanetTerrain : MonoBehaviour
 
         //Generate cities after terrain heightmap and area system have been set up
         //But also before painting so painting reflects any elevation changes made by city generation
-        //Planet.planet.GenerateCities(savedPlanet);
+        Planet.planet.GenerateCities(savedPlanet);
         //Temporary---------------------------------------------------------------------------------------------------
         //Transform spawn = Instantiate(spawnZonePrefab, Vector3.zero, Quaternion.identity).transform;
         //Transform spawn2 = Instantiate(badGuySpawnZonePrefab, ReserveTerrainPosition(Random.Range(0, 3),

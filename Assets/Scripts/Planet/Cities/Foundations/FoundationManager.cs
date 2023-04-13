@@ -220,7 +220,7 @@ public class FoundationManager
             foundationPosition = city.transform.InverseTransformPoint(foundationPosition);
 
             float yChange = foundationPosition.y - previousLocalYPosition;
-            foundationScale.y += yChange * 2.0f; //need to multiply it by 2 because half of the foundation is underground
+            foundationScale.y -= yChange * 2.0f; //need to multiply it by 2 because half of the foundation is underground
         }
 
         if (foundationScale.y < 0.5f)
@@ -253,11 +253,16 @@ public class FoundationManager
     }
 
     //This function gives the foundation manager the chance to generate a foundation underneath the building before it is created.
-    public Foundation RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition)
+    public Foundation RightBeforeBuildingGenerated(int radiusOfBuilding, bool hasCardinalRotation, Vector3 buildingPosition, bool forceToweringFoundation)
     {
         //Determine whether building should have a foundation generated underneath it
-        float buildingFoundationHeight = city.newCitySpecifications.GetRandomBuildingFoundationHeight();
+        float buildingFoundationHeight;
+        if (forceToweringFoundation)
+            buildingFoundationHeight = foundationHeight + 100.0f;
+        else
+            buildingFoundationHeight = city.newCitySpecifications.GetRandomBuildingFoundationHeight();
 
+        //Proceed with creating foundation if applicable
         if (buildingFoundationHeight > 5) //Include foundation
         {
             //Place foundation
@@ -265,6 +270,14 @@ public class FoundationManager
             foundationScale.y = buildingFoundationHeight;
             FoundationShape foundationShape = (!hasCardinalRotation || Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
             Foundation foundation = GenerateNewFoundation(buildingPosition, foundationScale, foundationShape, BuildingFoundationNeedsConnecting());
+
+            //Towering foundations are connected with everything else by a vertical scaler
+            if(forceToweringFoundation)
+            {
+                float globalBottomLevel = city.transform.position.y + buildingPosition.y;
+                float globalTopLevel = globalBottomLevel + foundationScale.y * 0.5f;
+                city.verticalScalerManager.GenerateVerticalScalersOnRandomEdgeOfFoundation(2, foundation, globalBottomLevel, globalTopLevel);
+            }
 
             return foundation;
         }

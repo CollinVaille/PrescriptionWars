@@ -56,21 +56,13 @@ public class BuildingManager
             return GameObject.Instantiate(buildingPrefabs[buildingIndex]).transform;
     }
 
-
     private void GenerateNewSpecialBuildings()
     {
         for (int x = 0; x < buildingPrototypes.Length; x++)
         {
             //For each special building that is supposed to be included in the city
             if (buildingPrototypes[x].CompareTag("Special Building"))
-            {
-                //Keep trying to generate it until we succeed or hit 50 attempts
-                for (int attempt = 1; attempt <= 50; attempt++)
-                {
-                    if (GenerateNewBuilding(x, true, true))
-                        break;
-                }
-            }
+                GenerateNewBuilding(x, true, true);
         }
     }
 
@@ -100,59 +92,17 @@ public class BuildingManager
     //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
     //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
     //Returns whether building was successfully generated.
-    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool overrideRoadsIfNeeded)
+    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool buildingMustBePlaced)
     {
         AreaManager areaManager = city.areaManager;
 
         //Find place that can fit model...
 
-        int newX = 0, newZ = 0;
         int buildingRadius = buildingPrototypes[buildingIndex].length + city.newCitySpecifications.extraUsedBuildingRadius;
         int totalRadius = buildingRadius + city.newCitySpecifications.extraBuildingRadiusForSpacing;
         int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaManager.areaSize);
-        bool foundPlace = false;
 
-        //Placement strategy #1: Center on the largest available city block
-        if (placeInLargestAvailableBlock)
-        {
-            while (areaManager.availableCityBlocks.Count > 0)
-            {
-                int indexToPop = areaManager.availableCityBlocks.Count - 1;
-                CityBlock possibleLocation = areaManager.availableCityBlocks[indexToPop];
-                areaManager.availableCityBlocks.RemoveAt(indexToPop);
-
-                //The largest city block left is not big enough, so resort to random placement
-                //Keep the >= because same size generates will fail SafeToGenerate (tested)
-                if (areaLength >= possibleLocation.GetSmallestDimension())
-                    break;
-
-                //Block is large enough for the building, but is there something already in it?
-                newX = possibleLocation.coords.x;
-                newZ = possibleLocation.coords.y;
-                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, false))
-                {
-                    foundPlace = true;
-                    break;
-                }
-            }
-        }
-
-        //Placement strategy #2: Random placement
-        if (!foundPlace)
-        {
-            int maxAttempts = overrideRoadsIfNeeded ? 200 : 50;
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
-            {
-                newX = Random.Range(0, areaManager.areaTaken.GetLength(0));
-                newZ = Random.Range(0, areaManager.areaTaken.GetLength(1));
-
-                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, maxAttempts > 150))
-                {
-                    foundPlace = true;
-                    break;
-                }
-            }
-        }
+        FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, out bool placementWasSketchy, placeInLargestAvailableBlock, buildingMustBePlaced, areaManager, areaLength);
 
         //If found place, create model, position it, and call set up on it
         if (foundPlace)
@@ -177,7 +127,7 @@ public class BuildingManager
 
             //Apply the computed location to the building and any foundation underneath the building if applicable...
             //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
-            Foundation buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
+            Foundation buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition, placementWasSketchy);
             if (buildingFoundation != null) //Has foundation underneath building
             {
                 //Place building on top of foundation
@@ -202,9 +152,80 @@ public class BuildingManager
                 wallMaterials[Random.Range(0, wallMaterials.Length)],
                 floorMaterials[Random.Range(0, floorMaterials.Length)]);
         }
+        else if(buildingMustBePlaced)
+            Debug.Log("can't place special building"); //prescritor length - 70
         //Otherwise, we fucking give up
 
         return foundPlace;
+    }
+
+    private void FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, out bool placementWasSketchy, bool placeInLargestAvailableBlock, bool buildingMustBePlaced, AreaManager areaManager, int areaLength)
+    {
+        newX = 0;
+        newZ = 0;
+        foundPlace = false;
+        placementWasSketchy = false;
+
+        //Placement strategy #1: Center on the largest available city block
+        if (placeInLargestAvailableBlock)
+        {
+            for (int cityBlockIndex = 0; cityBlockIndex < areaManager.availableCityBlocks.Count; cityBlockIndex++)
+            {
+                CityBlock possibleLocation = areaManager.availableCityBlocks[cityBlockIndex];
+
+                //The largest city block left is not big enough, so resort to random placement
+                //Keep the >= because same size generates will fail SafeToGenerate (tested)
+                if (areaLength >= possibleLocation.GetSmallestDimension())
+                    break;
+
+                //Block is large enough for the building, but is there something already in it?
+                newX = possibleLocation.coords.x;
+                newZ = possibleLocation.coords.y;
+                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, false))
+                {
+                    foundPlace = true;
+                    areaManager.availableCityBlocks.RemoveAt(cityBlockIndex); //Claim this block as taken
+                    break;
+                }
+            }
+        }
+
+        //Placement strategy #2: Random placement
+        if (!foundPlace)
+        {
+            int maxAttempts = buildingMustBePlaced ? 1500 : 50;
+            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            {
+                newX = Random.Range(0, areaManager.areaTaken.GetLength(0));
+                newZ = Random.Range(0, areaManager.areaTaken.GetLength(1));
+
+                if (attempt < 500)
+                {
+                    if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, maxAttempts > 150))
+                    {
+                        foundPlace = true;
+                        break;
+                    }
+                }
+                else if (areaManager.HalfwaySafeToGenerate(newX, newZ, areaLength, maxAttempts > 900, maxAttempts > 1300))
+                {
+                    Debug.Log("settled on halfway safe place");
+                    foundPlace = true;
+                    placementWasSketchy = true;
+                    break;
+                }
+            }
+
+            //Placement strategy #3: Force place building in the center
+            if (!foundPlace && buildingMustBePlaced)
+            {
+                Debug.Log("forced to center of city");
+                foundPlace = true;
+                placementWasSketchy = true;
+                newX = areaManager.areaTaken.GetLength(0) / 2;
+                newZ = areaManager.areaTaken.GetLength(1) / 2;
+            }
+        }
     }
 
     private int SelectGenericBuildingPrototype()
