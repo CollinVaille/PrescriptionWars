@@ -7,6 +7,11 @@ using UnityEngine;
 //No instance of this class is created (or reloaded) for restored cities because it is not needed/used then.
 public class NewCitySpecifications
 {
+    //Small compound "cities"
+    public bool smallCompound = false, tryToMakeEasyAccessToTerrain = false;
+    public string compoundMainBuilding;
+    public City daddyCity = null;
+
     //Buildings
     public int extraUsedBuildingRadius = 0, extraBuildingRadiusForSpacing = 0;
 

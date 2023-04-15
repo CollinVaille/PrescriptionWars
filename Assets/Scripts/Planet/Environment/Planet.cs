@@ -253,13 +253,20 @@ public class Planet : MonoBehaviour
         {
             cities = new List<City>();
 
-            for (int cityCount = 0; cityCount < 1; cityCount++)
-            {
-                City newCity = Instantiate(cityPrefab, Vector3.zero, Quaternion.identity).GetComponent<City>();
-                newCity.GenerateNewCity();
-                cities.Add(newCity);
-            }
+            //Generate the main city
+            InstantiateNewCityAndAddItToCitiesList();
+
+            for (int cityIndex = 0; cityIndex < cities.Count; cityIndex++)
+                cities[cityIndex].GenerateNewCity(); //This can spawn new cities as a side effect and automatically add them to the cities list.
         }
+    }
+
+    public City InstantiateNewCityAndAddItToCitiesList()
+    {
+        City newCity = Instantiate(cityPrefab, Vector3.zero, Quaternion.identity).GetComponent<City>();
+        newCity.newCitySpecifications = new NewCitySpecifications();
+        cities.Add(newCity);
+        return newCity;
     }
 
     //PLANET MANAGEMENT FUNCTIONS----------------------------------------------------------------------------------

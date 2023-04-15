@@ -33,6 +33,11 @@ public class BuildingManager
             buildingPrototypes[x] = GameObject.Instantiate(buildingPrefabs[x]).GetComponent<Building>();
             buildingPrototypes[x].gameObject.SetActive(false);
 
+            //Removes (Clone) from the end of the name
+            string buildingName = buildingPrototypes[x].name;
+            buildingName = buildingName.Substring(0, buildingName.Length - 7);
+            buildingPrototypes[x].name = buildingName;
+
             if (!buildingPrototypes[x].CompareTag("Special Building"))
                 totalSpawnChance += buildingPrototypes[x].spawnChance;
         }
@@ -58,11 +63,36 @@ public class BuildingManager
 
     private void GenerateNewSpecialBuildings()
     {
+        bool cityIsSmallCompound = city.newCitySpecifications.smallCompound;
+
         for (int x = 0; x < buildingPrototypes.Length; x++)
         {
-            //For each special building that is supposed to be included in the city
-            if (buildingPrototypes[x].CompareTag("Special Building"))
-                GenerateNewBuilding(x, true, true);
+            if (!buildingPrototypes[x].CompareTag("Special Building"))
+                continue;
+
+            //For each special building that is supposed to be included in the city...
+
+            //Try to generate it within the city... (except depos should always be separate compounds)
+            if(cityIsSmallCompound || !buildingPrototypes[x].name.Equals("Depot"))
+            {
+                if (GenerateNewBuilding(x, true, true))
+                    continue;
+            }
+
+            if (cityIsSmallCompound)
+            {
+                Debug.LogError("!!!Could not fit important/special building " + buildingPrototypes[x].name + " into small compound!!!");
+                continue;
+            }
+
+            //But, if it doesn't fit, then fall back to generating it as a separate, small compound outside the city
+            City externalCompound = Planet.planet.InstantiateNewCityAndAddItToCitiesList();
+            externalCompound.newCitySpecifications.smallCompound = true;
+            externalCompound.newCitySpecifications.daddyCity = city;
+
+            string compoundMainBuilding = buildingPrototypes[x].name;
+            externalCompound.newCitySpecifications.compoundMainBuilding = buildingPrototypes[x].name;
+            externalCompound.newCitySpecifications.tryToMakeEasyAccessToTerrain = compoundMainBuilding.Equals("Depot");
         }
     }
 
@@ -78,11 +108,11 @@ public class BuildingManager
                 GenerateNewBuilding(x, true, false);
         }
 
-        int buildingIndex = -1;
-        for (int x = 0; x < 400; x++)
+        int totalNumberOfAttempts = city.newCitySpecifications.smallCompound ? 25 : 400;
+        for (int attemptsCompleted = 0; attemptsCompleted < totalNumberOfAttempts; attemptsCompleted++)
         {
             //Randomly pick a model to build
-            buildingIndex = SelectGenericBuildingPrototype();
+            int buildingIndex = SelectGenericBuildingPrototype();
 
             //Attempt to place it somewhere
             GenerateNewBuilding(buildingIndex, buildingPrototypes[buildingIndex].length > averageBlockLength, false);
@@ -92,7 +122,7 @@ public class BuildingManager
     //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
     //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
     //Returns whether building was successfully generated.
-    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool buildingMustBePlaced)
+    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool importantBuilding)
     {
         AreaManager areaManager = city.areaManager;
 
@@ -102,7 +132,7 @@ public class BuildingManager
         int totalRadius = buildingRadius + city.newCitySpecifications.extraBuildingRadiusForSpacing;
         int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaManager.areaSize);
 
-        FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, out bool placementWasSketchy, placeInLargestAvailableBlock, buildingMustBePlaced, areaManager, areaLength);
+        FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, placeInLargestAvailableBlock, importantBuilding, areaManager, areaLength);
 
         //If found place, create model, position it, and call set up on it
         if (foundPlace)
@@ -116,7 +146,7 @@ public class BuildingManager
             newBuilding.localRotation = Quaternion.Euler(0, 0, 0);
 
             //Rotate it
-            bool hasCardinalRotation = SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2));
+            bool hasCardinalRotation = SetBuildingRotation(newBuilding, newX + (areaLength / 2), newZ + (areaLength / 2), importantBuilding);
 
             //Position it...
             Vector3 buildingPosition = Vector3.zero;
@@ -127,7 +157,7 @@ public class BuildingManager
 
             //Apply the computed location to the building and any foundation underneath the building if applicable...
             //This part depends on whether we generate a foundation underneath the building because that changes the building's y position
-            Foundation buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition, placementWasSketchy);
+            Foundation buildingFoundation = city.foundationManager.RightBeforeBuildingGenerated(buildingRadius, hasCardinalRotation, buildingPosition);
             if (buildingFoundation != null) //Has foundation underneath building
             {
                 //Place building on top of foundation
@@ -152,19 +182,18 @@ public class BuildingManager
                 wallMaterials[Random.Range(0, wallMaterials.Length)],
                 floorMaterials[Random.Range(0, floorMaterials.Length)]);
         }
-        else if(buildingMustBePlaced)
-            Debug.Log("can't place special building"); //prescritor length - 70
+        else if(importantBuilding)
+            Debug.Log("moving special building to an external location"); //prescritor length - 70
         //Otherwise, we fucking give up
 
         return foundPlace;
     }
 
-    private void FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, out bool placementWasSketchy, bool placeInLargestAvailableBlock, bool buildingMustBePlaced, AreaManager areaManager, int areaLength)
+    private void FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, bool placeInLargestAvailableBlock, bool importantBuilding, AreaManager areaManager, int areaLength)
     {
         newX = 0;
         newZ = 0;
         foundPlace = false;
-        placementWasSketchy = false;
 
         //Placement strategy #1: Center on the largest available city block
         if (placeInLargestAvailableBlock)
@@ -181,7 +210,7 @@ public class BuildingManager
                 //Block is large enough for the building, but is there something already in it?
                 newX = possibleLocation.coords.x;
                 newZ = possibleLocation.coords.y;
-                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, false))
+                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, importantBuilding))
                 {
                     foundPlace = true;
                     areaManager.availableCityBlocks.RemoveAt(cityBlockIndex); //Claim this block as taken
@@ -193,37 +222,17 @@ public class BuildingManager
         //Placement strategy #2: Random placement
         if (!foundPlace)
         {
-            int maxAttempts = buildingMustBePlaced ? 1500 : 50;
+            int maxAttempts = importantBuilding ? 1000 : 50;
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 newX = Random.Range(0, areaManager.areaTaken.GetLength(0));
                 newZ = Random.Range(0, areaManager.areaTaken.GetLength(1));
 
-                if (attempt < 500)
+                if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, attempt > 500))
                 {
-                    if (areaManager.SafeToGenerate(newX, newZ, areaLength, AreaManager.AreaReservationType.Open, maxAttempts > 150))
-                    {
-                        foundPlace = true;
-                        break;
-                    }
-                }
-                else if (areaManager.HalfwaySafeToGenerate(newX, newZ, areaLength, maxAttempts > 900, maxAttempts > 1300))
-                {
-                    Debug.Log("settled on halfway safe place");
                     foundPlace = true;
-                    placementWasSketchy = true;
                     break;
                 }
-            }
-
-            //Placement strategy #3: Force place building in the center
-            if (!foundPlace && buildingMustBePlaced)
-            {
-                Debug.Log("forced to center of city");
-                foundPlace = true;
-                placementWasSketchy = true;
-                newX = areaManager.areaTaken.GetLength(0) / 2;
-                newZ = areaManager.areaTaken.GetLength(1) / 2;
             }
         }
     }
@@ -247,15 +256,29 @@ public class BuildingManager
     }
 
     //Returns whether building rotation is strictly pointing in a cardinal direction (0, 90, 180, 270 degrees within city coordinate system)
-    private bool SetBuildingRotation(Transform building, int xCoord, int zCoord)
+    private bool SetBuildingRotation(Transform building, int xCoord, int zCoord, bool importantBuilding)
     {
         AreaManager areaManager = city.areaManager;
 
+        if(city.newCitySpecifications.smallCompound)
+        {
+            if (importantBuilding && city.newCitySpecifications.daddyCity)
+                return SetBuildingRotationToFaceDaddyCity(building);
+            else
+                return SetBuildingRotationToFaceCityCenter(building, xCoord, zCoord);
+        }
+        else
+            return SetBuildingRotationToFaceNearestRoad(building, xCoord, zCoord);
+    }
+
+    private bool SetBuildingRotationToFaceNearestRoad(Transform building, int xCoord, int zCoord)
+    {
+        AreaManager areaManager = city.areaManager;
         Vector3 newRotation = Vector3.zero;
         int newMargin;
         bool strictlyCardinal;
 
-        //Find closest horizontal road
+        //Find closest horizontal road. If there is no horizontal road, then base it off the center z of the city.
         int closestZMargin = 9999;
         bool faceDown = false;
         for (int z = 0; z < areaManager.horizontalRoads.Count; z++)
@@ -268,7 +291,7 @@ public class BuildingManager
             }
         }
 
-        //Find closest vertical road
+        //Find closest vertical road. If there is no vertical road, then base it off the center x of the city.
         int closestXMargin = 9999;
         bool faceLeft = false;
         for (int x = 0; x < areaManager.verticalRoads.Count; x++)
@@ -324,6 +347,70 @@ public class BuildingManager
         building.localEulerAngles = newRotation;
 
         return strictlyCardinal;
+    }
+
+    private bool SetBuildingRotationToFaceDaddyCity(Transform building)
+    {
+        Vector3 newRotation = Vector3.zero;
+        Vector3 positionDifference = building.position - city.newCitySpecifications.daddyCity.transform.position;
+
+        //Review results and determine rotation
+        if (Mathf.Abs(positionDifference.x) < Mathf.Abs(positionDifference.z))
+        {
+            if (positionDifference.x < 0)
+                newRotation.y = -90;
+            else
+                newRotation.y = 90;
+        }
+        else
+        {
+            if (positionDifference.z > 0)
+                newRotation.y = 180;
+            else
+                newRotation.y = 0;
+        }
+
+        //Apply rotation
+        building.localEulerAngles = newRotation;
+
+        //Rotation is always strictly cardinal when using this strategy
+        return true;
+    }
+
+    private bool SetBuildingRotationToFaceCityCenter(Transform building, int xCoord, int zCoord)
+    {
+        AreaManager areaManager = city.areaManager;
+        Vector3 newRotation = Vector3.zero;
+
+        int centerZ = areaManager.areaTaken.GetLength(1) / 2;
+        int zDifferenceMagnitude = Mathf.Abs(zCoord - centerZ);
+        bool faceDown = zCoord > centerZ;
+
+        int centerX = areaManager.areaTaken.GetLength(0) / 2;
+        int xDifferenceMagnitude = Mathf.Abs(xCoord - centerX);
+        bool faceLeft = xCoord > centerX;
+
+        //Review results and determine rotation
+        if (xDifferenceMagnitude > zDifferenceMagnitude)
+        {
+            if (faceLeft)
+                newRotation.y = -90;
+            else
+                newRotation.y = 90;
+        }
+        else
+        {
+            if (faceDown)
+                newRotation.y = 180;
+            else
+                newRotation.y = 0;
+        }
+
+        //Apply rotation
+        building.localEulerAngles = newRotation;
+
+        //Rotation is always strictly cardinal when using this strategy
+        return true;
     }
 
     public int GetLongestBuildingLength()

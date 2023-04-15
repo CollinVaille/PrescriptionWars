@@ -14,6 +14,8 @@ public class CityGenerator : MonoBehaviour
 
     public void CustomizeCity(City city)
     {
+        NewCitySpecifications newCitySpecifications = city.newCitySpecifications;
+
         //Get city type
         CityType cityType = SelectCityType();
         city.cityType = cityType;
@@ -25,16 +27,24 @@ public class CityGenerator : MonoBehaviour
         //Buildings--------------------------------------------------------------------------------------------------------------
         string buildingPath = "Planet/City/Buildings/" + cityTypePathSuffix;
         List<string> genericBuildings = new List<string>(cityType.buildings);
-        TrimToRandomSubset(genericBuildings, Random.Range(5, 10));
+        TrimToRandomSubset(genericBuildings, newCitySpecifications.smallCompound ? Random.Range(3, 5) : Random.Range(5, 10));
         city.buildingManager.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
             city.buildingManager.buildingPrefabs.Add(Resources.Load<GameObject>(buildingPath + genericBuildings[x]));
 
         //Special buildings--------------------------------------------------------------------------------------------------------------
-        AddSpecialBuilding(buildingPath + "Prescriptor", city);
-        AddSpecialBuilding(buildingPath + "Depot", city);
-        AddSpecialBuilding(buildingPath + "Research Facility", city);
-        AddSpecialBuilding(buildingPath + "Trade Post", city);
+        if(newCitySpecifications.smallCompound)
+        {
+            if(!string.IsNullOrEmpty(newCitySpecifications.compoundMainBuilding))
+                AddSpecialBuilding(buildingPath + newCitySpecifications.compoundMainBuilding, city);
+        }
+        else
+        {
+            AddSpecialBuilding(buildingPath + "Prescriptor", city);
+            AddSpecialBuilding(buildingPath + "Depot", city);
+            AddSpecialBuilding(buildingPath + "Research Facility", city);
+            AddSpecialBuilding(buildingPath + "Trade Post", city);
+        }
 
         //Default materials--------------------------------------------------------------------------------------------------------------
         city.buildingManager.SetDefaultMaterials();
@@ -72,7 +82,7 @@ public class CityGenerator : MonoBehaviour
         city.foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
-        if (city.radius > Random.Range(0, 90) && cityType.wallSections.Length > 0)
+        if (city.radius > Random.Range(0, 90) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
@@ -95,11 +105,11 @@ public class CityGenerator : MonoBehaviour
         }
 
         //City shape--------------------------------------------------------------------------------------------------------------
-        if (city.cityWallManager.fencePostPrefab) //Need fence posts to hide the seems between wall sections when the walls are circular
+        if (city.cityWallManager.fencePostPrefab) //Need fence posts to hide the seams between wall sections when the walls are circular
             city.circularCity = Random.Range(0.0f, 1.0f / cityType.fencePostChance) > 0.5f;
 
         //Foundations--------------------------------------------------------------------------------------------------------------
-        if (biomeOptions.foundationChance > Random.Range(0.0f, 1.0f)) //Chance for non-zero foundation height (and thus the presence of foundations)
+        if (biomeOptions.foundationChance > Random.Range(0.0f, 1.0f) && !newCitySpecifications.tryToMakeEasyAccessToTerrain) //Chance for non-zero foundation height (and thus the presence of foundations)
         {
             if(Random.Range(0, 3) != 0)
                 city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.x, biomeOptions.foundationHeightRange.y);

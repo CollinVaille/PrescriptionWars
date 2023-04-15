@@ -27,7 +27,7 @@ public class AreaManager
         ReserveAllAreasRegardlessOfType(AreaReservationType.Open);
     }
 
-    public void GenerateRoads()
+    public void GenerateRoadsAndCityBlocks()
     {
         //Needed set up regardless of what kind of roads we want to generate
         horizontalRoads = new List<int>();
@@ -35,6 +35,15 @@ public class AreaManager
         availableCityBlocks = new List<CityBlock>();
         Vector2Int roadWidthRange = new Vector2Int(5, 20);
         Vector2Int roadSpacingRange = new Vector2Int(40, city.buildingManager.GetMaxLengthBetweenRoadsInLocalUnits());
+
+        //For small compounds, consider the entire compound as a single city block where we center our main building
+        if (city.newCitySpecifications.smallCompound)
+        {
+            CityBlock newBlock = new CityBlock();
+            newBlock.coords = new Vector2Int(areaTaken.GetLength(0) / 2, areaTaken.GetLength(1) / 2);
+            newBlock.dimensions = new Vector2Int(areaTaken.GetLength(0), areaTaken.GetLength(1));
+            availableCityBlocks.Add(newBlock);
+        }
 
         //Choose and execute specific kind of road generation
         if (city.circularCity)
@@ -262,35 +271,6 @@ public class AreaManager
 
                 //Circular boundary
                 if (city.circularCity && !IsWithinCircularCityPerimeter(x, z))
-                    return false;
-            }
-        }
-
-        return true;
-    }
-
-    //Returns true as long the area is within the bounding box of the city--it ignores what the status of the area is otherwise.
-    //This is used as a last-ditch option for placing down critical buildings when a good spot couldn't be found with SafeToGenerate(...).
-    public bool HalfwaySafeToGenerate(int startX, int startZ, int areasLong, bool ignoreCircularPerimeter, bool overrideBuildings)
-    {
-        for (int x = startX; x < startX + areasLong; x++)
-        {
-            for (int z = startZ; z < startZ + areasLong; z++)
-            {
-                //Lower boundaries
-                if (x < 0 || z < 0)
-                    return false;
-
-                //Upper boundaries
-                if (x >= areaTaken.GetLength(0) || z >= areaTaken.GetLength(1))
-                    return false;
-
-                //Circular boundary
-                if (!ignoreCircularPerimeter && city.circularCity && !IsWithinCircularCityPerimeter(x, z))
-                    return false;
-
-                //Occupation check
-                if (!overrideBuildings && areaTaken[x, z] == AreaReservationType.ReservedByBuilding)
                     return false;
             }
         }

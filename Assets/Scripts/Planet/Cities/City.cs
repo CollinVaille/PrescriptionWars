@@ -71,9 +71,8 @@ public class City : MonoBehaviour, INavZoneUpdater
     public void GenerateNewCity()
     {
         BeforeCityGeneratedOrRestored();
-        newCitySpecifications = new NewCitySpecifications();
 
-        //Reserve terrain location
+        //Estimate city radius. Not finalized yet and could be very off at this point.
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
         radius = Random.Range(70, 110); //Small city
@@ -86,21 +85,31 @@ public class City : MonoBehaviour, INavZoneUpdater
         //what buildings and building materials are used etc...
         CityGenerator.generator.CustomizeCity(this);
 
+        //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for adjusting the city radius and GenerateRoads())
+        buildingManager.LoadBuildingPrototypes();
+
         //Just determine what our plans are for the foundations. The actual building of foundations is later on.
         //We need to determine our plans now so that we can finalize the city radius. A lot of stuff is based on the city radius.
         foundationManager.DetermineFoundationPlans();
-        foundationManager.AdjustCityRadiusToCompensateForFoundationPlans();
+        
+        //Finalize city radius
+        if (newCitySpecifications.smallCompound) //If its a small compound made to house a special building, make sure it can fit that special building (and not much more)
+        {
+            radius = (buildingManager.GetLongestBuildingLength() / 2) + areaManager.areaSize;
+
+            if (circularCity) //Convert from side length to hypotenuse (c^2 = a^2 + b^2)
+                radius = (int)Mathf.Sqrt(radius * radius * 2);
+        }
+        else //Otherwise, we will use the previous radius computations and adjust them based on the foundation plans
+            foundationManager.AdjustCityRadiusToCompensateForFoundationPlans();
 
         //At this point, the city radius is final. We will now create our area management system and reserve our place in the terrain...
         //...based on the city radius.
         areaManager.InitializeAreaReservationSystem();
         ReserveTerrainLocation(true, Vector3.zero);
 
-        //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for GenerateRoads())
-        buildingManager.LoadBuildingPrototypes();
-
         //Generate roads (and city blocks)
-        areaManager.GenerateRoads();
+        areaManager.GenerateRoadsAndCityBlocks();
         areaManager.availableCityBlocks.Sort(); //Sort the city blocks, smallest to largest
         int avgBlockLength = areaManager.GetAverageLengthOfCityBlockInLocalUnits();
 
@@ -135,7 +144,12 @@ public class City : MonoBehaviour, INavZoneUpdater
         GenerateNavMesh();
 
         //Set the name after all possible influencing factors on the name have been set
-        gameObject.name = CityGenerator.GenerateCityName(Planet.planet.biome, radius);
+        if (!newCitySpecifications.smallCompound)
+            gameObject.name = CityGenerator.GenerateCityName(Planet.planet.biome, radius);
+        else if(!string.IsNullOrEmpty(newCitySpecifications.compoundMainBuilding))
+            gameObject.name = newCitySpecifications.compoundMainBuilding;
+        else
+            gameObject.name = "Auxillary Compound";
 
         AfterCityGeneratedOrRestored();
     }
