@@ -11,12 +11,14 @@ public class TerrainReservationOptions
     //General options (new or restored)
     public bool circular = false;
     public int radius;
-    public float relativeMaxHeight;
+    public float relativeMaxHeight; //This does not impact what location is chosen. It just controls the maximum height the reserved terrain will be after modification
     public TerrainResModType terrainModification = TerrainResModType.NoChange;
 
     //Options for new generation
-    public Vector2Int heightRange;
+    public int minHeightToFlattenTo; //This does not impact what location is chosen. It just controls the minimum height to flatten the terrain to afterwards
     public float preferredSteepness;
+    public Transform targetToGenerateCloseTo;
+    public float minimumDistanceFromTarget;
 
     //Options for restorations
     public Vector3 position;
@@ -26,6 +28,6 @@ public class TerrainReservationOptions
         this.newGeneration = newGeneration;
         this.circular = circular;
         this.radius = radius;
-        this.relativeMaxHeight = absoluteMaxHeight;
+        relativeMaxHeight = absoluteMaxHeight;
     }
 }

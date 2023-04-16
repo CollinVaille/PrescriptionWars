@@ -11,7 +11,7 @@ public class FoundationManager
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Hammocks;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
@@ -26,8 +26,12 @@ public class FoundationManager
     public FoundationManager(City city)
     {
         this.city = city;
+
         largeGroundMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Large Ground Material");
         largeSlabMaterial = Resources.Load<Material>("Planet/City/Miscellaneous/Large Slab Material");
+
+        foundations = new List<Foundation>();
+        foundationGroundColliders = new List<Collider>();
     }
 
     public void DetermineFoundationPlans()
@@ -50,7 +54,10 @@ public class FoundationManager
 
         //Either finalize decision to skip foundations...
         if (foundationHeight <= 0)
+        {
+            foundationHeight = 0;
             foundationType = FoundationType.NoFoundations;
+        }
 
         //Or, commence with choosing a foundation...
         else
@@ -60,7 +67,7 @@ public class FoundationManager
                 foundationHeight = 10;
 
             //Choose a random foundation type
-            if (foundationType == FoundationType.NoFoundations)
+            if (foundationType == FoundationType.NoFoundations || city.newCitySpecifications.smallCompound)
             {
                 if (city.newCitySpecifications.smallCompound)
                     foundationType = FoundationType.SingularSlab;

@@ -59,6 +59,7 @@ public class God : MonoBehaviour
         PlanetObjectPool.SetUpPooling();
         DavyJonesLocker.PrepareTheLockerForSouls();
         PlanetLight.ClearAllAutomaticLights();
+        TerrainOrHorizonReservation.ClearReservationRecord();
     }
 
     //Delayed Initialization

@@ -75,7 +75,7 @@ public class BuildingManager
             //Try to generate it within the city... (except depos should always be separate compounds)
             if(cityIsSmallCompound || !buildingPrototypes[x].name.Equals("Depot"))
             {
-                if (GenerateNewBuilding(x, true, true))
+                if (GenerateNewBuilding(x, true, true, forceToCenter: buildingPrototypes[x].name.Equals(city.newCitySpecifications.compoundMainBuilding)))
                     continue;
             }
 
@@ -122,7 +122,7 @@ public class BuildingManager
     //Used to generate a NEW building. Pass in index of model if particular one is desired, else a random model will be selected.
     //Specify aggressive placement to ignore roads--if necessary--during placement. The algorithm will still try to take roads into account if it can.
     //Returns whether building was successfully generated.
-    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool importantBuilding)
+    private bool GenerateNewBuilding(int buildingIndex, bool placeInLargestAvailableBlock, bool importantBuilding, bool forceToCenter = false)
     {
         AreaManager areaManager = city.areaManager;
 
@@ -132,7 +132,7 @@ public class BuildingManager
         int totalRadius = buildingRadius + city.newCitySpecifications.extraBuildingRadiusForSpacing;
         int areaLength = Mathf.CeilToInt(totalRadius * 1.0f / areaManager.areaSize);
 
-        FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, placeInLargestAvailableBlock, importantBuilding, areaManager, areaLength);
+        FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, placeInLargestAvailableBlock, importantBuilding, forceToCenter, areaManager, areaLength);
 
         //If found place, create model, position it, and call set up on it
         if (foundPlace)
@@ -189,14 +189,26 @@ public class BuildingManager
         return foundPlace;
     }
 
-    private void FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, bool placeInLargestAvailableBlock, bool importantBuilding, AreaManager areaManager, int areaLength)
+    private void FindPlaceForNewBuilding(out int newX, out int newZ, out bool foundPlace, bool placeInLargestAvailableBlock, bool importantBuilding, bool forceToCenter, AreaManager areaManager, int areaLength)
     {
         newX = 0;
         newZ = 0;
         foundPlace = false;
 
+        //Special buildings that are relegated to separate compounds will be centered in that compound
+        if (forceToCenter)
+        {
+            foundPlace = true;
+            //newX = areaManager.areaTaken.GetLength(0) / 2;
+            //newZ = areaManager.areaTaken.GetLength(1) / 2;
+            //newX = areaLength / 2;
+            //newZ = areaLength / 2;
+            newX = 0;
+            newZ = 0;
+        }
+
         //Placement strategy #1: Center on the largest available city block
-        if (placeInLargestAvailableBlock)
+        else if (placeInLargestAvailableBlock)
         {
             for (int cityBlockIndex = 0; cityBlockIndex < areaManager.availableCityBlocks.Count; cityBlockIndex++)
             {

@@ -48,9 +48,15 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Reserve location for city
         if (newCity)
         {
-            options.heightRange = new Vector2Int((int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4), 500);
+            options.minHeightToFlattenTo = (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4);
             options.preferredSteepness = Random.Range(0, 10);
             terrainModifications = foundationManager.GetTerrainModificationTypeForCity();
+
+            if(newCitySpecifications.daddyCity)
+            {
+                options.targetToGenerateCloseTo = newCitySpecifications.daddyCity.transform;
+                options.minimumDistanceFromTarget = radius + 50.0f;
+            }
         }
         else
             options.position = cityLocation;

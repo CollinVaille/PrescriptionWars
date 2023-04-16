@@ -10,6 +10,7 @@ public class VerticalScalerManager
     public VerticalScalerManager(City city)
     {
         this.city = city;
+        verticalScalers = new List<VerticalScaler>();
     }
 
     public VerticalScaler InstantiateVerticalScaler(string resourcePath, Transform parent)

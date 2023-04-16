@@ -36,15 +36,6 @@ public class AreaManager
         Vector2Int roadWidthRange = new Vector2Int(5, 20);
         Vector2Int roadSpacingRange = new Vector2Int(40, city.buildingManager.GetMaxLengthBetweenRoadsInLocalUnits());
 
-        //For small compounds, consider the entire compound as a single city block where we center our main building
-        if (city.newCitySpecifications.smallCompound)
-        {
-            CityBlock newBlock = new CityBlock();
-            newBlock.coords = new Vector2Int(areaTaken.GetLength(0) / 2, areaTaken.GetLength(1) / 2);
-            newBlock.dimensions = new Vector2Int(areaTaken.GetLength(0), areaTaken.GetLength(1));
-            availableCityBlocks.Add(newBlock);
-        }
-
         //Choose and execute specific kind of road generation
         if (city.circularCity)
             GenerateConcentricCircleRoads(roadWidthRange, roadSpacingRange);
