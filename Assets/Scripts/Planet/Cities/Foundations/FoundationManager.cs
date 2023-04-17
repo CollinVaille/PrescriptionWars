@@ -11,13 +11,12 @@ public class FoundationManager
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.Hammocks;
+    public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
 
     public Material largeSlabMaterial, largeGroundMaterial;
-    public Material slabMaterial, groundMaterial;
     public List<Foundation> foundations;
     public List<Collider> foundationGroundColliders; //List of all colliders for the city that belong to a foundation and are used as the foundation's "top ground".
 
@@ -39,14 +38,14 @@ public class FoundationManager
         //The foundation height has been set by CityGenerator. Now, we need to see if the height should be tweaked and what foundation type we should go for...
 
         //If the city is underwater, raise it above water with foundations
-        if (Planet.planet.hasOcean)
+        if (Planet.planet.hasAnyKindOfOcean)
         {
             float heightDifference = (Planet.planet.oceanTransform.position.y + 2.0f) - city.transform.position.y;
             if (heightDifference > 0.0f)
             {
                 city.newCitySpecifications.lowerBuildingsMustHaveFoundations = true;
 
-                float heightDifferenceWithFoundations = heightDifference - foundationHeight;
+                float heightDifferenceWithFoundations = (heightDifference * 2.0f) - foundationHeight;
                 if (heightDifferenceWithFoundations > 0.0f)
                     foundationHeight += Mathf.CeilToInt(heightDifferenceWithFoundations);
             }
@@ -125,8 +124,8 @@ public class FoundationManager
 
         //Update the slab and ground materials
         float scaling = city.radius / 10.0f;
-        God.CopyMaterialValues(slabMaterial, largeSlabMaterial, scaling, foundationHeight / 20.0f, true);
-        God.CopyMaterialValues(groundMaterial, largeGroundMaterial, scaling, scaling, true);
+        God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.slabMaterial, largeSlabMaterial, scaling, foundationHeight / 20.0f, true);
+        God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.groundMaterial, largeGroundMaterial, scaling, scaling, true);
     }
 
     private void ProceedWithCreatingFoundationBasedOnType()
@@ -429,7 +428,6 @@ public class FoundationManagerJSON
     FoundationManager.FoundationType foundationType;
 
     //Materials
-    public string slabMaterial, groundMaterial;
     public Vector2 slabMaterialTiling, groundMaterialTiling;
 
     //Foundations
@@ -439,10 +437,7 @@ public class FoundationManagerJSON
     {
         foundationType = foundationManager.foundationType;
 
-        slabMaterial = foundationManager.slabMaterial.name;
         slabMaterialTiling = foundationManager.largeSlabMaterial.mainTextureScale;
-
-        groundMaterial = foundationManager.groundMaterial.name;
         groundMaterialTiling = foundationManager.largeGroundMaterial.mainTextureScale;
 
         foundationJSONs = new List<FoundationJSON>(foundationManager.foundations.Count);
@@ -454,11 +449,9 @@ public class FoundationManagerJSON
     {
         foundationManager.foundationType = foundationType;
 
-        foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMaterial);
-        God.CopyMaterialValues(foundationManager.slabMaterial, foundationManager.largeSlabMaterial, slabMaterialTiling.x, slabMaterialTiling.y, false);
+        God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.slabMaterial, foundationManager.largeSlabMaterial, slabMaterialTiling.x, slabMaterialTiling.y, false);
 
-        foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMaterial);
-        God.CopyMaterialValues(foundationManager.groundMaterial, foundationManager.largeGroundMaterial, groundMaterialTiling.x, groundMaterialTiling.y, false);
+        God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.groundMaterial, foundationManager.largeGroundMaterial, groundMaterialTiling.x, groundMaterialTiling.y, false);
 
         foreach (FoundationJSON foundationJSON in foundationJSONs)
             foundationJSON.RestoreFoundation(foundationManager);

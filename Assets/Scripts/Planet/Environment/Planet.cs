@@ -32,7 +32,7 @@ public class Planet : MonoBehaviour
     //Ocean
     public OceanType oceanType;
     public Transform oceanTransform;
-    [HideInInspector] public bool hasOcean = true;
+    [HideInInspector] public bool hasLiquidOcean = true, hasAnyKindOfOcean = true;
     public Material ice;
     [HideInInspector] public string oceanMaterialName;
 
@@ -43,6 +43,7 @@ public class Planet : MonoBehaviour
 
     //Cities
     public GameObject cityPrefab;
+    [HideInInspector] public PlanetCityCustomization planetWideCityCustomization;
     [HideInInspector] public List<City> cities;
 
     //Special effects
@@ -174,17 +175,21 @@ public class Planet : MonoBehaviour
         seaLevel = height;
 
         //Set enabled
-        hasOcean = oceanTransform.position.y > 0.0f;
-        oceanTransform.gameObject.SetActive(hasOcean);
+        hasAnyKindOfOcean = oceanTransform.position.y > 0.0f;
+        oceanTransform.gameObject.SetActive(hasAnyKindOfOcean);
 
         //Set type... default is OceanType.Water
         if (oceanType == OceanType.Frozen)
         {
-            if(iceTexture.Equals("")) //Generate new ice texture
+            hasLiquidOcean = false;
+
+            if (iceTexture.Equals("")) //Generate new ice texture
                 FreezeOcean("Glacier", "Ice 0041", "Ice Cracked", "Ice Caves", "Chiseled Ice");
             else //Load old ice texture
                 FreezeOcean(iceTexture);
         }
+        else
+            hasLiquidOcean = hasAnyKindOfOcean;
 
         //Set material
         if (oceanType != OceanType.Frozen)
@@ -208,9 +213,6 @@ public class Planet : MonoBehaviour
         Texture2D iceTexture = Resources.Load<Texture2D>("Planet/Environment/Terrain Textures/" + textureNames[Random.Range(0, textureNames.Length)]);
         ice.SetTexture("_MainTex", iceTexture);
         oceanTransform.GetComponent<Renderer>().material = ice;
-
-        //Otherwise ocean will be animated like it is moving water
-        hasOcean = false;
     }
 
     //Applies the skyboxes selected (only needs to be done once at beginning of level after selections made)
@@ -241,6 +243,7 @@ public class Planet : MonoBehaviour
     {
         if(savedPlanet != null) //Restore/regenerate cities
         {
+
             cities = new List<City>(savedPlanet.cities.Count);
             for (int x = 0; x < savedPlanet.cities.Count; x++)
             {
@@ -330,7 +333,7 @@ public class Planet : MonoBehaviour
                 if (fog)
                     RenderSettings.fogColor = Color.Lerp(nightFogColor, dayFogColor, dayProgression * 3 / dayLength);
 
-                if (hasOcean)
+                if (hasLiquidOcean)
                 {
                     //Transition ocean to daytime color
                     ocean.SetColor("_ReflectColor", Color.Lerp(nightOceanColor, dayOceanColor, dayProgression * 3 / dayLength));
@@ -353,7 +356,7 @@ public class Planet : MonoBehaviour
                 RenderSettings.fogColor = dayFogColor;
 
             //Finalize transition to daytime ocean
-            if (hasOcean)
+            if (hasLiquidOcean)
                 ocean.SetColor("_ReflectColor", dayOceanColor);
 
             //Day---------------------------------------------------------------------------------------------
@@ -371,7 +374,7 @@ public class Planet : MonoBehaviour
                     sun.Rotate(180, 0.0f, 0.0f, Space.World);
                 }
 
-                if (hasOcean)
+                if (hasLiquidOcean)
                 {
                     //Animate water
                     oceanOffset.x += oceanAnimationSpeed * Time.deltaTime;
@@ -407,7 +410,7 @@ public class Planet : MonoBehaviour
                 if (fog)
                     RenderSettings.fogColor = Color.Lerp(dayFogColor, nightFogColor, t * 3 / dayLength);
 
-                if (hasOcean)
+                if (hasLiquidOcean)
                 {
                     //Transition ocean to nighttime color
                     ocean.SetColor("_ReflectColor", Color.Lerp(dayOceanColor, nightOceanColor, t * 3 / dayLength));
@@ -430,7 +433,7 @@ public class Planet : MonoBehaviour
                 RenderSettings.fogColor = nightFogColor;
 
             //Finalize transition to nighttime ocean
-            if (hasOcean)
+            if (hasLiquidOcean)
                 ocean.SetColor("_ReflectColor", nightOceanColor);
 
             //Switch on automatic lights for the night
@@ -451,7 +454,7 @@ public class Planet : MonoBehaviour
                     sun.Rotate(180, 0.0f, 0.0f, Space.World);
                 }
 
-                if (hasOcean)
+                if (hasLiquidOcean)
                 {
                     //Animate water
                     oceanOffset.x += oceanAnimationSpeed * Time.deltaTime;
@@ -616,6 +619,8 @@ public class PlanetJSON
         planetTerrain = new PlanetTerrainJSON(PlanetTerrain.planetTerrain);
 
         //Cities
+        planetCityCustomizationJSON = new PlanetCityCustomizationJSON(planet.planetWideCityCustomization);
+
         cities = new List<CityJSON>(planet.cities.Count);
         for (int x = 0; x < planet.cities.Count; x++)
             cities.Add(new CityJSON(planet.cities[x]));
@@ -651,6 +656,10 @@ public class PlanetJSON
         //Skyboxes
         planet.LoadSkybox(true, daySkybox);
         planet.LoadSkybox(false, nightSkybox);
+
+        //City restoration preparation (needs to be done before restoring the cities and thus the terrain since that's where the cities are actually restored)
+        planet.planetWideCityCustomization = new PlanetCityCustomization();
+        planetCityCustomizationJSON.RestorePlanetCityCustomization(planet.planetWideCityCustomization);
 
         //Terrain (also implicitly regenerates the cities)
         planetTerrain.RestorePlanetTerrain(PlanetTerrain.planetTerrain, this);
@@ -689,5 +698,6 @@ public class PlanetJSON
     public PlanetTerrainJSON planetTerrain;
 
     //Cities
+    public PlanetCityCustomizationJSON planetCityCustomizationJSON;
     public List<CityJSON> cities;
 }

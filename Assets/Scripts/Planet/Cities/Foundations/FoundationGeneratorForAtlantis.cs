@@ -398,9 +398,9 @@ public class FoundationGeneratorForAtlantis
 
     private void DetermineWhatToDoWithBottomLevel()
     {
-        //Determine if there's an ocean and if so, then if its sea level is close to the height level of our city.
+        //Determine if there's a liquid ocean and if so, then if its sea level is close to the height level of our city.
         bool oceanNearCityElevation;
-        if (Planet.planet.hasOcean)
+        if (Planet.planet.hasLiquidOcean)
             oceanNearCityElevation = (Planet.planet.oceanTransform.position.y + 2.0f - city.transform.position.y) > 0.0f;
         else
             oceanNearCityElevation = false;

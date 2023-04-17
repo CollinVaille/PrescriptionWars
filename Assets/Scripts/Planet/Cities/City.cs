@@ -7,7 +7,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     //General
     public int radius = 100;
     public GameObject mapMarkerPrefab;
-    [HideInInspector] public CityType cityType;
+    [HideInInspector] public CityType cityType; //This is just to cache the value. The value is really determined per-planet in the class PlanetCityCustomization.
     [HideInInspector] public bool circularCity = false;
     [HideInInspector] public TerrainReservationOptions.TerrainResModType terrainModifications = TerrainReservationOptions.TerrainResModType.NoChange;
 
@@ -24,6 +24,8 @@ public class City : MonoBehaviour, INavZoneUpdater
     //Called after city has been generated or regenerated
     public void BeforeCityGeneratedOrRestored()
     {
+        cityType = Planet.planet.planetWideCityCustomization.cityType;
+
         areaManager = new AreaManager(this);
         buildingManager = new BuildingManager(this);
         foundationManager = new FoundationManager(this);
@@ -195,7 +197,6 @@ public class CityJSON
     //General
     public string name;
     public int radius;
-    public int cityTypeIndex;
     public bool circularCity;
     public TerrainReservationOptions.TerrainResModType terrainModifications;
     public Vector3 cityLocation;
@@ -212,15 +213,6 @@ public class CityJSON
     {
         name = city.name;
         radius = city.radius;
-
-        for(int x = 0; x < CityGenerator.generator.cityTypes.Length; x++)
-        {
-            if (CityGenerator.generator.cityTypes[x] == city.cityType)
-            {
-                cityTypeIndex = x;
-                break;
-            }
-        }
 
         circularCity = city.circularCity;
         terrainModifications = city.terrainModifications;
@@ -241,7 +233,6 @@ public class CityJSON
         city.gameObject.name = name;
         city.radius = radius;
 
-        city.cityType = CityGenerator.generator.cityTypes[cityTypeIndex];
         string cityTypePathSuffix = city.cityType.name + "/";
 
         city.circularCity = circularCity;

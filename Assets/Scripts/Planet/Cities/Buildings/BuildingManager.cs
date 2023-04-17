@@ -17,7 +17,6 @@ public class BuildingManager
 
     //Materials
     public Material defaultWallMaterial, defaultFloorMaterial;
-    public Material[] wallMaterials, floorMaterials;
 
     public BuildingManager(City city)
     {
@@ -176,14 +175,15 @@ public class BuildingManager
 
             //Remember building and finally, call set up on it
             buildings.Add(newBuilding.GetComponent<Building>());
+
+            Material[] wallMaterials = Planet.planet.planetWideCityCustomization.wallMaterials;
+            Material[] floorMaterials = Planet.planet.planetWideCityCustomization.floorMaterials;
             newBuilding.GetComponent<Building>().SetUpBuilding(
                 city,
                 buildingIndex,
                 wallMaterials[Random.Range(0, wallMaterials.Length)],
                 floorMaterials[Random.Range(0, floorMaterials.Length)]);
         }
-        else if(importantBuilding)
-            Debug.Log("moving special building to an external location"); //prescritor length - 70
         //Otherwise, we fucking give up
 
         return foundPlace;
@@ -510,14 +510,6 @@ public class BuildingManagerJSON
 
     public BuildingManagerJSON(BuildingManager buildingManager)
     {
-        wallMaterials = new string[buildingManager.wallMaterials.Length];
-        for (int x = 0; x < wallMaterials.Length; x++)
-            wallMaterials[x] = buildingManager.wallMaterials[x].name;
-
-        floorMaterials = new string[buildingManager.floorMaterials.Length];
-        for (int x = 0; x < floorMaterials.Length; x++)
-            floorMaterials[x] = buildingManager.floorMaterials[x].name;
-
         buildingPrefabs = new List<string>(buildingManager.buildingPrefabs.Count);
         foreach (GameObject buildingPrefab in buildingManager.buildingPrefabs)
             buildingPrefabs.Add(buildingPrefab.name);
@@ -530,14 +522,6 @@ public class BuildingManagerJSON
     public void RestoreBuildingManager(BuildingManager buildingManager, string cityTypePathSuffix)
     {
         buildingManager.SetDefaultMaterials();
-
-        buildingManager.wallMaterials = new Material[wallMaterials.Length];
-        for (int x = 0; x < wallMaterials.Length; x++)
-            buildingManager.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMaterials[x]);
-
-        buildingManager.floorMaterials = new Material[floorMaterials.Length];
-        for (int x = 0; x < floorMaterials.Length; x++)
-            buildingManager.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMaterials[x]);
 
         buildingManager.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < buildingPrefabs.Count; x++)

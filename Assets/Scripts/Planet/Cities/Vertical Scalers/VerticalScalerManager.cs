@@ -55,6 +55,9 @@ public class VerticalScalerManager
 
     public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPoint, Vector3 edgePoint, float globalBottomLevel, float globalTopLevel, bool minor)
     {
+        if (Mathf.Abs(globalTopLevel - globalBottomLevel) < 0.2f)
+            return;
+
         //Adjust parameters
         globalBottomLevel += 0.05f;
         edgePoint.y = globalBottomLevel;

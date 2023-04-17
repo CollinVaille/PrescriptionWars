@@ -209,20 +209,22 @@ public class BuildingJSON
         building.transform.localPosition = localPosition;
         building.transform.localRotation = localRotation;
 
-        for(int x = 0; x < city.buildingManager.wallMaterials.Length; x++)
+        Material[] wallMaterials = Planet.planet.planetWideCityCustomization.wallMaterials;
+        for(int x = 0; x < wallMaterials.Length; x++)
         {
-            if (wall.Equals(city.buildingManager.wallMaterials[x].name))
+            if (wall.Equals(wallMaterials[x].name))
             {
-                building.wall = city.buildingManager.wallMaterials[x];
+                building.wall = wallMaterials[x];
                 break;
             }
         }
 
-        for (int x = 0; x < city.buildingManager.floorMaterials.Length; x++)
+        Material[] floorMaterials = Planet.planet.planetWideCityCustomization.floorMaterials;
+        for (int x = 0; x < floorMaterials.Length; x++)
         {
-            if (floor.Equals(city.buildingManager.floorMaterials[x].name))
+            if (floor.Equals(floorMaterials[x].name))
             {
-                building.floor = city.buildingManager.floorMaterials[x];
+                building.floor = floorMaterials[x];
                 break;
             }
         }

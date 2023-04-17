@@ -41,8 +41,8 @@ public class BridgeManager
     
     public void DetermineBridgeMaterials()
     {
-        slabMaterial = city.foundationManager.slabMaterial;
-        groundMaterial = city.foundationManager.groundMaterial;
+        slabMaterial = Planet.planet.planetWideCityCustomization.slabMaterial;
+        groundMaterial = Planet.planet.planetWideCityCustomization.groundMaterial;
     }
 
     public Bridge InstantiateBridge(int prefabIndex)

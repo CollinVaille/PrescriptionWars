@@ -17,8 +17,7 @@ public class CityGenerator : MonoBehaviour
         NewCitySpecifications newCitySpecifications = city.newCitySpecifications;
 
         //Get city type
-        CityType cityType = SelectCityType();
-        city.cityType = cityType;
+        CityType cityType = Planet.planet.planetWideCityCustomization.cityType;
         string cityTypePathSuffix = cityType.name + "/";
 
         //Get biome-city options
@@ -48,38 +47,6 @@ public class CityGenerator : MonoBehaviour
 
         //Default materials--------------------------------------------------------------------------------------------------------------
         city.buildingManager.SetDefaultMaterials();
-
-        //Wall materials--------------------------------------------------------------------------------------------------------------
-        List<string> wallMats;
-        if (cityType.wallMaterials != null && cityType.wallMaterials.Length != 0)
-            wallMats = new List<string>(cityType.wallMaterials);
-        else
-            wallMats = new List<string>(biomeOptions.wallMaterials.Length != 0 ? biomeOptions.wallMaterials : biomeCityOptions[0].wallMaterials);
-
-        TrimToRandomSubset(wallMats, Random.Range(3, 6));
-        city.buildingManager.wallMaterials = new Material[wallMats.Count];
-        for (int x = 0; x < wallMats.Count; x++)
-            city.buildingManager.wallMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + wallMats[x]);
-
-        //Floor materials--------------------------------------------------------------------------------------------------------------
-        List<string> floorMats;
-        if (cityType.floorMaterials != null && cityType.floorMaterials.Length != 0)
-            floorMats = new List<string>(cityType.floorMaterials);
-        else
-            floorMats = new List<string>(biomeOptions.floorMaterials.Length != 0 ? biomeOptions.floorMaterials : biomeCityOptions[0].floorMaterials);
-
-        TrimToRandomSubset(floorMats, Random.Range(2, 5));
-        city.buildingManager.floorMaterials = new Material[floorMats.Count];
-        for (int x = 0; x < floorMats.Count; x++)
-            city.buildingManager.floorMaterials[x] = Resources.Load<Material>("Planet/City/Materials/" + floorMats[x]);
-
-        //Slab materials--------------------------------------------------------------------------------------------------------------
-        List<string> slabMats = new List<string>(biomeOptions.slabMaterials.Length != 0 ? biomeOptions.slabMaterials : biomeCityOptions[0].slabMaterials);
-        city.foundationManager.slabMaterial = Resources.Load<Material>("Planet/City/Materials/" + slabMats[Random.Range(0, slabMats.Count)]);
-
-        //Ground materials--------------------------------------------------------------------------------------------------------------
-        List<string> groundMats = new List<string>(biomeOptions.groundMaterials.Length != 0 ? biomeOptions.groundMaterials : biomeCityOptions[0].groundMaterials);
-        city.foundationManager.groundMaterial = Resources.Load<Material>("Planet/City/Materials/" + groundMats[Random.Range(0, groundMats.Count)]);
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
         if (city.radius > Random.Range(90, 120) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
@@ -130,69 +97,13 @@ public class CityGenerator : MonoBehaviour
 
     }
 
-    private CityType SelectCityType()
-    {
-        string biome = Planet.planet.biome.ToString().ToLower();
-
-        float totalProbability = 0.0f;
-        List<int> matches = new List<int>();
-
-        //Determine possible city types based off biome
-        for (int typeIndex = 0; typeIndex < cityTypes.Length; typeIndex++)
-        {
-            bool match = false;
-
-            //Determine if biome matches city type
-            if (cityTypes[typeIndex].biomes == null || cityTypes[typeIndex].biomes.Length == 0)
-                match = true;
-            else
-                for (int biomeIndex = 0; biomeIndex < cityTypes[typeIndex].biomes.Length; biomeIndex++)
-                {
-                    if (biome.Equals(cityTypes[typeIndex].biomes[biomeIndex].ToLower()))
-                    {
-                        match = true;
-                        break;
-                    }
-                }
-
-            //If so, add city type to list of possible city types
-            if (match)
-            {
-                totalProbability += cityTypes[typeIndex].spawnChance;
-                matches.Add(typeIndex);
-            }
-        }
-
-        //Make selection based off spawn chance for each matching city type
-        if (totalProbability == 0 || matches.Count == 0)
-            return cityTypes[0];
-        else
-        {
-            float selection = Random.Range(0.0f, totalProbability);
-            float passed = 0.0f;
-            CityType cityType = null;
-
-            for (int matchIndex = 0; matchIndex < matches.Count; matchIndex++)
-            {
-                cityType = cityTypes[matches[matchIndex]];
-
-                if (selection >= passed && selection < passed + cityType.spawnChance)
-                    break;
-
-                passed += cityType.spawnChance;
-            }
-
-            return cityType;
-        }
-    }
-
-    private void TrimToRandomSubset(List<string> toTrim, int subsetSize)
+    public static void TrimToRandomSubset(List<string> toTrim, int subsetSize)
     {
         while (toTrim.Count > subsetSize)
             toTrim.RemoveAt(Random.Range(0, toTrim.Count));
     }
 
-    private BiomeCityOptions GetBiomeCityOptions()
+    public BiomeCityOptions GetBiomeCityOptions()
     {
         BiomeCityOptions toReturn = biomeCityOptions[0];
         Planet.Biome biome = Planet.planet.biome;

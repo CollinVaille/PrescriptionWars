@@ -357,7 +357,7 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         //Update horizon to have same effects as terrain
-        if (Planet.planet.hasOcean && customization.lowBoundaries)
+        if (Planet.planet.hasAnyKindOfOcean && customization.lowBoundaries)
         {
             horizonMaterial.SetFloat("_Metallic", seabedLayer.metallic);
             horizonMaterial.SetFloat("_Glossiness", seabedLayer.smoothness);
@@ -382,7 +382,7 @@ public class PlanetTerrain : MonoBehaviour
     private void SetHorizons ()
     {
         //Set texture
-        if (customization.lowBoundaries && Planet.planet.hasOcean)
+        if (Planet.planet.hasAnyKindOfOcean && customization.lowBoundaries)
             horizonMaterial.SetTexture("_MainTex", customization.seabedTexture);
         else
             horizonMaterial.SetTexture("_MainTex", customization.groundTexture);
@@ -628,14 +628,17 @@ public class PlanetTerrain : MonoBehaviour
     private Vector3 ReserveHorizonPosition(float reservationRadius)
     {
         float horizonHeight = horizonTransform.position.y;
+        if (Planet.planet.oceanType == Planet.OceanType.Frozen)
+            horizonHeight = Mathf.Max(horizonHeight, Planet.planet.oceanTransform.position.y);
+
         float horizonHalfLength = 1050.0f; //For some reason terrain.terrainData.size.x didn't work (sigh)
         Vector2 centerOffset = new Vector2(500.0f, 500.0f);
 
         Vector3 horizonPosition = Vector3.zero;
         for (int attempt = 1; attempt <= 1000; attempt++)
         {
-            float longLength = horizonHalfLength + reservationRadius;
-            float shortLength = Random.Range(-horizonHalfLength, horizonHalfLength) * 0.75f;
+            float longLength = horizonHalfLength + reservationRadius + Random.Range(0, 50);
+            float shortLength = Random.Range(-horizonHalfLength, horizonHalfLength) * 0.65f;
 
             if (Random.Range(0, 2) == 0)
                 longLength *= -1.0f;
@@ -810,14 +813,30 @@ public class PlanetTerrain : MonoBehaviour
         Vector3 point = new Vector3(globalX, 9999.0f, globalZ);
 
         Ray ray = new Ray(point, Vector3.down);
+        RaycastHit hitInfo;
+        bool hitSomething = false;
+
         Collider groundToCollideWith = terrain.GetComponent<Collider>();
-        if (groundToCollideWith.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+        if (groundToCollideWith.Raycast(ray, out hitInfo, Mathf.Infinity))
         {
+            hitSomething = true;
+
             point.y = hitInfo.point.y - 0.05f;
+
+            //Make sure elevator does not go beneath ice if its present
+            if (Planet.planet.oceanType == Planet.OceanType.Frozen)
+                point.y = Mathf.Max(point.y, Planet.planet.oceanTransform.position.y);
+            
             FlattenAreaAroundPoint(point, radiusToFlatten);
         }
+        else if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~0, QueryTriggerInteraction.Ignore))
+            hitSomething = true;
 
-        point.y = hitInfo.point.y + 0.1f;
+        if (hitSomething)
+            point.y = hitInfo.point.y + 0.1f;
+        else
+            point.y = 0.0f;
+
         return point;
     }
 
@@ -911,7 +930,7 @@ public class PlanetTerrain : MonoBehaviour
         int maxAttempts = idealTreeCount * 2;
 
         float minHeight = -10;
-        if (Planet.planet.hasOcean)
+        if (Planet.planet.hasAnyKindOfOcean)
             minHeight = (int)Mathf.Max(Planet.planet.oceanTransform.position.y, customization.seabedHeight);
 
         //Attempt to generate one tree per iteration; if attempt fails no reattempt is made, moves onto next tree
@@ -963,7 +982,7 @@ public class PlanetTerrain : MonoBehaviour
     private void GenerateHorizonTrees (GameObject[] treePrefabs, int idealTreeCount)
     {
         //Nowhere to generate trees, so we're just gonna give up bro
-        if (horizonTransform.position.y < 1 && Planet.planet.hasOcean)
+        if (horizonTransform.position.y < 1 && Planet.planet.hasAnyKindOfOcean)
             return;
 
         //First, create empty gameobject for containing all the trees
@@ -1110,7 +1129,7 @@ public class TerrainOrHorizonReservation
         for(int x = 0; x < reservationRecords.Count; x++)
         {
             TerrainOrHorizonReservation existingRecord = reservationRecords[x];
-            if (Vector3.Distance(recordToConsider.positionInGlobal, existingRecord.positionInGlobal) < recordToConsider.radiusInGlobal + existingRecord.radiusInGlobal)
+            if (Vector3.Distance(recordToConsider.positionInGlobal, existingRecord.positionInGlobal) < recordToConsider.radiusInGlobal + existingRecord.radiusInGlobal + 10)
                 return false;
         }
 

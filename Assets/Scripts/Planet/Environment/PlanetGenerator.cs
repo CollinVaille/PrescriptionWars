@@ -17,11 +17,16 @@ public class PlanetGenerator : MonoBehaviour
 
         //THEN, GENERATE BIOME----------------------------------------------------------------------------
 
-        //This also generates the sun based on the biome
+        //This generates everything to do with the environment of the planet based on the biome. Things like skyboxes, ambience, the sun, terrain textures, etc.
         CustomizePlanetBasedOnBiome(planet, out TerrainCustomization terrainCustomization);
 
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
+        //Generating the terrain also implicitly generates the cities. Before we generate the cities, we need to do this preparation
+        Planet.planet.planetWideCityCustomization = new PlanetCityCustomization();
+        Planet.planet.planetWideCityCustomization.GenerateCityCustomizationForNewPlanet();
+
+        //Finally, actually generate the terrain
         yield return StartCoroutine(PlanetTerrain.planetTerrain.GenerateTerrain(terrainCustomization));
 
         //FINALLY, GIVE IT A FUCKING NAME AND SAVE THE BITCH---------------------------------------------------------
@@ -288,7 +293,7 @@ public class PlanetGenerator : MonoBehaviour
         }
         else
         {
-            if(planet.hasOcean)
+            if(planet.hasLiquidOcean)
             {
                 if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.wetSeabedMaterial), out PlanetMaterialType seabedMaterialType))
                     planet.LoadSeabedMaterial(seabedMaterialType);

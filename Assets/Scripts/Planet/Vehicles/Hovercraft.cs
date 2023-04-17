@@ -143,7 +143,7 @@ public class Hovercraft : Vehicle
         {
             //Any hit below sea level in planets with sea gets replaced with equivalent sea level point
             //(How floating on water is achieved)
-            if (Planet.planet.hasOcean)
+            if (Planet.planet.hasAnyKindOfOcean)
             {
                 //The exception is that hovercraft submerged can't use fans to push off water
                 float seaLevel = Planet.planet.oceanTransform.position.y;

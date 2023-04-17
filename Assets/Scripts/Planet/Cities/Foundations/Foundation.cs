@@ -71,14 +71,14 @@ public class Foundation : MonoBehaviour
         {
             Renderer groundRenderer = ground.GetComponent<Renderer>();
             if (groundRenderer)
-                groundRenderer.sharedMaterial = foundationManager.groundMaterial;
+                groundRenderer.sharedMaterial = Planet.planet.planetWideCityCustomization.groundMaterial;
         }
 
     }
 
     private void SetPlanetMaterialForGround(Transform slab, FoundationManager foundationManager)
     {
-        PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(foundationManager.groundMaterial.name, slab.Find("Ground Colliders"));
+        PlanetMaterial.SetMaterialTypeBasedOnNameRecursive(Planet.planet.planetWideCityCustomization.groundMaterial.name, slab.Find("Ground Colliders"));
     }
 
     //Returns the closest point in global space on the edge of the foundation with a y value equal of that of the top of the foundation.

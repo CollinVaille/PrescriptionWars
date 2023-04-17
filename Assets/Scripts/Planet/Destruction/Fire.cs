@@ -220,7 +220,7 @@ public class Fire : MonoBehaviour
 
     private bool SubmersedInWater()
     {
-        return Planet.planet.hasOcean && Planet.planet.oceanTransform.position.y >= transform.position.y;
+        return Planet.planet.hasLiquidOcean && Planet.planet.oceanTransform.position.y >= transform.position.y;
     }
 
     private void BlackenBurningMaterials(Transform burning)

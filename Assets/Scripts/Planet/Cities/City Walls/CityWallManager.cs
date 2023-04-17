@@ -30,7 +30,7 @@ public class CityWallManager
         walls.localRotation = Quaternion.Euler(0, 0, 0);
 
         //Set texture of walls using reference material
-        Material referenceMaterial = city.buildingManager.wallMaterials[wallMaterialIndex];
+        Material referenceMaterial = Planet.planet.planetWideCityCustomization.wallMaterials[wallMaterialIndex];
         God.CopyMaterialValues(referenceMaterial, cityWallMaterial, 3.0f, 1.5f, true);
     }
 
@@ -39,7 +39,7 @@ public class CityWallManager
         if (!wallSectionPrefab)
             return;
 
-        PrepareWalls(Random.Range(0, city.buildingManager.wallMaterials.Length));
+        PrepareWalls(Random.Range(0, Planet.planet.planetWideCityCustomization.wallMaterials.Length));
 
         ProcessNewCityWallRequests();
 
