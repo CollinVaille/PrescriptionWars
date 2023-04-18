@@ -18,17 +18,21 @@ public class GeneralHelperMethods
     }
 
     //Returns one line randomly picked from text file- WITHOUT CARRIAGE RETURN!
-    public static string GetLineFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true)
+    public static string GetLineFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true, bool nullSafe = false)
     {
         //Returns possible lines WITHOUT carriage return
-        string[] possibleLines = GetLinesFromFile(resourcePath, cacheLines: cacheLines, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder);
+        string[] possibleLines = GetLinesFromFile(resourcePath, cacheLines: cacheLines, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder, nullSafe: nullSafe);
+
+        //Null check
+        if (nullSafe && possibleLines == null)
+            return null;
 
         //Choose a line and return it
         return possibleLines[Random.Range(0, possibleLines.Length)];
     }
 
     //Returns all lines from text file- WITHOUT ANY CARRIAGE RETURNS!
-    public static string[] GetLinesFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true)
+    public static string[] GetLinesFromFile (string resourcePath, bool cacheLines = true, bool startPathFromGeneralTextFolder = true, bool nullSafe = false)
     {
         //First, see if lines are already cached
         string[] lines = GetLinesFromCache(resourcePath);
@@ -41,8 +45,15 @@ public class GeneralHelperMethods
         //Since carriage return is part of delimiter, it is not included in parsed strings
         string[] delimiters = new string[] { "\r\n" };
 
-        //Get string from text file
-        string fileContentsAsString = GetTextAsset(resourcePath, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder).text;
+        //Read in text file
+        TextAsset fileContentsAsTextAsset = GetTextAsset(resourcePath, startPathFromGeneralTextFolder: startPathFromGeneralTextFolder);
+
+        //Null check
+        if (nullSafe && !fileContentsAsTextAsset)
+            return null;
+
+        //Get contents as string
+        string fileContentsAsString = fileContentsAsTextAsset.text;
 
         //Parse string into lines
         lines = fileContentsAsString.Split(delimiters, System.StringSplitOptions.RemoveEmptyEntries);

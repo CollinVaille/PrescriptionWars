@@ -1,0 +1,45 @@
+{
+	"foundations": [
+		{
+			"groundCoordinates": {"x": 0, "y": 0},
+			"foundationPresentPerYLevel": [false],
+			"markAsOpen": true
+		},
+		{
+			"groundCoordinates": {"x": 0, "y": 1},
+			"foundationPresentPerYLevel": [true],
+			"markAsOpen": true
+		},
+		{
+			"groundCoordinates": {"x": 1, "y": 1},
+			"foundationPresentPerYLevel": [true, true],
+			"markAsOpen": true
+		},
+		{
+			"groundCoordinates": {"x": 1, "y": 0},
+			"foundationPresentPerYLevel": [true, true, true],
+			"markAsOpen": true
+		}
+	],
+
+	"verticalScalers": [
+		{
+			"groundCoordinates1": {"x": 0, "y": 0},
+			"heightCoordinate1": 0,
+			"groundCoordinates2": {"x": 0, "y": 1},
+			"heightCoordinate2": 1
+		},
+		{
+			"groundCoordinates1": {"x": 0, "y": 1},
+			"heightCoordinate1": 1,
+			"groundCoordinates2": {"x": 1, "y": 1},
+			"heightCoordinate2": 2
+		},
+		{
+			"groundCoordinates1": {"x": 1, "y": 1},
+			"heightCoordinate1": 2,
+			"groundCoordinates2": {"x": 1, "y": 0},
+			"heightCoordinate2": 3
+		}
+	]
+}
