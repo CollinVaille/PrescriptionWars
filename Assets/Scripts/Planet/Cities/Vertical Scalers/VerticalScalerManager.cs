@@ -53,15 +53,15 @@ public class VerticalScalerManager
         verticalScaler.ScaleToHeightAndConnect(foundationScale.y * 0.5f, !generateOnNegativeSide);
     }
 
-    public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPoint, Vector3 edgePoint, float globalBottomLevel, float globalTopLevel, bool minor)
+    public void GenerateVerticalScalerWithFocalPoint(Vector3 focalPointInGlobal, Vector3 edgePointInGlobal, float globalBottomLevel, float globalTopLevel, bool minor)
     {
         if (Mathf.Abs(globalTopLevel - globalBottomLevel) < 0.2f)
             return;
 
         //Adjust parameters
         globalBottomLevel += 0.05f;
-        edgePoint.y = globalBottomLevel;
-        focalPoint.y = globalBottomLevel;
+        edgePointInGlobal.y = globalBottomLevel;
+        focalPointInGlobal.y = globalBottomLevel;
 
         //Instantiate the vertical scaler
         VerticalScaler verticalScaler = InstantiateVerticalScaler(city.cityType.GetVerticalScaler(minor), city.transform);
@@ -69,20 +69,20 @@ public class VerticalScalerManager
 
         //Rotate it
         if (minor)
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(edgePoint - focalPoint).eulerAngles.y), inLocalSpace: false);
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(edgePointInGlobal - focalPointInGlobal).eulerAngles.y), inLocalSpace: false);
         else
-            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(focalPoint - edgePoint).eulerAngles.y + 90.0f), inLocalSpace: false);
+            verticalScaler.SetYAxisRotation((int)(Quaternion.LookRotation(focalPointInGlobal - edgePointInGlobal).eulerAngles.y + 90.0f), inLocalSpace: false);
 
         //Position
         Vector3 scalerPosition;
         if (minor)
-            scalerPosition = edgePoint;
+            scalerPosition = edgePointInGlobal;
         else
-            scalerPosition = Vector3.MoveTowards(edgePoint, focalPoint, -(verticalScaler.width / 2.0f) - 1.0f);
+            scalerPosition = Vector3.MoveTowards(edgePointInGlobal, focalPointInGlobal, -(verticalScaler.width / 2.0f) - 1.0f);
         verticalScaler.transform.position = scalerPosition;
 
         //Scale it and connect it to the entrance foundation
-        bool platformToLeft = verticalScaler.transform.InverseTransformPoint(focalPoint).x < 0.0f;
+        bool platformToLeft = verticalScaler.transform.InverseTransformPoint(focalPointInGlobal).x < 0.0f;
         verticalScaler.ScaleToHeightAndConnect(globalTopLevel - globalBottomLevel, platformToLeft);
     }
 

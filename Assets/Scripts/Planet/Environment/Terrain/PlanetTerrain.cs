@@ -571,15 +571,21 @@ public class PlanetTerrain : MonoBehaviour
                 }
             }
 
-            //If we couldn't find a spot on the terrain, then we resort to getting a spot on the horizon
+            //If we couldn't find a spot on the terrain...
             if(!foundPlace)
             {
+                //Chance to place in dead center of terrain as a fallback (only works if option is elected and center is open)
+                if (!options.centerOnTerrainAsFallbackIfPossible || !SelectedAreasAreSafe(xCoord, zCoord, 0, 900, 50))
+                {
+                    //Last resort: Fallback to finding a spot on the horizon. I assume this will always work.
+                    Vector3 positionOnHorizonInGlobal = ReserveHorizonPosition(options.radius);
+                    Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(positionOnHorizonInGlobal.x, positionOnHorizonInGlobal.z);
+                    xCoord = areaCoords.x;
+                    zCoord = areaCoords.y;
+                    reservationHeight = positionOnHorizonInGlobal.y;
+                }
+
                 foundPlace = true;
-                Vector3 positionOnHorizonInGlobal = ReserveHorizonPosition(options.radius);
-                Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(positionOnHorizonInGlobal.x, positionOnHorizonInGlobal.z);
-                xCoord = areaCoords.x;
-                zCoord = areaCoords.y;
-                reservationHeight = positionOnHorizonInGlobal.y;
             }
         }
         else //Restoration
@@ -590,10 +596,11 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         //Now that we have concluded which area(s) to reserve, reserve it/them...
-        if (SelectedAreasAreSafe(xCoord, zCoord, 0, 900, options.radius))
+
+        //If the point is on the terrain, mark the terrain position as reserved
+        if (SelectedAreasAreSafe(xCoord, zCoord, 0, 900, areaSize)) //Don't need entire radius here (that would cause problems. Just need to know if the centerpoint is inside terrain)
         {
             int minHeightForReservation = options.newGeneration ? options.minHeightToFlattenTo + 1 : (int)options.position.y;
-
             reservationHeight = ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options);
         }
 
@@ -697,8 +704,14 @@ public class PlanetTerrain : MonoBehaviour
         //Mark selected areas as taken
         for (int x = xStart; x < xStart + areasLong; x++)
         {
+            if (x < 0 || x >= areaHeight.GetLength(0))
+                continue;
+
             for (int z = zStart; z < zStart + areasLong; z++)
             {
+                if (z < 0 || z >= areaHeight.GetLength(1))
+                    continue;
+
                 areaSteepness[x, z] = 9999;
                 areaHeight[x, z] = 9999;
             }

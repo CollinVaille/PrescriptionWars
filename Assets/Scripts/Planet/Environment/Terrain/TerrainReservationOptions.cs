@@ -19,6 +19,7 @@ public class TerrainReservationOptions
     public float preferredSteepness;
     public Transform targetToGenerateCloseTo;
     public float minimumDistanceFromTarget;
+    public bool centerOnTerrainAsFallbackIfPossible = false;
 
     //Options for restorations
     public Vector3 position;

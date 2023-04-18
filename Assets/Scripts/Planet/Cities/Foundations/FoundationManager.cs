@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class FoundationManager
 {
-    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis, Hammocks, Pyramid }
+    public enum FoundationType { NoFoundations, SingularSlab, PerBuilding, Islands, Atlantis, Hammocks, Pyramid, Grid }
 
     //All torus foundations have their inner radius = this multiplier * their outer radius.
     //...Inner radius of ring model = 0.3825, outer radius of ring model = 0.5... 0.3825/0.5 = 0.765
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.NoFoundations;
+    public FoundationType foundationType = FoundationType.Grid;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
@@ -89,6 +89,12 @@ public class FoundationManager
             nothingBelowFoundationHeight = true;
             city.foundationManager.foundationHeight += Random.Range(60, 80); //Hammocks need to be high up in the air
         }
+        else if (foundationType == FoundationType.Grid)
+        {
+            city.circularCity = false;
+            nothingBelowFoundationHeight = false;
+            city.foundationManager.foundationHeight += Random.Range(30, 50); //Grids need to be high up in the air
+        }
     }
 
     //The idea here is that certain foundation types create wasted space in the city that cannot be used for buildings.
@@ -137,6 +143,7 @@ public class FoundationManager
             case FoundationType.Atlantis: (new FoundationGeneratorForAtlantis(this)).GenerateNewAtlantisFoundations(); return;
             case FoundationType.Hammocks: (new FoundationGeneratorForHammocks(this)).GenerateNewHammockFoundations(); return;
             case FoundationType.Pyramid: (new FoundationGeneratorForPyramid(this)).GenerateNewPyramidFoundations(); return;
+            case FoundationType.Grid: (new FoundationGeneratorForGrid(this)).GenerateNewGridFoundations(); return;
             default: GenerateNewSingleSlabFoundation(); return;
         }
     }
@@ -328,7 +335,7 @@ public class FoundationManager
 
     private static FoundationType GetRandomNonNullFoundationType()
     {
-        int selection = Random.Range(0, 6);
+        int selection = Random.Range(0, 7);
         switch(selection)
         {
             case 0: return FoundationType.PerBuilding;
@@ -336,6 +343,7 @@ public class FoundationManager
             case 2: return FoundationType.Atlantis;
             case 3: return FoundationType.Hammocks;
             case 4: return FoundationType.Pyramid;
+            case 5: return FoundationType.Grid;
             default: return FoundationType.SingularSlab;
         }
     }
@@ -351,6 +359,7 @@ public class FoundationManager
             case FoundationType.Atlantis: return 0.55f;
             case FoundationType.Hammocks: return 0.35f;
             case FoundationType.Pyramid: return 0.75f;
+            case FoundationType.Grid: return 0.7f;
             default: return 1.0f;
         }
     }

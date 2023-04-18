@@ -59,19 +59,14 @@ public class City : MonoBehaviour, INavZoneUpdater
                 options.targetToGenerateCloseTo = newCitySpecifications.daddyCity.transform;
                 options.minimumDistanceFromTarget = radius + 50.0f;
             }
+
+            options.centerOnTerrainAsFallbackIfPossible = !newCitySpecifications.smallCompound;
         }
         else
             options.position = cityLocation;
 
         options.terrainModification = terrainModifications;
         cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(options);
-
-        /* if(newCity)
-        {
-            //Place city at slight offset to location
-            cityLocation.x -= 10;
-            cityLocation.z -= 10;
-        }   */
 
         transform.position = cityLocation;
     }
@@ -83,8 +78,9 @@ public class City : MonoBehaviour, INavZoneUpdater
         //Estimate city radius. Not finalized yet and could be very off at this point.
         //radius = Random.Range(40, 100);
         //radius = Random.Range(40, 60);
-        radius = Random.Range(70, 110); //Small city
+        //radius = Random.Range(70, 110); //Small city
         //radius = Random.Range(80, 130);
+        radius = 100;
         //radius = Random.Range(250, 300); //Huge city
         //radius = Random.Range(200, 300);
         //radius = 500; //Approximately the size of the whole terrain
