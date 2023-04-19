@@ -51,19 +51,30 @@ public class FoundationGeneratorForGrid
 
         //Finally, enact the grid plan...
 
+        bool stretchVertically = gridFoundationPlan.verticallyStretchTilesChance > Random.Range(0.0f, 1.0f);
+
         //Generate the foundations
         if (gridFoundationPlan.foundations != null)
         {
             for (int x = 0; x < gridFoundationPlan.foundations.Length; x++)
             {
                 GridFoundationTileJSON tileStack = gridFoundationPlan.foundations[x];
+                int indexOfLastGap = -1;
 
                 for (int y = 0; y < tileStack.foundationPresentPerYLevel.Length; y++)
                 {
                     Vector3Int tileLocationIndices = new Vector3Int(tileStack.groundCoordinates.x, y, tileStack.groundCoordinates.y);
                     bool topTile = (y == tileStack.foundationPresentPerYLevel.Length - 1);
 
-                    GenerateTile(tileLocationIndices, tileStack.foundationPresentPerYLevel[y], topTile && tileStack.markAsOpen);
+                    //We either tile foundations each y level, or we group foundations together as one foundation and stretch that one foundation vertically...
+                    //...This logic is to support the stretching feature
+                    bool shouldFinishOffCurrentStretch = topTile ? true : !tileStack.foundationPresentPerYLevel[y + 1];
+                    int stretchFactor = stretchVertically ? y - indexOfLastGap : 1;
+                    if (shouldFinishOffCurrentStretch)
+                        indexOfLastGap = y;
+
+                    if(!stretchVertically || shouldFinishOffCurrentStretch)
+                        GenerateTile(tileLocationIndices, tileStack.foundationPresentPerYLevel[y], topTile && tileStack.markAsOpen, stretchFactor);
                 }
             }
         }
@@ -133,16 +144,17 @@ public class FoundationGeneratorForGrid
         return (-cityLength * 0.5f) + (tileLength * 0.5f) + tilePlacementOffsetAmount;
     }
 
-    private void GenerateTile(Vector3Int tileLocationIndices, bool placeFoundation, bool markAsOpen)
+    private void GenerateTile(Vector3Int tileLocationIndices, bool placeFoundation, bool markAsOpen, int stretchFactor)
     {
+        //Compute location and scale of foundation to place (assuming we need to place it)
+        tileLocationIndices.y -= (stretchFactor - 1); //Adjust position based on stretching
         Vector3 localPositionOfFoundation = GetLocalPositionOfTileFoundation(tileLocationIndices);
+        Vector3 scalePadding = Vector3.one * 0.001f * tileLocationIndices.y; //Each level higher a foundation is placed, it gets slightly more padding to its scale so that it doesn't clip with the foundations underneath it
+        Vector3 localScaleOfFoundation = GetLocalScaleOfTileFoundation() + scalePadding;
+        localScaleOfFoundation.y *= stretchFactor; //Adjust scale based on stretching
 
         if (placeFoundation)
-        {
-            Vector3 localScaleOfFoundation = GetLocalScaleOfTileFoundation();
-
             foundationManager.GenerateNewFoundation(localPositionOfFoundation, localScaleOfFoundation, FoundationShape.Rectangular, false);
-        }
 
         if(markAsOpen)
         {
@@ -154,7 +166,7 @@ public class FoundationGeneratorForGrid
             int startX = (int)(areaCoordsOfFoundation.x) + 1;
             int startZ = (int)(areaCoordsOfFoundation.z) + 1;
             int areasLong = (int)(tileLength / areaManager.areaSize) - 2;
-            areaManager.ReserveAreasRegardlessOfType(startX, startZ, areasLong, AreaManager.AreaReservationType.Open);
+            areaManager.ReserveAreasWithType(startX, startZ, areasLong, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
         }
     }
 
@@ -188,7 +200,7 @@ public class FoundationGeneratorForGrid
         //Reserve area around the vertical scaler so that no buildings can spawn there
         Vector3 placeInAreas = areaManager.LocalCoordToAreaCoord(city.transform.InverseTransformPoint(globalEdgePoint));
         int radiusInAreas = 20 / city.areaManager.areaSize;
-        city.areaManager.ReserveAreasWithinThisCircle((int)placeInAreas.x, (int)placeInAreas.z, radiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.LackingRequiredFoundation);
+        city.areaManager.ReserveAreasWithinThisCircle((int)placeInAreas.x, (int)placeInAreas.z, radiusInAreas, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
 
     }
 
@@ -243,6 +255,8 @@ public class FoundationGeneratorForGrid
 [System.Serializable]
 public class GridFoundationPlanJSON
 {
+    public float verticallyStretchTilesChance = 0.5f;
+
     public GridFoundationTileJSON[] foundations;
     public GridFoundationConnectorJSON[] verticalScalers;
     public GridFoundationConnectorJSON[] bridges;

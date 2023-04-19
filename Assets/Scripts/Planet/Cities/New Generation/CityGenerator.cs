@@ -49,7 +49,7 @@ public class CityGenerator : MonoBehaviour
         city.buildingManager.SetDefaultMaterials();
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
-        if (city.radius > Random.Range(90, 120) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
+        if (city.radius > Random.Range(130, 150) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
