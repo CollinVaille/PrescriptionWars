@@ -118,7 +118,12 @@ public class FoundationGeneratorForGrid
             planName = GeneralHelperMethods.GetLineFromFile("Planet/City/Grid Foundation Plans/Plan Lists/" + planFolder + " Grid Foundations", startPathFromGeneralTextFolder: false, nullSafe: true);
 
             if (planName == null && numberOfTilesOneWay > smallestAllowedOneWay)
-                numberOfTilesOneWay = Random.Range(smallestAllowedOneWay, numberOfTilesOneWay);
+            {
+                if (Random.Range(0, 2) == 0)
+                    numberOfTilesOneWay--;
+                else
+                    numberOfTilesOneWay = Random.Range(smallestAllowedOneWay, numberOfTilesOneWay);
+            }
             else
                 break;
         }
@@ -189,7 +194,9 @@ public class FoundationGeneratorForGrid
         Vector3 upperTileGlobalPosition = city.transform.TransformPoint(GetLocalPositionOfTileFoundation(upperTileLocationIndices));
         Vector3 lowerTileGlobalPosition = city.transform.TransformPoint(GetLocalPositionOfTileFoundation(lowerTileLocationIndices));
 
-        Vector3 globalEdgePoint = (upperTileGlobalPosition + lowerTileGlobalPosition) * 0.5f;
+        //Compute the edge point where the vertical scaler will actually be placed
+        GetDistanceToAdjustPointsBy(upperTileGlobalPosition, lowerTileGlobalPosition, out float adjustDist1, out float adjustDist2);
+        AdjustPointsToBeCloserAlongXZAxes(upperTileGlobalPosition, lowerTileGlobalPosition, out _, out Vector3 globalEdgePoint, adjustDist1, adjustDist2);
 
         float globalBottomLevel = lowerTileGlobalPosition.y;
         float globalTopLevel = upperTileGlobalPosition.y;
@@ -211,8 +218,8 @@ public class FoundationGeneratorForGrid
         Vector3 tile2GlobalPosition = city.transform.TransformPoint(GetLocalPositionOfTileFoundation(tile2LocationIndices));
 
         //Convert the positions from the center of the tiles to the edges
-        tile1GlobalPosition = Vector3.MoveTowards(tile1GlobalPosition, tile2GlobalPosition, tileLength * 0.5f);
-        tile2GlobalPosition = Vector3.MoveTowards(tile2GlobalPosition, tile1GlobalPosition, tileLength * 0.5f);
+        GetDistanceToAdjustPointsBy(tile1GlobalPosition, tile2GlobalPosition, out float adjustDist1, out float adjustDist2);
+        AdjustPointsToBeCloserAlongXZAxes(tile1GlobalPosition, tile2GlobalPosition, out tile1GlobalPosition, out tile2GlobalPosition, adjustDist1, adjustDist2);
 
         //Create destinations for both points
         BridgeDestination destination1 = new BridgeDestination(tile1GlobalPosition, 0.1f);
@@ -236,6 +243,53 @@ public class FoundationGeneratorForGrid
             //Move head to next position
             localReservationHead = Vector3.MoveTowards(localReservationHead, tile2LocalPosition, areaManager.areaSize);
         }
+    }
+
+    private void GetDistanceToAdjustPointsBy(Vector3 point1, Vector3 point2, out float adjustDist1, out float adjustDist2)
+    {
+        float tileHalfLength = tileLength * 0.5f;
+
+        //Along xz axes, is it a straight line or diagonal?
+        if (Mathf.Approximately(point1.x, point2.x) || Mathf.Approximately(point1.z, point2.z))
+        {
+            adjustDist1 = tileHalfLength;
+            adjustDist2 = tileHalfLength;
+        }
+        else
+        {
+            adjustDist1 = Mathf.Sqrt(tileHalfLength * tileHalfLength * 2); //Hypotenuse (c^2 = a^2 + b^2)
+            adjustDist2 = adjustDist1;
+        }
+
+        //Now to take y axis into account...
+        //Lower points should have adjustment decreased, upper points increased
+        if(!Mathf.Approximately(point1.y, point2.y))
+        {
+            float lowerHeightChange = -2.5f;
+            float upperHeightChange = 1.0f;
+            if(point1.y < point2.y)
+            {
+                adjustDist1 += lowerHeightChange;
+                adjustDist2 += upperHeightChange;
+            }
+            else
+            {
+                adjustDist1 += upperHeightChange;
+                adjustDist2 += lowerHeightChange;
+            }
+        }
+    }
+
+    private void AdjustPointsToBeCloserAlongXZAxes(Vector3 point1Original, Vector3 point2Original, out Vector3 point1Adjusted, out Vector3 point2Adjusted, float adjustDist1, float adjustDist2)
+    {
+        Vector2 point1XZ = new Vector2(point1Original.x, point1Original.z);
+        Vector2 point2XZ = new Vector2(point2Original.x, point2Original.z);
+
+        point1XZ = Vector2.MoveTowards(point1XZ, point2XZ, adjustDist1);
+        point2XZ = Vector2.MoveTowards(point2XZ, point1XZ, adjustDist2);
+
+        point1Adjusted = new Vector3(point1XZ.x, point1Original.y, point1XZ.y);
+        point2Adjusted = new Vector3(point2XZ.x, point2Original.y, point2XZ.y);
     }
 
     private Vector3 GetLocalPositionOfTileFoundation(Vector3Int tileLocationIndices)

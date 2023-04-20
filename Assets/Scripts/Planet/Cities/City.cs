@@ -80,7 +80,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
         //radius = Random.Range(80, 130);
-        radius = 140;
+        radius = 200;
         //radius = Random.Range(250, 300); //Huge city
         //radius = Random.Range(200, 300);
         //radius = 500; //Approximately the size of the whole terrain
