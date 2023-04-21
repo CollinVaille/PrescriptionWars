@@ -258,15 +258,16 @@ public class FoundationGeneratorForGrid
         else
         {
             adjustDist1 = Mathf.Sqrt(tileHalfLength * tileHalfLength * 2); //Hypotenuse (c^2 = a^2 + b^2)
+            adjustDist1 -= 2.5f; //And a little extra padding (otherwise only the very tip of the bridge will touch the very corner of the tile)
             adjustDist2 = adjustDist1;
         }
 
         //Now to take y axis into account...
-        //Lower points should have adjustment decreased, upper points increased
+        //Upper points should have adjustment increased
         if(!Mathf.Approximately(point1.y, point2.y))
         {
-            float lowerHeightChange = -2.5f;
-            float upperHeightChange = 1.0f;
+            float lowerHeightChange = 0.0f;
+            float upperHeightChange = 3.5f;
             if(point1.y < point2.y)
             {
                 adjustDist1 += lowerHeightChange;
