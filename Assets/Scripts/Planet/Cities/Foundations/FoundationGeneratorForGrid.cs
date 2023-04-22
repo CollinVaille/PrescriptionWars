@@ -107,7 +107,7 @@ public class FoundationGeneratorForGrid
     {
         planFolder = null;
         planName = null;
-        int smallestAllowedOneWay = 2;
+        int smallestAllowedOneWay = 3;
 
         if (numberOfTilesOneWay < smallestAllowedOneWay)
             numberOfTilesOneWay = smallestAllowedOneWay;
@@ -118,12 +118,7 @@ public class FoundationGeneratorForGrid
             planName = GeneralHelperMethods.GetLineFromFile("Planet/City/Grid Foundation Plans/Plan Lists/" + planFolder + " Grid Foundations", startPathFromGeneralTextFolder: false, nullSafe: true);
 
             if (planName == null && numberOfTilesOneWay > smallestAllowedOneWay)
-            {
-                if (Random.Range(0, 2) == 0)
-                    numberOfTilesOneWay--;
-                else
-                    numberOfTilesOneWay = Random.Range(smallestAllowedOneWay, numberOfTilesOneWay);
-            }
+                numberOfTilesOneWay--;
             else
                 break;
         }

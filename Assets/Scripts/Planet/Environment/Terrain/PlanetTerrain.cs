@@ -514,114 +514,103 @@ public class PlanetTerrain : MonoBehaviour
 
     public Vector3 ReserveTerrainPosition (TerrainReservationOptions options)
     {
-        int xCoord, zCoord;
-        float reservationHeight = 0.0f;
-
-        //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
-        if (options.terrainModification != TerrainReservationOptions.TerrainResModType.NoChange)
-            options.radius *= 2;
-
         if (options.newGeneration) //New generation
         {
-            bool foundPlace = false;
+            //If we have to flatten, then half of the radius is taken up by boundaries so we double radius to compensate
+            if (options.terrainModification != TerrainReservationOptions.TerrainResModType.NoChange)
+                options.radius *= 2;
 
-            //Set initial values to center of terrain so that if we don't get a match we just plop it in the middle
-            xCoord = areaSteepness.GetLength(0) / 2;
-            zCoord = areaSteepness.GetLength(1) / 2;
-            float smallestSteepnessDifference = Mathf.Infinity, smallestDistanceFromTarget = Mathf.Infinity;
-            float minimumDistanceFromTargetInAreas = options.minimumDistanceFromTarget / areaSize;
-            Vector2Int targetCoords = new Vector2Int();
-            if (options.targetToGenerateCloseTo)
-                targetCoords = ConvertFromGlobalToAreaUnits(options.targetToGenerateCloseTo.position.x, options.targetToGenerateCloseTo.position.z);
-
-            //Go through all the areas and determine which spot on the terrain is best
-            for (int x = 0; x < areaSteepness.GetLength(0); x++)
-            {
-                for (int z = 0; z < areaSteepness.GetLength(1); z++)
-                {
-                    //Get data on this spot's steepness and proximity to the (optional) target
-                    float currentSteepnessDifference = Mathf.Abs(areaSteepness[x, z] - options.preferredSteepness);
-                    float currentDistanceFromTarget;
-                    if (options.targetToGenerateCloseTo)
-                    {
-                        currentDistanceFromTarget = Vector2Int.Distance(targetCoords, new Vector2Int(x, z));
-
-                        if (currentDistanceFromTarget < minimumDistanceFromTargetInAreas)
-                            continue;
-                    }
-                    else
-                        currentDistanceFromTarget = Mathf.Infinity;
-
-                    //Based on that data, determine whether this is the new best spot
-                    if (currentDistanceFromTarget <= smallestDistanceFromTarget && currentSteepnessDifference <= smallestSteepnessDifference)
-                    {
-                        //Make sure it is safe
-                        if (SelectedAreasAreSafe(x, z, 0, 500, options.radius))
-                        {
-                            //Found new best area
-                            foundPlace = true;
-
-                            xCoord = x;
-                            zCoord = z;
-
-                            smallestSteepnessDifference = currentSteepnessDifference;
-                            smallestDistanceFromTarget = currentDistanceFromTarget;
-                        }
-                    }
-                }
-            }
-
-            //If we couldn't find a spot on the terrain...
-            if(!foundPlace)
-            {
-                //Chance to place in dead center of terrain as a fallback (only works if option is elected and center is open)
-                if (!options.centerOnTerrainAsFallbackIfPossible || !SelectedAreasAreSafe(xCoord, zCoord, 0, 900, 50))
-                {
-                    //Last resort: Fallback to finding a spot on the horizon. I assume this will always work.
-                    Vector3 positionOnHorizonInGlobal = ReserveHorizonPosition(options.radius);
-                    Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(positionOnHorizonInGlobal.x, positionOnHorizonInGlobal.z);
-                    xCoord = areaCoords.x;
-                    zCoord = areaCoords.y;
-                    reservationHeight = positionOnHorizonInGlobal.y;
-                }
-
-                foundPlace = true;
-            }
-        }
-        else //Restoration
-        {
-            Vector2Int areaCoords = ConvertFromGlobalToAreaUnits(options.position.x, options.position.z);
-            xCoord = areaCoords.x;
-            zCoord = areaCoords.y;
+            //We don't have a place yet, so go find one!
+            FindTerrainPositionToReserve(options, out options.foundPlaceOnTerrain, out options.terrainAreaCoordinates, out options.globalPosition);
         }
 
         //Now that we have concluded which area(s) to reserve, reserve it/them...
 
         //If the point is on the terrain, mark the terrain position as reserved
-        if (SelectedAreasAreSafe(xCoord, zCoord, 0, 900, areaSize)) //Don't need entire radius here (that would cause problems. Just need to know if the centerpoint is inside terrain)
-        {
-            int minHeightForReservation = options.newGeneration ? options.minHeightToFlattenTo + 1 : (int)options.position.y;
-            reservationHeight = ReserveSelectedAreas(xCoord, zCoord, minHeightForReservation, options);
-        }
-
-        //Compute the starting point of the area we just reserved (in world coordinates)
-        Vector2 globalCoords = ConvertFromAreaToGlobalUnits(xCoord, zCoord);
-        Vector3 worldPosition = new Vector3(globalCoords.x, reservationHeight, globalCoords.y);
-
-        //Translate from starting point to center point of area
-        worldPosition.x += areaSize / 2.0f;
-        worldPosition.z += areaSize / 2.0f;
-
-        //Auto-compute the y value
-        //RaycastHit raycastHit;
-        //Physics.Raycast(worldPosition, Vector3.down, out raycastHit);
-        //worldPosition.y = raycastHit.point.y;
+        if (options.foundPlaceOnTerrain)
+            options.globalPosition = ReserveSelectedAreas(options);
 
         //This is a separate reservation system made to incorporate horizons as well
-        TerrainOrHorizonReservation.RecordReservation(new TerrainOrHorizonReservation(worldPosition, options.radius));
+        TerrainOrHorizonReservation.RecordReservation(new TerrainOrHorizonReservation(options.globalPosition, options.radius));
 
         //Return computed, height-adjusted, center point
-        return worldPosition;
+        return options.globalPosition;
+    }
+
+    private void FindTerrainPositionToReserve(TerrainReservationOptions options, out bool foundPlaceOnTerrain, out Vector2Int areaCoords, out Vector3 globalPosition)
+    {
+        bool foundPlace = false;
+
+        //Default values
+        foundPlaceOnTerrain = false;
+        areaCoords = new Vector2Int(-1, -1);
+        globalPosition = Vector3.zero;
+
+        //Get other data we need before we can start searching
+        float smallestSteepnessDifference = Mathf.Infinity, smallestDistanceFromTarget = Mathf.Infinity;
+        float minimumDistanceFromTargetInAreas = options.minimumDistanceFromTarget / areaSize;
+        Vector2Int targetCoords = new Vector2Int();
+        if (options.targetToGenerateCloseTo)
+            targetCoords = ConvertFromGlobalToAreaUnits(options.targetToGenerateCloseTo.position.x, options.targetToGenerateCloseTo.position.z);
+
+        //Go through all the areas and determine which spot on the terrain is best
+        for (int x = 0; x < areaSteepness.GetLength(0); x++)
+        {
+            for (int z = 0; z < areaSteepness.GetLength(1); z++)
+            {
+                //Get data on this spot's steepness and proximity to the (optional) target
+                float currentSteepnessDifference = Mathf.Abs(areaSteepness[x, z] - options.preferredSteepness);
+                float currentDistanceFromTarget;
+                if (options.targetToGenerateCloseTo)
+                {
+                    currentDistanceFromTarget = Vector2Int.Distance(targetCoords, new Vector2Int(x, z));
+
+                    if (currentDistanceFromTarget < minimumDistanceFromTargetInAreas)
+                        continue;
+                }
+                else
+                    currentDistanceFromTarget = Mathf.Infinity;
+
+                //Based on that data, determine whether this is the new best spot
+                if (currentDistanceFromTarget <= smallestDistanceFromTarget && currentSteepnessDifference <= smallestSteepnessDifference)
+                {
+                    //Make sure it is safe
+                    if (SelectedAreasAreSafe(x, z, 0, 500, options.radius))
+                    {
+                        //Found new best area
+                        foundPlace = true;
+                        foundPlaceOnTerrain = true;
+
+                        areaCoords.x = x;
+                        areaCoords.y = z;
+
+                        smallestSteepnessDifference = currentSteepnessDifference;
+                        smallestDistanceFromTarget = currentDistanceFromTarget;
+                    }
+                }
+            }
+        }
+
+        //If we couldn't find a spot on the terrain...
+        if (!foundPlace)
+        {
+            //Chance to place in dead center of terrain as a fallback (only works if option is elected and center is open)...
+            int middleX = areaSteepness.GetLength(0) / 2;
+            int middleZ = areaSteepness.GetLength(1) / 2;
+            if (options.centerOnTerrainAsFallbackIfPossible && SelectedAreasAreSafe(middleX, middleZ, 0, 900, 50))
+            {
+                foundPlaceOnTerrain = true;
+                areaCoords.x = middleX;
+                areaCoords.y = middleZ;
+            }
+
+            //Last resort: Fallback to finding a spot on the horizon. I assume this will always work.
+            else
+            {
+                foundPlaceOnTerrain = false;
+                globalPosition = ReserveHorizonPosition(options.radius);
+            }
+        }
     }
 
     private bool IsAreaCoordWithinTerrain(int xCoord, int zCoord)
@@ -693,8 +682,11 @@ public class PlanetTerrain : MonoBehaviour
         return true;
     }
 
-    private float ReserveSelectedAreas (int xCoord, int zCoord, int minHeight, TerrainReservationOptions options)
+    private Vector3 ReserveSelectedAreas (TerrainReservationOptions options)
     {
+        int xCoord = options.terrainAreaCoordinates.x;
+        int zCoord = options.terrainAreaCoordinates.y;
+
         //The Mathf.Min caps the city size to that of the entire terrain
         int areasLong = Mathf.Min(Mathf.CeilToInt(options.radius * 2.0f / areaSize), areaSteepness.GetLength(0) - 2);
 
@@ -718,10 +710,13 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         //Flatten selected areas (all to the sample height of the center of the selection)
-        return ApplyModificationsToSelectedAreas(areasLong, xStart, zStart, minHeight, options);
+        float globalHeight = ApplyModificationsToSelectedAreas(areasLong, xStart, zStart, options);
+
+        //God.PlaceDebugMarker(GetCenterOfAreasAsGlobalPosition(areasLong, xStart, zStart, globalHeight));
+        return GetCenterOfAreasAsGlobalPosition(areasLong, xStart, zStart, globalHeight);
     }
 
-    private float ApplyModificationsToSelectedAreas(int areasLong, int xStart, int zStart, int minHeight, TerrainReservationOptions options)
+    private float ApplyModificationsToSelectedAreas(int areasLong, int xStart, int zStart, TerrainReservationOptions options)
     {
         int outerWidth = areaSize * areasLong;
 
@@ -736,6 +731,7 @@ public class PlanetTerrain : MonoBehaviour
         float[,] heights = new float[outerWidth, outerWidth];
 
         //Make sure height is above min height
+        int minHeight = options.newGeneration ? options.minHeightToFlattenTo + 1 : (int)options.globalPosition.y;
         if (newHeight < minHeight)
             newHeight = minHeight;
         float maxHeight = newHeight + options.relativeMaxHeight;
@@ -765,11 +761,25 @@ public class PlanetTerrain : MonoBehaviour
         //int innerEdgeOffset = Mathf.FloorToInt((outerEdgeWidth + innerInnerEdgeWidth) * 0.5f);
         int innerEdgeOffset = Mathf.FloorToInt((outerWidth - innerInnerWidth) * 0.5f);
 
-        //Set every point in the area to have that height except boundary points transition back to normal terrain
+        //Set every point in the area to have that height except boundary points transition back to normal terrain.
+        //If any of the points are out of bounds, we immediately quit out and give up because we can't call terrainData.SetHeights in such a case.
+        bool outOfBounds = false;
         for (int x = 0; x < heights.GetLength(0); x++)
         {
+            if (x < 0 || x >= heights.GetLength(0))
+            {
+                outOfBounds = true;
+                break;
+            }
+
             for (int z = 0; z < heights.GetLength(1); z++)
             {
+                if (z < 0 || z >= heights.GetLength(0))
+                {
+                    outOfBounds = true;
+                    break;
+                }
+
                 //Determing how close point is to the edge
                 float edgePercentage;
                 if(circular)
@@ -816,9 +826,17 @@ public class PlanetTerrain : MonoBehaviour
         }
 
         //Apply changes to terrain
-        terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
+        if(!outOfBounds)
+            terrain.terrainData.SetHeights(xStart * areaSize, zStart * areaSize, heights);
 
         return newHeight * 512.0f;
+    }
+
+    private Vector3 GetCenterOfAreasAsGlobalPosition(int areasLong, int xStart, int zStart, float globalHeight)
+    {
+        Vector2 centerInAreaUnits = new Vector2(xStart + areasLong * 0.5f, zStart + areasLong * 0.5f);
+        Vector3 centerInGlobalUnits = ConvertFromAreaToGlobalUnits(centerInAreaUnits.x, centerInAreaUnits.y);
+        return new Vector3(centerInGlobalUnits.x, globalHeight, centerInGlobalUnits.y);
     }
 
     public Vector3 SnapToTerrainAndFlattenAreaAroundPoint(float globalX, float globalZ, float radiusToFlatten = 100.0f)

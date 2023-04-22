@@ -9,7 +9,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     public GameObject mapMarkerPrefab;
     [HideInInspector] public CityType cityType; //This is just to cache the value. The value is really determined per-planet in the class PlanetCityCustomization.
     [HideInInspector] public bool circularCity = false;
-    [HideInInspector] public TerrainReservationOptions.TerrainResModType terrainModifications = TerrainReservationOptions.TerrainResModType.NoChange;
+    [HideInInspector] public TerrainReservationOptions terrainReservationOptions;
 
     //Relegate other aspects of city management to specialized managers (to declutter code)
     [HideInInspector] public AreaManager areaManager;
@@ -37,38 +37,37 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     public void AfterCityGeneratedOrRestored()
     {
+        //After the city has been generated (or restored), build the nav mesh to pathfind through it
+        GenerateNavMesh();
+
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
         mapMarker.InitializeMarker(transform);
     }
 
     //If its a new city, the cityLocation parameter is ignored and a new position is chosen. Else, its a restored city and the cityLocation is reused.
-    public void ReserveTerrainLocation(bool newCity, Vector3 cityLocation)
+    public void ReserveTerrainLocation(bool newCity)
     {
-        TerrainReservationOptions options = new TerrainReservationOptions(newCity, circularCity, (int)(radius * 1.2f), foundationManager.foundationHeight * 0.5f - 0.25f);
-
-        //Reserve location for city
-        if (newCity)
+        //For new cities, we need to initialize the TerrainReservationOptions first. This class contains all our guidelines for what location on the terrain to choose.
+        if (newCity) //New city
         {
-            options.minHeightToFlattenTo = (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4);
-            options.preferredSteepness = Random.Range(0, 10);
-            terrainModifications = foundationManager.GetTerrainModificationTypeForCity();
+            terrainReservationOptions = new TerrainReservationOptions(true, circularCity, (int)(radius * 1.2f), foundationManager.foundationHeight * 0.5f - 0.25f);
+
+            terrainReservationOptions.minHeightToFlattenTo = (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4);
+            terrainReservationOptions.preferredSteepness = Random.Range(0, 10);
+            terrainReservationOptions.terrainModification = foundationManager.GetTerrainModificationTypeForCity();
 
             if(newCitySpecifications.daddyCity)
             {
-                options.targetToGenerateCloseTo = newCitySpecifications.daddyCity.transform;
-                options.minimumDistanceFromTarget = radius + 50.0f;
+                terrainReservationOptions.targetToGenerateCloseTo = newCitySpecifications.daddyCity.transform;
+                terrainReservationOptions.minimumDistanceFromTarget = radius + 50.0f;
             }
 
-            options.centerOnTerrainAsFallbackIfPossible = !newCitySpecifications.smallCompound;
+            terrainReservationOptions.centerOnTerrainAsFallbackIfPossible = !newCitySpecifications.smallCompound;
         }
-        else
-            options.position = cityLocation;
 
-        options.terrainModification = terrainModifications;
-        cityLocation = PlanetTerrain.planetTerrain.ReserveTerrainPosition(options);
-
-        transform.position = cityLocation;
+        //Do it.
+        transform.position = PlanetTerrain.planetTerrain.ReserveTerrainPosition(terrainReservationOptions);
     }
 
     public void GenerateNewCity()
@@ -80,7 +79,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //radius = Random.Range(40, 60);
         //radius = Random.Range(70, 110); //Small city
         //radius = Random.Range(80, 130);
-        radius = Random.Range(90, 190);
+        radius = 230;
         //radius = Random.Range(250, 300); //Huge city
         //radius = Random.Range(200, 300);
         //radius = 500; //Approximately the size of the whole terrain
@@ -110,7 +109,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         //At this point, the city radius is final. We will now create our area management system and reserve our place in the terrain...
         //...based on the city radius.
         areaManager.InitializeAreaReservationSystem();
-        ReserveTerrainLocation(true, Vector3.zero);
+        ReserveTerrainLocation(true);
 
         //Generate roads (and city blocks)
         areaManager.GenerateRoadsAndCityBlocks();
@@ -143,9 +142,6 @@ public class City : MonoBehaviour, INavZoneUpdater
         cityLightManager.GenerateNewCityLights();
 
         //Debug.Log("City radius: " + radius + ", buildings: " + buildings.Count);
-
-        //After the city has been generated, build the nav mesh to pathfind through it
-        GenerateNavMesh();
 
         //Set the name after all possible influencing factors on the name have been set
         if (!newCitySpecifications.smallCompound)
@@ -194,8 +190,7 @@ public class CityJSON
     public string name;
     public int radius;
     public bool circularCity;
-    public TerrainReservationOptions.TerrainResModType terrainModifications;
-    public Vector3 cityLocation;
+    public TerrainReservationOptions terrainReservationOptions;
 
     //Sub-managers
     public BuildingManagerJSON buildingManagerJSON;
@@ -211,8 +206,7 @@ public class CityJSON
         radius = city.radius;
 
         circularCity = city.circularCity;
-        terrainModifications = city.terrainModifications;
-        cityLocation = city.transform.position;
+        terrainReservationOptions = city.terrainReservationOptions;
 
         buildingManagerJSON = new BuildingManagerJSON(city.buildingManager);
         foundationManagerJSON = new FoundationManagerJSON(city.foundationManager);
@@ -232,8 +226,9 @@ public class CityJSON
         string cityTypePathSuffix = city.cityType.name + "/";
 
         city.circularCity = circularCity;
-        city.terrainModifications = terrainModifications;
-        city.ReserveTerrainLocation(false, cityLocation);
+        terrainReservationOptions.newGeneration = false;
+        city.terrainReservationOptions = terrainReservationOptions;
+        city.ReserveTerrainLocation(false);
 
         buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathSuffix);
         foundationManagerJSON.RestoreFoundationManager(city.foundationManager);
@@ -241,9 +236,6 @@ public class CityJSON
         cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
         bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
         cityLightManagerJSON.RestoreCityLightManager(city.cityLightManager, cityTypePathSuffix);
-
-        //After the city has been regenerated, build the nav mesh to pathfind through it
-        city.GenerateNavMesh();
 
         city.AfterCityGeneratedOrRestored();
     }

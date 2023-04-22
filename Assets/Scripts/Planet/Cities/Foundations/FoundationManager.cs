@@ -11,7 +11,7 @@ public class FoundationManager
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.Grid;
+    public FoundationType foundationType = FoundationType.Hammocks;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
@@ -185,7 +185,7 @@ public class FoundationManager
         FoundationShape foundationShape = (Random.Range(0, 2) == 0) ? FoundationShape.Circular : FoundationShape.Rectangular;
         float distanceFromCityCenter = overrideDistanceFromCityCenter > 1.0f ? overrideDistanceFromCityCenter : (city.radius * 1.075f) + extraDistanceFromCityCenter;
 
-        bool needToFlattenTerrainByEntrances = city.terrainModifications != TerrainReservationOptions.TerrainResModType.Flatten && foundationLocalY < 1.0f;
+        bool needToFlattenTerrainByEntrances = city.terrainReservationOptions.terrainModification != TerrainReservationOptions.TerrainResModType.Flatten && foundationLocalY < 1.0f;
 
         //Prepare for X gates
         city.areaManager.GetWidestCardinalRoad(true, !city.circularCity, out float widestRoadWidth, out float widestRoadCenteredAt);
@@ -335,7 +335,10 @@ public class FoundationManager
 
     private static FoundationType GetRandomNonNullFoundationType()
     {
-        int selection = Random.Range(0, 7);
+        if(Random.Range(0, 4) == 0)
+            return FoundationType.Grid;
+
+        int selection = Random.Range(0, 6);
         switch(selection)
         {
             case 0: return FoundationType.PerBuilding;
@@ -343,7 +346,6 @@ public class FoundationManager
             case 2: return FoundationType.Atlantis;
             case 3: return FoundationType.Hammocks;
             case 4: return FoundationType.Pyramid;
-            case 5: return FoundationType.Grid;
             default: return FoundationType.SingularSlab;
         }
     }

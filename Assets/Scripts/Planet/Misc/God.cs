@@ -361,7 +361,7 @@ public class God : MonoBehaviour
         return Vector3.Distance(point1, point2);
     }
 
-    public static void PlaceDebugMarker(Vector3 position, Transform parent = null, float width = 2.5f, float height = 500.0f, string markerName = "Debug Marker")
+    public static void PlaceDebugMarker(Vector3 globalPosition, Transform parent = null, float width = 2.5f, float height = 500.0f, string markerName = "Debug Marker")
     {
         Transform debugMarker = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
         
@@ -373,7 +373,7 @@ public class God : MonoBehaviour
         if (parent)
             debugMarker.parent = parent;
 
-        debugMarker.position = position;
+        debugMarker.position = globalPosition;
         debugMarker.rotation = Quaternion.Euler(0, 0, 0);
 
         debugMarker.name = markerName;

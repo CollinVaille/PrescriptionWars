@@ -406,7 +406,7 @@ public class FoundationGeneratorForAtlantis
             oceanNearCityElevation = false;
 
         //Chance to generate a very short and fat foundation at the bottom center of the city. Makes pits have floors.
-        if (oceanNearCityElevation || (city.terrainModifications == TerrainReservationOptions.TerrainResModType.Flatten && Random.Range(0, 2) == 0))
+        if (oceanNearCityElevation || (city.terrainReservationOptions.terrainModification == TerrainReservationOptions.TerrainResModType.Flatten && Random.Range(0, 2) == 0))
         {
             Vector3 floorFoundationScale = Vector3.one * city.radius * 1.95f;
             floorFoundationScale.y = 0.15f;
