@@ -53,7 +53,7 @@ public class City : MonoBehaviour, INavZoneUpdater
         {
             terrainReservationOptions = new TerrainReservationOptions(true, circularCity, (int)(radius * 1.2f), foundationManager.foundationHeight * 0.5f - 0.25f);
 
-            terrainReservationOptions.minHeightToFlattenTo = (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(0, 4);
+            terrainReservationOptions.minHeightToFlattenTo = (int)PlanetTerrain.planetTerrain.GetSeabedHeight() + Random.Range(1, 4);
             terrainReservationOptions.preferredSteepness = Random.Range(0, 10);
             terrainReservationOptions.terrainModification = foundationManager.GetTerrainModificationTypeForCity();
 
@@ -100,8 +100,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         {
             radius = (buildingManager.GetLongestBuildingLength() / 2) + areaManager.areaSize;
 
-            if (circularCity) //Convert from side length to hypotenuse (c^2 = a^2 + b^2)
-                radius = (int)Mathf.Sqrt(radius * radius * 2);
+            if (circularCity) //Convert from side length to the median of the hypotenuse. median of hypotenuse = 1/2 hypotenuse = 0.5*(a^2 + b^2)
+                radius = (int)(0.5f * Mathf.Sqrt(radius * radius * 2));
         }
         else //Otherwise, we will use the previous radius computations and adjust them based on the foundation plans
             foundationManager.AdjustCityRadiusToCompensateForFoundationPlans();

@@ -50,8 +50,8 @@ public class CityLightManager
         {
             Vector3 newPlace = city.transform.position;
 
-            //For circular cities, we don't want to go outside the circular perimeter, so our range for both x and z is going to tbe the hypotenuse (a^2 + b^2 = c^2) where a = b = city "radius".
-            float offsetRange = city.circularCity ? Mathf.Sqrt(city.radius * city.radius * 2.0f) : city.radius;
+            //For circular cities, we don't want to go outside the circular perimeter, so our range for both x and z is going to be the median of the hypotenuse = 1/2 hypotenuse.
+            float offsetRange = city.circularCity ? Mathf.Sqrt(city.radius * city.radius * 2.0f) * 0.5f : city.radius;
             newPlace.x += Random.Range(-offsetRange, offsetRange);
             newPlace.z += Random.Range(-offsetRange, offsetRange);
 

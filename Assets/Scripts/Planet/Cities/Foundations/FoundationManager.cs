@@ -11,7 +11,7 @@ public class FoundationManager
     public const float torusAnnulusMultiplier = 0.765f; //Do not touch unless you know what you're doing
 
     public City city;
-    public FoundationType foundationType = FoundationType.Hammocks;
+    public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
     public FoundationSelections foundationSelections;
