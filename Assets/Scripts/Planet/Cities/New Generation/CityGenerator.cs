@@ -49,7 +49,7 @@ public class CityGenerator : MonoBehaviour
         city.buildingManager.SetDefaultMaterials();
 
         //Customize walls--------------------------------------------------------------------------------------------------------------
-        if (city.radius > Random.Range(130, 150) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
+        if (city.radius > Random.Range(30, 50) && cityType.wallSections.Length > 0 && !newCitySpecifications.tryToMakeEasyAccessToTerrain)
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
@@ -64,7 +64,7 @@ public class CityGenerator : MonoBehaviour
             city.cityWallManager.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + gate);
 
             //Fence posts
-            if (cityType.fencePostChance >= Random.Range(0, 1.0f))
+            if (cityType.fencePostChance >= Random.Range(0.0f, 1.0f))
             {
                 string fencePost = cityType.fencePosts[Random.Range(0, cityType.fencePosts.Length)];
                 city.cityWallManager.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);

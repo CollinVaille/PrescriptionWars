@@ -71,7 +71,7 @@ public class CityWallManager
 
     private void GenerateNewCircularWalls(Vector3 localCenter, float radius)
     {
-        float wallLength = wallSectionPrefab.transform.localScale.x;
+        float wallLength = wallSectionPrefab.GetComponent<WallSection>().XScale;
 
         Transform temporaryRotatingBase = new GameObject("Temp - Delete After City Generation").transform;
         temporaryRotatingBase.parent = walls.parent;
@@ -117,7 +117,7 @@ public class CityWallManager
             //Place it
             PlaceWallSection(isGate, lastWasGate,
                 newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
-                (int)temporaryRotatingBase.localEulerAngles.y, true, fencePostRotation);
+                (int)temporaryRotatingBase.localEulerAngles.y, true, wallLength, fencePostRotation);
 
             //Rotate the base for the next iteration
             currentEulerAngle -= eulerAngleStep;
@@ -132,29 +132,28 @@ public class CityWallManager
 
     private void GenerateNewSquareWalls(Vector3 localCenter, float halfLength)
     {
-        //Adjust position slightly before we begin. I'm not sure why we have to do this, I just know it works (kind of).
+        //Determine height information
         int placementHeight = (int)localCenter.y;
-        localCenter += Vector3.one * 5;
-        localCenter.y = placementHeight;
+        
+        //Determine wall length and number of sections one way
+        float wallLength = wallSectionPrefab.GetComponent<WallSection>().XScale;
+        int sectionsOneWay = Mathf.CeilToInt((halfLength * 2) / wallLength);
+        wallLength = (halfLength * 2) / sectionsOneWay;
 
-        float wallLength = wallSectionPrefab.transform.localScale.x;
-        //float cityWidth = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0);
+        //Determine x,z starting positions
+        float startingOffsetAbsoluteValue = halfLength - wallLength * 0.5f;
+        float startX = localCenter.x - startingOffsetAbsoluteValue;
+        float startZ = localCenter.z - startingOffsetAbsoluteValue;
 
-        //float startX = -cityWidth / 2.0f + 5;
-        //int horizontalSections = Mathf.CeilToInt(cityWidth / wallLength);
-        float startX = localCenter.x - halfLength;
-        int horizontalSections = Mathf.CeilToInt((halfLength * 2) / wallLength);
-
-        //float startZ = -cityWidth / 2.0f + 5;
-        //int verticalSections = horizontalSections;
-        float startZ = localCenter.z - halfLength;
-        int verticalSections = horizontalSections;
-
-        //Debug.Log("Radius: " + radius + ", Start X: " + startX + ", Start Z: " + startZ);
+        //TEMPORARY. Used for debugging
+        /*Vector3 bottomLeft = city.transform.TransformPoint(localCenter + Vector3.left * halfLength + Vector3.back * halfLength);
+        God.PlaceDebugMarker(bottomLeft, markerName: "Bottom Left Marker");
+        Vector3 topRight = city.transform.TransformPoint(localCenter + Vector3.right * halfLength + Vector3.forward * halfLength);
+        God.PlaceDebugMarker(topRight, markerName: "Top Right Marker"); */
 
         //HORIZONTAL WALLS-------------------------------------------------------------------------------------
 
-        bool[] skipWallSection = new bool[horizontalSections];
+        bool[] skipWallSection = new bool[sectionsOneWay];
 
         //Find the largest road/gap
         city.areaManager.GetWidestCardinalRoad(true, true, out _, out float largestGapCenteredAt);
@@ -175,32 +174,32 @@ public class CityWallManager
         skipWallSection[closestWallSectionIndex] = true;
 
         //Now that the wall section locations have been determined, place them
-        float minZ = startZ - wallLength / 2.0f;
-        float maxZ = startZ + verticalSections * wallLength - wallLength / 2.0f;
+        float minZ = startZ - wallLength * 0.5f;
+        float maxZ = minZ + sectionsOneWay * wallLength;
         bool previousWasGate = false;
         for (int x = 0; x < skipWallSection.Length; x++)
         {
             bool nextIsGate = false;
-            if (x < horizontalSections - 1)
+            if (x < sectionsOneWay - 1)
                 nextIsGate = skipWallSection[x + 1];
 
             //Front walls
             PlaceWallSection(skipWallSection[x], previousWasGate,
-                startX + x * wallLength, placementHeight, minZ, 180, true);
+                startX + x * wallLength, placementHeight, minZ, 180, true, wallLength);
 
             //Back walls
             PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, maxZ, 0, true);
+                startX + x * wallLength, placementHeight, maxZ, 0, true, wallLength);
 
             previousWasGate = skipWallSection[x];
         }
 
         bool firstHorSectionIsGate = skipWallSection[0];
-        bool lastHorSectionIsGate = skipWallSection[horizontalSections - 1];
+        bool lastHorSectionIsGate = skipWallSection[sectionsOneWay - 1];
 
         //VERTICAL WALLS-------------------------------------------------------------------------------------
 
-        skipWallSection = new bool[verticalSections];
+        skipWallSection = new bool[sectionsOneWay];
 
         //Find the largest road/gap
         city.areaManager.GetWidestCardinalRoad(false, true, out _, out largestGapCenteredAt);
@@ -221,37 +220,26 @@ public class CityWallManager
         skipWallSection[closestWallSectionIndex] = true;
 
         //Now that the wall section locations have been determined, place them
-        float minX = startX - wallLength / 2.0f;
-        float maxX = startX + horizontalSections * wallLength - wallLength / 2.0f;
+        float minX = startX - wallLength * 0.5f;
+        float maxX = minX + sectionsOneWay * wallLength;
         previousWasGate = false;
         for (int z = 0; z < skipWallSection.Length; z++)
         {
             bool nextIsGate = false;
-            if (z < verticalSections - 1)
+            if (z < sectionsOneWay - 1)
                 nextIsGate = skipWallSection[z + 1];
 
             PlaceWallSection(skipWallSection[z], nextIsGate,
-                minX, placementHeight, startZ + z * wallLength, -90, true);
+                minX, placementHeight, startZ + z * wallLength, -90, true, wallLength);
 
             PlaceWallSection(skipWallSection[z], previousWasGate,
-                maxX, placementHeight, startZ + z * wallLength, 90, true);
+                maxX, placementHeight, startZ + z * wallLength, 90, true, wallLength);
 
             previousWasGate = skipWallSection[z];
         }
-
-        //Place fence post at near corner if no fence gates there
-        /*
-        if (fencePostPrefab && !firstHorSectionIsGate && !skipWallSection[0])
-            PlaceFencePost(new Vector3(
-                startX - wallLength / 2.0f, placementHeight, startZ - wallLength / 2.0f), 90);
-
-        //Place fence post at far corner if no fence gates there
-        if (fencePostPrefab && !lastHorSectionIsGate && !skipWallSection[verticalSections - 1])
-            PlaceFencePost(new Vector3(startX + (verticalSections - 1) * wallLength + wallLength / 2.0f,
-                placementHeight, startZ + (verticalSections - 1) * wallLength + wallLength / 2.0f), 90);    */
     }
 
-    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, bool snapToGround, int fencePostRotation = 9000)
+    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, bool snapToGround, float xScale, int fencePostRotation = 9000)
     {
         int absRotation = Mathf.Abs(rotation);
         bool horizontalSection = (absRotation == 0 || absRotation == 180);
@@ -263,12 +251,17 @@ public class CityWallManager
         else
             newWallSection = GameObject.Instantiate(wallSectionPrefab, walls).transform;
 
+        //Set rotation
         newWallSection.localRotation = Quaternion.Euler(0, rotation, 0);
 
+        //Set position
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
         if (snapToGround)
             God.SnapToGround(newWallSection, collidersToCheckAgainst: city.foundationManager.foundationGroundColliders);
+
+        //Set scale
+        newWallSection.GetComponent<WallSection>().XScale = xScale;
 
         //Place fence post correlating to wall section
         if (fencePostPrefab && !gate && !skipFencePost)
