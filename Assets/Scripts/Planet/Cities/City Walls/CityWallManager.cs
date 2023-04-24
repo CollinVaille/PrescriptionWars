@@ -42,9 +42,6 @@ public class CityWallManager
         PrepareWalls(Random.Range(0, Planet.planet.planetWideCityCustomization.wallMaterials.Length));
 
         ProcessNewCityWallRequests();
-
-        if (city.newCitySpecifications.shouldGenerateCityPerimeterWalls)
-            GenerateNewWallsAroundCityPerimeter();
     }
 
     private void ProcessNewCityWallRequests()
@@ -55,17 +52,6 @@ public class CityWallManager
                 GenerateNewCircularWalls(cityWallRequest.localCenter, cityWallRequest.halfLength);
             else
                 GenerateNewSquareWalls(cityWallRequest.localCenter, cityWallRequest.halfLength);
-        }
-    }
-
-    private void GenerateNewWallsAroundCityPerimeter()
-    {
-        if (city.circularCity) //Circular perimeters walls
-            GenerateNewCircularWalls(walls.localPosition, city.radius);
-        else //Square perimeter walls
-        {
-            float squareWallHalfLength = city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0) * 0.5f;
-            GenerateNewSquareWalls(walls.localPosition, squareWallHalfLength);
         }
     }
 
@@ -117,7 +103,7 @@ public class CityWallManager
             //Place it
             PlaceWallSection(isGate, lastWasGate,
                 newFenceLocation.x, newFenceLocation.y, newFenceLocation.z,
-                (int)temporaryRotatingBase.localEulerAngles.y, true, wallLength, fencePostRotation);
+                (int)temporaryRotatingBase.localEulerAngles.y, wallLength, fencePostRotation);
 
             //Rotate the base for the next iteration
             currentEulerAngle -= eulerAngleStep;
@@ -185,11 +171,11 @@ public class CityWallManager
 
             //Front walls
             PlaceWallSection(skipWallSection[x], previousWasGate,
-                startX + x * wallLength, placementHeight, minZ, 180, true, wallLength);
+                startX + x * wallLength, placementHeight, minZ, 180, wallLength);
 
             //Back walls
             PlaceWallSection(skipWallSection[x], nextIsGate,
-                startX + x * wallLength, placementHeight, maxZ, 0, true, wallLength);
+                startX + x * wallLength, placementHeight, maxZ, 0, wallLength);
 
             previousWasGate = skipWallSection[x];
         }
@@ -230,16 +216,16 @@ public class CityWallManager
                 nextIsGate = skipWallSection[z + 1];
 
             PlaceWallSection(skipWallSection[z], nextIsGate,
-                minX, placementHeight, startZ + z * wallLength, -90, true, wallLength);
+                minX, placementHeight, startZ + z * wallLength, -90, wallLength);
 
             PlaceWallSection(skipWallSection[z], previousWasGate,
-                maxX, placementHeight, startZ + z * wallLength, 90, true, wallLength);
+                maxX, placementHeight, startZ + z * wallLength, 90, wallLength);
 
             previousWasGate = skipWallSection[z];
         }
     }
 
-    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, bool snapToGround, float xScale, int fencePostRotation = 9000)
+    public void PlaceWallSection(bool gate, bool skipFencePost, float x, float y, float z, int rotation, float xScale, int fencePostRotation = 9000)
     {
         int absRotation = Mathf.Abs(rotation);
         bool horizontalSection = (absRotation == 0 || absRotation == 180);
@@ -257,8 +243,6 @@ public class CityWallManager
         //Set position
         Vector3 wallPosition = new Vector3(x, y, z);
         newWallSection.localPosition = wallPosition;
-        if (snapToGround)
-            God.SnapToGround(newWallSection, collidersToCheckAgainst: city.foundationManager.foundationGroundColliders);
 
         //Set scale
         newWallSection.GetComponent<WallSection>().XScale = xScale;
@@ -268,12 +252,6 @@ public class CityWallManager
         {
             Vector3 fencePostPosition = newWallSection.TransformPoint(new Vector3(0.5f, 0.0f, 0.0f));
             fencePostPosition = walls.InverseTransformPoint(fencePostPosition);
-
-            /*
-            if (horizontalSection)
-                fencePostPosition.x += newWallSection.localScale.x / 2.0f;
-            else
-                fencePostPosition.z += newWallSection.localScale.x / 2.0f;  */
 
             PlaceFencePost(fencePostPosition, fencePostRotation < 9000 ? fencePostRotation : newWallSection.localEulerAngles.y);
         }

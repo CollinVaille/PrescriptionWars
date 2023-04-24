@@ -40,7 +40,12 @@ public class FoundationGeneratorForIslands
             level1Height = 0.0f;
 
         //Random chance to generate walls on city perimeter
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = level1IsElevated ? (Random.Range(0, 3) != 0) : (Random.Range(0, 2) == 0);
+        if(level1IsElevated ? (Random.Range(0, 3) != 0) : (Random.Range(0, 2) == 0))
+        {
+            NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
+            newCityWallRequest.MakeRequestForCityPerimeterWalls(city, level1IsElevated ? foundationManager.foundationHeight * 0.5f : 0.0f);
+            city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
+        }
 
         //Determine how much square feet we want to try to take up with foundations. This will determine how dense the city is
         float totalSquareMetersForCity = AreaManager.CalculateAreaFromDimensions(city.circularCity, city.radius);
@@ -119,7 +124,10 @@ public class FoundationGeneratorForIslands
             //Otherwise, create walls that line the edges of the foundation
             else if (generateWalls)
             {
-                NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circleOrTorusFoundation, foundationLocalPosition, (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f);
+                Vector3 localCenterOfWalls = foundationLocalPosition;
+                localCenterOfWalls.y += foundationScale.y * 0.5f;
+
+                NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circleOrTorusFoundation, localCenterOfWalls, (squareMetersLong - (bufferInAreas * areaManager.areaSize)) * 0.5f);
                 city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
             }
 
@@ -366,7 +374,11 @@ public class FoundationGeneratorForIslands
         {
             float wallsHalfLength = (newFoundationScale.x - (bufferInAreas * city.areaManager.areaSize)) * 0.5f;
             bool circularWalls = foundationShape == FoundationShape.Circular;
-            NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circularWalls, newFoundationLocalPosition, wallsHalfLength);
+
+            Vector3 localCenterOfWalls = newFoundationLocalPosition;
+            localCenterOfWalls.y += newFoundationScale.y * 0.5f;
+
+            NewCityWallRequest newCityWallRequest = new NewCityWallRequest(circularWalls, localCenterOfWalls, wallsHalfLength);
             city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
         }
     }

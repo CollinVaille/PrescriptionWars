@@ -22,6 +22,11 @@ public class FoundationGeneratorForPyramid : MonoBehaviour
         //Start with buildings being allowed to generate nowhere
         city.areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
 
+        //City walls can spawn on first level of pyramid
+        NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
+        newCityWallRequest.MakeRequestForCityPerimeterWalls(city, foundationManager.foundationHeight * 0.5f);
+        city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
+
         //Begin the pyramid construction process by generating the bottom-most level and then recursing from there
         Vector3 foundationScale = Vector3.one * city.radius * 2.15f;
         foundationScale.y = foundationManager.foundationHeight;
@@ -56,10 +61,10 @@ public class FoundationGeneratorForPyramid : MonoBehaviour
         if(foundationShape == FoundationShape.Rectangular)
         {
             Vector2Int outerPerimeter = new Vector2Int((int)(centerInAreas.x - outerPerimeterAreasLong / 2), (int)(centerInAreas.z - outerPerimeterAreasLong / 2));
-            city.areaManager.ReserveAreasRegardlessOfType(outerPerimeter.x, outerPerimeter.y, outerPerimeterAreasLong, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+            city.areaManager.ReserveAreasWithType(outerPerimeter.x, outerPerimeter.y, outerPerimeterAreasLong, AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
         }
         else //Circular
-            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, outerPerimeterAreasLong / 2, AreaManager.AreaReservationType.ReservedForExtraPerimeter, true, AreaManager.AreaReservationType.LackingRequiredFoundation);
+            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, outerPerimeterAreasLong / 2, AreaManager.AreaReservationType.LackingRequiredFoundation, false, AreaManager.AreaReservationType.Open);
 
         //Generate the foundation for this pyramid level
         foundationManager.GenerateNewFoundation(foundationLocalPosition, foundationScale, city.circularCity ? FoundationShape.Circular : FoundationShape.Rectangular, false);
@@ -69,10 +74,10 @@ public class FoundationGeneratorForPyramid : MonoBehaviour
         if (foundationShape == FoundationShape.Rectangular)
         {
             Vector2Int innerPerimeter = new Vector2Int((int)(centerInAreas.x - innerPerimeterAreasLong / 2), (int)(centerInAreas.z - innerPerimeterAreasLong / 2));
-            city.areaManager.ReserveAreasRegardlessOfType(innerPerimeter.x, innerPerimeter.y, innerPerimeterAreasLong, AreaManager.AreaReservationType.Open);
+            city.areaManager.ReserveAreasWithType(innerPerimeter.x, innerPerimeter.y, innerPerimeterAreasLong, AreaManager.AreaReservationType.Open, AreaManager.AreaReservationType.LackingRequiredFoundation);
         }
         else //Circular
-            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, innerPerimeterAreasLong / 2, AreaManager.AreaReservationType.Open, true, AreaManager.AreaReservationType.ReservedForExtraPerimeter);
+            city.areaManager.ReserveAreasWithinThisCircle((int)centerInAreas.x, (int)centerInAreas.z, innerPerimeterAreasLong / 2, AreaManager.AreaReservationType.Open, false, AreaManager.AreaReservationType.LackingRequiredFoundation);
 
         //Generate entrance for going from the previous level to this level
         float entranceDistanceFromCenter = foundationScale.x * 0.5f;

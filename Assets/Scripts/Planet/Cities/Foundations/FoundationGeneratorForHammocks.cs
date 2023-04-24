@@ -27,9 +27,6 @@ public class FoundationGeneratorForHammocks
 
     public void GenerateNewHammockFoundations()
     {
-        //We want to be able to control where the walls are ourselves here
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
-
         //Start with buildings being allowed to generate nowhere
         city.areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
 

@@ -22,9 +22,6 @@ public class FoundationGeneratorForGrid
 
     public void GenerateNewGridFoundations()
     {
-        //No outer walls for this foundation type
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
-
         //Start with buildings being allowed to generate nowhere
         areaManager.ReserveAllAreasWithType(AreaManager.AreaReservationType.LackingRequiredFoundation, AreaManager.AreaReservationType.Open);
 

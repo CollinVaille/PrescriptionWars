@@ -16,4 +16,11 @@ public class NewCityWallRequest
     }
 
     public NewCityWallRequest() { }
+
+    public void MakeRequestForCityPerimeterWalls(City city, float wallHeightInLocalSpace)
+    {
+        circular = city.circularCity;
+        localCenter = new Vector3(0.0f, wallHeightInLocalSpace, 0.0f);
+        halfLength = circular ? city.radius : city.areaManager.areaSize * city.areaManager.areaTaken.GetLength(0) * 0.5f;
+    }
 }

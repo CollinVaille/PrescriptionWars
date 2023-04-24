@@ -83,7 +83,7 @@ public class PlanetGenerator : MonoBehaviour
     {
         SubBiomeJSON targetSubBiomeJSON = GetRandomUnalteredSubBiomeOfBiome(biomeName);
 
-        Debug.Log("Randomness: " + randomness);
+        //Debug.Log("Randomness: " + randomness);
 
         if (Mathf.Approximately(randomness, 0.0f))
             return targetSubBiomeJSON;

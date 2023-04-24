@@ -55,7 +55,7 @@ public class WallSectionJSON
         else
         {
             //We want to place the fence posts manually, so always make the skipFencePost flag true here so they aren't placed automatically
-            cityWallManager.PlaceWallSection(wallType == WallSection.WallType.Gate, true, location.x, location.y, location.z, yAxisRotation, false, xScale);
+            cityWallManager.PlaceWallSection(wallType == WallSection.WallType.Gate, true, location.x, location.y, location.z, yAxisRotation, xScale);
         }
     }
 }

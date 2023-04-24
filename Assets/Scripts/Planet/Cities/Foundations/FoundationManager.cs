@@ -120,7 +120,10 @@ public class FoundationManager
     public void GenerateNewFoundations()
     {
         if (foundationType == FoundationType.NoFoundations)
+        {
+            DoWhateverWeNeedToDoForNoFoundations();
             return;
+        }
 
         foundationSelections = new FoundationSelections(CityGenerator.generator.foundationOptions);
 
@@ -132,6 +135,13 @@ public class FoundationManager
         float scaling = city.radius / 10.0f;
         God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.slabMaterial, largeSlabMaterial, scaling, foundationHeight / 20.0f, true);
         God.CopyMaterialValues(Planet.planet.planetWideCityCustomization.groundMaterial, largeGroundMaterial, scaling, scaling, true);
+    }
+
+    private void DoWhateverWeNeedToDoForNoFoundations()
+    {
+        NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
+        newCityWallRequest.MakeRequestForCityPerimeterWalls(city, 0.0f);
+        city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
     }
 
     private void ProceedWithCreatingFoundationBasedOnType()
@@ -157,14 +167,15 @@ public class FoundationManager
         GenerateNewFoundation(Vector3.zero, foundationScale, city.circularCity ? FoundationShape.Circular : FoundationShape.Rectangular, false);
 
         GenerateEntrancesForCardinalDirections(false);
+
+        NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
+        newCityWallRequest.MakeRequestForCityPerimeterWalls(city, foundationHeight * 0.5f);
+        city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
     }
     private void GenerateNewPerBuildingFoundations()
     {
         //Still need entrances
         GenerateEntrancesForCardinalDirections(true);
-
-        //Ensure no walls are generated
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
 
         //Tell building construction to give extra radius around the buildings so we can walk around them
         city.newCitySpecifications.extraUsedBuildingRadius = 15;

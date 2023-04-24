@@ -25,9 +25,6 @@ public class FoundationGeneratorForAtlantis
 
     public void GenerateNewAtlantisFoundations()
     {
-        //We want to be able to control where the walls are ourselves here
-        city.newCitySpecifications.shouldGenerateCityPerimeterWalls = false;
-
         //Will use standard cardinal entrances and maintain standard cardinal roads running throughout the city
         foundationManager.GenerateEntrancesForCardinalDirections(false);
 

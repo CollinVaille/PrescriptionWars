@@ -21,9 +21,6 @@ public class NewCitySpecifications
     //...levels of buildings need foundations below them so that they are not underwater. This happens when the city is near sea level and an ocean is present.
     public bool lowerBuildingsMustHaveFoundations = false;
 
-    //City walls
-    public bool shouldGenerateCityPerimeterWalls = true;
-
     //---
 
     public float GetRandomBuildingFoundationHeight() { return Random.Range(buildingFoundationHeightRange.x, buildingFoundationHeightRange.y); }
