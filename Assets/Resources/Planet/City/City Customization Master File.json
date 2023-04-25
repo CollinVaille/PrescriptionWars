@@ -1,0 +1,38 @@
+{
+	"cityTypes": [
+		{
+			"matchName": "Slum"
+		}
+	],
+
+	"biomeCityOptions": [
+		{
+			"matchName": "Default",
+			"conflictResolutionChance": 0.0
+		},
+
+		{
+			"matchName": "Temperate",
+			"biomeListType": "Whitelist",
+			"biomeList": ["Temperate"]
+		},
+
+		{
+			"matchName": "Desert",
+			"biomeListType": "Whitelist",
+			"biomeList": ["Desert"]
+		},
+
+		{
+			"matchName": "Spirit",
+			"biomeListType": "Whitelist",
+			"biomeList": ["Spirit"]
+		},
+
+		{
+			"matchName": "Hell",
+			"biomeListType": "Whitelist",
+			"biomeList": ["Hell"]
+		}
+	]
+}

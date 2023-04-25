@@ -23,8 +23,8 @@ public class PlanetGenerator : MonoBehaviour
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
         //Generating the terrain also implicitly generates the cities. Before we generate the cities, we need to do this preparation
-        Planet.planet.planetWideCityCustomization = new PlanetCityCustomization();
-        Planet.planet.planetWideCityCustomization.GenerateCityCustomizationForNewPlanet();
+        Planet.planet.planetWideCityCustomization = new PlanetwideCityCustomization();
+        Planet.planet.planetWideCityCustomization.GenerateNewPlanetwideCityCustomization();
 
         //Finally, actually generate the terrain
         yield return StartCoroutine(PlanetTerrain.planetTerrain.GenerateTerrain(terrainCustomization));
@@ -74,6 +74,9 @@ public class PlanetGenerator : MonoBehaviour
             subBiomeJSON = GetSubBiomeWithDegreeOfRandomness(biomeName, Random.Range(0.0f, 1.0f));
         else
             subBiomeJSON = GetSubBiome(biomeName, Planet.planet.subBiome);
+
+        //Remember what sub-biome we're on
+        Planet.planet.subBiome = subBiomeJSON.subBiomeName;
 
         //Generate the planet based on that sub biome
         GeneratePlanetFromSubBiome(planet, subBiomeJSON, out terrainCustomization);
@@ -201,18 +204,18 @@ public class PlanetGenerator : MonoBehaviour
     private static SubBiomeJSON GetRandomUnalteredSubBiomeOfBiome(string biomeName)
     {
         string subBiomeName = GeneralHelperMethods.GetLineFromFile("Planet/Environment/Sub Biomes/Sub Biome Lists/" + biomeName, startPathFromGeneralTextFolder: false);
-        SubBiomeJSON subBiomeJSON = GetSubBiome(biomeName, subBiomeName);
-
-        subBiomeJSON.biomeName = biomeName;
-        subBiomeJSON.subBiomeName = subBiomeName;
-        
-        return subBiomeJSON;
+        return GetSubBiome(biomeName, subBiomeName);
     }
 
     private static SubBiomeJSON GetSubBiome(string biomeName, string subBiomeName)
     {
         string subBiomeJsonAsString = GeneralHelperMethods.GetTextAsset("Planet/Environment/Sub Biomes/" + biomeName + "/" + subBiomeName, startPathFromGeneralTextFolder: false).text;
-        return JsonUtility.FromJson<SubBiomeJSON>(subBiomeJsonAsString);
+        SubBiomeJSON subBiomeJSON = JsonUtility.FromJson<SubBiomeJSON>(subBiomeJsonAsString);
+
+        subBiomeJSON.biomeName = biomeName;
+        subBiomeJSON.subBiomeName = subBiomeName;
+
+        return subBiomeJSON;
     }
 
     private void GeneratePlanetFromSubBiome(Planet planet, SubBiomeJSON subBiomeJSON, out TerrainCustomization terrainCustomization)

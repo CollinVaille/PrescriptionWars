@@ -147,9 +147,9 @@ public class CityLightManagerJSON
             cityLightGlobalPositions.Add(cityLight.GetObjectRoot().position);
     }
 
-    public void RestoreCityLightManager(CityLightManager cityLightManager, string cityTypePathSuffix)
+    public void RestoreCityLightManager(CityLightManager cityLightManager, string cityTypePathPrefix)
     {
-        cityLightManager.cityLightPrefab = Resources.Load<GameObject>("Planet/City/Lights/" + cityTypePathSuffix + cityLightPrefab);
+        cityLightManager.cityLightPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Lights/" + cityLightPrefab);
 
         foreach (Vector3 cityLightGlobalPosition in cityLightGlobalPositions)
             cityLightManager.GenerateCityLight(cityLightGlobalPosition);

@@ -313,15 +313,15 @@ public class CityWallManagerJSON
         }
     }
 
-    public void RestoreCityWallManager(CityWallManager cityWallManager, string cityTypePathSuffix)
+    public void RestoreCityWallManager(CityWallManager cityWallManager, string cityTypePathPrefix)
     {
         if (hasWalls)
         {
-            cityWallManager.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + cityTypePathSuffix + wallSection);
-            cityWallManager.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + horGate);
-            cityWallManager.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + verGate);
+            cityWallManager.wallSectionPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Wall Sections/" + wallSection);
+            cityWallManager.horGatePrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Gates/" + horGate);
+            cityWallManager.verGatePrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Gates/" + verGate);
             if (!fencePost.Equals(""))
-                cityWallManager.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);
+                cityWallManager.fencePostPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Fence Posts/" + fencePost);
 
             cityWallManager.PrepareWalls(wallMaterialIndex);
 

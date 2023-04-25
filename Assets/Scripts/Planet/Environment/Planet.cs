@@ -43,7 +43,7 @@ public class Planet : MonoBehaviour
 
     //Cities
     public GameObject cityPrefab;
-    [HideInInspector] public PlanetCityCustomization planetWideCityCustomization;
+    [HideInInspector] public PlanetwideCityCustomization planetWideCityCustomization;
     [HideInInspector] public List<City> cities;
 
     //Special effects
@@ -619,7 +619,7 @@ public class PlanetJSON
         planetTerrain = new PlanetTerrainJSON(PlanetTerrain.planetTerrain);
 
         //Cities
-        planetCityCustomizationJSON = new PlanetCityCustomizationJSON(planet.planetWideCityCustomization);
+        planetCityCustomizationJSON = new PlanetwideCityCustomizationJSON(planet.planetWideCityCustomization);
 
         cities = new List<CityJSON>(planet.cities.Count);
         for (int x = 0; x < planet.cities.Count; x++)
@@ -658,8 +658,8 @@ public class PlanetJSON
         planet.LoadSkybox(false, nightSkybox);
 
         //City restoration preparation (needs to be done before restoring the cities and thus the terrain since that's where the cities are actually restored)
-        planet.planetWideCityCustomization = new PlanetCityCustomization();
-        planetCityCustomizationJSON.RestorePlanetCityCustomization(planet.planetWideCityCustomization);
+        planet.planetWideCityCustomization = new PlanetwideCityCustomization();
+        planetCityCustomizationJSON.RestorePlanetwideCityCustomization(planet.planetWideCityCustomization);
 
         //Terrain (also implicitly regenerates the cities)
         planetTerrain.RestorePlanetTerrain(PlanetTerrain.planetTerrain, this);
@@ -698,6 +698,6 @@ public class PlanetJSON
     public PlanetTerrainJSON planetTerrain;
 
     //Cities
-    public PlanetCityCustomizationJSON planetCityCustomizationJSON;
+    public PlanetwideCityCustomizationJSON planetCityCustomizationJSON;
     public List<CityJSON> cities;
 }

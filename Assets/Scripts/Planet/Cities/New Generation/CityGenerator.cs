@@ -6,8 +6,6 @@ public class CityGenerator : MonoBehaviour
 {
     public static CityGenerator generator;
 
-    public BiomeCityOptions[] biomeCityOptions;
-    public CityType[] cityTypes;
     public FoundationOptions foundationOptions;
 
     private void Awake() { generator = this; }
@@ -17,14 +15,11 @@ public class CityGenerator : MonoBehaviour
         NewCitySpecifications newCitySpecifications = city.newCitySpecifications;
 
         //Get city type
-        CityType cityType = Planet.planet.planetWideCityCustomization.cityType;
-        string cityTypePathSuffix = cityType.name + "/";
-
-        //Get biome-city options
-        BiomeCityOptions biomeOptions = GetBiomeCityOptions();
+        CityTypeJSON cityType = Planet.planet.planetWideCityCustomization.cityType;
+        string cityTypePathPrefix = cityType.GetResourcePathPrefix(true);
 
         //Buildings--------------------------------------------------------------------------------------------------------------
-        string buildingPath = "Planet/City/Buildings/" + cityTypePathSuffix;
+        string buildingPath = cityTypePathPrefix + "Buildings/";
         List<string> genericBuildings = new List<string>(cityType.buildings);
         TrimToRandomSubset(genericBuildings, newCitySpecifications.smallCompound ? Random.Range(3, 5) : Random.Range(5, 10));
         city.buildingManager.buildingPrefabs = new List<GameObject>();
@@ -53,21 +48,21 @@ public class CityGenerator : MonoBehaviour
         {
             //Wall section
             string wall = cityType.wallSections[Random.Range(0, cityType.wallSections.Length)];
-            city.cityWallManager.wallSectionPrefab = Resources.Load<GameObject>("Planet/City/Wall Sections/" + cityTypePathSuffix + wall);
+            city.cityWallManager.wallSectionPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Wall Sections/" + wall);
 
             //Horizontal Gate
             string gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.cityWallManager.horGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + gate);
+            city.cityWallManager.horGatePrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Gates/" + gate);
 
             //Vertical gate
             gate = cityType.gates[Random.Range(0, cityType.gates.Length)];
-            city.cityWallManager.verGatePrefab = Resources.Load<GameObject>("Planet/City/Gates/" + cityTypePathSuffix + gate);
+            city.cityWallManager.verGatePrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Gates/" + gate);
 
             //Fence posts
             if (cityType.fencePostChance >= Random.Range(0.0f, 1.0f))
             {
                 string fencePost = cityType.fencePosts[Random.Range(0, cityType.fencePosts.Length)];
-                city.cityWallManager.fencePostPrefab = Resources.Load<GameObject>("Planet/City/Fence Posts/" + cityTypePathSuffix + fencePost);
+                city.cityWallManager.fencePostPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Fence Posts/" + fencePost);
             }
         }
 
@@ -76,12 +71,15 @@ public class CityGenerator : MonoBehaviour
             city.circularCity = Random.Range(0.0f, 1.0f / cityType.fencePostChance) > 0.5f;
 
         //Foundations--------------------------------------------------------------------------------------------------------------
-        if (biomeOptions.foundationChance > Random.Range(0.0f, 1.0f) && !newCitySpecifications.tryToMakeEasyAccessToTerrain) //Chance for non-zero foundation height (and thus the presence of foundations)
+        if (0.65f > Random.Range(0.0f, 1.0f) && !newCitySpecifications.tryToMakeEasyAccessToTerrain) //Chance for non-zero foundation height (and thus the presence of foundations)
         {
+            city.foundationManager.foundationHeight = Random.Range(10, 75);
+            /*
             if(Random.Range(0, 3) != 0)
                 city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.x, biomeOptions.foundationHeightRange.y);
             else
                 city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.z, biomeOptions.foundationHeightRange.w);
+            */
         }
         else //Zero foundation height (and thus zero foundations). This could be overruled later if the city needs foundations to be above water
             city.foundationManager.foundationHeight = 0;
@@ -93,7 +91,7 @@ public class CityGenerator : MonoBehaviour
 
         //Lights--------------------------------------------------------------------------------------------------------------
         string cityLight = cityType.lights[Random.Range(0, cityType.lights.Length)];
-        city.cityLightManager.cityLightPrefab = Resources.Load<GameObject>("Planet/City/Lights/" + cityTypePathSuffix + cityLight);
+        city.cityLightManager.cityLightPrefab = Resources.Load<GameObject>(cityTypePathPrefix + "Lights/" + cityLight);
 
     }
 
@@ -101,23 +99,6 @@ public class CityGenerator : MonoBehaviour
     {
         while (toTrim.Count > subsetSize)
             toTrim.RemoveAt(Random.Range(0, toTrim.Count));
-    }
-
-    public BiomeCityOptions GetBiomeCityOptions()
-    {
-        BiomeCityOptions toReturn = biomeCityOptions[0];
-        Planet.Biome biome = Planet.planet.biome;
-
-        for (int x = 0; x < biomeCityOptions.Length; x++)
-        {
-            if (biome == biomeCityOptions[x].biome)
-            {
-                toReturn = biomeCityOptions[x];
-                break;
-            }
-        }
-
-        return toReturn;
     }
 
     private void AddSpecialBuilding(string specialBuildingPathName, City city)

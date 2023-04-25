@@ -4,13 +4,9 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class CityType
+public class CityTypeJSON
 {
     public string name = "New City Type";
-    public float spawnChance = 1.0f; //Higher the number, the more likely to spawn, no limit
-
-    //Biomes
-    public string[] biomes; //Leave unitialized to indicate all
 
     //Buildings
     public string[] buildings;
@@ -39,8 +35,23 @@ public class CityType
     //City lights
     public string[] lights;
 
+    public string GetResourcePathPrefix(bool includeSlashAtEnd)
+    {
+        return GetResourcePathPrefix(includeSlashAtEnd, name);
+    }
+
+    public static string GetResourcePathPrefix(bool includeSlashAtEnd, string cityTypeName)
+    {
+        string resourcePathPrefix = "Planet/City/City Types/" + cityTypeName;
+
+        if (includeSlashAtEnd)
+            resourcePathPrefix += "/";
+
+        return resourcePathPrefix;
+    }
+
     public string GetVerticalScaler(bool minor)
     {
-        return "Planet/City/Vertical Scalers/" + (minor ? minorVerticalScaler : majorVerticalScaler);
+        return GetResourcePathPrefix(true) + "Vertical Scalers/" + (minor ? minorVerticalScaler : majorVerticalScaler);
     }
 }

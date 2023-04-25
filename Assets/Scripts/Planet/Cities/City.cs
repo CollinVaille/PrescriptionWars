@@ -7,7 +7,7 @@ public class City : MonoBehaviour, INavZoneUpdater
     //General
     public int radius = 100;
     public GameObject mapMarkerPrefab;
-    [HideInInspector] public CityType cityType; //This is just to cache the value. The value is really determined per-planet in the class PlanetCityCustomization.
+    [HideInInspector] public CityTypeJSON cityType; //This is just to cache the value. The value is really determined per-planet in the class PlanetCityCustomization.
     [HideInInspector] public bool circularCity = false;
     [HideInInspector] public TerrainReservationOptions terrainReservationOptions;
 
@@ -222,19 +222,19 @@ public class CityJSON
         city.gameObject.name = name;
         city.radius = radius;
 
-        string cityTypePathSuffix = city.cityType.name + "/";
+        string cityTypePathPrefix = city.cityType.GetResourcePathPrefix(true);
 
         city.circularCity = circularCity;
         terrainReservationOptions.newGeneration = false;
         city.terrainReservationOptions = terrainReservationOptions;
         city.ReserveTerrainLocation(false);
 
-        buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathSuffix);
+        buildingManagerJSON.RestoreBuildingManager(city.buildingManager, cityTypePathPrefix);
         foundationManagerJSON.RestoreFoundationManager(city.foundationManager);
         verticalScalerManagerJSON.RestoreVerticalScalerManager(city.verticalScalerManager);
-        cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathSuffix);
+        cityWallManagerJSON.RestoreCityWallManager(city.cityWallManager, cityTypePathPrefix);
         bridgeManagerJSON.RestoreBridgeManager(city.bridgeManager);
-        cityLightManagerJSON.RestoreCityLightManager(city.cityLightManager, cityTypePathSuffix);
+        cityLightManagerJSON.RestoreCityLightManager(city.cityLightManager, cityTypePathPrefix);
 
         city.AfterCityGeneratedOrRestored();
     }

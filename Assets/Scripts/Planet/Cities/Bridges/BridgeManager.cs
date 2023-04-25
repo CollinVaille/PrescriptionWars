@@ -47,7 +47,7 @@ public class BridgeManager
 
     public Bridge InstantiateBridge(int prefabIndex)
     {
-        string fullResourcePath = "Planet/City/Bridges/" + city.cityType.name + "/" + bridgePrefabPaths[prefabIndex];
+        string fullResourcePath = city.cityType.GetResourcePathPrefix(true) + "Bridges/" + bridgePrefabPaths[prefabIndex];
         return GameObject.Instantiate(Resources.Load<GameObject>(fullResourcePath)).GetComponent<Bridge>();
     }
 

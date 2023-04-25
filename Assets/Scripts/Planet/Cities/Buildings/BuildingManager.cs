@@ -519,13 +519,13 @@ public class BuildingManagerJSON
             buildings.Add(new BuildingJSON(buildingManager.buildings[x]));
     }
 
-    public void RestoreBuildingManager(BuildingManager buildingManager, string cityTypePathSuffix)
+    public void RestoreBuildingManager(BuildingManager buildingManager, string cityTypePathPrefix)
     {
         buildingManager.SetDefaultMaterials();
 
         buildingManager.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < buildingPrefabs.Count; x++)
-            buildingManager.buildingPrefabs.Add(Resources.Load<GameObject>("Planet/City/Buildings/" + cityTypePathSuffix + buildingPrefabs[x]));
+            buildingManager.buildingPrefabs.Add(Resources.Load<GameObject>(cityTypePathPrefix + "Buildings/" + buildingPrefabs[x]));
 
         buildingManager.buildings = new List<Building>(buildings.Count);
         for (int x = 0; x < buildings.Count; x++)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.32467175, g: 0.06912157, b: 0.0029064855, a: 1}
+  m_IndirectSpecularColor: {r: 0.60540617, g: 0.5490479, b: 0.6446497, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -14372,7 +14372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planetName: 
   subBiome: 
-  biome: 3
+  biome: 0
   generator: {fileID: 1721634687}
   sun: {fileID: 705507995}
   moon: {fileID: 0}
@@ -21570,130 +21570,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7330a9bd9c4228a45a7c7694155b0f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  biomeCityOptions:
-  - name: Default
-    biome: 0
-    wallMaterials:
-    - Concrete Wall
-    - Concrete Wall 2
-    floorMaterials:
-    - Concrete Floor
-    slabMaterials:
-    - Concrete Wall
-    - Concrete Wall 2
-    groundMaterials:
-    - Concrete Floor
-    foundationChance: 0.5
-    foundationHeightRange: {x: 10, y: 50, z: 10, w: 100}
-  - name: Temperate
-    biome: 2
-    wallMaterials:
-    - Brick Wall
-    - Plaster Wall
-    floorMaterials:
-    - Wood Floor
-    - Slate Tile Floor
-    slabMaterials:
-    - Cobblestone Wall
-    groundMaterials:
-    - Slate Tile Floor
-    foundationChance: 0.4
-    foundationHeightRange: {x: 10, y: 50, z: 20, w: 85}
-  - name: Desert
-    biome: 3
-    wallMaterials:
-    - Sand Wall
-    - Sand Wall 2
-    - Cobblestone Wall
-    floorMaterials:
-    - Sand Wall
-    - Sand Wall 2
-    - Slate Tile Floor
-    - Rusted Deck Plates Hollow Metal
-    slabMaterials:
-    - Sand Wall
-    - Cobblestone Wall
-    groundMaterials:
-    - Slate Tile Floor
-    - Rusted Deck Plates Hollow Metal
-    foundationChance: 0.33
-    foundationHeightRange: {x: 10, y: 50, z: 35, w: 75}
-  - name: Spirit
-    biome: 6
-    wallMaterials:
-    - Metal Wall Panel
-    floorMaterials:
-    - Fabric SciFi 7 Metal
-    slabMaterials:
-    - Metal Wall Panel
-    groundMaterials:
-    - Fabric SciFi 7 Metal
-    foundationChance: 0.8
-    foundationHeightRange: {x: 15, y: 70, z: 15, w: 175}
-  - name: Hell
-    biome: 5
-    wallMaterials:
-    - Metal Wall Panel
-    floorMaterials:
-    - Fabric SciFi 7 Metal
-    slabMaterials:
-    - Metal Wall Panel
-    groundMaterials:
-    - Fabric SciFi 7 Metal
-    foundationChance: 0.9
-    foundationHeightRange: {x: 0, y: 200, z: 0, w: 350}
-  - name: Swamp
-    biome: 4
-    wallMaterials: []
-    floorMaterials: []
-    slabMaterials: []
-    groundMaterials: []
-    foundationChance: 0.25
-    foundationHeightRange: {x: 0, y: 20, z: 0, w: 50}
-  cityTypes:
-  - name: Slum
-    spawnChance: 1
-    biomes: []
-    buildings:
-    - Hotel
-    - Hovel Ruins
-    - Mini Garage
-    - Retail Hole in the Wall
-    - Swamp Ass Hovel
-    - Dome Hut
-    - Water Tower
-    - Watchtower
-    - Appartment Complex 1
-    - Appartment Complex 2
-    - Appartment Complex 3
-    - Small Industrial Plant
-    - Circular Hut
-    wallSections:
-    - Wall Slab
-    - Half Slab Half Bars
-    gates:
-    - Closed Gate 1
-    - Closed Gate 2
-    - Closed Gate 3
-    - Closed Gate 4
-    - Open Gate 1
-    - Open Gate 2
-    - Open Gate 3
-    fencePostChance: 1
-    fencePosts:
-    - Fence Post Slab
-    - Fence Post Slab 2
-    bridges:
-    - Simple Arch Bridge
-    - Scaffolding Bridge
-    defaultWallMaterial: Concrete Wall
-    defaultFloorMaterial: Concrete Floor
-    wallMaterials: []
-    floorMaterials: []
-    minorVerticalScaler: Rusty Ladder With Platform
-    majorVerticalScaler: Rickety Elevator
-    lights:
-    - Lamp Post
   foundationOptions:
     testFoundation: 
     basicCircularFoundation: Basic Circular Foundation
