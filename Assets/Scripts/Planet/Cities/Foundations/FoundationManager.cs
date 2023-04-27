@@ -14,7 +14,6 @@ public class FoundationManager
     public FoundationType foundationType = FoundationType.NoFoundations;
     public int foundationHeight = 0;
     public bool nothingBelowFoundationHeight = true;
-    public FoundationSelections foundationSelections;
 
     public Material largeSlabMaterial, largeGroundMaterial;
     public List<Foundation> foundations;
@@ -124,8 +123,6 @@ public class FoundationManager
             DoWhateverWeNeedToDoForNoFoundations();
             return;
         }
-
-        foundationSelections = new FoundationSelections(CityGenerator.generator.foundationOptions);
 
         //---
         ProceedWithCreatingFoundationBasedOnType();
@@ -305,7 +302,7 @@ public class FoundationManager
     public Foundation GenerateNewFoundation(Vector3 localPosition, Vector3 localScale, FoundationShape shape, bool needsConnecting)
     {
         //Create the new foundation
-        string foundationPrefab = foundationSelections.GetFoundationPrefab(shape, localScale);
+        string foundationPrefab = Planet.planet.planetWideCityCustomization.foundationSelections.GetFoundationPrefab(shape, localScale);
         Foundation newFoundation = GenerateNewOrRestoreFoundation(foundationPrefab, localPosition, localScale);
 
         //If requested, tell the bridge system this foundation needs connecting with the rest of the city

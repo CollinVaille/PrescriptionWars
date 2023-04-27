@@ -72,9 +72,9 @@ public class TerrainSculptingLayerSelectionJSON
             sculptingCondition = TerrainSculptingCondition.Unconditional;
 
         horizonHeightIsCeiling = terrainSculptingLayerOptionsJSON.horizonHeightIsCeilingChance > Random.Range(0.0f, 1.0f);
-        noiseGroundScale = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseGroundScaleRange, defaultValue: 40);
-        amplitudeGroundScale = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudeGroundScaleRange, defaultValue: 8);
-        amplitudePower = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudePowerRange, defaultValue: 3);
-        noiseStrength = PlanetGenerator.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseStrengthRange, defaultValue: 0.5f);
+        noiseGroundScale = GeneralHelperMethods.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseGroundScaleRange, defaultValue: 40);
+        amplitudeGroundScale = GeneralHelperMethods.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudeGroundScaleRange, defaultValue: 8);
+        amplitudePower = GeneralHelperMethods.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.amplitudePowerRange, defaultValue: 3);
+        noiseStrength = GeneralHelperMethods.GetRandomValueFromRange(terrainSculptingLayerOptionsJSON.noiseStrengthRange, defaultValue: 0.5f);
     }
 }

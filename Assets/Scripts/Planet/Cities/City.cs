@@ -85,7 +85,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Determine city type, which determines whether we have walls, fence posts...
         //what buildings and building materials are used etc...
-        CityGenerator.generator.CustomizeCity(this);
+        CityGenerator.CustomizeCity(this);
 
         //Early on, let's get references to our building prototypes so we can reference them anywere below (needed for adjusting the city radius and GenerateRoads())
         buildingManager.LoadBuildingPrototypes();

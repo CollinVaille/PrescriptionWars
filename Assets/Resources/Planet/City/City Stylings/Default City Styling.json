@@ -1,0 +1,25 @@
+{
+	"wallMaterials": ["Concrete Wall", "Concrete Wall 2"],
+	"floorMaterials": ["Concrete Floor"],
+	"slabMaterials": ["Concrete Wall", "Concrete Wall 2"],
+	"groundMaterials": ["Concrete Floor"],
+
+	"foundationOptions": {
+		"basicCircularFoundation": "Basic Circular Foundation",
+		"basicRectangularFoundation": "Basic Rectangular Foundation",
+		"basicTorusFoundation": "Basic Torus Foundation",
+
+		"smallCircularFoundations": ["Hourglass Circular Foundation", "Carved Circular Foundation", "Pavilion Circular Foundation", "Vase Circular Foundation"],
+		"smallRectangularFoundations": ["Pilaster Rectangular Foundation", "Tower Rectangular Foundation"],
+		"largeCircularFoundations": ["Colosseum Circular Foundation", "Hippodrome Circular Foundation", "Sci-Fi Pipes Circular Foundation", "Temple Circular Foundation"],
+		"largeRectangularFoundations": ["Colonnade Rectangular Foundation", "Courthouse Rectangular Foundation"],
+		"largeTorusFoundations": ["Industrial Torus Foundation"],
+
+		"heightOptions": [
+			{
+				"chance": 0.5,
+				"heightRange": [10, 50]
+			}
+		]
+	}
+}

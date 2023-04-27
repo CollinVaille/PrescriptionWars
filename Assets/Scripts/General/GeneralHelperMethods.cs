@@ -154,6 +154,54 @@ public class GeneralHelperMethods
         return int.Parse(numberTextFromText);
     }
 
+    public static float GetRandomValueFromRange(float[] range, float defaultValue = 0.0f)
+    {
+        if (range == null || range.Length == 0)
+            return defaultValue;
+
+        if (range.Length == 1)
+            return range[0];
+
+        return Random.Range(range[0], range[1]);
+    }
+
+    public static int GetRandomValueFromRange(int[] range, int defaultValue = 0)
+    {
+        if (range == null || range.Length == 0)
+            return defaultValue;
+
+        if (range.Length == 1)
+            return range[0];
+
+        return Random.Range(range[0], range[1]);
+    }
+
+    public static string GetOneOf(string[] options)
+    {
+        if (options == null || options.Length == 0)
+            return null;
+
+        return options[Random.Range(0, options.Length)];
+    }
+
+    public static void TrimToRandomSubset(List<string> toTrim, int subsetSize)
+    {
+        while (toTrim.Count > subsetSize)
+            toTrim.RemoveAt(Random.Range(0, toTrim.Count));
+    }
+
+    public static bool GetColorIfSpecified(HumanFriendlyColorJSON colorJSON, out Color color)
+    {
+        if (colorJSON == null || (colorJSON.r == 0 && colorJSON.g == 0 && colorJSON.b == 0 && Mathf.Approximately(colorJSON.a, 0.0f)))
+        {
+            color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+            return false;
+        }
+
+        color = new Color(colorJSON.r / 255.0f, colorJSON.g / 255.0f, colorJSON.b / 255.0f, colorJSON.a);
+        return true;
+    }
+
     //Returns the canvas that the specified transform is under in the hierarchy.
     public static Canvas GetParentCanvas(Transform transform)
     {

@@ -26,14 +26,15 @@ public class CityTypeJSON
 
     //Materials
     public string defaultWallMaterial, defaultFloorMaterial;
-    public string[] wallMaterials;
-    public string[] floorMaterials;
 
     //Vertical scalers
     public string minorVerticalScaler, majorVerticalScaler;
 
     //City lights
     public string[] lights;
+
+    //Other options that are not required for each city type (if a city type doesn't have them, it will fallback to some default styling)
+    public CityStylingJSON styling;
 
     public string GetResourcePathPrefix(bool includeSlashAtEnd)
     {

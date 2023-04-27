@@ -6,13 +6,13 @@ using UnityEngine;
 public class CityCustomizationMasterJSON
 {
     public BiomeMatchOptionJSON[] cityTypes;
-    public BiomeMatchOptionJSON[] biomeCityOptions;
+    public BiomeMatchOptionJSON[] cityStylings;
 
 
     //---
 
 
-    public static void GetDataFromJSONFiles(out CityTypeJSON cityType, out BiomeCityOptionsJSON biomeCityOptions)
+    public static void GetDataFromJSONFiles(out CityTypeJSON cityType, out CityStylingJSON cityStyling)
     {
         string cityMasterCustomizationAsString = GeneralHelperMethods.GetTextAsset("Planet/City/City Customization Master File", startPathFromGeneralTextFolder: false).text;
         CityCustomizationMasterJSON cityCustomizationMaster = JsonUtility.FromJson<CityCustomizationMasterJSON>(cityMasterCustomizationAsString);
@@ -21,24 +21,36 @@ public class CityCustomizationMasterJSON
         string subBiomeName = Planet.planet.subBiome;
 
         cityType = cityCustomizationMaster.GetCityType(biomeName, subBiomeName);
-        biomeCityOptions = cityCustomizationMaster.GetBiomeCityOptions(biomeName, subBiomeName);
+
+        cityStyling = cityType.styling; //1st choice: Get styling directly from city type
+        cityStyling.FillEmptyFieldsWithTheseValues(cityCustomizationMaster.GetCityStyling(biomeName, subBiomeName)); //2nd choice, get styling based on biome and/or sub-biome
+        cityStyling.FillEmptyFieldsWithTheseValues(cityCustomizationMaster.GetDefaultStyling()); //Last resort, use default styling
     }
 
     private CityTypeJSON GetCityType(string biomeName, string subBiomeName)
     {
         BiomeMatchOptionJSON cityTypeMatch = BiomeMatchOptionJSON.GetBestMatch(biomeName, subBiomeName, cityTypes, cityTypes[0]);
 
-        string cityTypePath = CityTypeJSON.GetResourcePathPrefix(true, cityTypeMatch.matchName) + cityTypeMatch.matchName + " City Type";
+        string cityTypePath = CityTypeJSON.GetResourcePathPrefix(true, cityTypeMatch.matchName) + cityTypeMatch.matchName;
         string cityTypeJSONAsString = GeneralHelperMethods.GetTextAsset(cityTypePath, startPathFromGeneralTextFolder: false).text;
         return JsonUtility.FromJson<CityTypeJSON>(cityTypeJSONAsString);
     }
 
-    private BiomeCityOptionsJSON GetBiomeCityOptions(string biomeName, string subBiomeName)
+    private CityStylingJSON GetCityStyling(string biomeName, string subBiomeName)
     {
-        BiomeMatchOptionJSON biomeCityOptionsMatch = BiomeMatchOptionJSON.GetBestMatch(biomeName, subBiomeName, biomeCityOptions, biomeCityOptions[0]);
+        BiomeMatchOptionJSON cityStylingMatch = BiomeMatchOptionJSON.GetBestMatch(biomeName, subBiomeName, cityStylings, cityStylings[0]);
+        return LoadInCityStyling(cityStylingMatch.matchName); 
+    }
 
-        string biomeCityOptionsPath = "Planet/City/Biome City Options/" + biomeCityOptionsMatch.matchName;
-        string biomeCityOptionsAsString = GeneralHelperMethods.GetTextAsset(biomeCityOptionsPath, startPathFromGeneralTextFolder: false).text;
-        return JsonUtility.FromJson<BiomeCityOptionsJSON>(biomeCityOptionsAsString);
+    private CityStylingJSON GetDefaultStyling()
+    {
+        return LoadInCityStyling(cityStylings[0].matchName);
+    }
+
+    private CityStylingJSON LoadInCityStyling(string stylingName)
+    {
+        string stylingPath = "Planet/City/City Stylings/" + stylingName;
+        string stylingAsString = GeneralHelperMethods.GetTextAsset(stylingPath, startPathFromGeneralTextFolder: false).text;
+        return JsonUtility.FromJson<CityStylingJSON>(stylingAsString);
     }
 }

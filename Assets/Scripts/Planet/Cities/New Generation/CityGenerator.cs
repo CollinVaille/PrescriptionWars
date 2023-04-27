@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class CityGenerator : MonoBehaviour
 {
-    public static CityGenerator generator;
-
-    public FoundationOptions foundationOptions;
-
-    private void Awake() { generator = this; }
-
-    public void CustomizeCity(City city)
+    public static void CustomizeCity(City city)
     {
         NewCitySpecifications newCitySpecifications = city.newCitySpecifications;
 
@@ -21,7 +15,7 @@ public class CityGenerator : MonoBehaviour
         //Buildings--------------------------------------------------------------------------------------------------------------
         string buildingPath = cityTypePathPrefix + "Buildings/";
         List<string> genericBuildings = new List<string>(cityType.buildings);
-        TrimToRandomSubset(genericBuildings, newCitySpecifications.smallCompound ? Random.Range(3, 5) : Random.Range(5, 10));
+        GeneralHelperMethods.TrimToRandomSubset(genericBuildings, newCitySpecifications.smallCompound ? Random.Range(3, 5) : Random.Range(5, 10));
         city.buildingManager.buildingPrefabs = new List<GameObject>();
         for (int x = 0; x < genericBuildings.Count; x++)
             city.buildingManager.buildingPrefabs.Add(Resources.Load<GameObject>(buildingPath + genericBuildings[x]));
@@ -71,22 +65,14 @@ public class CityGenerator : MonoBehaviour
             city.circularCity = Random.Range(0.0f, 1.0f / cityType.fencePostChance) > 0.5f;
 
         //Foundations--------------------------------------------------------------------------------------------------------------
-        if (0.65f > Random.Range(0.0f, 1.0f) && !newCitySpecifications.tryToMakeEasyAccessToTerrain) //Chance for non-zero foundation height (and thus the presence of foundations)
-        {
-            city.foundationManager.foundationHeight = Random.Range(10, 75);
-            /*
-            if(Random.Range(0, 3) != 0)
-                city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.x, biomeOptions.foundationHeightRange.y);
-            else
-                city.foundationManager.foundationHeight = (int)Random.Range(biomeOptions.foundationHeightRange.z, biomeOptions.foundationHeightRange.w);
-            */
-        }
+        if (!newCitySpecifications.tryToMakeEasyAccessToTerrain) //Chance for non-zero foundation height (and thus the presence of foundations)
+            city.foundationManager.foundationHeight = Planet.planet.planetWideCityCustomization.foundationSelections.foundationHeight;
         else //Zero foundation height (and thus zero foundations). This could be overruled later if the city needs foundations to be above water
             city.foundationManager.foundationHeight = 0;
 
         //Bridges--------------------------------------------------------------------------------------------------------------
         city.bridgeManager.bridgePrefabPaths = new List<string>(cityType.bridges);
-        TrimToRandomSubset(city.bridgeManager.bridgePrefabPaths, Random.Range(1, 4));
+        GeneralHelperMethods.TrimToRandomSubset(city.bridgeManager.bridgePrefabPaths, Random.Range(1, 4));
         city.bridgeManager.bridgePrefabPaths.Add("Special Connector");
 
         //Lights--------------------------------------------------------------------------------------------------------------
@@ -95,13 +81,7 @@ public class CityGenerator : MonoBehaviour
 
     }
 
-    public static void TrimToRandomSubset(List<string> toTrim, int subsetSize)
-    {
-        while (toTrim.Count > subsetSize)
-            toTrim.RemoveAt(Random.Range(0, toTrim.Count));
-    }
-
-    private void AddSpecialBuilding(string specialBuildingPathName, City city)
+    private static void AddSpecialBuilding(string specialBuildingPathName, City city)
     {
         GameObject specialBuildingPrefab = Resources.Load<GameObject>(specialBuildingPathName);
         if(specialBuildingPrefab)

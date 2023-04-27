@@ -11,6 +11,8 @@ public class FoundationSelections
     public string smallCircularFoundation, smallRectangularFoundation;
     public string largeCircularFoundation, largeRectangularFoundation, largeTorusFoundation;
 
+    public int foundationHeight;
+
     public FoundationSelections(FoundationOptions foundationOptions)
     {
         testFoundation = foundationOptions.testFoundation;
@@ -25,6 +27,20 @@ public class FoundationSelections
         largeCircularFoundation = foundationOptions.largeCircularFoundations[Random.Range(0, foundationOptions.largeCircularFoundations.Length)];
         largeRectangularFoundation = foundationOptions.largeRectangularFoundations[Random.Range(0, foundationOptions.largeRectangularFoundations.Length)];
         largeTorusFoundation = foundationOptions.largeTorusFoundations[Random.Range(0, foundationOptions.largeTorusFoundations.Length)];
+
+        foundationHeight = DetermineFoundationHeightFromOptions(foundationOptions.heightOptions);
+    }
+
+    private int DetermineFoundationHeightFromOptions(FoundationHeightOption[] heightOptions)
+    {
+        for(int x = 0; x < heightOptions.Length; x++)
+        {
+            if(heightOptions[x].chance > Random.Range(0.0f, 1.0f))
+                return GeneralHelperMethods.GetRandomValueFromRange(heightOptions[x].heightRange);
+        }
+
+        //Default to zero height
+        return 0;
     }
 
     public string GetFoundationPrefab(FoundationShape foundationShape, Vector3 scale)

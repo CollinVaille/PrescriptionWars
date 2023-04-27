@@ -18,7 +18,6 @@ public class Planet : MonoBehaviour
     [HideInInspector] public string planetName = "";
     public string subBiome;
     public Biome biome = Biome.Unknown;
-    public PlanetGenerator generator;
 
     //Day/night cycle
     public Transform sun, moon;
@@ -66,7 +65,7 @@ public class Planet : MonoBehaviour
 
         //Make/restore selections
         if (newPlanet)
-            yield return StartCoroutine(generator.GeneratePlanet(this));
+            yield return StartCoroutine(GetComponent<PlanetGenerator>().GeneratePlanet(this));
         else
             RestorePlanet();
 

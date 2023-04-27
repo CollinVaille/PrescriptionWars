@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.60540617, g: 0.5490479, b: 0.6446497, a: 1}
+  m_IndirectSpecularColor: {r: 0.562856, g: 0.45823592, b: 0.0000042454826, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10000,7 +10000,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 135, y: 0, z: 0}
 --- !u!1 &731343691
 GameObject:
@@ -11062,7 +11062,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!170 &811231356
 AudioDistortionFilter:
@@ -14219,6 +14219,7 @@ GameObject:
   - component: {fileID: 1068567381}
   - component: {fileID: 1068567380}
   - component: {fileID: 1068567384}
+  - component: {fileID: 1068567378}
   - component: {fileID: 1068567379}
   - component: {fileID: 1068567377}
   - component: {fileID: 1068567383}
@@ -14334,6 +14335,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1068567378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068567375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cb9a5feafe1fab4697f05e4eedea1c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!167 &1068567379
 AudioReverbZone:
   m_ObjectHideFlags: 0
@@ -14373,7 +14386,7 @@ MonoBehaviour:
   planetName: 
   subBiome: 
   biome: 0
-  generator: {fileID: 1721634687}
+  generator: {fileID: 0}
   sun: {fileID: 705507995}
   moon: {fileID: 0}
   dayLength: 1000
@@ -16423,7 +16436,7 @@ Transform:
   - {fileID: 515587975}
   - {fileID: 814359348}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1237790030
 GameObject:
@@ -17171,7 +17184,7 @@ RectTransform:
   - {fileID: 1441673167}
   - {fileID: 1183973936}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -19454,7 +19467,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!215 &1465257515
 ReflectionProbe:
@@ -21514,85 +21527,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1717611867}
   m_CullTransparentMesh: 0
---- !u!1 &1721634685
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1721634686}
-  - component: {fileID: 1721634687}
-  - component: {fileID: 1721634688}
-  m_Layer: 0
-  m_Name: Planet Generator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1721634686
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721634685}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1721634687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721634685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cb9a5feafe1fab4697f05e4eedea1c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1721634688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721634685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7330a9bd9c4228a45a7c7694155b0f42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foundationOptions:
-    testFoundation: 
-    basicCircularFoundation: Basic Circular Foundation
-    basicRectangularFoundation: Basic Rectangular Foundation
-    basicTorusFoundation: Basic Torus Foundation
-    smallCircularFoundations:
-    - Hourglass Circular Foundation
-    - Carved Circular Foundation
-    - Pavilion Circular Foundation
-    - Vase Circular Foundation
-    smallRectangularFoundations:
-    - Pilaster Rectangular Foundation
-    - Tower Rectangular Foundation
-    largeCircularFoundations:
-    - Colosseum Circular Foundation
-    - Hippodrome Circular Foundation
-    - Sci-Fi Pipes Circular Foundation
-    - Temple Circular Foundation
-    largeRectangularFoundations:
-    - Colonnade Rectangular Foundation
-    - Courthouse Rectangular Foundation
-    largeTorusFoundations:
-    - Industrial Torus Foundation
 --- !u!1 &1754296268
 GameObject:
   m_ObjectHideFlags: 0
@@ -23536,7 +23470,7 @@ Transform:
   m_LocalScale: {x: 3000, y: 1, z: 3000}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1909745538
 MonoBehaviour:
@@ -24214,7 +24148,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2013276646
 GameObject:

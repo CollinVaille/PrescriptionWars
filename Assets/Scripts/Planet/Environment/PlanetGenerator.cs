@@ -222,9 +222,9 @@ public class PlanetGenerator : MonoBehaviour
     {
         terrainCustomization = new TerrainCustomization();
 
-        float sunIntensity = GetRandomValueFromRange(subBiomeJSON.sunIntensityRange);
+        float sunIntensity = GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.sunIntensityRange);
 
-        if (GetColorIfSpecified(subBiomeJSON.sunColor, out Color sunColor))
+        if (GeneralHelperMethods.GetColorIfSpecified(subBiomeJSON.sunColor, out Color sunColor))
             GenerateSun(planet, sunIntensity, sunColor);
         else
             GenerateSun(planet, sunIntensity);
@@ -232,27 +232,27 @@ public class PlanetGenerator : MonoBehaviour
         if (System.Enum.TryParse<AudioReverbPreset>(subBiomeJSON.reverbPreset, out AudioReverbPreset audioReverbPreset))
             planet.GetComponent<AudioReverbZone>().reverbPreset = audioReverbPreset;
 
-        if(GetColorIfSpecified(subBiomeJSON.underwaterColor, out Color underWaterColor))
+        if(GeneralHelperMethods.GetColorIfSpecified(subBiomeJSON.underwaterColor, out Color underWaterColor))
             planet.SetUnderwaterColor(underWaterColor);
 
         if (!System.Enum.TryParse<Planet.OceanType>(subBiomeJSON.oceanType, out Planet.OceanType oceanType))
             oceanType = Planet.OceanType.Water;
 
-        string oceanMaterialSelection = GetOneOf(subBiomeJSON.oceanMaterial);
+        string oceanMaterialSelection = GeneralHelperMethods.GetOneOf(subBiomeJSON.oceanMaterial);
         if (oceanMaterialSelection == null)
             oceanMaterialSelection = "Water";
 
-        planet.SetOcean(GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType, oceanMaterialSelection);
+        planet.SetOcean(GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.oceanHeightRange), oceanType, oceanMaterialSelection);
 
-        terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
+        terrainCustomization.seabedHeight = planet.oceanTransform.position.y + GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.seabedRelativeHeightRange, defaultValue: 7);
 
         terrainCustomization.groundTexture = Planet.LoadTexture(subBiomeJSON.groundTexture);
 
-        string ground2Texture = GetOneOf(subBiomeJSON.ground2Texture);
+        string ground2Texture = GeneralHelperMethods.GetOneOf(subBiomeJSON.ground2Texture);
         if(!string.IsNullOrEmpty(ground2Texture))
         {
             terrainCustomization.ground2Texture = Planet.LoadTexture(ground2Texture);
-            terrainCustomization.ground2TextureScale = GetRandomValueFromRange(subBiomeJSON.ground2TextureScaleRange, 100.0f);
+            terrainCustomization.ground2TextureScale = GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.ground2TextureScaleRange, 100.0f);
         }
 
         terrainCustomization.cliffTexture = subBiomeJSON.cliffHasSameTextureAsGround ? terrainCustomization.groundTexture : Planet.LoadTexture(subBiomeJSON.cliffTexture);
@@ -271,7 +271,7 @@ public class PlanetGenerator : MonoBehaviour
         terrainCustomization.seabedMetallic = subBiomeJSON.seabedMetallicness;
         terrainCustomization.seabedSmoothness = subBiomeJSON.seabedSmoothness;
 
-        string terrainSculptingFileName = GetOneOf(subBiomeJSON.terrainSculpting);
+        string terrainSculptingFileName = GeneralHelperMethods.GetOneOf(subBiomeJSON.terrainSculpting);
         string terrainSculptingJSONAsString = GeneralHelperMethods.GetTextAsset("Planet/Environment/Terrain Sculpting/" + terrainSculptingFileName, startPathFromGeneralTextFolder: false).text;
         TerrainSculptingJSON terrainSculptingJSON = JsonUtility.FromJson<TerrainSculptingJSON>(terrainSculptingJSONAsString);
 
@@ -284,26 +284,26 @@ public class PlanetGenerator : MonoBehaviour
                 terrainCustomization.terrainSculptingLayers.Add(new TerrainSculptingLayerSelectionJSON(terrainSculptingJSON.layers[x]));
         }
 
-        if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType groundMaterialType))
+        if (System.Enum.TryParse<PlanetMaterialType>(GeneralHelperMethods.GetOneOf(subBiomeJSON.groundMaterial), out PlanetMaterialType groundMaterialType))
             planet.LoadGroundMaterial(groundMaterialType);
 
         if(subBiomeJSON.seabedHasSameMaterialAsGround)
             planet.LoadSeabedMaterial(groundMaterialType);
         else if (subBiomeJSON.seabedMaterial != null && subBiomeJSON.seabedMaterial.Length > 0)
         {
-            if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.seabedMaterial), out PlanetMaterialType seabedMaterialType))
+            if (System.Enum.TryParse<PlanetMaterialType>(GeneralHelperMethods.GetOneOf(subBiomeJSON.seabedMaterial), out PlanetMaterialType seabedMaterialType))
                 planet.LoadSeabedMaterial(seabedMaterialType);
         }
         else
         {
             if(planet.hasLiquidOcean)
             {
-                if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.wetSeabedMaterial), out PlanetMaterialType seabedMaterialType))
+                if (System.Enum.TryParse<PlanetMaterialType>(GeneralHelperMethods.GetOneOf(subBiomeJSON.wetSeabedMaterial), out PlanetMaterialType seabedMaterialType))
                     planet.LoadSeabedMaterial(seabedMaterialType);
             }
             else
             {
-                if (System.Enum.TryParse<PlanetMaterialType>(GetOneOf(subBiomeJSON.drySeabedMaterial), out PlanetMaterialType seabedMaterialType))
+                if (System.Enum.TryParse<PlanetMaterialType>(GeneralHelperMethods.GetOneOf(subBiomeJSON.drySeabedMaterial), out PlanetMaterialType seabedMaterialType))
                     planet.LoadSeabedMaterial(seabedMaterialType);
             }
         }
@@ -313,62 +313,20 @@ public class PlanetGenerator : MonoBehaviour
         if (System.Enum.TryParse<FogMode>(subBiomeJSON.fogMode, out FogMode fogMode))
             RenderSettings.fogMode = fogMode;
 
-        RenderSettings.fogDensity = GetRandomValueFromRange(subBiomeJSON.fogDensityRange);
-        if (GetColorIfSpecified(subBiomeJSON.fogColor, out Color fogColor))
+        RenderSettings.fogDensity = GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.fogDensityRange);
+        if (GeneralHelperMethods.GetColorIfSpecified(subBiomeJSON.fogColor, out Color fogColor))
             RenderSettings.fogColor = fogColor;
 
-        string daySkybox = GetOneOf(subBiomeJSON.daySkybox);
+        string daySkybox = GeneralHelperMethods.GetOneOf(subBiomeJSON.daySkybox);
         planet.LoadSkybox(true, daySkybox);
-        planet.LoadSkybox(false, subBiomeJSON.nightHasSameSkyboxAsDay ? daySkybox : GetOneOf(subBiomeJSON.nightSkybox));
+        planet.LoadSkybox(false, subBiomeJSON.nightHasSameSkyboxAsDay ? daySkybox : GeneralHelperMethods.GetOneOf(subBiomeJSON.nightSkybox));
 
         planet.dayAmbience = planet.LoadAmbience(subBiomeJSON.dayAmbience);
         planet.nightAmbience = planet.LoadAmbience(subBiomeJSON.nightAmbience);
 
-        terrainCustomization.idealTreeCount = GetRandomValueFromRange(subBiomeJSON.idealTreeCountRange);
+        terrainCustomization.idealTreeCount = GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.idealTreeCountRange);
         terrainCustomization.SetTreeNames(subBiomeJSON.treeNames != null ? subBiomeJSON.treeNames : new string[] { "Palm Tree" });
-        terrainCustomization.maxTreeSteepness = GetRandomValueFromRange(subBiomeJSON.maxTreeSteepnessRange, defaultValue: 30);
-    }
-
-    public static float GetRandomValueFromRange(float[] range, float defaultValue = 0.0f)
-    {
-        if (range == null || range.Length == 0)
-            return defaultValue;
-
-        if (range.Length == 1)
-            return range[0];
-
-        return Random.Range(range[0], range[1]);
-    }
-
-    public static int GetRandomValueFromRange(int[] range, int defaultValue = 0)
-    {
-        if (range == null || range.Length == 0)
-            return defaultValue;
-
-        if (range.Length == 1)
-            return range[0];
-
-        return Random.Range(range[0], range[1]);
-    }
-
-    private static string GetOneOf(string[] options)
-    {
-        if (options == null || options.Length == 0)
-            return null;
-
-        return options[Random.Range(0, options.Length)];
-    }
-
-    private static bool GetColorIfSpecified(HumanFriendlyColorJSON colorJSON, out Color color)
-    {
-        if (colorJSON == null || (colorJSON.r == 0 && colorJSON.g == 0 && colorJSON.b == 0 && Mathf.Approximately(colorJSON.a, 0.0f)))
-        {
-            color = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-            return false;
-        }
-
-        color = new Color(colorJSON.r / 255.0f, colorJSON.g / 255.0f, colorJSON.b / 255.0f, colorJSON.a);
-        return true;
+        terrainCustomization.maxTreeSteepness = GeneralHelperMethods.GetRandomValueFromRange(subBiomeJSON.maxTreeSteepnessRange, defaultValue: 30);
     }
 
     private static string GetBiomeName(Planet.Biome biome) { return GeneralHelperMethods.GetEnumText(biome.ToString()); }
