@@ -20,7 +20,7 @@ public class FancyPlanetLight : PlanetLight
     {
         audioSource = GetComponent<AudioSource>();
 
-        if (lightRenderers != null && lightRenderers[0] != null)
+        if (lightRenderers != null && lightRenderers.Length > 0 && lightRenderers[0] != null)
             offMaterial = lightRenderers[0].sharedMaterial;
 
         lightIntensities = new float[lights.Length];
