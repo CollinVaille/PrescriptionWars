@@ -81,7 +81,7 @@ public class WD40 : RepairTool
         shootingSFXSource.Play();
 
         //Lifetime of single spurt
-        Damageable us = transform.GetComponentInParent<Damageable>();
+        IDamageable us = transform.GetComponentInParent<IDamageable>();
         while (actionKey == actionCode && holder)
         {
             //Player/bot specific loop guards/conditions
@@ -107,7 +107,7 @@ public class WD40 : RepairTool
                     Transform hitTransform = hit.collider.transform;
 
                     //Can't touch ourselves and can't go through walls
-                    if (hitTransform.GetComponentInParent<Damageable>() == us || !DirectLineToTarget(hit.collider))
+                    if (hitTransform.GetComponentInParent<IDamageable>() == us || !DirectLineToTarget(hit.collider))
                         continue;
 
                     if (substanceIsFlames)

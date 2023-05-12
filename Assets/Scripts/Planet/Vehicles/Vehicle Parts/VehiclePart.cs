@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VehiclePart : MonoBehaviour, Damageable
+public class VehiclePart : MonoBehaviour, IDamageable
 {
     protected Vehicle belongsTo;
     private Collider partCollider;

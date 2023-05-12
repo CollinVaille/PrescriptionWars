@@ -17,10 +17,10 @@ public class PlanetFactory : MonoBehaviour
     private IEnumerator FactoryManagementLoop()
     {
         float elapsedTimeForThisCycle = 0.0f;
-        float stepDuration = 0.2f;
+        float stepDuration = 0.1f;
         while(true)
         {
-            PerformFactoryUpdate(elapsedTimeForThisCycle);
+            PerformFactoryUpdate(elapsedTimeForThisCycle, stepDuration);
 
             yield return new WaitForSeconds(stepDuration);
 
@@ -30,10 +30,10 @@ public class PlanetFactory : MonoBehaviour
         }
     }
 
-    private void PerformFactoryUpdate(float elapsedTimeForThisCycle)
+    private void PerformFactoryUpdate(float elapsedTimeForThisCycle, float stepDuration)
     {
         if (startingMachine)
-            startingMachine.PerformMachineCyleUpdate(elapsedTimeForThisCycle / cycleDuration);
+            startingMachine.PerformMachineCyleUpdate(elapsedTimeForThisCycle / cycleDuration, stepDuration);
 
         UpdateSingleInstanceFactoryStuff(elapsedTimeForThisCycle);
     }

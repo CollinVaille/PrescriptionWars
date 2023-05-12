@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2362127420204577322}
+  - component: {fileID: 2074187408444653205}
   - component: {fileID: 7785003788423482303}
   - component: {fileID: 8639924918199423131}
   - component: {fileID: 8135169096392572960}
@@ -16,7 +17,7 @@ GameObject:
   - component: {fileID: 180818553340694994}
   - component: {fileID: -8811198599064021329}
   m_Layer: 0
-  m_Name: Starting Pill Mold
+  m_Name: Factory Proto Pill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,6 +37,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2074187408444653205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3683833630538956089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82cd99140a9e31342aa41f3fa83e0b97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &7785003788423482303
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -202,6 +202,19 @@ public class GeneralHelperMethods
         return true;
     }
 
+    public enum WhichVector { X, Y, Z }
+    public static Vector3 GetModifiedVector3(Vector3 original, float newVectorValue, WhichVector whichVector)
+    {
+        if (whichVector == WhichVector.X)
+            original.x = newVectorValue;
+        else if (whichVector == WhichVector.Y)
+            original.y = newVectorValue;
+        else
+            original.z = newVectorValue;
+
+        return original;
+    }
+
     //Returns the canvas that the specified transform is under in the hierarchy.
     public static Canvas GetParentCanvas(Transform transform)
     {

@@ -212,8 +212,8 @@ public class Vehicle : MonoBehaviour
         //I know this recursive system is confusing but it came about from a long effort to make
         //a part-specific damage system that can take damage both from the root transform detecting crash collisions
         //and the children detecting point damage from things like bullets, punches, explosions, fire, etc.
-        if (recursive && part.GetComponent<Damageable>() != null)
-            part.GetComponent<Damageable>().Damage(impactSpeed, 0, contactPoint, DamageType.Melee, -53); //Don't change -53
+        if (recursive && part.GetComponent<IDamageable>() != null)
+            part.GetComponent<IDamageable>().Damage(impactSpeed, 0, contactPoint, DamageType.Melee, -53); //Don't change -53
     }
 
     public void PlayDamageSound(float damageAmount)

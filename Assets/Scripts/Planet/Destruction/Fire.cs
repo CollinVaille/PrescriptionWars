@@ -54,7 +54,7 @@ public class Fire : MonoBehaviour
 
     public static bool IsFlammable (Transform target)
     {
-        if (target.GetComponent<Damageable>() != null)
+        if (target.GetComponent<IDamageable>() != null)
             return true;
         else
         {
@@ -127,7 +127,7 @@ public class Fire : MonoBehaviour
         fireLight.enabled = true;
 
         //Damage
-        Damageable damageable = transform.parent.GetComponent<Damageable>();
+        IDamageable damageable = transform.parent.GetComponent<IDamageable>();
 
         //Make fire able to spread
         GetComponent<Collider>().enabled = true;

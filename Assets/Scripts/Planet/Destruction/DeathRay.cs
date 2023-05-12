@@ -67,7 +67,7 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
             ImpactEffect.impactEffectPool.GetGameObject("Plasma Impact").GetComponent<ImpactEffect>().CreateEffect(hit.point);
 
             //Apply damage to hit object
-            Damageable damageable = hit.collider.GetComponentInParent<Damageable>();
+            IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
             if (damageable != null)
                 damageable.Damage(damage, 0.0f, hit.point, DamageType.Projectile, launcher.team);
 

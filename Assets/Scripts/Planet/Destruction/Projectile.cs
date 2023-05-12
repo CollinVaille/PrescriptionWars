@@ -91,7 +91,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
         //Check for collision
         if (Physics.Raycast(transform.position, stepDelta, out RaycastHit hit, stepDelta.magnitude, ~0, QueryTriggerInteraction.Ignore))
         {
-            Damageable victim = hit.collider.GetComponentInParent<Damageable>();
+            IDamageable victim = hit.collider.GetComponentInParent<IDamageable>();
 
             if (victim == null || victim as Pill != launcher) //Make sure we don't collide with the very pill that launched us
                 Impact(victim);
@@ -111,7 +111,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
     }
 
     //Called when the projectile hits something
-    private void Impact(Damageable victim)
+    private void Impact(IDamageable victim)
     {
         if (victim != null)
         {

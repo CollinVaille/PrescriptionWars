@@ -171,7 +171,7 @@ public class Machete : Item
             return;
 
         //Apply damage and sound effects
-        Damageable damageable = collidedWith.transform.GetComponentInParent<Damageable>();
+        IDamageable damageable = collidedWith.transform.GetComponentInParent<IDamageable>();
         if (damageable != null)
         {
             damageable.Damage(meleeDamage, meleeKnockback, transform.position, DamageType.Projectile, thrower.team);

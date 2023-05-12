@@ -71,7 +71,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
             float actualDamage = damage / Vector3.Distance(hit.transform.position, transform.position);
 
             //First, damage any damageable
-            Damageable damageable = hit.GetComponent<Damageable>();
+            IDamageable damageable = hit.GetComponent<IDamageable>();
 
             if (damageable != null)
                 damageable.Damage(actualDamage, actualDamage * 10, transform.position, DamageType.Explosive, team);
@@ -106,7 +106,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
 
     private bool CanDamageStructure(Transform t)
     {
-        return t.GetComponentInParent<Damageable>() == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>()
+        return t.GetComponentInParent<IDamageable>() == null && !t.CompareTag("Essential") && !t.GetComponent<Terrain>()
             && !t.name.Equals("Floor");
     }
 

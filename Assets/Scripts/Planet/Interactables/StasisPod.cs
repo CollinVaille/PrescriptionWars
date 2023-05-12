@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StasisPod : Interactable, Damageable
+public class StasisPod : Interactable, IDamageable
 {
     public bool on = false;
     public Transform subject, fluid;

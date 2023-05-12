@@ -6,7 +6,7 @@ public class PlanetConveyorBelt : PlanetFactoryMachine
 {
     public Transform intakePoint, outtakePoint;
 
-    protected override void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage)
+    protected override void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage, float stepDuration)
     {
         if (step == MachineStep.Intake)
             intakeSlot.position = Vector3.Lerp(intakePoint.position, MiddlePoint, stepCompletionPercentage);

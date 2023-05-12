@@ -83,7 +83,7 @@ public class Gun : Item
         RaycastHit hit;
         if (holder.RaycastShoot(transform, range, out hit))
         {
-            Damageable hitObject = hit.collider.GetComponent<Damageable>();
+            IDamageable hitObject = hit.collider.GetComponent<IDamageable>();
             Pill hitPill = hit.collider.GetComponent<Pill>();
 
             if (hitObject != null)

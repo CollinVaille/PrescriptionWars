@@ -4,33 +4,34 @@ using UnityEngine;
 
 public abstract class PlanetFactoryMachine : MonoBehaviour
 {
-    protected enum MachineStep { Intake, Process, Outtake }
+    protected enum MachineStep { None, Intake, Process, Outtake }
 
     [HideInInspector] public Transform intakeSlot, processingSlot;
     public float processStepThreshold = 0.33f, outtakeStepThreshold = 0.66f;
     private float lastCycleUpdateAtPercentage = 0.0f;
+    private MachineStep currentStep = MachineStep.None;
     public PlanetFactoryMachine outputsTo;
 
-    public void PerformMachineCyleUpdate(float cycleCompletionPercentage)
+    public void PerformMachineCyleUpdate(float cycleCompletionPercentage, float stepDuration)
     {
         if (cycleCompletionPercentage < processStepThreshold) //Step 1: Intake
         {
-            if (intakeSlot && !processingSlot)
-                PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold);
+            if (currentStep == MachineStep.Intake && intakeSlot && !processingSlot)
+                PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold, stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Intake))
                 MoveToNextStep(MachineStep.Intake);
         }
         else if (cycleCompletionPercentage < outtakeStepThreshold) //Step 2: Process
         {
-            if(processingSlot)
-                PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold));
+            if(currentStep == MachineStep.Process && processingSlot)
+                PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold), stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Process))
                 MoveToNextStep(MachineStep.Process);
         }
         else //Step 3: Outtake
         {
-            if(processingSlot && outputsTo && !outputsTo.intakeSlot)
-                PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold));
+            if(currentStep == MachineStep.Outtake && processingSlot && outputsTo && !outputsTo.intakeSlot)
+                PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold), stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Outtake))
                 MoveToNextStep(MachineStep.Outtake);
         }
@@ -38,10 +39,10 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
         lastCycleUpdateAtPercentage = cycleCompletionPercentage;
 
         if(outputsTo)
-            outputsTo.PerformMachineCyleUpdate(cycleCompletionPercentage);
+            outputsTo.PerformMachineCyleUpdate(cycleCompletionPercentage, stepDuration);
     }
 
-    protected virtual void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage) { }
+    protected virtual void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage, float stepDuration) { }
 
     protected virtual void OnStartOfStep(MachineStep step) { }
 
@@ -62,6 +63,7 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             }
         }
 
+        currentStep = nextStep;
         OnStartOfStep(nextStep);
     }
 
@@ -81,7 +83,17 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     private bool ReadyToProgressToNextStep(MachineStep nextStep)
     {
         if (nextStep == MachineStep.Intake)
-            return processingSlot && outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, outtakeStepThreshold, 1.0f);
+        {
+            if (intakeSlot || IsStartingMachine())
+            {
+                if (processingSlot)
+                    return outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, outtakeStepThreshold, 1.0f);
+                else
+                    return ACloserToCThanB(lastCycleUpdateAtPercentage, outtakeStepThreshold, 1.0f);
+            }
+            else
+                return false;
+        }
         else if (nextStep == MachineStep.Process)
             return intakeSlot && !processingSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, 0.0f, processStepThreshold);
         else if (nextStep == MachineStep.Outtake)

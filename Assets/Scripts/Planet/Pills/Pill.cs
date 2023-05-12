@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Pill : MonoBehaviour, Damageable
+public class Pill : MonoBehaviour, IDamageable
 {
     private static string[] pillNames;
 
@@ -125,7 +125,7 @@ public class Pill : MonoBehaviour, Damageable
         //Pointy (layer 8) and blunt (layer 9) objects can damage pills upon contact
         else if (holding && (layerHit == 8 || layerHit == 9))
         {
-            Damageable hitObject = collision.GetContact(0).otherCollider.GetComponent<Damageable>();
+            IDamageable hitObject = collision.GetContact(0).otherCollider.GetComponent<IDamageable>();
             Pill hitPill = collision.GetContact(0).otherCollider.GetComponent<Pill>();
 
             if (hitObject != null)
@@ -210,7 +210,7 @@ public class Pill : MonoBehaviour, Damageable
             damage *= 0.2f;
 
         //Damage what we hit
-        Damageable hitObject = collision.GetContact(0).otherCollider.GetComponent<Damageable>();
+        IDamageable hitObject = collision.GetContact(0).otherCollider.GetComponent<IDamageable>();
         if (hitObject != null)
             hitObject.Damage(damage, 0.0f, transform.position, DamageType.ImpactSpeed, team);
 
