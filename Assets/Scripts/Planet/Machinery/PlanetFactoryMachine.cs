@@ -15,26 +15,24 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     {
         if (cycleCompletionPercentage < processStepThreshold) //Step 1: Intake
         {
-            if(IsStartingMachine() && Mathf.Approximately(lastCycleUpdateAtPercentage, 0.0f))
-                MoveToNextStep(MachineStep.Intake);
-            else if (intakeSlot && !processingSlot)
+            if (intakeSlot && !processingSlot)
                 PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold);
-            else if (ReadyToProgressToNextStep(MachineStep.Process))
-                MoveToNextStep(MachineStep.Process);
+            else if (ReadyToProgressToNextStep(MachineStep.Intake))
+                MoveToNextStep(MachineStep.Intake);
         }
         else if (cycleCompletionPercentage < outtakeStepThreshold) //Step 2: Process
         {
             if(processingSlot)
                 PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold));
-            else if (ReadyToProgressToNextStep(MachineStep.Outtake))
-                MoveToNextStep(MachineStep.Outtake);
+            else if (ReadyToProgressToNextStep(MachineStep.Process))
+                MoveToNextStep(MachineStep.Process);
         }
         else //Step 3: Outtake
         {
             if(processingSlot && outputsTo && !outputsTo.intakeSlot)
                 PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold));
-            else if (ReadyToProgressToNextStep(MachineStep.Intake))
-                MoveToNextStep(MachineStep.Intake);
+            else if (ReadyToProgressToNextStep(MachineStep.Outtake))
+                MoveToNextStep(MachineStep.Outtake);
         }
 
         lastCycleUpdateAtPercentage = cycleCompletionPercentage;
@@ -43,18 +41,26 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             outputsTo.PerformMachineCyleUpdate(cycleCompletionPercentage);
     }
 
-    protected abstract void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage);
+    protected virtual void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage) { }
 
-    protected abstract void OnStartOfStep(MachineStep step);
+    protected virtual void OnStartOfStep(MachineStep step) { }
 
     protected virtual bool IsStartingMachine() { return false; }
+
+    protected virtual void BeforePushingToNextMachine() { }
 
     private void MoveToNextStep(MachineStep nextStep)
     {
         if (nextStep == MachineStep.Process)
             PushInputToProcessing();
         else if (nextStep == MachineStep.Intake)
-            PushProcessingToNextMachine();
+        {
+            if (processingSlot && outputsTo && !outputsTo.intakeSlot)
+            {
+                BeforePushingToNextMachine();
+                PushProcessingToNextMachine();
+            }
+        }
 
         OnStartOfStep(nextStep);
     }
@@ -79,7 +85,12 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
         else if (nextStep == MachineStep.Process)
             return intakeSlot && !processingSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, 0.0f, processStepThreshold);
         else if (nextStep == MachineStep.Outtake)
-            return processingSlot && outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold);
+        {
+            if (IsStartingMachine() && !processingSlot && outputsTo && !outputsTo.intakeSlot)
+                return true;
+            else
+                return processingSlot && outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold);
+        }
         else //Shouldn't ever get here. This is really just to prevent compiler errors
             return false;
     }

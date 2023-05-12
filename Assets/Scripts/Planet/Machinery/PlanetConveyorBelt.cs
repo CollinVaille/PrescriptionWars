@@ -4,28 +4,29 @@ using UnityEngine;
 
 public class PlanetConveyorBelt : PlanetFactoryMachine
 {
-    public Material conveyorBeltMaterial;
-    public float beltLength = 5.0f, localCargoHeight = 1.0f;
+    public Transform intakePoint, outtakePoint;
 
     protected override void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage)
     {
         if (step == MachineStep.Intake)
-            LerpCargoPosition(intakeSlot, -beltLength, 0.0f, stepCompletionPercentage);
-        else if(step == MachineStep.Outtake)
-            LerpCargoPosition(processingSlot, 0.0f, beltLength, stepCompletionPercentage);
+            intakeSlot.position = Vector3.Lerp(intakePoint.position, MiddlePoint, stepCompletionPercentage);
+        else if (step == MachineStep.Outtake)
+            processingSlot.position = Vector3.Lerp(MiddlePoint, outtakePoint.position, stepCompletionPercentage);
     }
 
     protected override void OnStartOfStep(MachineStep step)
     {
         if (step == MachineStep.Intake) //Snap to intake position
-            LerpCargoPosition(intakeSlot, -beltLength, 0.0f, 0.0f);
-        else if(step == MachineStep.Process) //Snap to middle position
-            LerpCargoPosition(intakeSlot, 0.0f, 0.0f, 0.0f);
-
+            intakeSlot.position = intakePoint.position;
+        else if (step == MachineStep.Process) //Snap to middle position
+            processingSlot.position = MiddlePoint;
     }
 
-    private void LerpCargoPosition(Transform cargo, float zAtStart, float zAtEnd, float stepCompletionPercentage)
+    private Vector3 MiddlePoint
     {
-        cargo.localPosition = new Vector3(0.0f, localCargoHeight, Mathf.Lerp(zAtStart, zAtEnd, stepCompletionPercentage));
+        get
+        {
+            return (intakePoint.position + outtakePoint.position) * 0.5f;
+        }
     }
 }

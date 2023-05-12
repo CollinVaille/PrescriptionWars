@@ -5,31 +5,30 @@ using UnityEngine;
 public class PlanetRawMaterialDropper : PlanetFactoryMachine
 {
     public GameObject payloadToInstantiate;
-    public Vector3 localStartingPosition, localEndingPosition;
+    public Transform placeToInstantiateAt;
+    public AudioClip instantiationSound;
 
     protected override void OnStartOfStep(MachineStep step)
     {
-        if (step == MachineStep.Intake && !intakeSlot)
+        if (step == MachineStep.Outtake)
         {
-            intakeSlot = Instantiate(payloadToInstantiate).transform;
-            intakeSlot.position = transform.TransformPoint(localStartingPosition);
-            intakeSlot.rotation = transform.rotation;
+            processingSlot = Instantiate(payloadToInstantiate).transform;
+            processingSlot.position = placeToInstantiateAt.position;
+            processingSlot.rotation = transform.rotation;
 
-            if (!intakeSlot.GetComponent<Rigidbody>())
-                intakeSlot.gameObject.AddComponent<Rigidbody>();
-        }
-        else if (step == MachineStep.Process)
-        {
-            if (intakeSlot.GetComponent<Rigidbody>())
-                Destroy(intakeSlot.gameObject.GetComponent<Rigidbody>());
+            if (!processingSlot.GetComponent<Rigidbody>())
+                processingSlot.gameObject.AddComponent<Rigidbody>();
 
-            processingSlot.position = transform.TransformPoint(localEndingPosition);
+            AudioSource processingSlotAudioSource = processingSlot.GetComponent<AudioSource>();
+            if (processingSlotAudioSource)
+                processingSlotAudioSource.PlayOneShot(instantiationSound);
         }
     }
 
-    protected override void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage)
+    protected override void BeforePushingToNextMachine()
     {
-        //hakuna matata
+        if (processingSlot && processingSlot.GetComponent<Rigidbody>())
+            Destroy(processingSlot.GetComponent<Rigidbody>());
     }
 
     protected override bool IsStartingMachine() { return true; }

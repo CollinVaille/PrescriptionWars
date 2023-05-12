@@ -8,6 +8,7 @@ public class Building : MonoBehaviour
 
     public int length = 5;
     public int spawnChance = 10;
+    public bool allowFlipping = true;
     public Transform[] beds;
     public PropPlacement[] propPlacements;
     [HideInInspector] public City city;
@@ -27,7 +28,7 @@ public class Building : MonoBehaviour
             propPlacements[x].ChooseAndPlaceProp(transform);
 
         //Flip house to introduce more variety
-        if (Random.Range(0, 2) == 0)
+        if (allowFlipping && Random.Range(0, 2) == 0)
             FlipHorizontally();
 
         //Repaint
