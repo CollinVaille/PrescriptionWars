@@ -984,3 +984,5 @@ class NewPossibleHyperspaceLane : System.IComparable
             return 1;
     }
 }
+
+//This is a test comment added to the end of the NewGalaxyGenerator.cs script.
