@@ -984,5 +984,3 @@ class NewPossibleHyperspaceLane : System.IComparable
             return 1;
     }
 }
-
-//This is ooga boog'a test comment added by SKRILLEX to the end of the NewGalaxyGenerator.cs script BA DA BOOOOOOOOOOOOOOOOOOOOOOMM BABY.
