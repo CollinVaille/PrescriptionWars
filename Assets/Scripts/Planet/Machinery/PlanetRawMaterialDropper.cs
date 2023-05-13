@@ -19,16 +19,20 @@ public class PlanetRawMaterialDropper : PlanetFactoryMachine
             if (!processingSlot.GetComponent<Rigidbody>())
                 processingSlot.gameObject.AddComponent<Rigidbody>();
 
-            AudioSource processingSlotAudioSource = processingSlot.GetComponent<AudioSource>();
-            if (processingSlotAudioSource)
-                processingSlotAudioSource.PlayOneShot(instantiationSound);
+            AudioSource factoryProtoPillAudioSource = processingSlot.GetComponent<AudioSource>();
+            God.god.ManageAudioSource(factoryProtoPillAudioSource);
+            if (factoryProtoPillAudioSource)
+                factoryProtoPillAudioSource.PlayOneShot(instantiationSound);
         }
     }
 
-    protected override void BeforePushingToNextMachine()
+    protected override void OnEndOfStep(MachineStep step)
     {
-        if (processingSlot && processingSlot.GetComponent<Rigidbody>())
-            Destroy(processingSlot.GetComponent<Rigidbody>());
+        if(step == MachineStep.Outtake)
+        {
+            if (processingSlot && processingSlot.GetComponent<Rigidbody>())
+                Destroy(processingSlot.GetComponent<Rigidbody>());
+        }
     }
 
     protected override bool IsStartingMachine() { return true; }

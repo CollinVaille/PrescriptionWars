@@ -120,18 +120,22 @@ public class PlanetMaterial : MonoBehaviour
     public static void SetMaterialTypeBasedOnNameNOTRecursive(string materialName, GameObject objectWithMaterial)
     {
         PlanetMaterialType materialType = GetMaterialTypeBasedOnName(materialName);
+        SetMaterialType(materialType, objectWithMaterial);
+    }
 
+    public static void SetMaterialType(PlanetMaterialType materialType, GameObject objectWithMaterial)
+    {
         //Get the planet material component if it exists, else add it to the game object.
         //The exception case is the rock material. Since rock is the default material, we don't need to add a component if it doesn't already exist.
         PlanetMaterial planetMaterialComponent = objectWithMaterial.GetComponent<PlanetMaterial>();
-        if(!planetMaterialComponent)
+        if (!planetMaterialComponent)
         {
             if (materialType != PlanetMaterialType.Rock)
                 planetMaterialComponent = objectWithMaterial.AddComponent<PlanetMaterial>();
             else
                 return;
         }
-            
+
         //Set the material on the component
         planetMaterialComponent.planetMaterialType = materialType;
     }

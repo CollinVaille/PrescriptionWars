@@ -9,13 +9,25 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     [HideInInspector] public Transform intakeSlot, processingSlot;
     public float processStepThreshold = 0.33f, outtakeStepThreshold = 0.66f;
     private float lastCycleUpdateAtPercentage = 0.0f;
+    private bool performedOuttakeForCurrentSubject = false;
     private MachineStep currentStep = MachineStep.None;
     public PlanetFactoryMachine outputsTo;
 
     public void PerformMachineCyleUpdate(float cycleCompletionPercentage, float stepDuration)
     {
+        //Update all machines that come after us first...
+
+        //It it optimal from a "pipelining" perspective to update the machines end to beginning.
+        //This is because you need the next machine in line to finish its job before you can insert a new job into it.
+        if(outputsTo)
+            outputsTo.PerformMachineCyleUpdate(cycleCompletionPercentage, stepDuration);
+
+        //Then update our machine
         if (cycleCompletionPercentage < processStepThreshold) //Step 1: Intake
         {
+            if (currentStep == MachineStep.Outtake)
+                EndCurrentStep(MachineStep.Outtake);
+
             if (currentStep == MachineStep.Intake && intakeSlot && !processingSlot)
                 PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold, stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Intake))
@@ -23,32 +35,59 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
         }
         else if (cycleCompletionPercentage < outtakeStepThreshold) //Step 2: Process
         {
-            if(currentStep == MachineStep.Process && processingSlot)
+            if (currentStep == MachineStep.Intake)
+                EndCurrentStep(MachineStep.Intake);
+
+            if (currentStep == MachineStep.Process && processingSlot)
                 PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold), stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Process))
                 MoveToNextStep(MachineStep.Process);
         }
         else //Step 3: Outtake
         {
-            if(currentStep == MachineStep.Outtake && processingSlot && outputsTo && !outputsTo.intakeSlot)
+            if (currentStep == MachineStep.Process)
+                EndCurrentStep(MachineStep.Process);
+
+            if (currentStep == MachineStep.Outtake && processingSlot)
                 PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold), stepDuration);
             else if (ReadyToProgressToNextStep(MachineStep.Outtake))
                 MoveToNextStep(MachineStep.Outtake);
         }
 
         lastCycleUpdateAtPercentage = cycleCompletionPercentage;
-
-        if(outputsTo)
-            outputsTo.PerformMachineCyleUpdate(cycleCompletionPercentage, stepDuration);
     }
 
     protected virtual void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage, float stepDuration) { }
 
     protected virtual void OnStartOfStep(MachineStep step) { }
 
+    protected virtual void OnEndOfStep(MachineStep step) { }
+
     protected virtual bool IsStartingMachine() { return false; }
 
-    protected virtual void BeforePushingToNextMachine() { }
+    protected void LerpMachinePartLocalPosition(PlanetFactoryMachinePart machinePart, float lerpPercentage, GeneralHelperMethods.WhichVector whichVector)
+    {
+        float newVectorValue = Mathf.Lerp(machinePart.retracted, machinePart.extended, lerpPercentage);
+        machinePart.machinePart.localPosition = GeneralHelperMethods.GetModifiedVector3(machinePart.machinePart.localPosition, newVectorValue, whichVector);
+    }
+
+    protected void SetSoundOnSubject(Transform subjectToPlayAudioFrom, AudioClip audioToPlay, bool loop = true)
+    {
+        AudioSource subjectsAudioSource = subjectToPlayAudioFrom.GetComponent<AudioSource>();
+
+        if (audioToPlay)
+        {
+            subjectsAudioSource.Stop();
+            subjectsAudioSource.clip = audioToPlay;
+            subjectsAudioSource.loop = loop;
+            subjectsAudioSource.Play();
+        }
+        else
+        {
+            subjectsAudioSource.Stop();
+            subjectsAudioSource.clip = null;
+        }
+    }
 
     private void MoveToNextStep(MachineStep nextStep)
     {
@@ -56,15 +95,27 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             PushInputToProcessing();
         else if (nextStep == MachineStep.Intake)
         {
-            if (processingSlot && outputsTo && !outputsTo.intakeSlot)
-            {
-                BeforePushingToNextMachine();
+            if (processingSlot && NextMachineIsReadyToReceive())
                 PushProcessingToNextMachine();
-            }
         }
 
         currentStep = nextStep;
         OnStartOfStep(nextStep);
+    }
+
+    private void EndCurrentStep(MachineStep step)
+    {
+        OnEndOfStep(step);
+
+        if(step == MachineStep.Outtake)
+        {
+            performedOuttakeForCurrentSubject = true;
+
+            if (processingSlot && NextMachineIsReadyToReceive())
+                PushProcessingToNextMachine();
+        }
+
+        currentStep = MachineStep.None;
     }
 
     private void PushInputToProcessing()
@@ -78,6 +129,18 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
         if (outputsTo)
             outputsTo.intakeSlot = processingSlot;
         processingSlot = null;
+
+        performedOuttakeForCurrentSubject = false;
+    }
+
+    private bool NextMachineIsReadyToReceive()
+    {
+        if (!outputsTo)
+            return false;
+        else if (outputsTo.intakeSlot)
+            return false;
+        else
+            return !outputsTo.processingSlot;
     }
 
     private bool ReadyToProgressToNextStep(MachineStep nextStep)
@@ -87,9 +150,9 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             if (intakeSlot || IsStartingMachine())
             {
                 if (processingSlot)
-                    return outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, outtakeStepThreshold, 1.0f);
+                    return NextMachineIsReadyToReceive();
                 else
-                    return ACloserToCThanB(lastCycleUpdateAtPercentage, outtakeStepThreshold, 1.0f);
+                    return true;
             }
             else
                 return false;
@@ -98,10 +161,10 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             return intakeSlot && !processingSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, 0.0f, processStepThreshold);
         else if (nextStep == MachineStep.Outtake)
         {
-            if (IsStartingMachine() && !processingSlot && outputsTo && !outputsTo.intakeSlot)
-                return true;
+            if (IsStartingMachine())
+                return !processingSlot && outputsTo && !outputsTo.intakeSlot;
             else
-                return processingSlot && outputsTo && !outputsTo.intakeSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold);
+                return !performedOuttakeForCurrentSubject && processingSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold);
         }
         else //Shouldn't ever get here. This is really just to prevent compiler errors
             return false;
@@ -111,4 +174,12 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     {
         return a > (b + c) * 0.5f;
     }
+}
+
+
+[System.Serializable]
+public class PlanetFactoryMachinePart
+{
+    public Transform machinePart;
+    public float retracted, extended;
 }

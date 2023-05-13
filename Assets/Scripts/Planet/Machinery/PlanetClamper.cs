@@ -35,7 +35,10 @@ public class PlanetClamper : PlanetFactoryMachine
             if (elapsedTimeForThisLunge > lungeDuration)
             {
                 if (clamping)
+                {
                     processingSlot.GetComponent<AudioSource>().PlayOneShot(clampSound);
+                    SetSubjectsMeshToCapsule(processingSlot);
+                }
 
                 elapsedTimeForThisLunge = 0.0f;
                 clamping = !clamping;
@@ -86,8 +89,6 @@ public class PlanetClamper : PlanetFactoryMachine
         }
         else if(step == MachineStep.Outtake)
         {
-            processingSlot.GetComponent<MeshFilter>().mesh = capsuleMesh;
-
             LerpMachinePartLocalPosition(lowerClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
             LerpMachinePartLocalPosition(upperClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
 
@@ -95,16 +96,17 @@ public class PlanetClamper : PlanetFactoryMachine
         }
     }
 
-    private void LerpMachinePartLocalPosition(PlanetFactoryMachinePart machinePart, float lerpPercentage, GeneralHelperMethods.WhichVector whichVector)
+    protected override void OnEndOfStep(MachineStep step)
     {
-        float newVectorValue = Mathf.Lerp(machinePart.retracted, machinePart.extended, lerpPercentage);
-        machinePart.machinePart.localPosition = GeneralHelperMethods.GetModifiedVector3(machinePart.machinePart.localPosition, newVectorValue, whichVector);
+        if (step == MachineStep.Process)
+            SetSubjectsMeshToCapsule(processingSlot);
     }
-}
 
-[System.Serializable]
-public class PlanetFactoryMachinePart
-{
-    public Transform machinePart;
-    public float retracted, extended;
+    private void SetSubjectsMeshToCapsule(Transform subject)
+    {
+        MeshFilter subjectsMeshFilter = subject.GetComponent<MeshFilter>();
+
+        if(subjectsMeshFilter.mesh != capsuleMesh)
+            subjectsMeshFilter.mesh = capsuleMesh;
+    }
 }
