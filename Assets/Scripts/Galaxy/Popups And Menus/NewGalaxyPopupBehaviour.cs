@@ -22,7 +22,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     [SerializeField, Tooltip("Specifies the sound effecr that is played when the popup's close button is clicked by the player.")] private AudioClip clickCloseButtonSFX = null;
     [SerializeField, Tooltip("Specifies whether the popup game object should be destroyed whenever the popup is closed.")] private bool destroyOnClose = false;
 
-    [Header("Other Popup Options")]
+    [Header("Base Interactivity Options")]
 
     [SerializeField, Tooltip("Specifies whether the popup can be dragged around the screen by the player.")] private bool isDraggable = true;
     [SerializeField, Tooltip("Specifies whether the popup will have an extra background image that serves as a giant raycast blocker.")] private bool raycastBlockerBackground = false;

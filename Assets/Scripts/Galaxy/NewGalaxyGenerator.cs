@@ -495,6 +495,28 @@ public class NewGalaxyGenerator : MonoBehaviour
                     planetsOfBiomeCount[biomeIndexWithLowestPlanetCount] += 1;
                     NewGalaxyBiome biome = biomes[biomeIndexWithLowestPlanetCount];
 
+                    //Generates a name for the planet.
+                    string planetName = PlanetNameGenerator.GeneratePlanetName();
+
+                    //Generates a city with buildings for the planet.
+                    List<NewGalaxyBuilding> planetCityBuildings = new List<NewGalaxyBuilding>();
+                    NewGalaxyBuilding.BuildingType[] buildingTypes = (NewGalaxyBuilding.BuildingType[])Enum.GetValues(typeof(NewGalaxyBuilding.BuildingType));
+                    if(planetIndex == 0)    //System capital has one of every building type.
+                        foreach (NewGalaxyBuilding.BuildingType buildingType in buildingTypes)
+                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingType));
+                    else    //Non-capital planets within a solar system have a random amount of buildings, which each having at least one.
+                    {
+                        int buildingsCount = UnityEngine.Random.Range(1, buildingTypes.Length + 1);
+                        for(int buildingIndex = 0; buildingIndex < buildingsCount; buildingIndex++)
+                        {
+                            if (buildingIndex == 0)
+                                planetCityBuildings.Add(new NewGalaxyBuilding(buildingTypes[UnityEngine.Random.Range(0, buildingTypes.Length)]));
+                            else
+                                planetCityBuildings.Add(new NewGalaxyBuilding(UnityEngine.Random.Range(0, 4) > 0 ? planetCityBuildings[buildingIndex - 1].buildingType : buildingTypes[UnityEngine.Random.Range(0, buildingTypes.Length)]));
+                        }
+                    }
+                    NewGalaxyCity planetCity = new NewGalaxyCity(planetName + " City", planetCityBuildings);
+
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
                     GameObject planetaryOrbit = new GameObject();
                     //Names the planetary orbit based on how far it is from the star.
@@ -511,7 +533,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                     //Sets the planet's distance from the star based on the biome's specified proximity to the star.
                     planet.transform.localPosition = new Vector3((star.localScale.x / 2) + (spaceBetweenStarAndPlanetaryOrbits * (star.localScale.x / yellowDwarfStarPrefab.transform.localScale.x)) + (spaceBetweenPlanetaryOrbits * biome.planetaryOrbitProximityToStar), planet.transform.localPosition.y, planet.transform.localPosition.z);
                     //Initializes all needed variables of the planet.
-                    planet.InitializeFromGalaxyGenerator(solarSystem, planets.Count, PlanetNameGenerator.GeneratePlanetName(), biome, star.starLight);
+                    planet.InitializeFromGalaxyGenerator(solarSystem, planetCity, planets.Count, planetName, biome, star.starLight);
 
                     //Adds the planet to the list of planets that will belong to the current solar system.
                     solarSystemPlanets.Add(planet);

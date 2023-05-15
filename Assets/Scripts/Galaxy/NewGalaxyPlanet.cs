@@ -273,6 +273,15 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     private Image capitalSymbolImage = null;
 
+    /// <summary>
+    /// Private holder variable for the city that is located on the planet.
+    /// </summary>
+    private NewGalaxyCity _city = null;
+    /// <summary>
+    /// Public property that should be used in order to access the city that is located on the planet.
+    /// </summary>
+    public NewGalaxyCity city { get => _city; }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -314,12 +323,14 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="cityColor"></param>
     /// <param name="ringColorCombo"></param>
     /// <param name="starLight"></param>
-    private void Initialize(GalaxySolarSystem solarSystem, int ID, string planetName, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
+    private void Initialize(GalaxySolarSystem solarSystem, NewGalaxyCity city, int ID, string planetName, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
     {
         //Initializes the reference of the solar system that the planet belongs to.
         solarSystemVar = solarSystem;
         solarSystemVar.AddOnBecameVisibleFunction(OnSolarSystemBecameVisible);
         solarSystemVar.AddOnBecameInvisibleFunction(OnSolarSystemBecameInvisible);
+        //Initializes the reference of the city that is located on the planet.
+        _city = city;
         //Initializes the ID of the planet.
         IDVar = ID;
         //Initializes the name of the planet.
@@ -360,7 +371,7 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// <param name="starLight"></param>
     public void InitializeFromSaveData(GalaxyPlanetData planetData, GalaxySolarSystem solarSystem, int ID, Light starLight)
     {
-        Initialize(solarSystem, ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, new DualColorSet(new Color(planetData.cloudColorCombo[0], planetData.cloudColorCombo[1], planetData.cloudColorCombo[2], planetData.cloudColorCombo[3]), new Color(planetData.cloudColorCombo[4], planetData.cloudColorCombo[5], planetData.cloudColorCombo[6], planetData.cloudColorCombo[7])), new Color(planetData.cityColor[0], planetData.cityColor[1], planetData.cityColor[2], planetData.cityColor[3]), new DualColorSet(new Color(planetData.ringColorCombo[0], planetData.ringColorCombo[1], planetData.ringColorCombo[2], planetData.ringColorCombo[3]), new Color(planetData.ringColorCombo[4], planetData.ringColorCombo[5], planetData.ringColorCombo[6], planetData.ringColorCombo[7])), starLight);
+        Initialize(solarSystem, new NewGalaxyCity(planetData.city), ID, planetData.planetName, planetData.biomeType, planetData.materialName, planetData.hasRings, planetData.ringSize, planetData.planetarySize, planetData.planetaryRotationSpeed, planetData.cloudSpeed, new DualColorSet(new Color(planetData.cloudColorCombo[0], planetData.cloudColorCombo[1], planetData.cloudColorCombo[2], planetData.cloudColorCombo[3]), new Color(planetData.cloudColorCombo[4], planetData.cloudColorCombo[5], planetData.cloudColorCombo[6], planetData.cloudColorCombo[7])), new Color(planetData.cityColor[0], planetData.cityColor[1], planetData.cityColor[2], planetData.cityColor[3]), new DualColorSet(new Color(planetData.ringColorCombo[0], planetData.ringColorCombo[1], planetData.ringColorCombo[2], planetData.ringColorCombo[3]), new Color(planetData.ringColorCombo[4], planetData.ringColorCombo[5], planetData.ringColorCombo[6], planetData.ringColorCombo[7])), starLight);
         ownerIDVar = planetData.ownerID;
         //Ensures the planet name is positioned directly underneath the planet and the capital symbol positioned directly above the planet.
         UILocationsParent.localRotation = Quaternion.Euler(UILocationsParent.localRotation.eulerAngles.x, -transform.rotation.eulerAngles.y, UILocationsParent.localRotation.eulerAngles.z);
@@ -371,9 +382,9 @@ public class NewGalaxyPlanet : MonoBehaviour
     /// </summary>
     /// <param name="biome"></param>
     /// <param name="starLight"></param>
-    public void InitializeFromGalaxyGenerator(GalaxySolarSystem solarSystem, int ID, string planetName, NewGalaxyBiome biome, Light starLight)
+    public void InitializeFromGalaxyGenerator(GalaxySolarSystem solarSystem, NewGalaxyCity city, int ID, string planetName, NewGalaxyBiome biome, Light starLight)
     {
-        Initialize(solarSystem, ID, planetName, biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
+        Initialize(solarSystem, city, ID, planetName, biome.biome, biome.randomMaterialName, UnityEngine.Random.Range(0f, 1f) <= biome.planetaryRingChance, biome.randomRingSize, biome.randomPlanetarySize, biome.randomPlanetaryRotationSpeed, biome.randomCloudSpeed, biome.randomCloudColorCombo, biome.randomCityColor, biome.randomRingColorCombo, starLight);
     }
 
     /// <summary>
@@ -601,6 +612,8 @@ public class GalaxyPlanetData
 
     public int ownerID = -1;
 
+    public GalaxyCityData city = null;
+
     public GalaxyPlanetData(NewGalaxyPlanet planet)
     {
         planetName = planet.planetName;
@@ -623,5 +636,7 @@ public class GalaxyPlanetData
         localPosition[2] = planet.localPosition.z;
 
         ownerID = planet.ownerID;
+
+        city = new GalaxyCityData(planet.city);
     }
 }

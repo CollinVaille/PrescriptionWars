@@ -379,7 +379,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
                 pauseMenu.Open();
-            if (Input.GetKeyDown(KeyCode.BackQuote))
+            if (Input.GetKeyDown(KeyCode.BackQuote) && !pauseMenu.open)
                 cheatConsole.Toggle();
         }
     }
