@@ -99,8 +99,8 @@ public class City : MonoBehaviour, INavZoneUpdater
         {
             radius = (buildingManager.GetLongestBuildingLength() / 2) + areaManager.areaSize;
 
-            if (circularCity) //Convert from side length to the median of the hypotenuse. median of hypotenuse = 1/2 hypotenuse = 0.5*(a^2 + b^2)
-                radius = (int)(0.5f * Mathf.Sqrt(radius * radius * 2));
+            if (circularCity) //Convert from side length to hypotenuse. hypotenuse = sqrt(a^2 + b^2)
+                radius = (int)Mathf.Sqrt(radius * radius * 2);
         }
         else //Otherwise, we will use the previous radius computations and adjust them based on the foundation plans
             foundationManager.AdjustCityRadiusToCompensateForFoundationPlans();

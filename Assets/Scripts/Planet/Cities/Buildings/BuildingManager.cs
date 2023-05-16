@@ -199,12 +199,8 @@ public class BuildingManager
         if (forceToCenter)
         {
             foundPlace = true;
-            //newX = areaManager.areaTaken.GetLength(0) / 2;
-            //newZ = areaManager.areaTaken.GetLength(1) / 2;
-            //newX = areaLength / 2;
-            //newZ = areaLength / 2;
-            newX = 0;
-            newZ = 0;
+            newX = (areaManager.areaTaken.GetLength(0) / 2) - (areaLength / 2);
+            newZ = (areaManager.areaTaken.GetLength(1) / 2) - (areaLength / 2);
         }
 
         //Placement strategy #1: Center on the largest available city block
