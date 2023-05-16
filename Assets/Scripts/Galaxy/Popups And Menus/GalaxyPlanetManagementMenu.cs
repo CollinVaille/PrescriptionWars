@@ -9,6 +9,7 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
 
     [SerializeField] private Transform tabButtonsParent = null;
     [SerializeField] private Transform tabsParent = null;
+    [SerializeField] private Transform _buildingsTabScrollViewContent = null;
 
     [Header("Text Components")]
 
@@ -18,6 +19,8 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [Header("Image Components")]
 
     [SerializeField] private Image coloringBackgroundImage = null;
+    [SerializeField] private Image buildingsTabScrollViewHandleImage = null;
+    [SerializeField] private Image buildingsTabScrollViewViewportImage = null;
 
     [Header("Unselected Tab Button Color Block")]
 
@@ -32,6 +35,11 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [SerializeField] private AudioClip changeTabSFX = null;
 
     //Non-inspector variables.
+
+    /// <summary>
+    /// Publicly accessible property that returns the transform that serves as the parent of the buttons in the buildings tab scroll view.
+    /// </summary>
+    public Transform buildingsTabScrollViewContent { get => _buildingsTabScrollViewContent; }
 
     /// <summary>
     /// Private variable that holds the index of the selected tab on the planet management menu.
@@ -83,15 +91,55 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
         {
             //Sets the planet selected ID variable to the specified value.
             _planetSelectedID = value;
-            //Sets the planet name text.
-            planetNameText.text = planetSelected != null ? planetSelected.planetName : "Planet Name";
-            //Sets the city name text.
-            cityNameText.text = planetSelected != null ? planetSelected.city.name : "City: City Name";
-            //Sets the color of the coloring background image.
-            coloringBackgroundImage.color = planetSelected != null && planetSelected.owner != null ? planetSelected.owner.color : Color.white;
-            //Loops through each tab button and sets its base image color to the planet's owning empire color or black if there is no valid owning empire.
-            for(int tabButtonIndex = 0; tabButtonIndex < tabButtonsParent.childCount; tabButtonIndex++)
-                tabButtonsParent.GetChild(tabButtonIndex).GetComponent<Image>().color = planetSelected != null && planetSelected.owner != null ? planetSelected.owner.color : Color.black;
+
+            if(planetSelected != null)
+            {
+                //Sets the planet name text.
+                planetNameText.text = planetSelected.planetName;
+                //Sets the city name text.
+                cityNameText.text = "City: " + planetSelected.city.name;
+                //Owner related setting.
+                if(planetSelected.owner != null)
+                {
+                    //Sets the color of the coloring background image.
+                    coloringBackgroundImage.color = planetSelected.owner.color;
+                    //Loops through each tab button and sets its base image color to the planet's owning empire color.
+                    for (int tabButtonIndex = 0; tabButtonIndex < tabButtonsParent.childCount; tabButtonIndex++)
+                        tabButtonsParent.GetChild(tabButtonIndex).GetComponent<Image>().color = planetSelected.owner.color;
+                    //Sets the color of the scroll view's vertical handle on the buildings tab.
+                    buildingsTabScrollViewHandleImage.color = planetSelected.owner.color;
+                    //Sets the color of the scroll view's viewport on the buildings tab to the planet's owning empire color.
+                    buildingsTabScrollViewViewportImage.color = new Color(planetSelected.owner.color.r, planetSelected.owner.color.g, planetSelected.owner.color.b, planetSelected.owner.color.a * (50 / 255f));
+                }
+                else
+                {
+                    //Sets the color of the coloring background image to white since there is no valid owning empire.
+                    coloringBackgroundImage.color = Color.white;
+                    //Loops through each tab button and sets its base image color to black since there is no valid owning empire.
+                    for (int tabButtonIndex = 0; tabButtonIndex < tabButtonsParent.childCount; tabButtonIndex++)
+                        tabButtonsParent.GetChild(tabButtonIndex).GetComponent<Image>().color = Color.black;
+                    //Sets the color of the scroll view's vertical handle on the buildings tab.
+                    buildingsTabScrollViewHandleImage.color = Color.white;
+                    //Sets the color of the scroll view's viewport on the buildings tab to a transparent white since there is no valid owning empire of the planet.
+                    buildingsTabScrollViewViewportImage.color = new Color(Color.white.r, Color.white.g, Color.white.b, Color.white.a * (100 / 255f));
+                }
+            }
+            else
+            {
+                //Sets the planet name text.
+                planetNameText.text = "Planet Name";
+                //Sets the city name text.
+                cityNameText.text = "City: City Name";
+                //Sets the color of the coloring background image.
+                coloringBackgroundImage.color = Color.white;
+                //Loops through each tab button and sets its base image color to black since there is no valid owning empire.
+                for (int tabButtonIndex = 0; tabButtonIndex < tabButtonsParent.childCount; tabButtonIndex++)
+                    tabButtonsParent.GetChild(tabButtonIndex).GetComponent<Image>().color = Color.black;
+                //Sets the color of the scroll view's vertical handle on the buildings tab.
+                buildingsTabScrollViewHandleImage.color = Color.white;
+                //Sets the color of the scroll view's viewport on the buildings tab to a transparent white since there is no valid owning empire of the planet.
+                buildingsTabScrollViewViewportImage.color = new Color(Color.white.r, Color.white.g, Color.white.b, Color.white.a * (100 / 255f));
+            }
         }
     }
     /// <summary>
@@ -113,6 +161,14 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
         planetSelectedID = 0;
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        //Test line that should be removed eventually.
+        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(TestSetPlanet, 3);
+    }
+
     protected override void Start()
     {
         //Executes the base popup start logic.
@@ -123,9 +179,6 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
             tabButtonsParent.GetChild(tabButtonIndex).GetComponent<Button>().colors = unselectedTabButtonColorBlock;
         //Sets the first tab as the selected tab.
         tabSelectedIndex = 0;
-
-        //Test line that should be removed eventually.
-        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(TestSetPlanet, 3);
     }
 
     /// <summary>
@@ -143,5 +196,13 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
         tabSelectedIndex = tabButtonIndex;
         //Plays the appropriate sound effect.
         AudioManager.PlaySFX(changeTabSFX);
+    }
+
+    /// <summary>
+    /// Public method that should be called by a buildings tab scroll view button whenever it is clicked and selects the button's assigned building to be displayed in the building inspector.
+    /// </summary>
+    public void OnClickBuildingsTabScrollViewButton(int buildingsTabScrollViewButtonIndex)
+    {
+
     }
 }

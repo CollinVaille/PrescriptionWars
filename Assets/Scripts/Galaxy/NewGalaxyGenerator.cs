@@ -504,15 +504,17 @@ public class NewGalaxyGenerator : MonoBehaviour
                     if(planetIndex == 0)    //System capital has one of every building type.
                         foreach (NewGalaxyBuilding.BuildingType buildingType in buildingTypes)
                             planetCityBuildings.Add(new NewGalaxyBuilding(buildingType));
-                    else    //Non-capital planets within a solar system have a random amount of buildings, which each having at least one.
+                    else    //Non-capital planets within a solar system have a random amount of buildings (at least one) but cannot have more than one building of a single type, just like the capital planet.
                     {
                         int buildingsCount = UnityEngine.Random.Range(1, buildingTypes.Length + 1);
-                        for(int buildingIndex = 0; buildingIndex < buildingsCount; buildingIndex++)
+                        List<int> buildingTypesIndicesRemaining = new List<int>();
+                        for (int buildingTypeIndex = 0; buildingTypeIndex < buildingTypes.Length; buildingTypeIndex++)
+                            buildingTypesIndicesRemaining.Add(buildingTypeIndex);
+                        for (int buildingIndex = 0; buildingIndex < buildingsCount; buildingIndex++)
                         {
-                            if (buildingIndex == 0)
-                                planetCityBuildings.Add(new NewGalaxyBuilding(buildingTypes[UnityEngine.Random.Range(0, buildingTypes.Length)]));
-                            else
-                                planetCityBuildings.Add(new NewGalaxyBuilding(UnityEngine.Random.Range(0, 4) > 0 ? planetCityBuildings[buildingIndex - 1].buildingType : buildingTypes[UnityEngine.Random.Range(0, buildingTypes.Length)]));
+                            int buildingTypesIndicesRemainingIndex = UnityEngine.Random.Range(0, buildingTypesIndicesRemaining.Count);
+                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingTypes[buildingTypesIndicesRemaining[buildingTypesIndicesRemainingIndex]]));
+                            buildingTypesIndicesRemaining.RemoveAt(buildingTypesIndicesRemainingIndex);
                         }
                     }
                     NewGalaxyCity planetCity = new NewGalaxyCity(planetName + " City", planetCityBuildings);

@@ -85,6 +85,11 @@ public class NewGalaxyCamera : MonoBehaviour
     private Vector3 previousMousePosition = Vector3.zero;
 
     /// <summary>
+    /// Private variable that indicates whether or not the initial left mouse button click is valid for dragging logic (valid if initally clicked in viewport and not over UI).
+    /// </summary>
+    private bool initialLeftMouseButtonClickDragValid = false;
+
+    /// <summary>
     /// Indicates whether the mouse is in the viewport of the screen and therefore visible to the player.
     /// </summary>
     public static bool isMouseInViewport { get => galaxyCamera == null ? false : Input.mousePosition.x >= 0 && Input.mousePosition.x <= galaxyCamera.cameraComponent.pixelWidth && Input.mousePosition.y >= 0 && Input.mousePosition.y <= galaxyCamera.cameraComponent.pixelHeight; }
@@ -111,6 +116,10 @@ public class NewGalaxyCamera : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        //Checks if the left mouse button was just clicked and if so then it checks whether or not the click is a valid one to begin the dragging logic.
+        if (Input.GetMouseButtonDown(0))
+            initialLeftMouseButtonClickDragValid = !isMouseOverUI && isMouseInViewport;
+
         //Updates the amount of zoom on the galaxy camera.
         ZoomUpdate();
 
@@ -128,7 +137,7 @@ public class NewGalaxyCamera : MonoBehaviour
         movementVector.y = 0.0f;
 
         //Click and drag movement
-        if (Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport && !isMouseOverUI && !NewGalaxyPopupBehaviour.isAPopupBeingDragged)
+        if (initialLeftMouseButtonClickDragValid && Input.GetMouseButton(0) && NewGalaxyManager.activeInHierarchy && isMouseInViewport && !isMouseOverUI && !NewGalaxyPopupBehaviour.isAPopupBeingDragged)
         {
             movementVector.x += previousMousePosition.x - Input.mousePosition.x;
             movementVector.y += previousMousePosition.y - Input.mousePosition.y;
