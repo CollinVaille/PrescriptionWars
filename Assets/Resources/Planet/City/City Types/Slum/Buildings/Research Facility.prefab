@@ -4870,6 +4870,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7582f3632caf4599457fbd8e42e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectRoot: {fileID: 0}
   turnOn: {fileID: 8300000, guid: 03505beb36c1b364ca5e566e02dff268, type: 3}
   turnOff: {fileID: 8300000, guid: d6d7541e1eb116449a941c51f44b3824, type: 3}
 --- !u!33 &4105675469269739813
@@ -6729,14 +6730,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9649fd048d1573e42bf40a96ccf6839a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openSound: {fileID: 8300000, guid: bdcfa48ed3e70314da05b81765bb9079, type: 3}
-  closeSound: {fileID: 8300000, guid: 982663285ba783640aa8469e11fe2af3, type: 3}
+  openSound: {fileID: 8300000, guid: ad354336cae5ead4aacf4a3c3602f68b, type: 3}
+  closeSound: {fileID: 8300000, guid: 341e365595c68d947a710fbe24a2238a, type: 3}
   openPosition: 2.8
   closePosition: 1
   doorType: 1
   doorMotion: 0
-  openDuration: 0.75
-  closeDuration: 0.75
+  openDuration: 4.9
+  closeDuration: 5
   building: {fileID: 3334956695003778035}
 --- !u!65 &4105675470003638005
 BoxCollider:
@@ -8402,14 +8403,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9649fd048d1573e42bf40a96ccf6839a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openSound: {fileID: 8300000, guid: bdcfa48ed3e70314da05b81765bb9079, type: 3}
-  closeSound: {fileID: 8300000, guid: 982663285ba783640aa8469e11fe2af3, type: 3}
+  openSound: {fileID: 8300000, guid: ad354336cae5ead4aacf4a3c3602f68b, type: 3}
+  closeSound: {fileID: 8300000, guid: 341e365595c68d947a710fbe24a2238a, type: 3}
   openPosition: 2.8
   closePosition: 1
   doorType: 1
   doorMotion: 0
-  openDuration: 0.75
-  closeDuration: 0.75
+  openDuration: 4.9
+  closeDuration: 5
   building: {fileID: 3334956695003778035}
 --- !u!65 &4105675470559973531
 BoxCollider:
@@ -10473,14 +10474,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9649fd048d1573e42bf40a96ccf6839a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openSound: {fileID: 8300000, guid: bdcfa48ed3e70314da05b81765bb9079, type: 3}
-  closeSound: {fileID: 8300000, guid: 982663285ba783640aa8469e11fe2af3, type: 3}
+  openSound: {fileID: 8300000, guid: ad354336cae5ead4aacf4a3c3602f68b, type: 3}
+  closeSound: {fileID: 8300000, guid: 341e365595c68d947a710fbe24a2238a, type: 3}
   openPosition: 2.8
   closePosition: 1
   doorType: 1
   doorMotion: 0
-  openDuration: 0.75
-  closeDuration: 0.75
+  openDuration: 4.9
+  closeDuration: 5
   building: {fileID: 3334956695003778035}
 --- !u!65 &3188241255911690876
 BoxCollider:
@@ -11212,6 +11213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 40
   spawnChance: 30
+  allowFlipping: 1
   beds:
   - {fileID: 8213735724324002587}
   - {fileID: 4105675469356214353}
@@ -11886,6 +11888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2f7582f3632caf4599457fbd8e42e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectRoot: {fileID: 0}
   turnOn: {fileID: 8300000, guid: 03505beb36c1b364ca5e566e02dff268, type: 3}
   turnOff: {fileID: 8300000, guid: d6d7541e1eb116449a941c51f44b3824, type: 3}
 --- !u!33 &2868353214461896267
