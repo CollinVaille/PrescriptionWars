@@ -52,8 +52,9 @@ public class PlanetManagementMenuBuildingsTabScollViewButton : MonoBehaviour
         this.planetManagementMenu = planetManagementMenu;
 
         //Initializes the component values of the button to represent the specified building.
+        buildingTypeIconImage.sprite = building.buildingTypeIconSprite;
         buildingTypeText.text = GeneralHelperMethods.GetEnumText(building.buildingType.ToString());
-        buildingLevelText.text = building.level.ToString();
+        buildingLevelText.text = GeneralHelperMethods.ConvertArabicIntToRomanNumeralString(building.level);
 
         //Sets the parent of the button to place the button in the planet management menu's buildings tab scroll view.
         transform.SetParent(planetManagementMenu.buildingsTabScrollViewContent);

@@ -245,6 +245,27 @@ public class GeneralHelperMethods
     {
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
+
+    /// <summary>
+    /// Public static method that should be called in order to convert an arabic integer (ex: 1, 2, 3, 4, or 5) into a roman numeral string (ex: I, II, III, IV, V).
+    /// </summary>
+    /// <param name="arabicInt"></param>
+    /// <returns></returns>
+    public static string ConvertArabicIntToRomanNumeralString(int arabicInt)
+    {
+        string romanNumeralResult = "";
+        Dictionary<string, int> romanNumeralsDictionary = new Dictionary<string, int>() { {"I", 1}, {"IV", 4}, {"V", 5}, {"IX", 9}, {"X", 10}, {"XL", 40}, {"L", 50}, {"XC", 90}, {"C", 100}, {"CD", 400}, {"D", 500}, {"CM", 900}, {"M", 1000} };
+        foreach (KeyValuePair<string, int> romanNumeralKeyValuePair in romanNumeralsDictionary)
+        {
+            if (arabicInt <= 0) break;
+            while (arabicInt >= romanNumeralKeyValuePair.Value)
+            {
+                romanNumeralResult += romanNumeralKeyValuePair.Key;
+                arabicInt -= romanNumeralKeyValuePair.Value;
+            }
+        }
+        return romanNumeralResult;
+    }
 }
 #region Editor
 #if UNITY_EDITOR
