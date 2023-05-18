@@ -71,6 +71,12 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
         machinePart.machinePart.localPosition = GeneralHelperMethods.GetModifiedVector3(machinePart.machinePart.localPosition, newVectorValue, whichVector);
     }
 
+    protected void LerpMachinePartLocalScale(PlanetFactoryMachinePart machinePart, float lerpPercentage, GeneralHelperMethods.WhichVector whichVector)
+    {
+        float newVectorValue = Mathf.Lerp(machinePart.retracted, machinePart.extended, lerpPercentage);
+        machinePart.machinePart.localScale = GeneralHelperMethods.GetModifiedVector3(machinePart.machinePart.localScale, newVectorValue, whichVector);
+    }
+
     protected void SetSoundOnSubject(Transform subjectToPlayAudioFrom, AudioClip audioToPlay, bool loop = true)
     {
         AudioSource subjectsAudioSource = subjectToPlayAudioFrom.GetComponent<AudioSource>();

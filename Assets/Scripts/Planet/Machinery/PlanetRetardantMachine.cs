@@ -10,7 +10,7 @@ public class PlanetRetardantMachine : PlanetFactoryMachine
     public Vector3 subjectPinPosition;
     public Material retardedMaterial;
     public ParticleSystem retardantStream;
-    public AudioClip intakeSound, outtakeSound, mechanicalSound, paintSound, coolingSound;
+    public AudioClip intakeSound, outtakeSound, mechanicalSound, spraySound, coolingSound;
     public PlanetFactoryMachinePart platform, lowerClamper, upperClamper;
     public Transform[] spinningParts;
 
@@ -78,7 +78,7 @@ public class PlanetRetardantMachine : PlanetFactoryMachine
             LerpMachinePartLocalPosition(platform, 0.0f, GeneralHelperMethods.WhichVector.Z);
 
             retardantStream.Play(true);
-            SetSoundOnSubject(processingSlot, paintSound);
+            SetSoundOnSubject(processingSlot, spraySound);
         }
         else if (step == MachineStep.Outtake)
         {
@@ -90,7 +90,7 @@ public class PlanetRetardantMachine : PlanetFactoryMachine
     {
         if(step == MachineStep.Process)
         {
-            PaintSubject(processingSlot);
+            RetardSubject(processingSlot);
             retardantStream.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             SetSoundOnSubject(processingSlot, null);
         }
@@ -112,11 +112,11 @@ public class PlanetRetardantMachine : PlanetFactoryMachine
             processingSlot.GetComponent<AudioSource>().PlayOneShot(coolingSound);
 
             if (Random.Range(0, 3) == 0)
-                PaintSubject(processingSlot);
+                RetardSubject(processingSlot);
         }
     }
 
-    private void PaintSubject(Transform subject)
+    private void RetardSubject(Transform subject)
     {
         MeshRenderer subjectsMeshRenderer = subject.GetComponent<MeshRenderer>();
 

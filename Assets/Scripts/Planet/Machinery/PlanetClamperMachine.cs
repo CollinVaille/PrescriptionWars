@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlanetClamper : PlanetFactoryMachine
+public class PlanetClamperMachine : PlanetFactoryMachine
 {
     private const float deploymentStage2Threshold = 0.5f, lungeDuration = 0.1f;
     private bool clamping = true, atStage2 = false;

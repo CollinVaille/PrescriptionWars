@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlanetRawMaterialDropper : PlanetFactoryMachine
+public class PlanetDropperMachine : PlanetFactoryMachine
 {
     public GameObject payloadToInstantiate;
     public Transform placeToInstantiateAt;
