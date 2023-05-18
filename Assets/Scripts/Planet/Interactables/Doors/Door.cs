@@ -14,10 +14,16 @@ public class Door : Interactable
     public DoorMotion doorMotion = DoorMotion.SlideX;
     public float openDuration = 0.75f, closeDuration = 0.75f;
 
-    public Building building;
+    //References
+    private IndoorZoneGrouping indoorZoneGrouping;
 
     //Status variables
     protected bool open = false, transitioning = false;
+
+    private void Start()
+    {
+        indoorZoneGrouping = GetComponentInParent<IndoorZoneGrouping>();
+    }
 
     public override void Interact(Pill interacting)
     {
@@ -49,8 +55,8 @@ public class Door : Interactable
         else
             AudioSource.PlayClipAtPoint(openSound, transform.position);
 
-        if (building)
-            building.DoorOpened();
+        if (indoorZoneGrouping)
+            indoorZoneGrouping.AddNewOpening();
 
         if(doorType == DoorType.Single)
         {
@@ -206,8 +212,8 @@ public class Door : Interactable
             rightDoor.localPosition = rightDoorPosition;
         }
 
-        if (building)
-            building.DoorClosed();
+        if (indoorZoneGrouping)
+            indoorZoneGrouping.CloseExistingOpening();
 
         transitioning = false;
         open = false;

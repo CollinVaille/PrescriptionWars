@@ -870,6 +870,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5106439284833693947}
+  - component: {fileID: 8276854020549750721}
   m_Layer: 0
   m_Name: Garage Unit (2)
   m_TagString: Untagged
@@ -902,6 +903,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -60, z: 0}
+--- !u!114 &8276854020549750721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456998508376096838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &544142701024296444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,6 +1162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7530157516525654954}
+  - component: {fileID: 8389768765838066109}
   m_Layer: 0
   m_Name: Garage Unit (5)
   m_TagString: Untagged
@@ -1181,6 +1195,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &8389768765838066109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584119063459420549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &587573128682505633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,7 +1739,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &6380133464154202704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2073,7 +2098,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &1004030465022701361
 GameObject:
   m_ObjectHideFlags: 0
@@ -2192,7 +2216,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.2
   closeDuration: 0.2
-  building: {fileID: 0}
 --- !u!114 &7844723896123051409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2451,6 +2474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8055524850063659340}
+  - component: {fileID: 8452778030630063366}
   m_Layer: 0
   m_Name: Garage Unit
   m_TagString: Untagged
@@ -2483,6 +2507,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8452778030630063366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098498664693613004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1108817605360241834
 GameObject:
   m_ObjectHideFlags: 0
@@ -3523,7 +3559,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &7261745517173658465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3686,7 +3721,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &5500188028370721946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4079,7 +4113,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &1690739875025628739
 GameObject:
   m_ObjectHideFlags: 0
@@ -4511,7 +4544,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &1756899670948703245
 GameObject:
   m_ObjectHideFlags: 0
@@ -4570,7 +4602,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &1784140295626049638
 GameObject:
   m_ObjectHideFlags: 0
@@ -5205,7 +5236,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &2181855070994565521
 GameObject:
   m_ObjectHideFlags: 0
@@ -5355,7 +5385,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &8974980460911792255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7150,7 +7179,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &7547589465660760646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7211,6 +7239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 75
   spawnChance: 100
+  allowFlipping: 1
   beds:
   - {fileID: 3761144245801967043}
   - {fileID: 568975384942687675}
@@ -8405,7 +8434,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 1.75
   closeDuration: 0.65
-  building: {fileID: 6380306897797148188}
   triggerZones: []
 --- !u!33 &3087779360071366021
 MeshFilter:
@@ -9505,7 +9533,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &3544621740769606475
 GameObject:
   m_ObjectHideFlags: 0
@@ -10045,7 +10072,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &3648043911887904704
 GameObject:
   m_ObjectHideFlags: 0
@@ -10356,7 +10382,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &4629679118172698416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10584,7 +10609,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &2615061873512520061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10703,6 +10727,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2587533307337731743}
+  - component: {fileID: 3371476544268356487}
   m_Layer: 0
   m_Name: Garage Unit (12)
   m_TagString: Untagged
@@ -10736,6 +10761,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3371476544268356487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3975127059959741892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4152816545245928438
 GameObject:
   m_ObjectHideFlags: 0
@@ -11316,7 +11353,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &7062267082600465509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11799,7 +11835,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &4623246127665668277
 GameObject:
   m_ObjectHideFlags: 0
@@ -11954,7 +11989,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &4678375243707304662
 GameObject:
   m_ObjectHideFlags: 0
@@ -12109,7 +12143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &4710324854248538530
 GameObject:
   m_ObjectHideFlags: 0
@@ -12881,7 +12914,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &4978498731336051113
 GameObject:
   m_ObjectHideFlags: 0
@@ -13192,7 +13224,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &4265513137270849065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13585,6 +13616,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2374172314141429539}
+  - component: {fileID: 791663824247195910}
   m_Layer: 0
   m_Name: Garage Unit (7)
   m_TagString: Untagged
@@ -13617,6 +13649,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -209.517, z: 0}
+--- !u!114 &791663824247195910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169704860481100346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5171513014450279417
 GameObject:
   m_ObjectHideFlags: 0
@@ -14249,7 +14293,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &5297529505165905034
 GameObject:
   m_ObjectHideFlags: 0
@@ -14748,6 +14791,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3959085117729718128}
+  - component: {fileID: 5503017233319920169}
   m_Layer: 0
   m_Name: Garage Unit (13)
   m_TagString: Untagged
@@ -14781,6 +14825,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 60, z: 0}
+--- !u!114 &5503017233319920169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5383901535644073793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5420053824693931767
 GameObject:
   m_ObjectHideFlags: 0
@@ -14839,7 +14895,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &5492576306730198909
 GameObject:
   m_ObjectHideFlags: 0
@@ -14994,7 +15049,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &5512601587421345632
 GameObject:
   m_ObjectHideFlags: 0
@@ -15416,7 +15470,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &1917284293160684129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15915,7 +15968,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &5643841372626962013
 GameObject:
   m_ObjectHideFlags: 0
@@ -17340,7 +17392,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.2
   closeDuration: 0.2
-  building: {fileID: 0}
 --- !u!114 &4826750359452221279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17694,7 +17745,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.2
   closeDuration: 0.2
-  building: {fileID: 0}
 --- !u!1 &6287263409652239162
 GameObject:
   m_ObjectHideFlags: 0
@@ -18163,6 +18213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3421219635142749904}
+  - component: {fileID: 7899207787919781761}
   m_Layer: 0
   m_Name: Garage Unit (11)
   m_TagString: Untagged
@@ -18196,6 +18247,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 120, z: 0}
+--- !u!114 &7899207787919781761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6398419521412781053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6432953463395100760
 GameObject:
   m_ObjectHideFlags: 0
@@ -18314,7 +18377,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &8903835365617910508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18585,7 +18647,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &3189416747467884166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19835,6 +19896,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6993825512869070347}
+  - component: {fileID: 8797312969240537626}
   m_Layer: 0
   m_Name: Garage Unit (6)
   m_TagString: Untagged
@@ -19867,6 +19929,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -150, z: 0}
+--- !u!114 &8797312969240537626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6898161434832004582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6901058175994883806
 GameObject:
   m_ObjectHideFlags: 0
@@ -20326,6 +20400,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2434654994385106437}
+  - component: {fileID: 1720954678380901814}
   m_Layer: 0
   m_Name: Garage Unit (15)
   m_TagString: Untagged
@@ -20359,6 +20434,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: -29.517, z: 0}
+--- !u!114 &1720954678380901814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7045034471189736090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7112915931029930785
 GameObject:
   m_ObjectHideFlags: 0
@@ -20399,6 +20486,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 812228171117937947}
+  - component: {fileID: 1185712673975455086}
   m_Layer: 0
   m_Name: Garage Unit (10)
   m_TagString: Untagged
@@ -20432,6 +20520,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 150, z: 0}
+--- !u!114 &1185712673975455086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7162794587183531379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7174386601123507691
 GameObject:
   m_ObjectHideFlags: 0
@@ -20900,6 +21000,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4488436357763553165}
+  - component: {fileID: 1831672798681885037}
   m_Layer: 0
   m_Name: Garage Unit (14)
   m_TagString: Untagged
@@ -20933,6 +21034,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 30, z: 0}
+--- !u!114 &1831672798681885037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7356129232270736695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7419913463212709341
 GameObject:
   m_ObjectHideFlags: 0
@@ -20973,6 +21086,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3506760375506590825}
+  - component: {fileID: 5595220334210418612}
   m_Layer: 0
   m_Name: Garage Unit (9)
   m_TagString: Untagged
@@ -21006,6 +21120,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 210.483, z: 0}
+--- !u!114 &5595220334210418612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7481957454534190319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7502706998193662791
 GameObject:
   m_ObjectHideFlags: 0
@@ -21015,6 +21141,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2721409520098775345}
+  - component: {fileID: 5363885064104089710}
   m_Layer: 0
   m_Name: Garage Unit (1)
   m_TagString: Untagged
@@ -21047,6 +21174,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: -30, z: 0}
+--- !u!114 &5363885064104089710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7502706998193662791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7506220754499320287
 GameObject:
   m_ObjectHideFlags: 0
@@ -21502,6 +21641,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8541509210294302602}
+  - component: {fileID: 3827036196664228971}
   m_Layer: 0
   m_Name: Front Tower
   m_TagString: Untagged
@@ -21559,6 +21699,18 @@ Transform:
   m_Father: {fileID: 2585150693032017273}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &3827036196664228971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7687149132737728977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7700632928861221129
 GameObject:
   m_ObjectHideFlags: 0
@@ -23898,7 +24050,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 6380306897797148188}
 --- !u!1 &8363299839256111476
 GameObject:
   m_ObjectHideFlags: 0
@@ -23944,7 +24095,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 5
-  building: {fileID: 6380306897797148188}
 --- !u!136 &211689890749600950
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -24269,6 +24419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2570614061394665895}
+  - component: {fileID: 4148671571219281284}
   m_Layer: 0
   m_Name: Garage Unit (4)
   m_TagString: Untagged
@@ -24301,6 +24452,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 30.483, z: 0}
+--- !u!114 &4148671571219281284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8547033276981700816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8551813933253923876
 GameObject:
   m_ObjectHideFlags: 0
@@ -24501,7 +24664,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &3249243236483047322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24838,7 +25000,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &3964764326439907786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25241,6 +25402,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1593983181116751932}
+  - component: {fileID: 4634511738639861331}
   m_Layer: 0
   m_Name: Garage Unit (3)
   m_TagString: Untagged
@@ -25273,6 +25435,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -120, z: 0}
+--- !u!114 &4634511738639861331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8734732081532725462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8742133493870763308
 GameObject:
   m_ObjectHideFlags: 0
@@ -25517,7 +25691,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &4177054191716577717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26248,6 +26421,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 402976815711714456}
+  - component: {fileID: 701073538156878268}
   m_Layer: 0
   m_Name: Garage Unit (8)
   m_TagString: Untagged
@@ -26281,6 +26455,18 @@ Transform:
   m_Father: {fileID: 5192681144758511409}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &701073538156878268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964690790480224215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9022397814733586547
 GameObject:
   m_ObjectHideFlags: 0
@@ -27120,7 +27306,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 6380306897797148188}
 --- !u!114 &4190942523574231538
 MonoBehaviour:
   m_ObjectHideFlags: 0

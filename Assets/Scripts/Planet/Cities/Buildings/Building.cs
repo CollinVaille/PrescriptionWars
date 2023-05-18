@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Building : MonoBehaviour
+public class Building : IndoorZoneGrouping
 {
-    public static Building playerInside = null;
-
     public int length = 5;
     public int spawnChance = 10;
     public bool allowFlipping = true;
@@ -15,8 +13,6 @@ public class Building : MonoBehaviour
     [HideInInspector] public int buildingIndex;
     [HideInInspector] public Material wall, floor;
     private bool flipped = false;
-
-    private int openDoors = 0;
 
     public void SetUpBuilding (City city, int buildingIndex, Material newWall, Material newFloor)
     {
@@ -36,26 +32,6 @@ public class Building : MonoBehaviour
         floor = newFloor;
         RepaintRecursive(transform);
     }
-
-    public void DoorOpened ()
-    {
-        //Lost air seal
-        if (playerInside == this && openDoors == 0)
-            Planet.planet.ambientVolume *= 4;
-
-        openDoors++;
-    }
-
-    public void DoorClosed ()
-    {
-        //Gained air seal
-        if (playerInside == this && openDoors == 1)
-            Planet.planet.ambientVolume *= 0.25f;
-
-        openDoors--;
-    }
-
-    public bool AirTight () { return openDoors <= 0; }
 
     public void RepaintRecursive (Transform t)
     {

@@ -1130,7 +1130,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 144228741719313274}
 --- !u!114 &5353779178875657989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1617,7 +1616,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 144228741719313274}
 --- !u!1 &1545393291002682425
 GameObject:
   m_ObjectHideFlags: 0
@@ -1945,6 +1943,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3354963127871473034}
+  - component: {fileID: 3001447589834507493}
   m_Layer: 0
   m_Name: Hovel Unit 2
   m_TagString: Untagged
@@ -1979,6 +1978,18 @@ Transform:
   m_Father: {fileID: 8275365567391775958}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3001447589834507493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710779992676374805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1773997130921214908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2383,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6659458798101370971}
+  - component: {fileID: 3380845407670627112}
   m_Layer: 0
   m_Name: Penthouse
   m_TagString: Untagged
@@ -2408,6 +2420,18 @@ Transform:
   m_Father: {fileID: 8275365567391775958}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &3380845407670627112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2737427322237810495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2786638304391805685
 GameObject:
   m_ObjectHideFlags: 0
@@ -2658,7 +2682,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 144228741719313274}
 --- !u!1 &2939509704319803472
 GameObject:
   m_ObjectHideFlags: 0
@@ -2939,7 +2962,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 144228741719313274}
 --- !u!1 &3075685529697049380
 GameObject:
   m_ObjectHideFlags: 0
@@ -3456,7 +3478,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 144228741719313274}
 --- !u!114 &6034675695712445977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5350,7 +5371,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 144228741719313274}
 --- !u!1 &4619887069773121140
 GameObject:
   m_ObjectHideFlags: 0
@@ -5609,7 +5629,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 144228741719313274}
 --- !u!114 &7797661338735009048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5920,6 +5939,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4689361693503084987}
+  - component: {fileID: 6704992460354548169}
   m_Layer: 0
   m_Name: Garage Unit
   m_TagString: Untagged
@@ -5953,6 +5973,18 @@ Transform:
   m_Father: {fileID: 8275365567391775958}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &6704992460354548169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4689361693503084988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4866581808983342799
 GameObject:
   m_ObjectHideFlags: 0
@@ -8643,7 +8675,6 @@ MonoBehaviour:
   doorMotion: 0
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 144228741719313274}
 --- !u!114 &5458936104048464090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9248,6 +9279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8701048795760074062}
+  - component: {fileID: 7638523567193915265}
   m_Layer: 0
   m_Name: Hovel Unit 1
   m_TagString: Untagged
@@ -9281,6 +9313,18 @@ Transform:
   m_Father: {fileID: 8275365567391775958}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7638523567193915265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8701048795760074057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8701048795819098773
 GameObject:
   m_ObjectHideFlags: 0
@@ -9839,6 +9883,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 40
   spawnChance: 30
+  allowFlipping: 1
   beds:
   - {fileID: 5823067049970487261}
   - {fileID: 5368538425057378846}
@@ -10179,9 +10224,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1605265a188bdf4983de0940d05e831, type: 3}
---- !u!1 &5840163036093902869 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7363608876804846850, guid: e1605265a188bdf4983de0940d05e831,
+--- !u!4 &5840163036093902868 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7363608876804846851, guid: e1605265a188bdf4983de0940d05e831,
     type: 3}
   m_PrefabInstance: {fileID: 3980238779182204183}
   m_PrefabAsset: {fileID: 0}
@@ -10191,9 +10236,9 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3980238779182204183}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &5840163036093902868 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7363608876804846851, guid: e1605265a188bdf4983de0940d05e831,
+--- !u!1 &5840163036093902869 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7363608876804846850, guid: e1605265a188bdf4983de0940d05e831,
     type: 3}
   m_PrefabInstance: {fileID: 3980238779182204183}
   m_PrefabAsset: {fileID: 0}

@@ -1645,6 +1645,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1180944348513110290}
+  - component: {fileID: 6247104470611364223}
   m_Layer: 0
   m_Name: Sub Unit Mini Gararge
   m_TagString: Untagged
@@ -1675,6 +1676,18 @@ Transform:
   m_Father: {fileID: 6162940735806453097}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &6247104470611364223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180944348513110293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1180944349195307887
 GameObject:
   m_ObjectHideFlags: 0
@@ -2473,7 +2486,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 0}
 --- !u!114 &7382929240404408111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2496,6 +2508,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6003497538487328644}
+  - component: {fileID: 9082112950755312119}
   m_Layer: 0
   m_Name: Sub Unit Mini Gararge (1)
   m_TagString: Untagged
@@ -2527,6 +2540,18 @@ Transform:
   m_Father: {fileID: 6162940735806453097}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9082112950755312119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2505540404869081872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23e5006d25079642969ab4ede5643b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2618040151337410361
 GameObject:
   m_ObjectHideFlags: 0
@@ -4642,6 +4667,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   length: 30
   spawnChance: 20
+  allowFlipping: 1
   beds:
   - {fileID: 126043189440651124}
   - {fileID: 9175533242485394304}
@@ -4804,7 +4830,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 2946004364637638864}
 --- !u!1 &6600038011193859137
 GameObject:
   m_ObjectHideFlags: 0
@@ -6673,7 +6698,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indoorReverb: 3
-  building: {fileID: 2946004364637638864}
 --- !u!1 &8925989927836425673
 GameObject:
   m_ObjectHideFlags: 0
@@ -7111,7 +7135,6 @@ MonoBehaviour:
   doorMotion: 1
   openDuration: 0.75
   closeDuration: 0.75
-  building: {fileID: 0}
 --- !u!114 &2121901904602220864
 MonoBehaviour:
   m_ObjectHideFlags: 0

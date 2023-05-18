@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlanetPainter : PlanetFactoryMachine
+public class PlanetRetardantMachine : PlanetFactoryMachine
 {
     private const float deploymentStage2Threshold = 0.33f, deploymentStage3Threshold = 0.66f, spinAtDegreesPerSecond = 360.0f;
     private int stage = 1;
 
     public Vector3 subjectPinPosition;
-    public Material paintMaterial;
+    public Material retardedMaterial;
     public ParticleSystem retardantStream;
     public AudioClip intakeSound, outtakeSound, mechanicalSound, paintSound, coolingSound;
     public PlanetFactoryMachinePart platform, lowerClamper, upperClamper;
@@ -120,8 +120,8 @@ public class PlanetPainter : PlanetFactoryMachine
     {
         MeshRenderer subjectsMeshRenderer = subject.GetComponent<MeshRenderer>();
 
-        if (subjectsMeshRenderer.sharedMaterial != paintMaterial)
-            subjectsMeshRenderer.sharedMaterial = paintMaterial;
+        if (subjectsMeshRenderer.sharedMaterial != retardedMaterial)
+            subjectsMeshRenderer.sharedMaterial = retardedMaterial;
 
         //Cools from gel material ("swamp") to harder rocky material
         PlanetMaterial.SetMaterialType(PlanetMaterialType.Rock, subject.gameObject);

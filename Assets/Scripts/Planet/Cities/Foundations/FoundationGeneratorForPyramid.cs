@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FoundationGeneratorForPyramid : MonoBehaviour
+public class FoundationGeneratorForPyramid
 {
     //References
     private City city;

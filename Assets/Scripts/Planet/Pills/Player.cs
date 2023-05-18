@@ -1087,7 +1087,7 @@ public class Player : Pill
 
     public void SetContinuousPrimaryAction (bool continuous) { continuousPrimaryAction = continuous; }
 
-    public void IncrementIndoorZoneCount (AudioReverbPreset indoorReverbPreset, Building building)
+    public void IncrementIndoorZoneCount (AudioReverbPreset indoorReverbPreset, IndoorZoneGrouping indoorZoneGrouping)
     {
         if(indoorZoneCount == 0) //Switch from outdoors to indoors
         {
@@ -1097,10 +1097,10 @@ public class Player : Pill
 
             //moveSpeed *= 0.5f;
 
-            Building.playerInside = building;
+            IndoorZoneGrouping.playerInside = indoorZoneGrouping;
 
             //Entered building without using any doors (possible on respawn) so go to indoor ambience
-            if (building.AirTight())
+            if (indoorZoneGrouping.AirTight())
                 Planet.planet.ambientVolume *= 0.25f;
         }
 
@@ -1116,13 +1116,13 @@ public class Player : Pill
 
             //moveSpeed *= 2.0f;
 
-            if (Building.playerInside)
+            if (IndoorZoneGrouping.playerInside)
             {
                 //Left building without using any doors (possible on respawn) so go to outdoor ambience
-                if (Building.playerInside.AirTight())
+                if (IndoorZoneGrouping.playerInside.AirTight())
                     Planet.planet.ambientVolume *= 4;
 
-                Building.playerInside = null;
+                IndoorZoneGrouping.playerInside = null;
             }
         }
 
