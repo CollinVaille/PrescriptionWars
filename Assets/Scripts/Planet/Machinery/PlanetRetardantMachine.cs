@@ -82,6 +82,10 @@ public class PlanetRetardantMachine : PlanetFactoryMachine
         }
         else if (step == MachineStep.Outtake)
         {
+            LerpMachinePartLocalPosition(lowerClamper, 1.0f, GeneralHelperMethods.WhichVector.Y);
+            LerpMachinePartLocalPosition(upperClamper, 1.0f, GeneralHelperMethods.WhichVector.Y);
+            LerpMachinePartLocalPosition(platform, 0.0f, GeneralHelperMethods.WhichVector.Z);
+
             SetSoundOnSubject(processingSlot, outtakeSound, loop: false);
         }
     }

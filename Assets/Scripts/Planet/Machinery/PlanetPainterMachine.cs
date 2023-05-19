@@ -64,7 +64,11 @@ public class PlanetPainterMachine : PlanetFactoryMachine
             SetSoundOnSubject(processingSlot, fillSound, loop: true);
         }
         else if(step == MachineStep.Outtake)
+        {
+            LerpMachinePartLocalPosition(chamber, 1.0f, GeneralHelperMethods.WhichVector.Y);
+
             SetSoundOnSubject(processingSlot, raiseChamber, loop: false);
+        }
 
         LerpMachinePartLocalPosition(chamberFluidPosition, 0.0f, GeneralHelperMethods.WhichVector.Y);
         LerpMachinePartLocalScale(chamberFluidScale, 0.0f, GeneralHelperMethods.WhichVector.Y);

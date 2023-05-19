@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlanetFactoryMachine : MonoBehaviour
+public abstract class PlanetFactoryMachine : Interactable
 {
     protected enum MachineStep { None, Intake, Process, Outtake }
 
-    [HideInInspector] public Transform intakeSlot, processingSlot;
+    public Transform intakeSlot, processingSlot;
     public float processStepThreshold = 0.33f, outtakeStepThreshold = 0.66f;
     private float lastCycleUpdateAtPercentage = 0.0f;
-    private bool performedOuttakeForCurrentSubject = false;
+    private bool performedOuttakeForCurrentSubject = false, on = true;
     private MachineStep currentStep = MachineStep.None;
     public PlanetFactoryMachine outputsTo;
 
@@ -28,33 +28,43 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             if (currentStep == MachineStep.Outtake)
                 EndCurrentStep(MachineStep.Outtake);
 
-            if (currentStep == MachineStep.Intake && intakeSlot && !processingSlot)
-                PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold, stepDuration);
-            else if (ReadyToProgressToNextStep(MachineStep.Intake))
-                MoveToNextStep(MachineStep.Intake);
+            if(on)
+            {
+                if (currentStep == MachineStep.Intake && intakeSlot && !processingSlot)
+                    PerformMachineStepUpdate(MachineStep.Intake, cycleCompletionPercentage / processStepThreshold, stepDuration);
+                else if (ReadyToProgressToNextStep(MachineStep.Intake))
+                    MoveToNextStep(MachineStep.Intake);
+            }
         }
         else if (cycleCompletionPercentage < outtakeStepThreshold) //Step 2: Process
         {
             if (currentStep == MachineStep.Intake)
                 EndCurrentStep(MachineStep.Intake);
 
-            if (currentStep == MachineStep.Process && processingSlot)
-                PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold), stepDuration);
-            else if (ReadyToProgressToNextStep(MachineStep.Process))
-                MoveToNextStep(MachineStep.Process);
+            if (on)
+            {
+                if (currentStep == MachineStep.Process && processingSlot)
+                    PerformMachineStepUpdate(MachineStep.Process, (cycleCompletionPercentage - processStepThreshold) / (outtakeStepThreshold - processStepThreshold), stepDuration);
+                else if (ReadyToProgressToNextStep(MachineStep.Process))
+                    MoveToNextStep(MachineStep.Process);
+            }
         }
         else //Step 3: Outtake
         {
             if (currentStep == MachineStep.Process)
                 EndCurrentStep(MachineStep.Process);
 
-            if (currentStep == MachineStep.Outtake && processingSlot)
-                PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold), stepDuration);
-            else if (ReadyToProgressToNextStep(MachineStep.Outtake))
-                MoveToNextStep(MachineStep.Outtake);
+            if (on)
+            {
+                if (currentStep == MachineStep.Outtake && processingSlot && !performedOuttakeForCurrentSubject)
+                    PerformMachineStepUpdate(MachineStep.Outtake, (cycleCompletionPercentage - outtakeStepThreshold) / (1.0f - outtakeStepThreshold), stepDuration);
+                else if (ReadyToProgressToNextStep(MachineStep.Outtake))
+                    MoveToNextStep(MachineStep.Outtake);
+            }
         }
 
-        lastCycleUpdateAtPercentage = cycleCompletionPercentage;
+        if(on)
+            lastCycleUpdateAtPercentage = cycleCompletionPercentage;
     }
 
     protected virtual void PerformMachineStepUpdate(MachineStep step, float stepCompletionPercentage, float stepDuration) { }
@@ -143,15 +153,17 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     {
         if (!outputsTo)
             return false;
-        else if (outputsTo.intakeSlot)
+        else if (outputsTo.intakeSlot || outputsTo.processingSlot)
             return false;
         else
-            return !outputsTo.processingSlot;
+            return outputsTo.IsOn();
     }
 
     private bool ReadyToProgressToNextStep(MachineStep nextStep)
     {
-        if (nextStep == MachineStep.Intake)
+        if (currentStep == nextStep)
+            return false;
+        else if (nextStep == MachineStep.Intake)
         {
             if (intakeSlot || IsStartingMachine())
             {
@@ -170,7 +182,14 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
             if (IsStartingMachine())
                 return !processingSlot && outputsTo && !outputsTo.intakeSlot;
             else
-                return !performedOuttakeForCurrentSubject && processingSlot && ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold);
+            {
+                if (!processingSlot || !ACloserToCThanB(lastCycleUpdateAtPercentage, processStepThreshold, outtakeStepThreshold))
+                    return false;
+                else if (!performedOuttakeForCurrentSubject)
+                    return true;
+                else
+                    return NextMachineIsReadyToReceive();
+            }
         }
         else //Shouldn't ever get here. This is really just to prevent compiler errors
             return false;
@@ -180,6 +199,19 @@ public abstract class PlanetFactoryMachine : MonoBehaviour
     {
         return a > (b + c) * 0.5f;
     }
+
+    public override void Interact(Pill interacting, bool turnOn)
+    {
+        base.Interact(interacting, turnOn);
+
+        on = turnOn;
+    }
+
+    public override bool OverrideTriggerDescription() { return true; }
+
+    protected override string GetInteractionVerb() { return on ? "Turn Off" : "Turn On"; }
+
+    public bool IsOn() { return on; }
 }
 
 

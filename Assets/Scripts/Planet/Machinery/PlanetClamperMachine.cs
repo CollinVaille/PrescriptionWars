@@ -89,11 +89,14 @@ public class PlanetClamperMachine : PlanetFactoryMachine
         }
         else if(step == MachineStep.Outtake)
         {
-            LerpMachinePartLocalPosition(lowerClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
-            LerpMachinePartLocalPosition(upperClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
+            LerpMachinePartLocalPosition(holdArms, 1.0f, GeneralHelperMethods.WhichVector.Z);
+            LerpMachinePartLocalPosition(platform, 0.0f, GeneralHelperMethods.WhichVector.Z);
 
             processingSlot.GetComponent<AudioSource>().PlayOneShot(platformDeploy);
         }
+
+        LerpMachinePartLocalPosition(lowerClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
+        LerpMachinePartLocalPosition(upperClamper, 0.0f, GeneralHelperMethods.WhichVector.Y);
     }
 
     protected override void OnEndOfStep(MachineStep step)
