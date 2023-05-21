@@ -120,7 +120,7 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
                     //Sets the color of the scroll view's viewport on the buildings tab to the planet's owning empire color.
                     buildingsTabScrollViewViewportImage.color = new Color(planetSelected.owner.color.r, planetSelected.owner.color.g, planetSelected.owner.color.b, planetSelected.owner.color.a * (50 / 255f));
                     //Sets the color of the upgrade button on the buildings tab building inspector to the owning empire's color.
-                    buildingsTabBuildingInspectorUpgradeBuildingButtonImage.color = planetSelected.owner.color;
+                    buildingsTabBuildingInspectorUpgradeBuildingButtonImage.color = planetSelected.owner.labelColor;
                 }
                 else
                 {
