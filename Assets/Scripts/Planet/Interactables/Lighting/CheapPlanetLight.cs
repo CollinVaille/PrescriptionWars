@@ -10,8 +10,10 @@ public class CheapPlanetLight : PlanetLight
     private Light lightSource = null;
     private int flickerCode = 0;
 
-    private void Start ()
+    protected override void Start ()
     {
+        base.Start();
+
         destroyWhenOff = !GetComponent<Light>();
     }
 

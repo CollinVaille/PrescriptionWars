@@ -5,7 +5,14 @@ using UnityEngine;
 public abstract class PlanetLight : Interactable
 {
     //Static-------------------------
+    public bool automatic = false;
     private static List<PlanetLight> automaticLights;
+
+    protected virtual void Start()
+    {
+        if(automatic)
+            AddAutomaticLight(this); //Add it to the automatic lighting system
+    }
 
     public static void ClearAllAutomaticLights()
     {

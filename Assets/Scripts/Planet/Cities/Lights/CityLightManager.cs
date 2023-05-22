@@ -126,9 +126,6 @@ public class CityLightManager
         if (cityLights == null)
             cityLights = new List<PlanetLight>();
         cityLights.Add(newPlanetLight);
-
-        //Add it to the automatic lighting system
-        PlanetLight.AddAutomaticLight(newPlanetLight);
     }
 }
 

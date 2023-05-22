@@ -31,8 +31,10 @@ public class FancyPlanetLight : PlanetLight
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         God.god.ManageAudioSource(audioSource);
     }
 
