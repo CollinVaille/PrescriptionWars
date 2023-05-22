@@ -53,6 +53,24 @@ public class NewGalaxyBuilding
     }
 
     /// <summary>
+    /// Private holder variable for the integer value that indicates the ID of the planet that the building's city is located on.
+    /// </summary>
+    private int _assignedPlanetID = -1;
+    /// <summary>
+    /// Public property that should be used in order to access the planet that the building's city is located on.
+    /// </summary>
+    public NewGalaxyPlanet assignedPlanet { get => _assignedPlanetID >= 0 && _assignedPlanetID < NewGalaxyManager.planets.Count ? NewGalaxyManager.planets[_assignedPlanetID] : null; }
+
+    /// <summary>
+    /// Private variable that holds an integer value that indicates the ID of the resource modifier that belongs to this building (-1 if no resource modifier belongs to this building).
+    /// </summary>
+    private int _resourceModifierID = -1;
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that indicates the ID of the resource modifier that belongs to this building (-1 if no resource modifier belongs to this building).
+    /// </summary>
+    public GalaxyResourceModifier resourceModifier { get => _resourceModifierID >= 0 && _resourceModifierID < NewGalaxyManager.resourceModifiersCount && NewGalaxyManager.resourceModifiers.ContainsKey(_resourceModifierID) ? NewGalaxyManager.resourceModifiers[_resourceModifierID] : null; }
+
+    /// <summary>
     /// Public property that should be used in order to access the description of the building's building type and know what it does.
     /// </summary>
     public string buildingTypeDescription
@@ -74,6 +92,75 @@ public class NewGalaxyBuilding
             }
         }
     }
+    /// <summary>
+    /// Public property that should be used in order to access the type of resource that the building's type of building produces.
+    /// </summary>
+    public GalaxyResourceType buildingTypeResourceType
+    {
+        get
+        {
+            switch (buildingType)
+            {
+                case BuildingType.ResearchFacility:
+                    return GalaxyResourceType.Science;
+                case BuildingType.TradePost:
+                    return GalaxyResourceType.Credits;
+                case BuildingType.Prescriptor:
+                    return GalaxyResourceType.Prescriptions;
+                case BuildingType.Depot:
+                    return GalaxyResourceType.Production;
+                default:
+                    Debug.LogWarning("There is no assigned resource type for building type \"" + buildingType.ToString() + "\".");
+                    return 0;
+            }
+        }
+    }
+    /// <summary>
+    /// Public property that should be used in order to access the type of mathematical operation that is performed by the resource modifier for the building's building type.
+    /// </summary>
+    public GalaxyResourceModifier.MathematicalOperation buildingTypeResourceModifierMathematicalOperation
+    {
+        get
+        {
+            switch (buildingType)
+            {
+                case BuildingType.ResearchFacility:
+                    return GalaxyResourceModifier.MathematicalOperation.Addition;
+                case BuildingType.TradePost:
+                    return GalaxyResourceModifier.MathematicalOperation.Addition;
+                case BuildingType.Prescriptor:
+                    return GalaxyResourceModifier.MathematicalOperation.Addition;
+                case BuildingType.Depot:
+                    return GalaxyResourceModifier.MathematicalOperation.Addition;
+                default:
+                    Debug.LogWarning("There is no assigned resource modifier mathematical operation for building type \"" + buildingType.ToString() + "\".");
+                    return 0;
+            }
+        }
+    }
+    /// <summary>
+    /// Public property that should be used in order to access the amount of the resource modifier for the building's building type also based on the building's level and possibly other factors.
+    /// </summary>
+    public float buildingTypeResourceModifierAmount
+    {
+        get
+        {
+            switch (buildingType)
+            {
+                case BuildingType.ResearchFacility:
+                    return 0.25f * level;
+                case BuildingType.TradePost:
+                    return 0.25f * level;
+                case BuildingType.Prescriptor:
+                    return 0.25f * level;
+                case BuildingType.Depot:
+                    return 0.25f * level;
+                default:
+                    Debug.LogWarning("There is no assigned resource modifier amount for building type \"" + buildingType.ToString() + "\".");
+                    return 0;
+            }
+        }
+    }
 
     /// <summary>
     /// Public property that should be accessed in order to obtain the sprite that indicates a building of the building's building type. Sprite is loaded in from the project resources.
@@ -90,13 +177,36 @@ public class NewGalaxyBuilding
         _buildingType = buildingData.buildingType;
 
         _level = buildingData.level;
+        _assignedPlanetID = buildingData.assignedPlanetID;
+        _resourceModifierID = buildingData.resourceModifierID;
     }
 
-    public NewGalaxyBuilding(BuildingType buildingType, int level = 1)
+    public NewGalaxyBuilding(BuildingType buildingType, int assignedPlanetID, int level = 1)
     {
         _buildingType = buildingType;
 
         _level = level;
+        _assignedPlanetID = assignedPlanetID;
+
+        if (NewGalaxyManager.activeInHierarchy)
+        {
+            _resourceModifierID = (new GalaxyResourceModifier(buildingTypeResourceType, buildingTypeResourceModifierMathematicalOperation, buildingTypeResourceModifierAmount, assignedPlanet.owner)).ID;
+        }
+        else
+        {
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+        }
+    }
+
+    /// <summary>
+    /// Private method that is executed by the galaxy generator whenever the galaxy is finished generating and the method has a priority index of 0 (meaning it is top priority and can be done immediately). The method properly sets the resource modifier ID integer value stored by the building if there is no valid current resource modifier.
+    /// </summary>
+    private void OnGalaxyGenerationCompletion()
+    {
+        if(_resourceModifierID < 0)
+        {
+            _resourceModifierID = (new GalaxyResourceModifier(buildingTypeResourceType, buildingTypeResourceModifierMathematicalOperation, buildingTypeResourceModifierAmount, assignedPlanet.owner)).ID;
+        }
     }
 }
 
@@ -106,11 +216,17 @@ public class GalaxyBuildingData
     public NewGalaxyBuilding.BuildingType buildingType;
 
     public int level = 0;
+    public int assignedPlanetID = -1;
+    public int resourceModifierID = -1;
 
     public GalaxyBuildingData(NewGalaxyBuilding building)
     {
         buildingType = building.buildingType;
 
         level = building.level;
+
+        assignedPlanetID = building.assignedPlanet == null ? -1 : building.assignedPlanet.ID;
+
+        resourceModifierID = building.resourceModifier == null ? -1 : building.resourceModifier.ID;
     }
 }

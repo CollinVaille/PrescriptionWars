@@ -79,16 +79,16 @@ public class GalaxyResourceModifier
     /// <summary>
     /// Private variable that is used to hold the empire that has the modifier applied to its resources.
     /// </summary>
-    private NewEmpire _appliedEmpire = null;
+    private int _appliedEmpireID = -1;
     /// <summary>
     /// Public property that should be used in order to both access and mutate the empire that has the modifier applied to its resources.
     /// </summary>
     public NewEmpire appliedEmpire
     {
-        get => _appliedEmpire;
+        get => _appliedEmpireID >= 0 && _appliedEmpireID < NewGalaxyManager.empires.Count ? NewGalaxyManager.empires[_appliedEmpireID] : null;
         set
         {
-            _appliedEmpire = value;
+            _appliedEmpireID = value == null ? -1 : value.ID;
         }
     }
 
@@ -98,12 +98,50 @@ public class GalaxyResourceModifier
         _mathematicalOperation = mathematicalOperation;
         _amount = amount;
 
-        this.appliedEmpire = appliedEmpire;
+        if (NewGalaxyManager.activeInHierarchy)
+        {
+            _ID = NewGalaxyManager.resourceModifiersCount;
+            NewGalaxyManager.resourceModifiers.Add(_ID, this);
+            NewGalaxyManager.resourceModifiersCount++;
+            this.appliedEmpire = appliedEmpire;
+        }
+        else
+        {
+            _appliedEmpireID = appliedEmpire == null ? -1 : appliedEmpire.ID;
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+        }
     }
 
-    public GalaxyResourceModifier(GalaxyResourceModifierData resourceModifierData) : this(resourceModifierData.resourceType, resourceModifierData.mathematicalOperation, resourceModifierData.amount, NewGalaxyManager.empires[resourceModifierData.appliedEmpireID])
+    public GalaxyResourceModifier(GalaxyResourceModifierData resourceModifierData)
     {
+        _ID = resourceModifierData.ID;
+        _resourceType = resourceModifierData.resourceType;
+        _mathematicalOperation = resourceModifierData.mathematicalOperation;
+        _amount = resourceModifierData.amount;
 
+        if (NewGalaxyManager.activeInHierarchy)
+        {
+            appliedEmpire = resourceModifierData.appliedEmpireID >= 0 && resourceModifierData.appliedEmpireID < NewGalaxyManager.empires.Count ? NewGalaxyManager.empires[resourceModifierData.appliedEmpireID] : null;
+        }
+        else
+        {
+            _appliedEmpireID = resourceModifierData.appliedEmpireID;
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+        }
+    }
+
+    /// <summary>
+    /// Private method that is executed by the galaxy generator whenever the galaxy is finished generating and the method has a priority index of 0 (meaning it is top priority and can be done immediately). The method properly sets the ID (if necessary) and apllied empire of the resource modifier.
+    /// </summary>
+    private void OnGalaxyGenerationCompletion()
+    {
+        if(_ID < 0)
+        {
+            _ID = NewGalaxyManager.resourceModifiersCount;
+            NewGalaxyManager.resourceModifiers.Add(_ID, this);
+            NewGalaxyManager.resourceModifiersCount++;
+        }
+        appliedEmpire = NewGalaxyManager.empires[_appliedEmpireID];
     }
 }
 

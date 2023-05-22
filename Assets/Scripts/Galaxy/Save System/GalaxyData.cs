@@ -14,6 +14,8 @@ public class GalaxyData
     public int turnNumber = -1;
     public float galaxyLocalYRotation = 0;
     public bool observationModeEnabled = false;
+    public Dictionary<int, GalaxyResourceModifierData> resourceModifiers = null;
+    public int resourceModifiersCount = 0;
 
     //Info.
     public string galaxyShape = null;
@@ -46,6 +48,12 @@ public class GalaxyData
         galaxyLocalYRotation = NewGalaxyManager.galaxyManager.transform.localRotation.eulerAngles.y;
 
         observationModeEnabled = NewGalaxyManager.observationModeEnabled;
+
+        resourceModifiers = new Dictionary<int, GalaxyResourceModifierData>();
+        foreach (int resourceModifierID in NewGalaxyManager.resourceModifiers.Keys)
+            resourceModifiers.Add(resourceModifierID, new GalaxyResourceModifierData(NewGalaxyManager.resourceModifiers[resourceModifierID]));
+
+        resourceModifiersCount = NewGalaxyManager.resourceModifiersCount;
 
         galaxyShape = NewGalaxyManager.galaxyShape;
 

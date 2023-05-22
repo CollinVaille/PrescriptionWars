@@ -32,8 +32,19 @@ public class NewGalaxyCity
         get => _buildings;
     }
 
+    /// <summary>
+    /// Private holder variable for the integer value that indicates the ID of the planet that the city is located on.
+    /// </summary>
+    private int _assignedPlanetID = -1;
+    /// <summary>
+    /// Public property that should be used in order to access the planet that the city is located on.
+    /// </summary>
+    public NewGalaxyPlanet assignedPlanet { get => _assignedPlanetID >= 0 && _assignedPlanetID < NewGalaxyManager.planets.Count ? NewGalaxyManager.planets[_assignedPlanetID] : null; }
+
     public NewGalaxyCity(GalaxyCityData cityData)
     {
+        _assignedPlanetID = cityData.assignedPlanetID;
+
         _name = cityData.name;
 
         _buildings = new List<NewGalaxyBuilding>();
@@ -41,8 +52,10 @@ public class NewGalaxyCity
             _buildings.Add(new NewGalaxyBuilding(buildingData));
     }
 
-    public NewGalaxyCity(string name, List<NewGalaxyBuilding> buildings)
+    public NewGalaxyCity(string name, List<NewGalaxyBuilding> buildings, int assignedPlanetID)
     {
+        _assignedPlanetID = assignedPlanetID;
+
         _name = name;
 
         _buildings = buildings;
@@ -52,9 +65,11 @@ public class NewGalaxyCity
 [System.Serializable]
 public class GalaxyCityData
 {
-    public string name;
+    public string name = null;
 
     public List<GalaxyBuildingData> buildings = null;
+
+    public int assignedPlanetID = -1;
 
     public GalaxyCityData(NewGalaxyCity city)
     {
@@ -63,5 +78,7 @@ public class GalaxyCityData
         buildings = new List<GalaxyBuildingData>();
         foreach (NewGalaxyBuilding building in city.buildings)
             buildings.Add(new GalaxyBuildingData(building));
+
+        assignedPlanetID = city.assignedPlanet == null ? -1 : city.assignedPlanet.ID;
     }
 }

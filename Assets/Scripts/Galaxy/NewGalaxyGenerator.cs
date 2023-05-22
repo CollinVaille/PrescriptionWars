@@ -98,6 +98,11 @@ public class NewGalaxyGenerator : MonoBehaviour
     private List<NewEmpire> empires = null;
 
     /// <summary>
+    /// Private variable for a dictionary that contains all of the resource modifiers affecting empires in the current galaxy game paired with their respective resource modifier ID int.
+    /// </summary>
+    private Dictionary<int, GalaxyResourceModifier> resourceModifiers = null;
+
+    /// <summary>
     /// Private variable that holds a dictionary of functions to be executed once the galaxy has finished generating completely with the int indicating each function's execution order number.
     /// </summary>
     private Dictionary<int, List<Action>> galaxyGenerationCompletionFunctions = new Dictionary<int, List<Action>>();
@@ -136,6 +141,12 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Sets the material of the galaxy scene's skybox.
         RenderSettings.skybox = skyboxMaterial;
 
+        //Initializes the resource modifiers.
+        Dictionary<int, GalaxyResourceModifier> resourceModifiers = new Dictionary<int, GalaxyResourceModifier>();
+        if (saveGameData != null)
+            foreach (int resourceModifierID in saveGameData.resourceModifiers.Keys)
+                resourceModifiers.Add(resourceModifierID, new GalaxyResourceModifier(saveGameData.resourceModifiers[resourceModifierID]));
+
         //Initializes the galaxy manager.
         NewGalaxyManager.InitializeFromGalaxyGenerator(
             gameObject.GetComponent<NewGalaxyManager>(),
@@ -152,7 +163,9 @@ public class NewGalaxyGenerator : MonoBehaviour
             pauseMenu,
             settingsMenu,
             cheatConsole,
-            saveGameData != null ? saveGameData.turnNumber : 0);
+            saveGameData != null ? saveGameData.turnNumber : 0,
+            resourceModifiers,
+            saveGameData != null ? saveGameData.resourceModifiersCount : 0);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -503,7 +516,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                     NewGalaxyBuilding.BuildingType[] buildingTypes = (NewGalaxyBuilding.BuildingType[])Enum.GetValues(typeof(NewGalaxyBuilding.BuildingType));
                     if(planetIndex == 0)    //System capital has one of every building type.
                         foreach (NewGalaxyBuilding.BuildingType buildingType in buildingTypes)
-                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingType));
+                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingType, planets.Count));
                     else    //Non-capital planets within a solar system have a random amount of buildings (at least one) but cannot have more than one building of a single type, just like the capital planet.
                     {
                         int buildingsCount = UnityEngine.Random.Range(1, buildingTypes.Length + 1);
@@ -513,11 +526,11 @@ public class NewGalaxyGenerator : MonoBehaviour
                         for (int buildingIndex = 0; buildingIndex < buildingsCount; buildingIndex++)
                         {
                             int buildingTypesIndicesRemainingIndex = UnityEngine.Random.Range(0, buildingTypesIndicesRemaining.Count);
-                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingTypes[buildingTypesIndicesRemaining[buildingTypesIndicesRemainingIndex]]));
+                            planetCityBuildings.Add(new NewGalaxyBuilding(buildingTypes[buildingTypesIndicesRemaining[buildingTypesIndicesRemainingIndex]], planets.Count));
                             buildingTypesIndicesRemaining.RemoveAt(buildingTypesIndicesRemainingIndex);
                         }
                     }
-                    NewGalaxyCity planetCity = new NewGalaxyCity(planetName + " City", planetCityBuildings);
+                    NewGalaxyCity planetCity = new NewGalaxyCity(planetName + " City", planetCityBuildings, planets.Count);
 
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
                     GameObject planetaryOrbit = new GameObject();

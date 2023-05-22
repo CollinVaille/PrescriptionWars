@@ -301,9 +301,30 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static float basePlanetaryOrbitalSpeed { get => galaxyManager == null ? 0 : galaxyManager._basePlanetaryOrbitalSpeed; }
 
     /// <summary>
+    /// Private holder variable for a dictionary that contains all of the resource modifiers affecting empires in the current galaxy game paired with their respective resource modifier ID int.
+    /// </summary>
+    private Dictionary<int, GalaxyResourceModifier> _resourceModifiers = null;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain the dictionary that contains all of the resource modifiers affecting empires in the current galaxy game paired with their respective resource modifier ID int.
+    /// </summary>
+    public static Dictionary<int, GalaxyResourceModifier> resourceModifiers { get => galaxyManager == null ? null : galaxyManager._resourceModifiers; }
+    /// <summary>
+    /// Private holder variable for the integer value that indicates exactly how many resources modifiers have been created so far and what the ID of the next resource modifier should be.
+    /// </summary>
+    private int _resourceModifiersCount = -1;
+    /// <summary>
+    /// Public static property that should be used to both access and mutate the integer value that indicates exactly how many resources modifiers have been created so far and what the ID of the next resource modifier should be.
+    /// </summary>
+    public static int resourceModifiersCount
+    {
+        get => galaxyManager == null ? -1 : galaxyManager._resourceModifiersCount;
+        set { if (galaxyManager != null) galaxyManager._resourceModifiersCount = value; else Debug.LogWarning("Cannot set the resource modifiers count because the galaxy manager static reference is null, meaning there is no valid active galaxy game."); }
+    }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -355,6 +376,11 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that indicates how many turns have passed since the start of the game.
         galaxyManager._turnNumber = turnNumber;
+
+        //Sets the value of the variable that is a dictionary that contains all of the resource modifiers affecting empires in the current galaxy game paired with their respective resource modifier ID int.
+        galaxyManager._resourceModifiers = resourceModifiers;
+        //Sets the value of the variable that is an integer value that indicates exactly how many resources modifiers have been created so far and what the ID of the next resource modifier should be.
+        galaxyManager._resourceModifiersCount = resourceModifiersCount;
     }
 
     protected override void Awake()
