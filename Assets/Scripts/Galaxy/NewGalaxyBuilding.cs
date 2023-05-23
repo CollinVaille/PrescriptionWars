@@ -49,6 +49,8 @@ public class NewGalaxyBuilding
         set
         {
             _level = value;
+            if(resourceModifier != null)
+                resourceModifier.amount = buildingTypeResourceModifierAmount;
         }
     }
 
@@ -194,7 +196,7 @@ public class NewGalaxyBuilding
         }
         else
         {
-            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 1);
         }
     }
 

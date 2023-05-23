@@ -98,11 +98,6 @@ public class NewGalaxyGenerator : MonoBehaviour
     private List<NewEmpire> empires = null;
 
     /// <summary>
-    /// Private variable for a dictionary that contains all of the resource modifiers affecting empires in the current galaxy game paired with their respective resource modifier ID int.
-    /// </summary>
-    private Dictionary<int, GalaxyResourceModifier> resourceModifiers = null;
-
-    /// <summary>
     /// Private variable that holds a dictionary of functions to be executed once the galaxy has finished generating completely with the int indicating each function's execution order number.
     /// </summary>
     private Dictionary<int, List<Action>> galaxyGenerationCompletionFunctions = new Dictionary<int, List<Action>>();

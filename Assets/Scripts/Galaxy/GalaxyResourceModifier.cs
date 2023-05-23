@@ -25,7 +25,15 @@ public class GalaxyResourceModifier
         get => _resourceType;
         set
         {
+            GalaxyResourceType previousResourceType = resourceType;
             _resourceType = value;
+            if(appliedEmpire != null)
+            {
+                appliedEmpire.resourceModifiers[previousResourceType][mathematicalOperation].Remove(this);
+                appliedEmpire.resourceModifiers[resourceType][mathematicalOperation].Add(this);
+                appliedEmpire.UpdateResourcePerTurnForResourceType(previousResourceType);
+                appliedEmpire.UpdateResourcePerTurnForResourceType(resourceType);
+            }
         }
     }
 
@@ -56,7 +64,14 @@ public class GalaxyResourceModifier
         get => _mathematicalOperation;
         set
         {
+            MathematicalOperation previousMathematicalOperation = mathematicalOperation;
             _mathematicalOperation = value;
+            if(appliedEmpire != null)
+            {
+                appliedEmpire.resourceModifiers[resourceType][previousMathematicalOperation].Remove(this);
+                appliedEmpire.resourceModifiers[resourceType][mathematicalOperation].Add(this);
+                appliedEmpire.UpdateResourcePerTurnForResourceType(resourceType);
+            }
         }
     }
 
@@ -73,6 +88,8 @@ public class GalaxyResourceModifier
         set
         {
             _amount = value;
+            if(appliedEmpire != null)
+                appliedEmpire.UpdateResourcePerTurnForResourceType(resourceType);
         }
     }
 
@@ -88,7 +105,19 @@ public class GalaxyResourceModifier
         get => _appliedEmpireID >= 0 && _appliedEmpireID < NewGalaxyManager.empires.Count ? NewGalaxyManager.empires[_appliedEmpireID] : null;
         set
         {
+            //If previously applied to another empire, then remove the resource modifier from the dictionary of resource modifiers affecting said previous empire.
+            if(appliedEmpire != null)
+            {
+                appliedEmpire.resourceModifiers[resourceType][mathematicalOperation].Remove(this);
+                appliedEmpire.UpdateResourcePerTurnForResourceType(resourceType);
+            }
+            //Set the resource modifier as being applied to the newly specified empire.
             _appliedEmpireID = value == null ? -1 : value.ID;
+            if(appliedEmpire != null)
+            {
+                appliedEmpire.resourceModifiers[resourceType][mathematicalOperation].Add(this);
+                appliedEmpire.UpdateResourcePerTurnForResourceType(resourceType);
+            }
         }
     }
 
@@ -108,7 +137,7 @@ public class GalaxyResourceModifier
         else
         {
             _appliedEmpireID = appliedEmpire == null ? -1 : appliedEmpire.ID;
-            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 1);
         }
     }
 
@@ -126,7 +155,7 @@ public class GalaxyResourceModifier
         else
         {
             _appliedEmpireID = resourceModifierData.appliedEmpireID;
-            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 0);
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 1);
         }
     }
 

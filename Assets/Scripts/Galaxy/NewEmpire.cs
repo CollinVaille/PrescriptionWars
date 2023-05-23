@@ -170,16 +170,6 @@ public class NewEmpire
                 NewResourceBar.UpdateCredits();
         }
     }
-    /// <summary>
-    /// Publicly accessible property that should be used in order to determine how many credits the empire is currently earning or losing per turn.
-    /// </summary>
-    public float creditsPerTurn
-    {
-        get
-        {
-            return 0;
-        }
-    }
 
     /// <summary>
     /// Private variable that holds the amount of prescriptions that the empire has.
@@ -200,16 +190,20 @@ public class NewEmpire
                 NewResourceBar.UpdatePrescriptions();
         }
     }
+
     /// <summary>
-    /// Publicly accessible property that should be used in order to determine how many prescriptions the empire is currently earning or losing per turn.
+    /// Private holder variable for the dictionary that contains the IDs of all the resource modifiers that apply to the empire organized by resource type and mathematical operation type.
     /// </summary>
-    public float prescriptionsPerTurn
-    {
-        get
-        {
-            return 0;
-        }
-    }
+    private Dictionary<GalaxyResourceType, Dictionary<GalaxyResourceModifier.MathematicalOperation, List<GalaxyResourceModifier>>> _resourceModifiers = null;
+    /// <summary>
+    /// Public property that should be used in order to access the dictionary that contains the IDs of all the resource modifiers that apply to the empire organized by resource type and mathematical operation type.
+    /// </summary>
+    public Dictionary<GalaxyResourceType, Dictionary<GalaxyResourceModifier.MathematicalOperation, List<GalaxyResourceModifier>>> resourceModifiers { get => _resourceModifiers; }
+
+    /// <summary>
+    /// Private holder variable for the dictionary that contains the float values representing the empire's income per turn for each resource type.
+    /// </summary>
+    private Dictionary<GalaxyResourceType, float> resourcesPerTurn = null;
 
     public NewEmpire(EmpireData empireData)
     {
@@ -223,6 +217,9 @@ public class NewEmpire
         planetIDsVar = empireData.planetIDs;
         _credits = empireData.credits;
         _prescriptions = empireData.prescriptions;
+
+        InitializeResourcesPerTurnDictionary();
+        InitializeResourceModifiersDictionary();
     }
 
     public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions)
@@ -237,6 +234,73 @@ public class NewEmpire
         planetIDsVar = planetIDs;
         _credits = credits;
         _prescriptions = prescriptions;
+
+        InitializeResourcesPerTurnDictionary();
+        InitializeResourceModifiersDictionary();
+    }
+
+    /// <summary>
+    /// Private method that should be called by the constructors in order to initialize the resource modifiers dictionary.
+    /// </summary>
+    private void InitializeResourceModifiersDictionary()
+    {
+        _resourceModifiers = new Dictionary<GalaxyResourceType, Dictionary<GalaxyResourceModifier.MathematicalOperation, List<GalaxyResourceModifier>>>();
+        for(int resourceTypeIndex = 0; resourceTypeIndex < Enum.GetNames(typeof(GalaxyResourceType)).Length; resourceTypeIndex++)
+        {
+            _resourceModifiers.Add((GalaxyResourceType)resourceTypeIndex, new Dictionary<GalaxyResourceModifier.MathematicalOperation, List<GalaxyResourceModifier>>());
+            for(int mathematicalOperationTypeIndex = 0; mathematicalOperationTypeIndex < Enum.GetNames(typeof(GalaxyResourceModifier.MathematicalOperation)).Length; mathematicalOperationTypeIndex++)
+            {
+                _resourceModifiers[(GalaxyResourceType)resourceTypeIndex].Add((GalaxyResourceModifier.MathematicalOperation)mathematicalOperationTypeIndex, new List<GalaxyResourceModifier>());
+            }
+        }
+    }
+
+    /// <summary>
+    /// Private method that should be called by the constructors in order to initialize the resources per turn dictionary.
+    /// </summary>
+    private void InitializeResourcesPerTurnDictionary()
+    {
+        resourcesPerTurn = new Dictionary<GalaxyResourceType, float>();
+        for(int resourceTypeIndex = 0; resourceTypeIndex < Enum.GetNames(typeof(GalaxyResourceType)).Length; resourceTypeIndex++)
+        {
+            resourcesPerTurn.Add((GalaxyResourceType)resourceTypeIndex, 0);
+        }
+    }
+
+    /// <summary>
+    /// Public method that should be called by a galaxy resource modifier in order to recalculate the resource per turn for a specified resource type.
+    /// </summary>
+    /// <param name="resourceType"></param>
+    public void UpdateResourcePerTurnForResourceType(GalaxyResourceType resourceType)
+    {
+        //Calculates the sum of all addition resource modifiers affecting the empire for the specified resource type.
+        float additionSum = 0;
+        foreach(GalaxyResourceModifier resourceModifier in resourceModifiers[resourceType][GalaxyResourceModifier.MathematicalOperation.Addition])
+            additionSum += resourceModifier.amount;
+        //Calculates the sum of all additive multiplication modifiers affecting the empire for the specified resource type.
+        float additiveMultiplicationSum = 1;
+        foreach (GalaxyResourceModifier resourceModifier in resourceModifiers[resourceType][GalaxyResourceModifier.MathematicalOperation.AdditiveMultiplication])
+            additiveMultiplicationSum += resourceModifier.amount;
+        //Calculates the product of all multiplicative modifiers affecting the empire for the specified resource type.
+        float multiplicativeMultiplicationProduct = 1;
+        foreach (GalaxyResourceModifier resourceModifier in resourceModifiers[resourceType][GalaxyResourceModifier.MathematicalOperation.MultiplicativeMultiplication])
+            multiplicativeMultiplicationProduct *= resourceModifier.amount;
+
+        //Sets the resources per turn for the specified resource based on the just calculated values.
+        resourcesPerTurn[resourceType] = additionSum * additiveMultiplicationSum * multiplicativeMultiplicationProduct;
+
+        //Updates the resource bar to reflect any changes in regard to resources.
+        NewResourceBar.UpdateAllResourceDependentComponents();
+    }
+
+    /// <summary>
+    /// Public method that should be used in order to access the amount that the empire has in income per turn of the specified resource type.
+    /// </summary>
+    /// <param name="resourceType"></param>
+    /// <returns></returns>
+    public float GetResourcePerTurn(GalaxyResourceType resourceType)
+    {
+        return resourcesPerTurn[resourceType];
     }
 
     /// <summary>
