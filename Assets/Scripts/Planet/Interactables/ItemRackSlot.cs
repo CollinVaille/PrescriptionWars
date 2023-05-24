@@ -5,11 +5,15 @@ using UnityEngine;
 public class ItemRackSlot : Interactable
 {
     public AudioClip[] swapSounds;
-
+    
     private Item stowedItem = null;
+    private string emptySlotName;
+    private List<IItemRackSlotMonitor> swapEventListeners;
 
     private void Start()
     {
+        emptySlotName = name;
+
         Item initiallyStowedItem = GetComponentInChildren<Item>();
 
         if (initiallyStowedItem)
@@ -28,12 +32,15 @@ public class ItemRackSlot : Interactable
         interacting.GetAudioSource().PlayOneShot(swapSounds[Random.Range(0, swapSounds.Length)]);
 
         Item toStow = interacting.GetItemInHand();
+        Item previouslyStowed = stowedItem;
 
         //Pill unequips current item and equips stowed item
         interacting.Equip(stowedItem, false);
 
         //Rack forgets about stowed item and stows new item
         StowItem(toStow);
+
+        SendSwapEventToListeners(previouslyStowed, toStow, false);
     }
 
     private void StowItem(Item toStow)
@@ -59,7 +66,7 @@ public class ItemRackSlot : Interactable
 
             //Only need to update status and name
             stowedItem = null;
-            name = "Empty Rack Slot";
+            name = emptySlotName;
         }
     }
 
@@ -80,7 +87,31 @@ public class ItemRackSlot : Interactable
 
         //Then perform rest of normal rack placement work...
         StowItem(toStow);
+
+        SendSwapEventToListeners(null, toStow, true);
     }
 
     protected override string GetInteractionVerb() { return stowedItem ? "Retrieve" : "Stow"; }
+
+    private void SendSwapEventToListeners(Item previouslyStowed, Item newlyStowed, bool initialSpawnEvent)
+    {
+        if (swapEventListeners != null)
+        {
+            foreach (IItemRackSlotMonitor eventListener in swapEventListeners)
+            {
+                if (eventListener != null)
+                    eventListener.OnItemRackChange(previouslyStowed, newlyStowed, this, initialSpawnEvent);
+            }
+        }
+    }
+
+    public void AddSwapEventListener(IItemRackSlotMonitor swapEventListener)
+    {
+        if (swapEventListeners == null)
+            swapEventListeners = new List<IItemRackSlotMonitor>();
+
+        swapEventListeners.Add(swapEventListener);
+    }
+
+    public Item GetStowedItem() { return stowedItem; }
 }
