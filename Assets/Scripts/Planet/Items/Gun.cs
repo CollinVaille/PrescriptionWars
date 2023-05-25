@@ -238,11 +238,6 @@ public class Gun : Item
         base.RetireFromHand();
     }
 
-    public override string GetItemInfo()
-    {
-        return "";
-    }
-
     private void UpdateAmmoCountOnUI()
     {
         if(holderIsPlayer)

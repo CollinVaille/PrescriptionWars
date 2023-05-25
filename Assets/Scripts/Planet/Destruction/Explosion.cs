@@ -6,6 +6,18 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
 {
     public static PlanetObjectPool explosionPool;
 
+    public static void CreateGenericExplosion(Vector3 position, int team, float damage = -1.0f)
+    {
+        Explosion explosion = explosionPool.GetGameObject("Plasma Explosion").GetComponent<Explosion>();
+        explosion.transform.position = position;
+        explosion.transform.eulerAngles = Vector3.zero;
+        if (damage > 0.0f)
+            explosion.damage = damage;
+        explosion.Explode(team);
+    }
+
+    //End of static management, beginning of instance code--------------------------------------------------------------------------
+
     //Explosion parameters
     private int team = 0;
 

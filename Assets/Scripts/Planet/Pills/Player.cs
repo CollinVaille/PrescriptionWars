@@ -812,6 +812,9 @@ public class Player : Pill
         textColor.a = 1.0f;
         itemInfo.color = textColor;
 
+        //Align text based on what other UI is currently on the screen
+        itemInfo.alignment = DurabilityTextManager.ShowingDurabilityTextCurrently() ? TextAnchor.LowerRight : TextAnchor.LowerLeft;
+
         //Wait to fade
         float duration = 3.0f;
         for (float t = 0.0f; t < duration && key == itemInfoFlashCode; t += Time.deltaTime)

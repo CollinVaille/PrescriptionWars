@@ -34,7 +34,7 @@ public class DavyJonesLocker : MonoBehaviour
     public static void CheckOut (Pill pill, Corpse corpse)
     {
         //Ensure we have a match before removing. This is needed in the scenario where you've died twice in quick succession and the original entry got overridden by the new.
-        if(theLocker[pill] == corpse)
+        if(GetResident(pill) == corpse)
             theLocker.Remove(pill);
     }
 

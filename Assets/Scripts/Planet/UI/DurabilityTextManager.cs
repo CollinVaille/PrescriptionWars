@@ -31,6 +31,8 @@ public class DurabilityTextManager
         SetDurabilitySecondaryText("/ " + secondaryDurability);
     }
 
+    public static bool ShowingDurabilityTextCurrently() { return durabilityPrimaryText.enabled; }
+
     private static void SetDurabilityPrimaryText(string primaryText)
     {
         if (primaryText == null || primaryText.Equals(""))
