@@ -1310,6 +1310,8 @@ public class Player : Pill
             GetAudioSource().PlayOneShot(hitMarker);
     }
 
+    public AudioSource GetFeetAudioSource() { return feet; }
+
     public Camera GetCamera () { return cameraTransform.GetComponent<Camera>(); }
 
     public void ResetHeadRotation() { head.localEulerAngles = Vector3.zero; }
