@@ -20,6 +20,10 @@ public class PlanetGenerator : MonoBehaviour
         //This generates everything to do with the environment of the planet based on the biome. Things like skyboxes, ambience, the sun, terrain textures, etc.
         CustomizePlanetBasedOnBiome(planet, out TerrainCustomization terrainCustomization);
 
+        //AFTER THAT, GIVE IT A NAME (REQUIRED BY CityNameGenerator)----------------------------------------------------------------------------
+
+        planet.planetName = PlanetNameGenerator.GeneratePlanetName();
+
         //THEREAFTER, GENERATE TERRAIN-------------------------------------------------------------------------------
 
         //Generating the terrain also implicitly generates the cities. Before we generate the cities, we need to do this preparation
@@ -29,10 +33,7 @@ public class PlanetGenerator : MonoBehaviour
         //Finally, actually generate the terrain
         yield return StartCoroutine(PlanetTerrain.planetTerrain.GenerateTerrain(terrainCustomization));
 
-        //FINALLY, GIVE IT A FUCKING NAME AND SAVE THE BITCH---------------------------------------------------------
-
-        //Temp name
-        planet.planetName = PlanetNameGenerator.GeneratePlanetName();
+        //FINALLY, SAVE THE BITCH---------------------------------------------------------
 
         //SavePlanet();
     }

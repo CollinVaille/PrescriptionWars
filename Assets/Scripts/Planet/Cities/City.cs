@@ -144,8 +144,8 @@ public class City : MonoBehaviour, INavZoneUpdater
 
         //Set the name after all possible influencing factors on the name have been set
         if (!newCitySpecifications.smallCompound)
-            gameObject.name = CityGenerator.GenerateCityName(Planet.planet.biome, radius);
-        else if(!string.IsNullOrEmpty(newCitySpecifications.compoundMainBuilding))
+            gameObject.name = CityNameGenerator.GenerateCityName(Planet.planet.planetName, Planet.planet.biome, Random.Range(0, 2) == 0); //CityGenerator.GenerateCityName(Planet.planet.biome, radius);
+        else if (!string.IsNullOrEmpty(newCitySpecifications.compoundMainBuilding))
             gameObject.name = newCitySpecifications.compoundMainBuilding;
         else
             gameObject.name = "Auxillary Compound";
