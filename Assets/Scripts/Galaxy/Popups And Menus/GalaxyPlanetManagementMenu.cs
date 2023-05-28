@@ -22,6 +22,9 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [SerializeField, Tooltip("The text component in the building inspector on the buildings tab of the menu that displays the name of the type of building that is selected in the building inspector to the player.")] private Text buildingsTabBuildingInspectorBuildingTypeText = null;
     [SerializeField, Tooltip("The text component in the building inspector on the buildings tab of the menu that displays the level of the building that is selected in the building inspector to the player.")] private Text buildingsTabBuildingInspectorBuildingLevelText = null;
     [SerializeField, Tooltip("The text component in the building inspector on the buildings tab of the menu that displays the description of the type of building that is selected in the building inspector to the player.")] private Text buildingsTabBuildingInspectorBuildingTypeDescriptionText = null;
+    [SerializeField] private List<Text> buildingsTabBuildingInspectorResourceOutputTexts = null;
+    [SerializeField] private List<GalaxyTooltip> buildingsTabBuildingInspectorResourceOutputAmountTooltips = null;
+    [SerializeField] private Text buildingsTabBuildingInspectorUpgradeButtonText = null;
 
     [Header("Image Components")]
 
@@ -30,6 +33,10 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [SerializeField] private Image buildingsTabScrollViewViewportImage = null;
     [SerializeField, Tooltip("The image component in the buildings inspector on the buildings tab of the menu that displays the icon of the type of building that is selected in the building inspector to the player.")] private Image buildingsTabBuildingInspectorBuildingTypeIconImage = null;
     [SerializeField] private Image buildingsTabBuildingInspectorUpgradeBuildingButtonImage = null;
+
+    [Header("Button Components")]
+
+    [SerializeField] private Button buildingsTabBuildingInspectorUpgradeButton = null;
 
     [Header("Unselected Tab Button Color Block")]
 
@@ -42,6 +49,8 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [Header("SFX Options")]
 
     [SerializeField] private AudioClip changeTabSFX = null;
+    [SerializeField] private AudioClip clickButtonSFX = null;
+    [SerializeField] private AudioClip startUpgradingBuildingSFX = null;
 
     //Non-inspector variables.
 
@@ -201,6 +210,14 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
                 buildingsTabBuildingInspectorBuildingTypeIconImage.sprite = buildingSelectedVar.buildingTypeIconSprite;
                 buildingsTabBuildingInspectorBuildingTypeDescriptionText.text = buildingSelectedVar.buildingTypeDescription;
                 buildingsTabBuildingInspectorDescriptionFormattingUpdateRequired = true;
+                for(int resourceOutputTextIndex = 0; resourceOutputTextIndex < buildingsTabBuildingInspectorResourceOutputTexts.Count; resourceOutputTextIndex++)
+                    buildingsTabBuildingInspectorResourceOutputTexts[resourceOutputTextIndex].text = "0";
+                buildingsTabBuildingInspectorResourceOutputTexts[(int)buildingSelectedVar.resourceModifier.resourceType].text = (buildingSelectedVar.resourceModifier.mathematicalOperation == GalaxyResourceModifier.MathematicalOperation.Addition ? "+" : "*") + buildingSelectedVar.resourceModifier.amount;
+                for (int resourceOutputAmountTooltipIndex = 0; resourceOutputAmountTooltipIndex < buildingsTabBuildingInspectorResourceOutputAmountTooltips.Count; resourceOutputAmountTooltipIndex++)
+                    buildingsTabBuildingInspectorResourceOutputAmountTooltips[resourceOutputAmountTooltipIndex].Text = "0 (" + GeneralHelperMethods.GetEnumText(((GalaxyResourceModifier.MathematicalOperation)0).ToString()) + ")";
+                buildingsTabBuildingInspectorResourceOutputAmountTooltips[(int)buildingSelectedVar.resourceModifier.resourceType].Text = buildingSelectedVar.resourceModifier.amount + " (" + GeneralHelperMethods.GetEnumText(buildingSelectedVar.resourceModifier.mathematicalOperation.ToString()) + ")";
+                buildingsTabBuildingInspectorUpgradeButton.interactable = !buildingSelectedVar.upgrading;
+                buildingsTabBuildingInspectorUpgradeButtonText.text = buildingSelectedVar.upgrading ? "Building Upgrading (Progress: " + buildingSelectedVar.productionTowardsUpgrading + "/" + buildingSelectedVar.upgradeProductionCost + " Production)" : "Upgrade Building (Cost: " + buildingSelectedVar.upgradeCreditsCost + " Credits, " + buildingSelectedVar.upgradeProductionCost + " Production)";
             }
         }
     }
@@ -326,15 +343,73 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     /// </summary>
     private void PopulateBuildingsTabScrollViewButtons()
     {
-        //Checks if there isn't a planet selected by the planet management menu and clear the buttons and returns if so.
-        if(planetSelected == null)
-        {
-            ClearBuildingsTabScrollViewButtons();
+        //Clears the buildings tab scroll view buttons.
+        ClearBuildingsTabScrollViewButtons();
+
+        //Checks if there isn't a planet selected by the planet management menu and returns if so.
+        if (planetSelected == null)
             return;
-        }
 
         //Loops through each building in the city on the assigned planet and instantiates a new buildings tab scroll view button for it.
         for(int buildingIndex = 0; buildingIndex < planetSelected.city.buildings.Count; buildingIndex++)
             PlanetManagementMenuBuildingsTabScollViewButton.InstantiateNewButton(this, planetSelected.city.buildings[buildingIndex]);
+    }
+
+    /// <summary>
+    /// Public method that should be called through an event trigger whenever the buildings tab building inspector upgrade button is clicked and launches a confirmation popup either confirming that the player wishes to upgrade the building or informing the player that they do not have the required amount of credits.
+    /// </summary>
+    public void OnClickBuildingsTabBuildingInspectorUpgradeButton()
+    {
+        if (planetSelected.owner.credits < buildingSelected.upgradeCreditsCost)
+            StartCoroutine(ConfirmAcknowledgementOfNeedingCreditsToUpgradeBuildingAction());
+        else
+            StartCoroutine(ConfirmUpgradingSelectedBuildingAction());
+
+        //Plays the appropriate sound effect for clicking a button.
+        AudioManager.PlaySFX(clickButtonSFX);
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player acknowledges that they do not have the credits required in order to upgrade the currently selected building.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmAcknowledgementOfNeedingCreditsToUpgradeBuildingAction()
+    {
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Not Enough Credits", "You do not have enough credits to upgrade this building to the next level at the moment.", true);
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Private coroutine that confirms that the player wants to upgrade the currently selected building to the next level.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ConfirmUpgradingSelectedBuildingAction()
+    {
+        GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
+        confirmationPopupScript.CreateConfirmationPopup("Upgrade Building", "Are you sure that you want to start upgrading this " + GeneralHelperMethods.GetEnumText(buildingSelected.buildingType.ToString()) + " to level " + (buildingSelected.level + 1) + " for " + buildingSelected.upgradeCreditsCost + " credits?");
+
+        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
+
+        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+            StartUpgradingSelectedBuilding();
+
+        confirmationPopupScript.DestroyConfirmationPopup();
+    }
+
+    /// <summary>
+    /// Private method that should be called by the ConfirmUpgradingSelectedBuildingAction coroutine after the player confirms that they wish to start upgrading the selected building and starts upgrading the selected building and updates the UI and plays the appropriate sound effect.
+    /// </summary>
+    private void StartUpgradingSelectedBuilding()
+    {
+        buildingSelected.upgrading = true;
+        buildingsTabBuildingInspectorUpgradeButton.interactable = false;
+        buildingsTabBuildingInspectorUpgradeButtonText.text = "Building Upgrading (Progress: " + buildingSelected.productionTowardsUpgrading + "/" + buildingSelected.upgradeProductionCost + " Production)";
+
+        //Plays the appropriate sound effect for starting to upgrade a building.
+        AudioManager.PlaySFX(startUpgradingBuildingSFX);
     }
 }

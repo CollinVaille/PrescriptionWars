@@ -539,4 +539,16 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         //Resets the position of the raycast blocker background image.
         raycastBlockerBackgroundImage.transform.localPosition = Vector3.zero;
     }
+
+    /// <summary>
+    /// Public static method that should be called in order to close every single popup in the galaxy view.
+    /// </summary>
+    public static void CloseAllPopups()
+    {
+        if (popups == null || popups.Count == 0)
+            return;
+
+        foreach (NewGalaxyPopupBehaviour popup in popups)
+            popup.Close();
+    }
 }

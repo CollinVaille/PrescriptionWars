@@ -93,7 +93,7 @@ public class NewResourceBar : MonoBehaviour
             return;
         }
         //Updates the credits text to accurately display the number of credits that the player empire has.
-        resourceBar.creditsText.text = (int)NewGalaxyManager.playerEmpire.credits + " +" + (int)NewGalaxyManager.playerEmpire.GetResourcePerTurn(GalaxyResourceType.Credits);
+        resourceBar.creditsText.text = Mathf.Floor(NewGalaxyManager.playerEmpire.credits) + " +" + (int)NewGalaxyManager.playerEmpire.GetResourcePerTurn(GalaxyResourceType.Credits);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public class NewResourceBar : MonoBehaviour
             return;
         }
         //Updates the prescriptions text to accurately display the number of prescriptions that the player empire has.
-        resourceBar.prescriptionsText.text = (int)NewGalaxyManager.playerEmpire.prescriptions + " +" + (int)NewGalaxyManager.playerEmpire.GetResourcePerTurn(GalaxyResourceType.Prescriptions);
+        resourceBar.prescriptionsText.text = Mathf.Floor(NewGalaxyManager.playerEmpire.prescriptions) + " +" + (int)NewGalaxyManager.playerEmpire.GetResourcePerTurn(GalaxyResourceType.Prescriptions);
     }
 
     /// <summary>

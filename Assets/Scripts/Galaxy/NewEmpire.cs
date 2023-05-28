@@ -378,6 +378,26 @@ public class NewEmpire
         //Removes the planet from the list of planets under the empire's control via the ID of the specified planet.
         RemovePlanet(planet.ID);
     }
+
+    /// <summary>
+    /// Public method that is called by the galaxy manager on the final call of the EndTurnUpdate method for ending a turn.
+    /// </summary>
+    public void OnEndTurnFinalUpdate()
+    {
+        credits += GetResourcePerTurn(GalaxyResourceType.Credits);
+
+        prescriptions += GetResourcePerTurn(GalaxyResourceType.Prescriptions);
+
+        float production = GetResourcePerTurn(GalaxyResourceType.Production);
+        List<NewGalaxyBuilding> upgradingBuildings = new List<NewGalaxyBuilding>();
+        foreach(int planetID in planetIDs)
+            foreach(NewGalaxyBuilding building in NewGalaxyManager.planets[planetID].city.buildings)
+                if (building.upgrading)
+                    upgradingBuildings.Add(building);
+        foreach (int planetID in planetIDs)
+            foreach (NewGalaxyBuilding building in NewGalaxyManager.planets[planetID].city.buildings)
+                building.OnEndTurnFinalUpdate(building.upgrading ? production / upgradingBuildings.Count : 0);
+    }
 }
 
 [System.Serializable]

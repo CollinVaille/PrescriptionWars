@@ -1070,6 +1070,7 @@ GameObject:
   - component: {fileID: 259553387}
   - component: {fileID: 259553389}
   - component: {fileID: 259553388}
+  - component: {fileID: 259553390}
   m_Layer: 5
   m_Name: Building Science Output Text
   m_TagString: Untagged
@@ -1110,7 +1111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1138,6 +1139,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259553386}
   m_CullTransparentMesh: 1
+--- !u!114 &259553390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259553386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 1
+  initialLocalPosition: {x: -20, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: 0 (Addition)
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &293098281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,6 +1181,7 @@ GameObject:
   - component: {fileID: 293098282}
   - component: {fileID: 293098284}
   - component: {fileID: 293098283}
+  - component: {fileID: 293098285}
   m_Layer: 5
   m_Name: Prescriptions Icon Image
   m_TagString: Untagged
@@ -1213,6 +1246,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293098281}
   m_CullTransparentMesh: 1
+--- !u!114 &293098285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293098281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -50, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: Prescriptions
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &299827071
 GameObject:
   m_ObjectHideFlags: 0
@@ -8462,6 +8526,7 @@ GameObject:
   - component: {fileID: 727929871}
   - component: {fileID: 727929873}
   - component: {fileID: 727929872}
+  - component: {fileID: 727929874}
   m_Layer: 5
   m_Name: Production Icon Image
   m_TagString: Untagged
@@ -8526,6 +8591,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727929870}
   m_CullTransparentMesh: 1
+--- !u!114 &727929874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727929870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -50, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: Production
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &730959381
 GameObject:
   m_ObjectHideFlags: 0
@@ -8616,6 +8712,7 @@ GameObject:
   - component: {fileID: 732492453}
   - component: {fileID: 732492455}
   - component: {fileID: 732492454}
+  - component: {fileID: 732492456}
   m_Layer: 5
   m_Name: Building Production Output Text
   m_TagString: Untagged
@@ -8656,7 +8753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -8684,6 +8781,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732492452}
   m_CullTransparentMesh: 1
+--- !u!114 &732492456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732492452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -20, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: 0 (Addition)
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &734866079
 GameObject:
   m_ObjectHideFlags: 0
@@ -10318,6 +10446,7 @@ GameObject:
   - component: {fileID: 1189845711}
   - component: {fileID: 1189845713}
   - component: {fileID: 1189845712}
+  - component: {fileID: 1189845714}
   m_Layer: 5
   m_Name: Building Prescriptions Output Text
   m_TagString: Untagged
@@ -10358,7 +10487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -10386,6 +10515,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1189845710}
   m_CullTransparentMesh: 1
+--- !u!114 &1189845714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189845710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -20, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: 0 (Addition)
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &1201143084
 GameObject:
   m_ObjectHideFlags: 0
@@ -10463,11 +10623,23 @@ MonoBehaviour:
   buildingsTabBuildingInspectorBuildingTypeText: {fileID: 882960033}
   buildingsTabBuildingInspectorBuildingLevelText: {fileID: 2083880975}
   buildingsTabBuildingInspectorBuildingTypeDescriptionText: {fileID: 1260453628}
+  buildingsTabBuildingInspectorResourceOutputTexts:
+  - {fileID: 1201815993}
+  - {fileID: 1189845712}
+  - {fileID: 259553388}
+  - {fileID: 732492454}
+  buildingsTabBuildingInspectorResourceOutputAmountTooltips:
+  - {fileID: 1201815995}
+  - {fileID: 1189845714}
+  - {fileID: 259553390}
+  - {fileID: 732492456}
+  buildingsTabBuildingInspectorUpgradeButtonText: {fileID: 1750589018}
   coloringBackgroundImage: {fileID: 1031868471}
   buildingsTabScrollViewHandleImage: {fileID: 589232364}
   buildingsTabScrollViewViewportImage: {fileID: 1887261641}
   buildingsTabBuildingInspectorBuildingTypeIconImage: {fileID: 973795477}
   buildingsTabBuildingInspectorUpgradeBuildingButtonImage: {fileID: 1944313087}
+  buildingsTabBuildingInspectorUpgradeButton: {fileID: 1944313086}
   unselectedTabButtonColorBlock:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.15686275}
@@ -10485,6 +10657,9 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   changeTabSFX: {fileID: 8300000, guid: 66c0d4ea3a7b63545ba796cd5b9e1f6b, type: 3}
+  clickButtonSFX: {fileID: 8300000, guid: 0081c9db8146cc449925615db895ebf8, type: 3}
+  startUpgradingBuildingSFX: {fileID: 8300000, guid: 1709c6e0aa056af408bc31ee761169d9,
+    type: 3}
 --- !u!114 &1201143087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10534,6 +10709,7 @@ GameObject:
   - component: {fileID: 1201815992}
   - component: {fileID: 1201815994}
   - component: {fileID: 1201815993}
+  - component: {fileID: 1201815995}
   m_Layer: 5
   m_Name: Building Credits Output Text
   m_TagString: Untagged
@@ -10574,7 +10750,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -10602,6 +10778,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201815991}
   m_CullTransparentMesh: 1
+--- !u!114 &1201815995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1201815991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -20, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: 0 (Addition)
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &1229729956
 GameObject:
   m_ObjectHideFlags: 0
@@ -10771,6 +10978,7 @@ GameObject:
   - component: {fileID: 1252567862}
   - component: {fileID: 1252567864}
   - component: {fileID: 1252567863}
+  - component: {fileID: 1252567865}
   m_Layer: 5
   m_Name: Science Icon Image
   m_TagString: Untagged
@@ -10835,6 +11043,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1252567861}
   m_CullTransparentMesh: 1
+--- !u!114 &1252567865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252567861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -50, y: 45}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: Science
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &1260453626
 GameObject:
   m_ObjectHideFlags: 0
@@ -14328,6 +14567,7 @@ GameObject:
   - component: {fileID: 1782216130}
   - component: {fileID: 1782216132}
   - component: {fileID: 1782216131}
+  - component: {fileID: 1782216133}
   m_Layer: 5
   m_Name: Credits Icon Image
   m_TagString: Untagged
@@ -14392,6 +14632,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782216129}
   m_CullTransparentMesh: 1
+--- !u!114 &1782216133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782216129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c6ceba98b74e941bada0f422411720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closingType: 0
+  initialLocalPosition: {x: -40, y: 40}
+  edgeBuffer: {x: 5, y: 3}
+  openDelay: 0.5
+  followsMouse: 0
+  text: Credits
+  fontOption: 0
+  font: {fileID: 0}
+  fontSizeOption: 1
+  fontSize: 25
+  textShadowEnabled: 0
+  textShadowEffectDistance: {x: 1, y: -1}
+  textColorOption: 0
+  textCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  textShadowColorOption: 0
+  textShadowCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  backgroundColorOption: 0
+  backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
+  eventsHandler: {fileID: 0}
 --- !u!1 &1811397255
 GameObject:
   m_ObjectHideFlags: 0
@@ -14722,7 +14993,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1
+    m_LineSpacing: 5
   m_Text: 0 +0
 --- !u!222 &1847374326
 CanvasRenderer:
@@ -15486,7 +15757,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1944313087}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1201143086}
+        m_TargetAssemblyTypeName: GalaxyPlanetManagementMenu, Assembly-CSharp
+        m_MethodName: OnClickBuildingsTabBuildingInspectorUpgradeButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1944313087
 MonoBehaviour:
   m_ObjectHideFlags: 0

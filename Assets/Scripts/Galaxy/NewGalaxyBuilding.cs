@@ -73,6 +73,35 @@ public class NewGalaxyBuilding
     public GalaxyResourceModifier resourceModifier { get => _resourceModifierID >= 0 && _resourceModifierID < NewGalaxyManager.resourceModifiersCount && NewGalaxyManager.resourceModifiers.ContainsKey(_resourceModifierID) ? NewGalaxyManager.resourceModifiers[_resourceModifierID] : null; }
 
     /// <summary>
+    /// Private holder variable for the boolean value that indicates whether or not the building is upgrading to the next level.
+    /// </summary>
+    private bool _upgrading = false;
+    /// <summary>
+    /// Public property that should be used in order to access and mutate the boolean value that indicates whether or not the building is upgrading to the next level.
+    /// </summary>
+    public bool upgrading
+    {
+        get => _upgrading;
+        set
+        {
+            bool previouslyUpgrading = _upgrading;
+            _upgrading = value;
+            if (_upgrading && !previouslyUpgrading && assignedPlanet.owner != null)
+                assignedPlanet.owner.credits -= upgradeCreditsCost;
+            _productionTowardsUpgrading = 0;
+        }
+    }
+
+    /// <summary>
+    /// Private holder variable for the float value that indicates the amount of production that has accumulated through the turns in order to upgrade the building to the next level.
+    /// </summary>
+    private float _productionTowardsUpgrading = 0;
+    /// <summary>
+    /// Public property that should be used in order to access the float value that indicates the amount of production that has accumulated through the turns in order to upgrade the building to the next level.
+    /// </summary>
+    public float productionTowardsUpgrading { get => _productionTowardsUpgrading; }
+
+    /// <summary>
     /// Public property that should be used in order to access the description of the building's building type and know what it does.
     /// </summary>
     public string buildingTypeDescription
@@ -163,6 +192,52 @@ public class NewGalaxyBuilding
             }
         }
     }
+    /// <summary>
+    /// Public property that should be used in order to access the production cost in order to upgrade the building to the next level.
+    /// </summary>
+    public float upgradeProductionCost
+    {
+        get
+        {
+            switch (buildingType)
+            {
+                case BuildingType.ResearchFacility:
+                    return 100 + (25 * (level - 1));
+                case BuildingType.TradePost:
+                    return 100 + (25 * (level - 1));
+                case BuildingType.Prescriptor:
+                    return 100 + (25 * (level - 1));
+                case BuildingType.Depot:
+                    return 100 + (25 * (level - 1));
+                default:
+                    Debug.LogWarning("There is no assigned upgrade production cost for building type \"" + buildingType.ToString() + "\".");
+                    return 0;
+            }
+        }
+    }
+    /// <summary>
+    /// Public property that should be used in order to access the credits cost in order to upgrade the building to the next level.
+    /// </summary>
+    public float upgradeCreditsCost
+    {
+        get
+        {
+            switch (buildingType)
+            {
+                case BuildingType.ResearchFacility:
+                    return 25 + (5 * (level - 1));
+                case BuildingType.TradePost:
+                    return 25 + (5 * (level - 1));
+                case BuildingType.Prescriptor:
+                    return 25 + (5 * (level - 1));
+                case BuildingType.Depot:
+                    return 25 + (5 * (level - 1));
+                default:
+                    Debug.LogWarning("There is no assigned upgrade credits cost for building type \"" + buildingType.ToString() + "\".");
+                    return 0;
+            }
+        }
+    }
 
     /// <summary>
     /// Public property that should be accessed in order to obtain the sprite that indicates a building of the building's building type. Sprite is loaded in from the project resources.
@@ -181,6 +256,10 @@ public class NewGalaxyBuilding
         _level = buildingData.level;
         _assignedPlanetID = buildingData.assignedPlanetID;
         _resourceModifierID = buildingData.resourceModifierID;
+
+        _upgrading = buildingData.upgrading;
+
+        _productionTowardsUpgrading = buildingData.productionTowardsUpgrading;
     }
 
     public NewGalaxyBuilding(BuildingType buildingType, int assignedPlanetID, int level = 1)
@@ -198,6 +277,10 @@ public class NewGalaxyBuilding
         {
             NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(OnGalaxyGenerationCompletion, 1);
         }
+
+        _upgrading = false;
+
+        _productionTowardsUpgrading = 0;
     }
 
     /// <summary>
@@ -208,6 +291,22 @@ public class NewGalaxyBuilding
         if(_resourceModifierID < 0)
         {
             _resourceModifierID = (new GalaxyResourceModifier(buildingTypeResourceType, buildingTypeResourceModifierMathematicalOperation, buildingTypeResourceModifierAmount, assignedPlanet.owner)).ID;
+        }
+    }
+
+    /// <summary>
+    /// Public method called by the owning empire right before the start of a new turn, progresses upgrading the building if applicable.
+    /// </summary>
+    public void OnEndTurnFinalUpdate(float production = 0)
+    {
+        if (upgrading)
+        {
+            _productionTowardsUpgrading += production;
+            if (productionTowardsUpgrading >= upgradeProductionCost)
+            {
+                level++;
+                upgrading = false;
+            }
         }
     }
 }
@@ -221,6 +320,10 @@ public class GalaxyBuildingData
     public int assignedPlanetID = -1;
     public int resourceModifierID = -1;
 
+    public bool upgrading = false;
+
+    public float productionTowardsUpgrading = 0;
+
     public GalaxyBuildingData(NewGalaxyBuilding building)
     {
         buildingType = building.buildingType;
@@ -230,5 +333,9 @@ public class GalaxyBuildingData
         assignedPlanetID = building.assignedPlanet == null ? -1 : building.assignedPlanet.ID;
 
         resourceModifierID = building.resourceModifier == null ? -1 : building.resourceModifier.ID;
+
+        upgrading = building.upgrading;
+
+        productionTowardsUpgrading = building.productionTowardsUpgrading;
     }
 }

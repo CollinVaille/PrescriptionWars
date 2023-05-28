@@ -260,6 +260,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         {
             //Sets whether or not the end turn button is interactable based on if the turn is currently ending or not.
             galaxyManager.endTurnButton.interactable = !value;
+            //Closes all popups if the turn is ending.
+            if (value)
+                NewGalaxyPopupBehaviour.CloseAllPopups();
             //Resets the variable that indicates how much time has passed since the turn started ending.
             galaxyManager.turnEndingTimeElapsed = 0;
             //Sets the variable that indicates whether or not the current turn is ending to the specified value.
@@ -447,6 +450,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         //Ends the end turn process if the appropriate amount of time has elapsed.
         if (turnEndingTimeElapsed >= endTurnProcessLength)
         {
+            //Calls the OnEndTurnFinalUpdate method on each empire so that the empire can get ready for the new turn.
+            foreach(NewEmpire empire in empires)
+                empire.OnEndTurnFinalUpdate();
             //Increments the turn number.
             turnNumber++;
             //Indicates that a turn is no longer ending.
