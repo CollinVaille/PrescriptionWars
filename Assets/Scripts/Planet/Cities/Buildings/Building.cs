@@ -14,7 +14,7 @@ public class Building : IndoorZoneGrouping
     [HideInInspector] public Material wall, floor;
     private bool flipped = false;
 
-    public void SetUpBuilding (City city, int buildingIndex, Material newWall, Material newFloor)
+    public void SetUpNewBuilding (City city, int buildingIndex, Material newWall, Material newFloor)
     {
         this.city = city;
         this.buildingIndex = buildingIndex;
@@ -31,6 +31,8 @@ public class Building : IndoorZoneGrouping
         wall = newWall;
         floor = newFloor;
         RepaintRecursive(transform);
+
+        OnBuildingGeneratedOnRestored();
     }
 
     public void RepaintRecursive (Transform t)
@@ -102,6 +104,11 @@ public class Building : IndoorZoneGrouping
     }
 
     public bool Flipped () { return flipped; }
+
+    public void OnBuildingGeneratedOnRestored()
+    {
+        PlanetLODManager.RegisterRendererLODsForChildren(transform);
+    }
 }
 
 [System.Serializable]
@@ -210,6 +217,8 @@ public class BuildingJSON
 
         for (int x = 0; x < props.Count; x++)
             building.propPlacements[x].ChooseAndPlaceProp(building.transform, props[x]);
+
+        building.OnBuildingGeneratedOnRestored();
     }
 
     public int buildingIndex;

@@ -178,7 +178,7 @@ public class BuildingManager
 
             Material[] wallMaterials = Planet.planet.planetWideCityCustomization.wallMaterials;
             Material[] floorMaterials = Planet.planet.planetWideCityCustomization.floorMaterials;
-            newBuilding.GetComponent<Building>().SetUpBuilding(
+            newBuilding.GetComponent<Building>().SetUpNewBuilding(
                 city,
                 buildingIndex,
                 wallMaterials[Random.Range(0, wallMaterials.Length)],
