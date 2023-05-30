@@ -51,6 +51,7 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [SerializeField] private AudioClip changeTabSFX = null;
     [SerializeField] private AudioClip clickButtonSFX = null;
     [SerializeField] private AudioClip startUpgradingBuildingSFX = null;
+    [SerializeField] private AudioClip selectBuildingSFX = null;
 
     //Non-inspector variables.
 
@@ -195,6 +196,9 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
         get => _buildingSelectedIndex;
         set
         {
+            //Stores the previously selected building index in a temporary variable.
+            int previouslySelectedBuildingIndex = _buildingSelectedIndex;
+
             //Sets the building selected ID variable to the specified value or -1 if the specified value is invalid.
             _buildingSelectedIndex = planetSelected != null && value >= 0 && value < planetSelected.city.buildings.Count ? value : -1;
 
@@ -218,6 +222,10 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
                 buildingsTabBuildingInspectorResourceOutputAmountTooltips[(int)buildingSelectedVar.resourceModifier.resourceType].Text = buildingSelectedVar.resourceModifier.amount + " (" + GeneralHelperMethods.GetEnumText(buildingSelectedVar.resourceModifier.mathematicalOperation.ToString()) + ")";
                 buildingsTabBuildingInspectorUpgradeButton.interactable = !buildingSelectedVar.upgrading;
                 buildingsTabBuildingInspectorUpgradeButtonText.text = buildingSelectedVar.upgrading ? "Building Upgrading (Progress: " + buildingSelectedVar.productionTowardsUpgrading + "/" + buildingSelectedVar.upgradeProductionCost + " Production)" : "Upgrade Building (Cost: " + buildingSelectedVar.upgradeCreditsCost + " Credits, " + buildingSelectedVar.upgradeProductionCost + " Production)";
+
+                //Plays the appropriate sound effect if needed.
+                if (_buildingSelectedIndex != previouslySelectedBuildingIndex)
+                    AudioManager.PlaySFX(selectBuildingSFX);
             }
         }
     }

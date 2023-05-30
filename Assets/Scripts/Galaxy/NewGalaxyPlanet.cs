@@ -483,11 +483,14 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
         if (farthestPlanetFromTheStar)
         {
             Physics.SyncTransforms();
-            foreach(HyperspaceLane hyperspaceLane in solarSystem.hyperspaceLanes)
+            SphereCollider planetaryOrbitOutlineSphereCollider = planetaryOrbitOutline.transform.GetChild(0).gameObject.GetComponent<SphereCollider>();
+            planetaryOrbitOutlineSphereCollider.enabled = true;
+            foreach (HyperspaceLane hyperspaceLane in solarSystem.hyperspaceLanes)
             {
                 GalaxySolarSystem connectingSolarSystem = hyperspaceLane.solarSystems[0] == solarSystem ? hyperspaceLane.solarSystems[1] : hyperspaceLane.solarSystems[0];
-                hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutline.transform.GetChild(0).GetComponent<SphereCollider>().ClosestPoint(connectingSolarSystem.transform.position));
+                hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutlineSphereCollider.ClosestPoint(connectingSolarSystem.transform.position));
             }
+            planetaryOrbitOutlineSphereCollider.enabled = false;
         }
     }
 
@@ -505,7 +508,10 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
                 if(planetaryOrbitOutline != null)
                 {
                     GalaxySolarSystem connectingSolarSystem = hyperspaceLane.solarSystems[0] == solarSystem ? hyperspaceLane.solarSystems[1] : hyperspaceLane.solarSystems[0];
-                    hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutline.transform.GetChild(0).GetComponent<SphereCollider>().ClosestPoint(connectingSolarSystem.transform.position));
+                    SphereCollider planetaryOrbitOutlineSphereCollider = planetaryOrbitOutline.transform.GetChild(0).gameObject.GetComponent<SphereCollider>();
+                    planetaryOrbitOutlineSphereCollider.enabled = true;
+                    hyperspaceLane.SetSolarSystemPosition(solarSystem, planetaryOrbitOutlineSphereCollider.ClosestPoint(connectingSolarSystem.transform.position));
+                    planetaryOrbitOutlineSphereCollider.enabled = false;
                 }
                 else
                 {
@@ -594,7 +600,7 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
     /// </summary>
     public void OnMouseUpAsButton()
     {
-        if(owner.isPlayerEmpire)
+        if(owner != null && owner.isPlayerEmpire)
             GalaxyPlanetManagementMenu.OpenPlanetManagementMenu(this);
     }
 }

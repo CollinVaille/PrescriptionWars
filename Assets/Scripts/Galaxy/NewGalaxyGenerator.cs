@@ -526,7 +526,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                             buildingTypesIndicesRemaining.RemoveAt(buildingTypesIndicesRemainingIndex);
                         }
                     }
-                    NewGalaxyCity planetCity = new NewGalaxyCity(planetName + " City", planetCityBuildings, planets.Count);
+                    NewGalaxyCity planetCity = new NewGalaxyCity(CityNameGenerator.GenerateCityName(planetName, biome.biome, planetIndex == 0), planetCityBuildings, planets.Count);
 
                     //Instantiates a new empty gameobject for the planet to use an an orbit around the star.
                     GameObject planetaryOrbit = new GameObject();
