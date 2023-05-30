@@ -218,6 +218,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static Transform confirmationPopupsParent { get => galaxyManager == null ? null : galaxyManager._confirmationPopupsParent; }
 
     /// <summary>
+    /// Private holder variable for the transform of the game object that serves as the parent object for all popups within the galaxy scene.
+    /// </summary>
+    private Transform _popupsParent = null;
+    /// <summary>
+    /// Public static property that should be used in order to access the transform of the game object that serves as the parent object for all popups within the galaxy scene.
+    /// </summary>
+    public static Transform popupsParent { get => galaxyManager == null ? null : galaxyManager._popupsParent; }
+
+    /// <summary>
     /// Publicly accessible static property that should be accessed in order to obtain a reference to the current game's player empire.
     /// </summary>
     public static NewEmpire playerEmpire { get => galaxyManager == null || empires == null || playerID < 0 || playerID >= empires.Count ? null : empires[playerID]; }
@@ -367,6 +376,8 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager._capitalSymbolsParent = parents[2];
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
         galaxyManager._confirmationPopupsParent = parents[3];
+        //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all popups within the galaxy scene.
+        galaxyManager._popupsParent = parents[4];
 
         //Sets the value of the variable that contains a reference to the popup that serves as the pause menu of the galaxy view.
         galaxyManager._pauseMenu = pauseMenu;

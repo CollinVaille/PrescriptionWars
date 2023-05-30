@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NewGalaxyPlanet : MonoBehaviour
+public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
 {
     [Header("Components")]
 
@@ -587,6 +587,15 @@ public class NewGalaxyPlanet : MonoBehaviour
     {
         //Removes the planet's OnZoomPercentageChange function from the list of functions to be executed by the galaxy camera whenever the camera's zoom percentage meaningfully changes.
         NewGalaxyCamera.RemoveZoomFunction(OnZoomPercentageChange);
+    }
+
+    /// <summary>
+    /// Private method that is called whenever the player clicks on the planet as a button and opens a planet management menu with the planet selected.
+    /// </summary>
+    public void OnMouseUpAsButton()
+    {
+        if(owner.isPlayerEmpire)
+            GalaxyPlanetManagementMenu.OpenPlanetManagementMenu(this);
     }
 }
 

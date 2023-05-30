@@ -260,18 +260,81 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     /// </summary>
     private int framesSinceBuildingsTabBuildingInspectorDescriptionFormattingUpdateRequired = 0;
 
-    //Test method that should be removed eventually.
-    private void TestSetPlanet()
+    /// <summary>
+    /// Private static list that contains all of the planet management menus that are currently open and active in the galaxy scene.
+    /// </summary>
+    private static List<GalaxyPlanetManagementMenu> planetManagementMenus = null;
+
+    /// <summary>
+    /// Private static property that should be used in order to access the game object that serves as the prefab that all planet management menus are instantiated from.
+    /// </summary>
+    private static GameObject prefab { get => Resources.Load<GameObject>("Galaxy/Prefabs/Planet Management Menu/Planet Management Menu"); }
+
+    /// <summary>
+    /// Public static method that returns a boolean value that indicates whether or not the specified planet is selected in an open and active planet management menu.
+    /// </summary>
+    /// <param name="planet"></param>
+    /// <returns></returns>
+    public static bool IsPlanetSelectedInAMenu(NewGalaxyPlanet planet)
     {
-        planetSelectedID = 0;
+        return GetMenuWithPlanetSelected(planet) != null;
+    }
+
+    /// <summary>
+    /// Public static method that returns the planet management menu that has the specified planet selected, if no planet management menu has the specified planet selected then a null value is returned.
+    /// </summary>
+    /// <param name="planet"></param>
+    /// <returns></returns>
+    public static GalaxyPlanetManagementMenu GetMenuWithPlanetSelected(NewGalaxyPlanet planet)
+    {
+        if (planetManagementMenus == null)
+            return null;
+
+        int planetID = planet == null ? -1 : planet.ID;
+        foreach (GalaxyPlanetManagementMenu planetManagementMenu in planetManagementMenus)
+            if (planetManagementMenu.planetSelectedID == planetID)
+                return planetManagementMenu;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to open up a new planet management menu with the specified planet selected. If a planet management menu with the specified planet selected already exists, then it is made the top popup.
+    /// </summary>
+    /// <param name="planet"></param>
+    public static void OpenPlanetManagementMenu(NewGalaxyPlanet planet)
+    {
+        //Returns if there is no active galaxy scene.
+        if (!NewGalaxyManager.activeInHierarchy)
+            return;
+
+        //Determines if a planet management menu with the specified planet selected already exists and makes it the top popup and returns if so.
+        GalaxyPlanetManagementMenu planetManagementMenu = GetMenuWithPlanetSelected(planet);
+        if (planetManagementMenu != null)
+        {
+            planetManagementMenu.transform.SetAsLastSibling();
+            return;
+        }
+
+        //Instantiates a new planet management menu from the prefab.
+        planetManagementMenu = Instantiate(prefab).GetComponent<GalaxyPlanetManagementMenu>();
+        //Sets the parent of the planet management menu as the popups parent transform.
+        planetManagementMenu.transform.SetParent(NewGalaxyManager.popupsParent);
+        //Resets the position of the planet management menu.
+        planetManagementMenu.transform.localPosition = Vector3.zero;
+        //Sets the selected planet of the planet management menu.
+        planetManagementMenu.planetSelected = planet;
     }
 
     protected override void Awake()
     {
         base.Awake();
 
-        //Test line that should be removed eventually.
-        NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(TestSetPlanet, 3);
+        //Initializes the static list of planet management menus if it has not yet been initialized.
+        if (planetManagementMenus == null)
+            planetManagementMenus = new List<GalaxyPlanetManagementMenu>();
+        //Adds this planet management menu to the static list of planet management menus.
+        planetManagementMenus.Add(this);
     }
 
     protected override void Start()
@@ -411,5 +474,20 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
 
         //Plays the appropriate sound effect for starting to upgrade a building.
         AudioManager.PlaySFX(startUpgradingBuildingSFX);
+    }
+
+    /// <summary>
+    /// Protected method that is called whenever the planet management menu is closed or destroyed by other means and removes the planet management menu from the static list of planet management menus as well as removes the base popup behaviour from the static list of popup behaviours.
+    /// </summary>
+    protected override void OnDestroy()
+    {
+        //Executes the base OnDestroy behaviour.
+        base.OnDestroy();
+
+        //Removes the planet management menu from the static list of planet management menus.
+        planetManagementMenus.Remove(this);
+        //Sets the static list of planet management menus to null if there are currently no planet management menus active and open within the game.
+        if (planetManagementMenus.Count == 0)
+            planetManagementMenus = null;
     }
 }

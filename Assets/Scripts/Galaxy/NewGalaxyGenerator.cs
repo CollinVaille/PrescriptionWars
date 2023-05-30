@@ -30,6 +30,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the hyperspace lanes within the galaxy. Specified through the inspector.")] private Transform hyperspaceLanesParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the capital symbols in the galaxy. Specified through the inspector.")] private Transform capitalSymbolsParent = null;
     [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the confirmation popups within the galaxy scene. Specified through the inspector.")] private Transform confirmationPopupsParent = null;
+    [SerializeField, Tooltip("The transform of the game object that acts as the parent of all of the popups within the galaxy scene. Specified through the inspector.")] private Transform popupsParent = null;
 
     [Header("Prefabs")]
 
@@ -154,7 +155,7 @@ public class NewGalaxyGenerator : MonoBehaviour
             saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape,
             saveGameData != null ? saveGameData.playerID : 0,
             saveGameData != null ? saveGameData.observationModeEnabled : false,
-            new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent },
+            new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent, popupsParent },
             pauseMenu,
             settingsMenu,
             cheatConsole,

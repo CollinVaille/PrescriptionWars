@@ -60,4 +60,11 @@ public class GalaxyEventTrigger : MonoBehaviour, IBeginDragHandler, IDragHandler
         if (targetObjectDeselectHandler != null)
             targetObjectDeselectHandler.OnDeselect(baseEventData);
     }
+
+    public void OnMouseUpAsButton()
+    {
+        IGalaxyMouseUpAsButtonBehaviour targetObjectMouseUpAsButtonBehaviour = targetObject.GetComponent<IGalaxyMouseUpAsButtonBehaviour>();
+        if (targetObjectMouseUpAsButtonBehaviour != null)
+            targetObjectMouseUpAsButtonBehaviour.OnMouseUpAsButton();
+    }
 }

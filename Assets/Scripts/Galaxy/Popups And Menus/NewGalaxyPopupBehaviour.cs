@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [Header("Base Opening Options")]
 
@@ -170,8 +170,6 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
 
     protected virtual void Awake()
     {
-        //Sets the parent canvas reference variable.
-        parentCanvas = GetComponentInParent<Canvas>();
         //Sets the canvas group reference property.
         canvasGroup = GetComponent<CanvasGroup>() == null ? gameObject.AddComponent<CanvasGroup>() : GetComponent<CanvasGroup>();
         //Initializes the list of popups if it has not been initialized yet.
@@ -184,7 +182,8 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        
+        //Sets the parent canvas reference variable.
+        parentCanvas = GetComponentInParent<Canvas>();
     }
 
     // Update is called once per frame
@@ -379,6 +378,16 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     }
 
     /// <summary>
+    /// Public method that is called by the IPointerClick interface whenever the player clicks on the popup and makes the popup the top popup.
+    /// </summary>
+    /// <param name="pointerEventData"></param>
+    public virtual void OnPointerClick(PointerEventData pointerEventData)
+    {
+        //Makes the popup the top popup.
+        transform.SetAsLastSibling();
+    }
+
+    /// <summary>
     /// Public method that is called by the IBeginDragHandler interface whenever the player begins to drag on the popup and remembers the mouse's offset from the popup's position.
     /// </summary>
     /// <param name="pointerEventData"></param>
@@ -387,6 +396,8 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         //Returns if the popup is not able to be dragged by the player.
         if (!isDraggable)
             return;
+        //Makes the popup the top popup.
+        transform.SetAsLastSibling();
         //Sets the pointer offset.
         pointerOffset = transform.position - Input.mousePosition;
         //Logs that the popup is being dragged by the player.
@@ -479,7 +490,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     /// <summary>
     /// Protected method that is called whenever a popup is destroyed and removes the popup from the static list of popups.
     /// </summary>
-    protected void OnDestroy()
+    protected virtual void OnDestroy()
     {
         //Destroys the raycast blocker background image if it still exists for whatever reason.
         if (raycastBlockerBackgroundImage != null)
