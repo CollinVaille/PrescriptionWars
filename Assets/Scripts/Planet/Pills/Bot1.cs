@@ -11,11 +11,15 @@ public class Bot1 : Pill
 
     private NavMeshAgent agent;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        agent = GetComponent<NavMeshAgent>();
+    }
+
     protected override void Start ()
     {
         base.Start();
-
-        agent = GetComponent<NavMeshAgent>();
 
         mainAudioSource.spatialBlend = 1;
 

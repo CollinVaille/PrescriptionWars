@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class PlanetLODManager
 {
-    public static void RegisterRendererLODsForChildren(Transform parent)
+    public static void RegisterRendererLODsForChildren(Transform parent, float LODScaleMultiplier)
     {
         LODGroup lodGroup = parent.gameObject.AddComponent<LODGroup>();
 
@@ -32,6 +32,7 @@ public static class PlanetLODManager
         }
 
         lodGroup.SetLODs(lods);
+        lodGroup.size *= LODScaleMultiplier;
     }
 
     private static Renderer[] GetRenderersFromChildren(Transform parent)

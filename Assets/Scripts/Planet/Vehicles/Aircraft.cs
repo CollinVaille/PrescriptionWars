@@ -6,7 +6,7 @@ public class Aircraft : Vehicle
 {
     //Customization
     public Transform physicalSteeringWheel;
-    [SerializeField] private float verticalThrustPower = 200.0f;
+    [SerializeField] private float verticalThrustPower = 200.0f, LODScaleMultiplier = 1.0f;
 
     //References
     private CustomKinematicBody customBody;
@@ -26,6 +26,7 @@ public class Aircraft : Vehicle
     {
         //Things that need to be called before base's start
         customBody = GetComponent<CustomKinematicBody>();
+        PlanetLODManager.RegisterRendererLODsForChildren(transform, LODScaleMultiplier);
 
         base.Start();
 

@@ -7,6 +7,7 @@ public class Building : IndoorZoneGrouping
     public int length = 5;
     public int spawnChance = 10;
     public bool allowFlipping = true;
+    public float LODScaleMultiplier = 1.0f;
     public Transform[] beds;
     public PropPlacement[] propPlacements;
     [HideInInspector] public City city;
@@ -107,7 +108,7 @@ public class Building : IndoorZoneGrouping
 
     public void OnBuildingGeneratedOnRestored()
     {
-        PlanetLODManager.RegisterRendererLODsForChildren(transform);
+        PlanetLODManager.RegisterRendererLODsForChildren(transform, LODScaleMultiplier);
     }
 }
 

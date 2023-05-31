@@ -27,6 +27,11 @@ public class Pill : MonoBehaviour, IDamageable
     [HideInInspector] public bool performingAction = false, onFire = false;
     [HideInInspector] public Vector3 spawnPoint = Vector3.zero;
 
+    protected virtual void Awake()
+    {
+
+    }
+
     protected virtual void Start ()
     {
         //Set references
