@@ -312,6 +312,9 @@ public class Planet : MonoBehaviour
             //Switch off automatic lights for the day
             PlanetLight.UpdateAutomaticLights(false);
 
+            //And turn on the sun
+            sun.GetComponent<Light>().enabled = true;
+
             //Morning---------------------------------------------------------------------------------------------
             timeOfDay = TimeOfDay.Morning;
             for (; dayProgression < dayLength / 3; dayProgression += Time.deltaTime)
@@ -439,6 +442,9 @@ public class Planet : MonoBehaviour
 
             //Switch on automatic lights for the night
             PlanetLight.UpdateAutomaticLights(true);
+
+            //And turn off the sun
+            sun.GetComponent<Light>().enabled = false;
 
             //Night---------------------------------------------------------------------------------------------
             timeOfDay = TimeOfDay.Night;

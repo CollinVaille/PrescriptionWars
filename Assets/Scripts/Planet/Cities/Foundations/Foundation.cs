@@ -39,6 +39,9 @@ public class Foundation : MonoBehaviour
         if (foundationManager.foundations == null)
             foundationManager.foundations = new List<Foundation>();
         foundationManager.foundations.Add(this);
+
+        //Add foundation to LOD system
+        PlanetLODManager.RegisterRendererLODsForChildren(slab.Find("LOD Managed Renderers"), localScale.x / localScale.y);
     }
 
     private void SetScale(Transform slab, Transform ground)
