@@ -139,7 +139,7 @@ public class FoundationGeneratorForAtlantis
         //Generate outer walls
         float wallOffset = GetBufferSizeForWalls(city.radius, ringOuterRadius);
         if (generateOuterWalls)
-            GenerateWallRing(ringOuterRadius - wallOffset, ringOuterRadius);
+            GenerateWallRing(ringOuterRadius - wallOffset, ringOuterRadius, ringHeight);
 
         //Mark the area inside the walls as open for things like buildings to spawn on them
         if(markAsOpen)
@@ -152,16 +152,16 @@ public class FoundationGeneratorForAtlantis
         if (generateInnerWalls)
         {
             float ringInnerRadius = ringOuterRadius * FoundationManager.torusAnnulusMultiplier;
-            GenerateWallRing(ringInnerRadius + wallOffset, ringInnerRadius + wallOffset);
+            GenerateWallRing(ringInnerRadius + wallOffset, ringInnerRadius + wallOffset, ringHeight);
         }
     }
 
-    private void GenerateWallRing(float wallRadius, float reservedAreaRadius)
+    private void GenerateWallRing(float wallRadius, float reservedAreaRadius, float ringHeight)
     {
         //Request wall manager to place walls here later
         NewCityWallRequest newCityWallRequest = new NewCityWallRequest();
         newCityWallRequest.circular = true;
-        newCityWallRequest.localCenter = Vector3.zero;
+        newCityWallRequest.localCenter = new Vector3(0.0f, ringHeight, 0.0f);
         newCityWallRequest.halfLength = wallRadius;
         city.cityWallManager.newCityWallRequests.Add(newCityWallRequest);
 

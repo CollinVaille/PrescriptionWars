@@ -917,18 +917,26 @@ public class PlanetTerrain : MonoBehaviour
         point.x /= 4;
         point.z /= 4;
 
-        //Return the index of the layer with an alpha value of 1...
+        int pointX = (int)point.x;
+        int pointZ = (int)point.z;
 
-        //Get alphamaps at point
-        float[,,] alphamaps = terrain.terrainData.GetAlphamaps((int)point.x, (int)point.z, 1, 1);
+        //Bounds check--this is necessary. I got an error before without this: "Texture rectangle is out of bounds (512 + 1 > 512)"
+        if (pointX >= 0 && pointZ >= 0 && pointX < 512 && pointZ < 512)
+        {
+            //Return the index of the layer with an alpha value of 1...
 
-        //Search through them
-        for (int x = 0; x < alphamaps.GetLength(2); x++)
-            if (alphamaps[0, 0, x] == 1)
-                return x;
+            //Get alphamaps at point
+            float[,,] alphamaps = terrain.terrainData.GetAlphamaps(pointX, pointZ, 1, 1);
 
-        //Default, shouldn't get here b/c all points should be painted on some layer
-        return 0;
+            //Search through them
+            for (int x = 0; x < alphamaps.GetLength(2); x++)
+                if (alphamaps[0, 0, x] == 1)
+                    return x;
+
+            return 0; //Default, shouldn't get here b/c all points should be painted on some layer
+        }
+        else
+            return 0; //Fallback if on very edge of terrain. Shouldn't be a big deal and will prevent a crash
     }
 
     private void GenerateTrees ()

@@ -498,6 +498,9 @@ public class Pill : MonoBehaviour, IDamageable
 
     public void Say(AudioClip dialogue, bool interruptPrevious, float delay = 0.0f)
     {
+        if (!mainAudioSource.isActiveAndEnabled)
+            return;
+
         //Deal with possibility of interrupting dialogue that is still playing
         if(mainAudioSource.isPlaying)
         {
