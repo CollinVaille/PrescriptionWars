@@ -4,7 +4,5 @@ using UnityEngine;
 
 public interface INavZoneUpdater
 {
-    void GenerateNavMesh();
-
-    AsyncOperation UpdateNavMesh();
+    AsyncOperation GenerateOrUpdateNavMesh(bool initialGeneration);
 }

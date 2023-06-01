@@ -37,8 +37,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     public void AfterCityGeneratedOrRestored()
     {
-        //After the city has been generated (or restored), build the nav mesh to pathfind through it
-        GenerateNavMesh();
+        God.god.RegisterNavZone(this);
 
         //Create marker for city on the planet map
         MapMarker mapMarker = Instantiate(mapMarkerPrefab).GetComponent<MapMarker>();
@@ -153,16 +152,10 @@ public class City : MonoBehaviour, INavZoneUpdater
         AfterCityGeneratedOrRestored();
     }
 
-    public void GenerateNavMesh()
-    {
-        transform.Find("City Limits").GetComponent<NavigationZone>()
-            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), true);
-    }
-
-    public AsyncOperation UpdateNavMesh()
+    public AsyncOperation GenerateOrUpdateNavMesh(bool initialGeneration)
     {
         return transform.Find("City Limits").GetComponent<NavigationZone>()
-            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), false);
+            .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), initialGeneration);
     }
 
     public Vector3 GetRandomGlobalPointOutsideOfCity()

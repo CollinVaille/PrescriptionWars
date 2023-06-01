@@ -78,6 +78,7 @@ public class Planet : MonoBehaviour
         //Start coroutines
         StartCoroutine(DayNightCycle());
         StartCoroutine(ManagePlanetAmbience());
+        God.god.GenerateNavMeshesAtSceneStart();
     }
 
     //BIOME FUNCTIONS------------------------------------------------------------------------------------------------

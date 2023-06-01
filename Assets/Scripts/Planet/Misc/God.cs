@@ -26,7 +26,7 @@ public class God : MonoBehaviour
     public GameObject corpsePrefab;
 
     //City management
-    private List<INavZoneUpdater> navZonesToUpdate;
+    private List<INavZoneUpdater> allNavZones, dirtyNavZones;
 
     //Camera management
     private Camera currentCamera;
@@ -47,7 +47,8 @@ public class God : MonoBehaviour
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
         managedVolatileObjects = new List<ManagedVolatileObject>();
-        navZonesToUpdate = new List<INavZoneUpdater>();
+        allNavZones = new List<INavZoneUpdater>();
+        dirtyNavZones = new List<INavZoneUpdater>();
 
         //Initialize settings
         AudioSettings.LoadSettings();
@@ -60,6 +61,7 @@ public class God : MonoBehaviour
         DavyJonesLocker.PrepareTheLockerForSouls();
         PlanetLight.ClearAllAutomaticLights();
         TerrainOrHorizonReservation.ClearReservationRecord();
+        PlanetLODManager.InitializeLODSystem();
     }
 
     //Delayed Initialization
@@ -95,7 +97,7 @@ public class God : MonoBehaviour
         }
 
         //Perform computationally intensive updates on pause to avoid lag spikes in game
-        StartCoroutine(PerformUpdatesOnPause());
+        StartCoroutine(UpdateNavZones());
     }
 
     public void OnResume()
@@ -165,32 +167,56 @@ public class God : MonoBehaviour
 
     public void UnmanageVolatileObject(ManagedVolatileObject volatileObjectToUnmanage) { managedVolatileObjects.Remove(volatileObjectToUnmanage); }
 
+    public void RegisterNavZone(INavZoneUpdater navZone) { allNavZones.Add(navZone); }
+
+    public void GenerateNavMeshesAtSceneStart()
+    {
+        BeforeAfterUpdatingNavZones(true);
+
+        foreach (INavZoneUpdater nextNavMesh in allNavZones)
+        {
+            //I think this is synchronous. hoping
+            nextNavMesh.GenerateOrUpdateNavMesh(true);
+        }
+
+        BeforeAfterUpdatingNavZones(false);
+    }
+
     //PERIODIC UPDATES--------------------------------------------------------------------------------
 
     //Indicates city's nav mesh needs to be updated
     public void PaintNavMeshDirty(INavZoneUpdater navZoneUpdater)
     {
-        if (!navZonesToUpdate.Contains(navZoneUpdater))
-            navZonesToUpdate.Add(navZoneUpdater);
+        if (!dirtyNavZones.Contains(navZoneUpdater))
+            dirtyNavZones.Add(navZoneUpdater);
     }
 
     //Performs computationally intensive operations, might cause lag if not called at right time
     //Updates all nav meshes that need updating
-    private IEnumerator PerformUpdatesOnPause()
+    private IEnumerator UpdateNavZones()
     {
-        while (navZonesToUpdate.Count > 0)
+        BeforeAfterUpdatingNavZones(true);
+
+        while (dirtyNavZones.Count > 0)
         {
             //Get next nav mesh to update
-            INavZoneUpdater nextNavMesh = navZonesToUpdate[0];
-            navZonesToUpdate.Remove(nextNavMesh);
+            INavZoneUpdater nextNavMesh = dirtyNavZones[0];
+            dirtyNavZones.Remove(nextNavMesh);
 
             //Start update
-            AsyncOperation navMeshUpdate = nextNavMesh.UpdateNavMesh();
+            AsyncOperation navMeshUpdate = nextNavMesh.GenerateOrUpdateNavMesh(false);
 
             //Wait until it's done updating
             while (!navMeshUpdate.isDone)
                 yield return null;
         }
+
+        BeforeAfterUpdatingNavZones(false);
+    }
+
+    private void BeforeAfterUpdatingNavZones(bool before)
+    {
+        PlanetLODManager.TurnLODsOnOff(!before);
     }
 
     private IEnumerator PerformUpdatesPeriodically()

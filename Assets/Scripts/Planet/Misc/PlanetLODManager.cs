@@ -4,6 +4,16 @@ using UnityEngine;
 
 public static class PlanetLODManager
 {
+    private static List<LODGroup> lODGroups;
+
+    public static void InitializeLODSystem()
+    {
+        if (lODGroups != null)
+            lODGroups.Clear();
+
+        lODGroups = new List<LODGroup>();
+    }
+
     public static void RegisterRendererLODsForChildren(Transform parent, float LODScaleMultiplier)
     {
         LODGroup lodGroup = parent.gameObject.AddComponent<LODGroup>();
@@ -33,6 +43,27 @@ public static class PlanetLODManager
 
         lodGroup.SetLODs(lods);
         lodGroup.size *= LODScaleMultiplier;
+
+        lODGroups.Add(lodGroup);
+    }
+
+    public static void TurnLODsOnOff(bool turnOn)
+    {
+        if (lODGroups == null)
+            return;
+
+        foreach (LODGroup lodGroup in lODGroups)
+            TurnLODOnOff(lodGroup, turnOn);
+    }
+
+    private static void TurnLODOnOff(LODGroup lodGroup, bool turnOn)
+    {
+        lodGroup.ForceLOD(turnOn ? -1 : 0);
+
+        Transform primitiveLODParent = lodGroup.transform.Find("Primitive LOD");
+
+        if (primitiveLODParent)
+            primitiveLODParent.gameObject.SetActive(turnOn);
     }
 
     private static Renderer[] GetRenderersFromChildren(Transform parent)
