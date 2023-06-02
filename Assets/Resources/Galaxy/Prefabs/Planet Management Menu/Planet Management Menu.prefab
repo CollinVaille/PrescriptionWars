@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 1194803534783740600}
   - component: {fileID: 1194803534783740603}
   m_Layer: 5
-  m_Name: Building Type Icon Image
+  m_Name: Building Type Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -421,6 +421,7 @@ GameObject:
   - component: {fileID: 1194803535037062719}
   - component: {fileID: 1194803535037062718}
   - component: {fileID: 1194803535037062716}
+  - component: {fileID: 6904345969780968896}
   m_Layer: 5
   m_Name: Production Icon Image
   m_TagString: Untagged
@@ -516,6 +517,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &6904345969780968896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803535037062688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803535037062689}
 --- !u!1 &1194803535041558666
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +542,7 @@ GameObject:
   - component: {fileID: 1194803535041558665}
   - component: {fileID: 1194803535041558664}
   - component: {fileID: 1194803535041558662}
+  - component: {fileID: 7114358794413254675}
   m_Layer: 5
   m_Name: Building Production Output Text
   m_TagString: Untagged
@@ -584,11 +599,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 60cea3654c36cbc408f55c734dcc702c, type: 3}
-    m_FontSize: 25
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 6
-    m_MaxSize: 25
+    m_MaxSize: 20
     m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -627,6 +642,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &7114358794413254675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803535041558666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803535041558667}
 --- !u!1 &1194803535048188081
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,6 +746,7 @@ GameObject:
   - component: {fileID: 1194803535139100930}
   - component: {fileID: 1194803535139100933}
   - component: {fileID: 1194803535139100931}
+  - component: {fileID: 6274614442581011130}
   m_Layer: 5
   m_Name: Prescriptions Icon Image
   m_TagString: Untagged
@@ -813,6 +842,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &6274614442581011130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803535139100935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803535139100932}
 --- !u!1 &1194803535169630778
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,6 +1373,7 @@ GameObject:
   - component: {fileID: 1194803535642423875}
   - component: {fileID: 1194803535642423874}
   - component: {fileID: 1194803535642423872}
+  - component: {fileID: 4327655170821442159}
   m_Layer: 5
   m_Name: Building Science Output Text
   m_TagString: Untagged
@@ -1387,11 +1430,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 60cea3654c36cbc408f55c734dcc702c, type: 3}
-    m_FontSize: 25
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 6
-    m_MaxSize: 25
+    m_MaxSize: 20
     m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -1430,6 +1473,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &4327655170821442159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803535642423876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803535642423877}
 --- !u!1 &1194803535693076968
 GameObject:
   m_ObjectHideFlags: 0
@@ -2574,6 +2630,7 @@ GameObject:
   - component: {fileID: 1194803536124903402}
   - component: {fileID: 1194803536124903405}
   - component: {fileID: 1194803536124903403}
+  - component: {fileID: 2779517651992953337}
   m_Layer: 5
   m_Name: Credits Icon Image
   m_TagString: Untagged
@@ -2669,6 +2726,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &2779517651992953337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803536124903407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803536124903404}
 --- !u!1 &1194803536196970493
 GameObject:
   m_ObjectHideFlags: 0
@@ -3344,6 +3414,7 @@ GameObject:
   - component: {fileID: 1194803536584690580}
   - component: {fileID: 1194803536584690583}
   - component: {fileID: 1194803536584690581}
+  - component: {fileID: 7448667297174948275}
   m_Layer: 5
   m_Name: Building Credits Output Text
   m_TagString: Untagged
@@ -3400,11 +3471,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 60cea3654c36cbc408f55c734dcc702c, type: 3}
-    m_FontSize: 25
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 6
-    m_MaxSize: 25
+    m_MaxSize: 20
     m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -3443,6 +3514,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &7448667297174948275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803536584690585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803536584690582}
 --- !u!1 &1194803536588142338
 GameObject:
   m_ObjectHideFlags: 0
@@ -3572,7 +3656,7 @@ MonoBehaviour:
   coloringBackgroundImage: {fileID: 1194803534808324633}
   buildingsTabScrollViewHandleImage: {fileID: 1194803534902489794}
   buildingsTabScrollViewViewportImage: {fileID: 1194803535693076967}
-  buildingsTabBuildingInspectorBuildingTypeIconImage: {fileID: 1194803534783740603}
+  buildingsTabBuildingInspectorBuildingTypeImage: {fileID: 1194803534783740603}
   buildingsTabBuildingInspectorUpgradeBuildingButtonImage: {fileID: 1194803535716505297}
   buildingsTabBuildingInspectorUpgradeButton: {fileID: 1194803535716505296}
   unselectedTabButtonColorBlock:
@@ -3608,6 +3692,7 @@ GameObject:
   - component: {fileID: 1194803536606204159}
   - component: {fileID: 1194803536606204158}
   - component: {fileID: 1194803536606204156}
+  - component: {fileID: 7416964891618241006}
   m_Layer: 5
   m_Name: Building Prescriptions Output Text
   m_TagString: Untagged
@@ -3664,11 +3749,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 60cea3654c36cbc408f55c734dcc702c, type: 3}
-    m_FontSize: 25
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 6
-    m_MaxSize: 25
+    m_MaxSize: 20
     m_Alignment: 5
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -3707,6 +3792,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &7416964891618241006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803536606204128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803536606204129}
 --- !u!1 &1194803536643257556
 GameObject:
   m_ObjectHideFlags: 0
@@ -3742,7 +3840,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 245, y: 0}
   m_SizeDelta: {x: 490, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1194803536643257555
@@ -3879,6 +3977,7 @@ GameObject:
   - component: {fileID: 1194803536668926230}
   - component: {fileID: 1194803536668926233}
   - component: {fileID: 1194803536668926231}
+  - component: {fileID: 1935117618386752106}
   m_Layer: 5
   m_Name: Science Icon Image
   m_TagString: Untagged
@@ -3974,6 +4073,19 @@ MonoBehaviour:
   backgroundColorOption: 0
   backgroundCustomColor: {r: 1, g: 1, b: 1, a: 1}
   eventsHandler: {fileID: 0}
+--- !u!114 &1935117618386752106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194803536668926235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 1194803536668926232}
 --- !u!1 &1194803536734260815
 GameObject:
   m_ObjectHideFlags: 0

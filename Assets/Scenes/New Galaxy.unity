@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c35c2c4d765164d88cf355568e753c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipsParentVar: {fileID: 0}
+  tooltipsParentVar: {fileID: 536733924}
   popupScreenBoundsVar: {x: 291, y: 99}
   sfxSource: {fileID: 582696679}
   endTurnButton: {fileID: 578375524}
@@ -8038,7 +8038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 0
-  initialLocalPosition: {x: 0, y: -95}
+  initialLocalPosition: {x: -1895, y: 910}
   edgeBuffer: {x: 5, y: 3}
   openDelay: 0.5
   followsMouse: 0
@@ -8430,7 +8430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 0
-  initialLocalPosition: {x: 5, y: -95}
+  initialLocalPosition: {x: -1610, y: 910}
   edgeBuffer: {x: 5, y: 3}
   openDelay: 0.5
   followsMouse: 0
@@ -9308,7 +9308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closingType: 0
-  initialLocalPosition: {x: 5, y: -95}
+  initialLocalPosition: {x: -1260, y: 910}
   edgeBuffer: {x: 5, y: 3}
   openDelay: 0.5
   followsMouse: 0
@@ -11506,6 +11506,7 @@ GameObject:
   - component: {fileID: 1845996868}
   - component: {fileID: 1845996867}
   - component: {fileID: 1845996866}
+  - component: {fileID: 1845996870}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -11603,6 +11604,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1845996870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845996865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328481b08af7d6a4898b2de521fa10da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tooltipsParent: {fileID: 536733924}
 --- !u!1 &1846138491
 GameObject:
   m_ObjectHideFlags: 0

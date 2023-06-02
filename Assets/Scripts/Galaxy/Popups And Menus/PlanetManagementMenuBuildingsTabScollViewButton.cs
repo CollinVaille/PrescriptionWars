@@ -52,7 +52,7 @@ public class PlanetManagementMenuBuildingsTabScollViewButton : MonoBehaviour
         this.planetManagementMenu = planetManagementMenu;
 
         //Initializes the component values of the button to represent the specified building.
-        buildingTypeIconImage.sprite = building.buildingTypeIconSprite;
+        buildingTypeIconImage.sprite = building.resourceModifier.resourceTypeIcon;
         buildingTypeText.text = GeneralHelperMethods.GetEnumText(building.buildingType.ToString());
         buildingLevelText.text = GeneralHelperMethods.ConvertArabicIntToRomanNumeralString(building.level);
 

@@ -121,6 +121,15 @@ public class GalaxyResourceModifier
         }
     }
 
+    /// <summary>
+    /// Public property that should be used in order to access the sprite that is the icon that represents the resource modifier's resource type (loaded in from the project resources).
+    /// </summary>
+    public Sprite resourceTypeIcon { get => Resources.Load<Sprite>(resourceTypeIconsFolderPath + "/" + GeneralHelperMethods.GetEnumText(resourceType.ToString())); }
+    /// <summary>
+    /// Private static property that should be used in order to access the string value that represents the path of the resources folder that contains all of the resource type icon sprites.
+    /// </summary>
+    private static string resourceTypeIconsFolderPath { get => "Galaxy/Icons/Resources"; }
+
     public GalaxyResourceModifier(GalaxyResourceType resourceType, MathematicalOperation mathematicalOperation, float amount, NewEmpire appliedEmpire)
     {
         _resourceType = resourceType;

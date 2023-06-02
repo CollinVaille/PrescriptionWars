@@ -242,12 +242,12 @@ public class NewGalaxyBuilding
     /// <summary>
     /// Public property that should be accessed in order to obtain the sprite that indicates a building of the building's building type. Sprite is loaded in from the project resources.
     /// </summary>
-    public Sprite buildingTypeIconSprite { get => Resources.Load<Sprite>(buildingTypeIconsFolderPath + "/" + GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " Icon"); }
+    public Sprite buildingTypeSprite { get => Resources.Load<Sprite>(buildingTypeIconsFolderPath + "/" + GeneralHelperMethods.GetEnumText(buildingType.ToString())); }
 
     /// <summary>
     /// Private static property that should be accessed in order to obtain the string that indicates the path of the resources folder that contains all of the building type icons.
     /// </summary>
-    private static string buildingTypeIconsFolderPath { get => "Galaxy/Icons/Building Type Icons"; }
+    private static string buildingTypeIconsFolderPath { get => "Galaxy/Building Type Sprites"; }
 
     public NewGalaxyBuilding(GalaxyBuildingData buildingData)
     {

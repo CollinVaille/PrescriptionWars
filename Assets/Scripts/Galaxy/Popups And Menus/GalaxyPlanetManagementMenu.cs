@@ -31,7 +31,7 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
     [SerializeField] private Image coloringBackgroundImage = null;
     [SerializeField] private Image buildingsTabScrollViewHandleImage = null;
     [SerializeField] private Image buildingsTabScrollViewViewportImage = null;
-    [SerializeField, Tooltip("The image component in the buildings inspector on the buildings tab of the menu that displays the icon of the type of building that is selected in the building inspector to the player.")] private Image buildingsTabBuildingInspectorBuildingTypeIconImage = null;
+    [SerializeField, Tooltip("The image component in the buildings inspector on the buildings tab of the menu that displays the icon of the type of building that is selected in the building inspector to the player.")] private Image buildingsTabBuildingInspectorBuildingTypeImage = null;
     [SerializeField] private Image buildingsTabBuildingInspectorUpgradeBuildingButtonImage = null;
 
     [Header("Button Components")]
@@ -211,7 +211,7 @@ public class GalaxyPlanetManagementMenu : NewGalaxyPopupBehaviour
             {
                 buildingsTabBuildingInspectorBuildingTypeText.text = GeneralHelperMethods.GetEnumText(buildingSelectedVar.buildingType.ToString());
                 buildingsTabBuildingInspectorBuildingLevelText.text = "Level: " + buildingSelectedVar.level;
-                buildingsTabBuildingInspectorBuildingTypeIconImage.sprite = buildingSelectedVar.buildingTypeIconSprite;
+                buildingsTabBuildingInspectorBuildingTypeImage.sprite = buildingSelectedVar.buildingTypeSprite;
                 buildingsTabBuildingInspectorBuildingTypeDescriptionText.text = buildingSelectedVar.buildingTypeDescription;
                 buildingsTabBuildingInspectorDescriptionFormattingUpdateRequired = true;
                 for(int resourceOutputTextIndex = 0; resourceOutputTextIndex < buildingsTabBuildingInspectorResourceOutputTexts.Count; resourceOutputTextIndex++)

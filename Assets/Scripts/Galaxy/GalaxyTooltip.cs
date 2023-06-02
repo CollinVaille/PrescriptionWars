@@ -372,7 +372,7 @@ public class GalaxyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         Transform currentParent = null;
 
-        Transform nextTransformToCheck = transform.parent;
+        Transform nextTransformToCheck = transform;
         while (currentParent == null)
         {
             IGalaxyTooltipHandler nextTransformToCheckTooltipHandler = nextTransformToCheck.GetComponent<IGalaxyTooltipHandler>();
