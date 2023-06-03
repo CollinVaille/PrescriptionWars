@@ -170,6 +170,8 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
 
     protected virtual void Awake()
     {
+        //Sets the parent canvas reference variable.
+        parentCanvas = GetComponentInParent<Canvas>();
         //Sets the canvas group reference property.
         canvasGroup = GetComponent<CanvasGroup>() == null ? gameObject.AddComponent<CanvasGroup>() : GetComponent<CanvasGroup>();
         //Initializes the list of popups if it has not been initialized yet.
@@ -182,8 +184,9 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        //Sets the parent canvas reference variable.
-        parentCanvas = GetComponentInParent<Canvas>();
+        //Sets the parent canvas reference variable if not set already.
+        if (parentCanvas == null)
+            parentCanvas = GetComponentInParent<Canvas>();
     }
 
     // Update is called once per frame

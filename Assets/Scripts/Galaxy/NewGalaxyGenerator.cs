@@ -155,6 +155,7 @@ public class NewGalaxyGenerator : MonoBehaviour
             saveGameData != null ? saveGameData.galaxyShape : newGameData.galaxyShape,
             saveGameData != null ? saveGameData.playerID : 0,
             saveGameData != null ? saveGameData.observationModeEnabled : false,
+            saveGameData != null ? saveGameData.ironPillModeEnabled : newGameData.ironpillModeEnabled,
             new List<Transform>() { planetLabelsParent, starLabelsParent, capitalSymbolsParent, confirmationPopupsParent, popupsParent },
             pauseMenu,
             settingsMenu,

@@ -10,6 +10,7 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
 
     [SerializeField, Tooltip("The text component at the bottom of the pause menu that displays the current game version to the user.")] private Text versionText = null;
     [SerializeField, Tooltip("The transform of the game object that serves as the parent of the pause menu's center buttons.")] private Transform centerButtonsParent = null;
+    [SerializeField, Tooltip("The center button that the player can click on in order to save the game as an inputted save name.")] private Button saveAsButton = null;
 
     [Header("SFX Options")]
 
@@ -38,6 +39,9 @@ public class NewGalaxyPauseMenu : NewGalaxyPopupBehaviour
         //Resets each center button back to being unselected.
         for(int centerButtonSiblingIndex = 0; centerButtonSiblingIndex < centerButtonsParent.childCount; centerButtonSiblingIndex++)
             centerButtonsParent.GetChild(centerButtonSiblingIndex).GetComponent<Button>().OnDeselect(null);
+
+        //Makes the save as button interactable if ironpill mode is disabled and not interactable if ironpill mode is enabled.
+        saveAsButton.interactable = !NewGalaxyManager.ironPillModeEnabled;
     }
 
     /// <summary>

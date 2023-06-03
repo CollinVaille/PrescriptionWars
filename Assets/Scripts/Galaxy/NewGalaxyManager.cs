@@ -308,6 +308,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     }
 
     /// <summary>
+    /// Private holder variable for the boolean value that indicates whether or not the game is in ironpill mode. Ironpill mode is essentially ironman or hardcore mode where the player cannot do a save as and cannot access the cheat console.
+    /// </summary>
+    private bool _ironPillModeEnabled = false;
+    /// <summary>
+    /// Public static property that should be used in order to access the boolean value that indicates whether or not the game is in ironpill mode. Ironpill mode is essentially ironman or hardcore mode where the player cannot do a save as and cannot access the cheat console.
+    /// </summary>
+    public static bool ironPillModeEnabled { get => galaxyManager == null ? false : galaxyManager._ironPillModeEnabled; }
+
+    /// <summary>
     /// Publicly accessible static float property that should be accessed in order to determine the base planetary orbital speed before proximity to star calculations come into play.
     /// </summary>
     public static float basePlanetaryOrbitalSpeed { get => galaxyManager == null ? 0 : galaxyManager._basePlanetaryOrbitalSpeed; }
@@ -336,7 +345,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -367,6 +376,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that indicates whether or not the game is in observation mode.
         galaxyManager._observationModeEnabled = observationModeEnabled;
+
+        //Sets the value of the variable that indicates whether or not the game is in ironpill mode. Ironpill mode is essentially ironman or hardcore mode where the player cannot do a save as and cannot access the cheat console.
+        galaxyManager._ironPillModeEnabled = ironPillModeEnabled;
 
         //Sets the value of the variable that contains the transform of the game object that serves as the parent object for all planet labels within the galaxy.
         galaxyManager.planetLabelsParentVar = parents[0];
@@ -419,7 +431,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape) && !NewGalaxyPopupBehaviour.popupClosedOnFrame && !NewGalaxyPopupBehaviour.isAPopupOpen)
                 pauseMenu.Open();
-            if (Input.GetKeyDown(KeyCode.BackQuote) && !pauseMenu.open)
+            if (!ironPillModeEnabled && Input.GetKeyDown(KeyCode.BackQuote) && !pauseMenu.open)
                 cheatConsole.Toggle();
         }
     }
