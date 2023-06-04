@@ -612,7 +612,7 @@ public class Bot1 : Pill
         return Mathf.Sqrt(Mathf.Pow(position1.x - position2.x, 2) + Mathf.Pow(position1.z - position2.z, 2));
     }
 
-    private bool MeAndBroAlive (Pill bro) { return !dead && !bro.IsDead(); }
+    private bool MeAndBroAlive (Pill bro) { return !dead && !bro.IsDead; }
 
     //Performs LookAt with offset so that weapon is centered on target instead of our view
     //Also has built-in inaccuracy so bot is not aimbot!

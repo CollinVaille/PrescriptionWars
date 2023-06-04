@@ -117,8 +117,8 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
         {
             victim.Damage(damage, knockback, transform.position, DamageType.Projectile, launcher.team);
 
-            if (Player.player.GetPill() == launcher)
-                Player.player.GetAudioSource().PlayOneShot(Player.player.hitMarker);
+            if (launcher.IsPlayer)
+                launcher.GetAudioSource().PlayOneShot(Player.player.hitMarker);
         }
 
         if(!explosionName.Equals(""))

@@ -135,7 +135,7 @@ public class Door : Interactable
         {
             yield return new WaitForSeconds(Random.Range(0.75f, 1.25f));
 
-            if (!transitioning && open && !botCulprit.IsDead()
+            if (!transitioning && open && !botCulprit.IsDead
                 && Vector3.Distance(botCulprit.transform.position, transform.position) < 12)
             {
                 botCulprit.transform.LookAt(transform);
@@ -226,7 +226,7 @@ public class Door : Interactable
 
         Pill tracking = collision.gameObject.GetComponent<Pill>();
 
-        if (tracking && !collision.gameObject.GetComponent<Player>())
+        if (tracking && !tracking.IsPlayer)
             StartCoroutine(OpenDoor(tracking.GetAudioSource(), tracking));
     }
 

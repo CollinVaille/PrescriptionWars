@@ -146,7 +146,7 @@ public class Ladder : Interactable, IVerticalScalerImplement
         lastRungWas1 = !lastRungWas1;
     }
 
-    protected override string GetInteractionVerb() { return occupant == Player.player ? "Let Go" : "Climb"; }
+    protected override string GetInteractionVerb() { return occupant && occupant.IsPlayer ? "Let Go" : "Climb"; }
 
     public void ScaleToHeight(float heightToScaleTo)
     {

@@ -1336,4 +1336,6 @@ public class Player : Pill
         dropdown2.value = (int)order2;
         dropdown3.value = (int)order3;
     }
+
+    public override bool IsPlayer { get => true; }
 }

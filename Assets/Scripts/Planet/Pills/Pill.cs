@@ -29,7 +29,7 @@ public class Pill : MonoBehaviour, IDamageable
 
     protected virtual void Awake()
     {
-
+        //Needed because it is used in a child class.
     }
 
     protected virtual void Start ()
@@ -145,7 +145,7 @@ public class Pill : MonoBehaviour, IDamageable
                         hitPill.AlertOfAttacker(this, false);
                         AlertOfAttacker(hitPill, false);
 
-                        if (hitPill.IsDead())
+                        if (hitPill.IsDead)
                             holding.OnMeleeKill(hitPill);
 
 
@@ -225,7 +225,9 @@ public class Pill : MonoBehaviour, IDamageable
 
     public virtual bool StabbingWithIntentToExecute(float durationIntoExecution) { return false; }
 
-    public bool IsDead () { return dead; }
+    public bool IsDead { get => dead; }
+
+    public virtual bool IsPlayer { get => false; }
 
     public Pill GetPill () { return this; }
 
@@ -298,7 +300,7 @@ public class Pill : MonoBehaviour, IDamageable
             holding.RetireFromHand();
 
             //Update UI
-            if (GetComponent<Player>())
+            if (IsPlayer)
                 GetComponent<Player>().BlankItemInfo();
 
             //Set transform
@@ -365,7 +367,7 @@ public class Pill : MonoBehaviour, IDamageable
         //So the player can read the name tags of friendly pills
         if (team == Player.playerTeam)
         {
-            if (!GetComponent<Player>())
+            if (!IsPlayer)
                 gameObject.layer = 14;
         }
         else
@@ -539,7 +541,7 @@ public class Pill : MonoBehaviour, IDamageable
     {
         if (controlOverride)
             return;
-        //if(GetComponent<Player>())
+        //if(IsPlayer)
         //    Debug.Log(transform.parent);
 
         if(!transform.parent)
@@ -565,7 +567,7 @@ public class Pill : MonoBehaviour, IDamageable
         infoDump += (int)Vector3.Distance(transform.position, Player.player.transform.position) + "m Away\n";
 
         //Foot note to identify player or to debug bot behaviour
-        if (this == Player.player)
+        if (IsPlayer)
             infoDump += "\n* That's you!";
         else
             infoDump += "\n" + statusReport;

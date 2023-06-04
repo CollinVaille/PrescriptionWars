@@ -55,7 +55,7 @@ public class Squad : MonoBehaviour
         if (!leader)
             SetLeader(pill);
 
-        if (pill == Player.player)
+        if (pill.IsPlayer)
         {
             PlanetPauseMenu.pauseMenu.UpdateSquadName(name, army.color);
             Player.player.UpdateHealthBarColor();
@@ -267,7 +267,7 @@ public class Squad : MonoBehaviour
             }
 
             //Start leader AI
-            if (!leader.GetComponent<Player>())
+            if (!leader.IsPlayer)
             {
                 StartCoroutine(GuardLeaderAI());
             }

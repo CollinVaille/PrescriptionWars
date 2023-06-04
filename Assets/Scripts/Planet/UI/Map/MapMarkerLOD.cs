@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class MapMarkerLOD : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     //Customization
+    [Tooltip("If true, the size of this marker will scale with the zoom level of the map. If false, the size of this marker will remain constant.")] public bool scaleWithZoom;
     [Tooltip("(Min, Max) map zoom range where this LOD will display.")] public Vector2 zoomRange;
 
     //References
@@ -57,14 +58,17 @@ public class MapMarkerLOD : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         }
 
         //Update size
-        if (textLabel)
+        if(scaleWithZoom)
         {
-            currentFontSize = (int)(fontScale / mapCamera.orthographicSize);
-            if (currentFontSize != textLabel.fontSize)
-                textLabel.fontSize = currentFontSize;
+            if (textLabel)
+            {
+                currentFontSize = (int)(fontScale / mapCamera.orthographicSize);
+                if (currentFontSize != textLabel.fontSize)
+                    textLabel.fontSize = currentFontSize;
+            }
+            else
+                transform.localScale = scaleVector / mapCamera.orthographicSize;
         }
-        else
-            transform.localScale = scaleVector / mapCamera.orthographicSize;
     }
 
     public void OnPointerClick(PointerEventData eventData)

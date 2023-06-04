@@ -108,5 +108,5 @@ public class Seat : Interactable
         return ejecting;
     }
 
-    protected override string GetInteractionVerb() { return occupant == Player.player ? "Get Up" : "Sit"; }
+    protected override string GetInteractionVerb() { return occupant && occupant.IsPlayer ? "Get Up" : "Sit"; }
 }

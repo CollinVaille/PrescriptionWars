@@ -624,17 +624,17 @@ public class PlanetPauseMenu : MonoBehaviour
 
             //Customize button
             memberButton.name = member.name + " Button";
-            if(member.IsDead()) //Dead
+            if(member.IsDead) //Dead
             {
                 memberButton.GetComponent<Button>().interactable = false;
-                memberButtonText.text = (member == Player.player) ? member.name + " *  --  KIA" : member.name + "  --  KIA";
+                memberButtonText.text = member.IsPlayer ? member.name + " *  --  KIA" : member.name + "  --  KIA";
                 memberButtonText.color = Color.gray;
                 memberButtonText.fontStyle = (member == squad.leader) ? FontStyle.Bold : FontStyle.Normal;
             }
             else //Alive
             {
                 memberButton.GetComponent<Button>().interactable = true;
-                memberButtonText.text = (member == Player.player) ? member.name + " *" : member.name;
+                memberButtonText.text = member.IsPlayer ? member.name + " *" : member.name;
                 memberButtonText.color = (member == squad.leader) ? Color.white : squad.GetArmy().color;
                 memberButtonText.fontStyle = (member == squad.leader) ? FontStyle.Bold : FontStyle.Normal;
             }
@@ -702,7 +702,7 @@ public class PlanetPauseMenu : MonoBehaviour
 
             squadMenu.Find("Send Transmission Input Field").gameObject.SetActive(true);
             squadMenu.Find("Send Transmission Button").gameObject.SetActive(true);
-            bool leaderIsPlayer = (squad.leader == Player.player);
+            bool leaderIsPlayer = squad.leader.IsPlayer;
             squadMenu.Find("Send Transmission Input Field").GetComponent<InputField>().enabled = leaderIsPlayer;
             squadMenu.Find("Send Transmission Button").GetComponent<Button>().enabled = leaderIsPlayer;
         }

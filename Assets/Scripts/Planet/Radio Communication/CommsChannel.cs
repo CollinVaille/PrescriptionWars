@@ -91,7 +91,7 @@ public class CommsChannel : MonoBehaviour
             if (InterruptionDetected(broadcaster))
             {
                 //If broadcaster dies while on air, air his death thrawls, play the flatline exit sound, followed by a courtious automated voice message
-                if (broadcaster.IsDead())
+                if (broadcaster.IsDead)
                     yield return StartCoroutine(PlayDeathInterruption(rt, broadcaster));
 
                 //Prematurely done with transmission
@@ -112,7 +112,7 @@ public class CommsChannel : MonoBehaviour
 
     private bool InterruptionDetected(Pill broadcaster)
     {
-        return broadcaster.IsDead();
+        return broadcaster.IsDead;
     }
 
     private IEnumerator PlayDeathInterruption(RadioTransmission rt, Pill broadcaster)

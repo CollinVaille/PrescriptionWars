@@ -12,6 +12,8 @@ public class PlanetMapManager : MonoBehaviour
     public static PlanetMapManager mapManager;
     private Camera mapCamera;
     private Transform HUD, mapMenu;
+    private GameObject planetName;
+    private Image mapFog;
     private List<MapMarker> mapMarkers;
 
     //Status variables
@@ -33,6 +35,8 @@ public class PlanetMapManager : MonoBehaviour
 
         this.HUD = HUD;
         this.mapMenu = mapMenu;
+        planetName = mapMenu.Find("Planet Name").gameObject;
+        mapFog = mapMenu.Find("Map Fog").GetComponent<Image>();
 
         //All map markers need to be initialized manually. Usually this is done where they are created, but this guy is an exception that is already there.
         mapMenu.Find("Background Marker").GetComponent<MapMarker>().InitializeMarker(null);
@@ -97,6 +101,9 @@ public class PlanetMapManager : MonoBehaviour
             mapWater.color = HUD.Find("Underwater").GetComponent<Image>().color;
             Planet.planet.oceanTransform.GetComponent<Renderer>().material = mapWater;
         }
+
+        //Update fog
+        UpdateMapFog();
 
         //Update camera
         God.god.SetActiveCamera(mapCamera, false);
@@ -179,6 +186,12 @@ public class PlanetMapManager : MonoBehaviour
         //Highlighting on map markers needs to be readjusted if we move the camera
         if (currentlyHighlighted)
             HighlightMapMarkerLOD(currentlyHighlighted);
+
+        //Show the planet name only if fully zoomed out
+        planetName.SetActive(mapZoom > 900);
+
+        //Update fog
+        UpdateMapFog();
     }
 
     private void ClampAndApplyCameraPosition()
@@ -193,4 +206,27 @@ public class PlanetMapManager : MonoBehaviour
     }
 
     public void RegisterMapMarker(MapMarker newMarker) { mapMarkers.Add(newMarker); }
+
+    private void UpdateMapFog()
+    {
+        mapFog.enabled = RenderSettings.fog;
+        if (mapFog.enabled)
+        {
+            Color mapFogColor = RenderSettings.fogColor;
+            mapFogColor.a = 1.0f - GetFogStrengthAtDistance(mapZoom);
+            mapFog.color = mapFogColor;
+        }
+    }
+
+    private static float GetFogStrengthAtDistance(float distance)
+    {
+        FogMode fogMode = RenderSettings.fogMode;
+
+        if (fogMode == FogMode.Linear)
+            return (RenderSettings.fogEndDistance - distance) / (RenderSettings.fogEndDistance - RenderSettings.fogStartDistance);
+        else if (fogMode == FogMode.Exponential)
+            return Mathf.Pow(2.0f, -distance * RenderSettings.fogDensity);
+        else //FogMode.ExpontentialSquared
+            return Mathf.Pow(2.0f, -Mathf.Pow(distance * RenderSettings.fogDensity, 2.0f));
+    }
 }

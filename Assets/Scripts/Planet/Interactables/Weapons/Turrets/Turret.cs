@@ -64,7 +64,7 @@ public abstract class Turret : Interactable
 
         //Update rotation
         occupant.transform.localEulerAngles = Vector3.zero;
-        if (occupant.GetComponent<Player>())
+        if (occupant.IsPlayer)
             occupant.GetComponent<Player>().ResetHeadRotation();
 
         //Visual clean up
@@ -208,5 +208,5 @@ public abstract class Turret : Interactable
 
     protected virtual void UpdateRoundsOnUI() { DurabilityTextManager.SetDurabilityText(rounds); }
 
-    protected override string GetInteractionVerb() { return occupant == Player.player ? "Get Off" : "Man"; }
+    protected override string GetInteractionVerb() { return occupant && occupant.IsPlayer ? "Get Off" : "Man"; }
 }

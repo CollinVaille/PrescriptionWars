@@ -10,7 +10,7 @@ public class ElevatorZone : MonoBehaviour
     {
         Pill pill = other.GetComponentInParent<Pill>();
 
-        //if (pill && pill.GetComponent<Player>())
+        //if (pill && pill.IsPlayer)
         //    Debug.Log("Entering");
 
         if (pill && !pill.transform.parent)
@@ -28,7 +28,7 @@ public class ElevatorZone : MonoBehaviour
     {
         Pill pill = other.GetComponentInParent<Pill>();
 
-        //if (pill && pill.GetComponent<Player>())
+        //if (pill && pill.IsPlayer)
         //    Debug.Log("Exiting");
 
         if (pill && pill.transform.parent == cab)

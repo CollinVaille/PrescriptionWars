@@ -119,7 +119,7 @@ public class Spawner : MonoBehaviour
 
         //Name pill
         /*
-        if(pill.GetComponent<Player>())
+        if(pill.IsPlayer)
             pill.name = "Player Pill";
         else
             pill.name = "Pill " + Random.Range(0, 1000);
@@ -170,7 +170,7 @@ public class Spawner : MonoBehaviour
         prescriptions--;
 
         //If player, spawn corpse dummy on respawn
-        if (toRespawn == Player.player.GetPill())
+        if (toRespawn.IsPlayer)
             SpawnCorpse(God.god.corpsePrefab, toRespawn.transform);
 
         SetSpawnPositionAndRotation(toRespawn);

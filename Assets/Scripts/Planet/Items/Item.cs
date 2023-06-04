@@ -146,7 +146,7 @@ public class Item : MonoBehaviour
         holder = newHolder;
 
         if (holder)
-            holderIsPlayer = holder.GetComponent<Player>();
+            holderIsPlayer = holder.IsPlayer;
 
         if (holderIsPlayer)
             holder.GetComponent<Player>().SetContinuousPrimaryAction(false);

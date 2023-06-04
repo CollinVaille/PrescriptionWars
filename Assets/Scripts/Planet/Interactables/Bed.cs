@@ -48,7 +48,7 @@ public class Bed : Interactable
     {
         Pill pill = collision.gameObject.GetComponent<Pill>();
 
-        if (pill && !collision.gameObject.GetComponent<Player>())
+        if (pill && !pill.IsPlayer)
             GoToBed(pill);
     }
 

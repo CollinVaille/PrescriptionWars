@@ -176,14 +176,14 @@ public class Machete : Item
         {
             damageable.Damage(meleeDamage, meleeKnockback, transform.position, DamageType.Projectile, thrower.team);
             sfxSource.PlayOneShot(stab);
-            if (thrower == Player.player)
+            if (thrower.IsPlayer)
                 Player.player.PlayHitMarkerSound(false);
         }
         else
         {
             sfxSource.PlayOneShot(doink);
 
-            if (thrower == Player.player && collidedWith.CompareTag("Gear"))
+            if (thrower.IsPlayer && collidedWith.CompareTag("Gear"))
                 Player.player.PlayHitMarkerSound(true);
         }
 

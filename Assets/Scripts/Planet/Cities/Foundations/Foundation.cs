@@ -41,7 +41,7 @@ public class Foundation : MonoBehaviour
         foundationManager.foundations.Add(this);
 
         //Add foundation to LOD system
-        PlanetLODManager.RegisterRendererLODsForChildren(slab.Find("LOD Managed Renderers"), localScale.x / localScale.y);
+        PlanetLODManager.RegisterRendererLODsForChildren(slab.Find("LOD Managed Renderers"), 1.0f); //localScale.x * 0.01f
     }
 
     private void SetScale(Transform slab, Transform ground)

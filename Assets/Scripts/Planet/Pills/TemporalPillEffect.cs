@@ -65,14 +65,14 @@ public class TemporalPillEffect : MonoBehaviour
                     subject.GetRigidbody().velocity *= magnitude;
                     subject.moveSpeed *= magnitude;
 
-                    if (subject.GetComponent<Player>())
+                    if (subject.IsPlayer)
                         subject.GetComponent<Player>().GetFeetAudioSource().pitch *= magnitude;
                 }
                 else if (lastUpdate)
                 {
                     subject.moveSpeed /= magnitude;
 
-                    if (subject.GetComponent<Player>())
+                    if (subject.IsPlayer)
                         subject.GetComponent<Player>().GetFeetAudioSource().pitch /= magnitude;
                 }
                 return;
