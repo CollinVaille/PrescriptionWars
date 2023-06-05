@@ -13,7 +13,8 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
 
     [Header("SFX Options")]
 
-    [SerializeField] private AudioClip dismissSFX = null;
+    [SerializeField] private AudioClip successfulDismissSFX = null;
+    [SerializeField] private AudioClip unsuccessfulDismissSFX = null;
 
     //Non-inspector variables.
 
@@ -30,7 +31,7 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     /// <summary>
     /// Private holder variable for the boolean value that indicates whether or not the notification can be dismissed by the player by right clicking on it.
     /// </summary>
-    private bool _isDismissable = false;
+    private bool _isDismissable = true;
     /// <summary>
     /// Public property that should be used in order to both access and modify the boolean value that indicates whether or not the notification can be dismissed by the player by right clicking on it.
     /// </summary>
@@ -42,9 +43,56 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     public bool isDismissing { get; private set; }
 
     /// <summary>
+    /// Private holder variable for the boolean value that indicates whether or not the notificiation is a warning notification that flashes to warn the player of something.
+    /// </summary>
+    private bool _isWarning = false;
+    /// <summary>
+    /// Public property that should be used in order to access and modify the boolean value that indicates whether or not the notificiation is a warning notification that flashes to warn the player of something.
+    /// </summary>
+    public bool isWarning
+    {
+        get => _isWarning;
+        set => _isWarning = value;
+    }
+
+    /// <summary>
+    /// Private holder variable for the boolean value that indicates whether or not the notification is moving downwards into its assigned position.
+    /// </summary>
+    private bool _isMovingDownwards = false;
+    /// <summary>
+    /// Public property that should be used in order to access and modify the boolean value that indicates whether or not the notification is moving downwards into its assigned position.
+    /// </summary>
+    public bool isMovingDownwards
+    {
+        get => _isMovingDownwards;
+        set
+        {
+            //Calculates the assigned local y position and assigns the value to the appropriate variable.
+            assignedLocalYPosition = transform.GetSiblingIndex() * (((RectTransform)transform).sizeDelta.y + NewGalaxyManager.notificationManager.spacing);
+
+            //Checks if the notification is already moving downwards and has not yet reached its assigned position and returns if so.
+            if (_isMovingDownwards && transform.localPosition.y > assignedLocalYPosition)
+                return;
+
+            //Sets the boolean value that indicates whether or not the notification is moving downwards into its assigned position to the specified value.
+            _isMovingDownwards = value;
+        }
+    }
+
+    /// <summary>
+    /// Private holder variable for the float value that represents the local y position the notification is assigned to go to if it is moving downwards. May not be set properly if not having ever moved downwards.
+    /// </summary>
+    private float assignedLocalYPosition = 0;
+
+    /// <summary>
     /// Public static property that should be accessed in order to obtain the string value that represents the path to the resources folder that contains all of the galaxy notification sprites.
     /// </summary>
     private static string spritesFolderPath { get => "Galaxy/Notifications/Sprites"; }
+
+    /// <summary>
+    /// Public static method that should be used in order to access the prefab that all notifications are instantiated from.
+    /// </summary>
+    public static GameObject prefab { get => Resources.Load<GameObject>("Galaxy/Prefabs/Notifications/Notification"); }
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +103,66 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     // Update is called once per frame
     void Update()
     {
-        
+        //Deals with the notification moving downwards towards its assigned position if needed.
+        if (isMovingDownwards)
+        {
+            //Moves the notification downwards at the correct speed.
+            transform.Translate(0, -1 * NewGalaxyManager.notificationManager.downwardsMovementSpeed * Time.deltaTime, 0, Space.Self);
+            //Checks if the notification is at or passed its assigned position and resets its position to its assigned position and logs that the notification is no longer moving downwards if so.
+            if (transform.localPosition.y <= assignedLocalYPosition)
+            {
+                transform.localPosition = new Vector3(0, assignedLocalYPosition, 0);
+                isMovingDownwards = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to initialize the notification with the values needed in order to function as intended.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="spriteName"></param>
+    /// <param name="isDismissable"></param>
+    /// <param name="isWarning"></param>
+    public void Initialize(string text, string spriteName, int notificationIndex, bool isDismissable = true, bool isWarning = false)
+    {
+        this.text = text;
+        this.spriteName = spriteName;
+        this.isDismissable = isDismissable;
+        this.isWarning = isWarning;
+
+        //Resets the scale of the notification to fix any Unity prefab instantiation and parenting shenanigans.
+        transform.localScale = Vector3.one;
+
+        //Sets the position of the notification to be either right above the top of the screen or right above the previous notification if it is too close or above the top of the screen.
+        float topLocalYPosition = ((RectTransform)NewGalaxyManager.notificationManager.transform).sizeDelta.y;
+        GalaxyNotification previousNotification = NewGalaxyManager.notificationManager.GetNotificationAt(notificationIndex - 1);
+        transform.localPosition = new Vector3(0, previousNotification != null && previousNotification.transform.localPosition.y >= topLocalYPosition - (((RectTransform)previousNotification.transform).sizeDelta.y + NewGalaxyManager.notificationManager.spacing) ? previousNotification.transform.localPosition.y + ((RectTransform)previousNotification.transform).sizeDelta.y + NewGalaxyManager.notificationManager.spacing : topLocalYPosition, 0);
+
+        //Logs that the notification is moving downwards towards its assigned position.
+        isMovingDownwards = true;
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to initialize the notification with the values needed in order to function as intended. This version of the function is initialized using notification save data.
+    /// </summary>
+    /// <param name="notificationData"></param>
+    public void Initialize(GalaxyNotificationData notificationData, int notificationIndex)
+    {
+        text = notificationData.text;
+        spriteName = notificationData.spriteName;
+        isDismissable = notificationData.isDismissable;
+        isWarning = notificationData.isWarning;
+
+        //Resets the scale of the notification to fix any Unity prefab instantiation and parenting shenanigans.
+        transform.localScale = Vector3.one;
+
+        //Sets the position of the notification to its correct location instantly (instead of falling from the top of the screen like notifications created mid-game).
+        GalaxyNotification previousNotification = NewGalaxyManager.notificationManager.GetNotificationAt(notificationIndex - 1);
+        transform.localPosition = new Vector3(0, previousNotification != null ? previousNotification.transform.localPosition.y + ((RectTransform)previousNotification.transform).sizeDelta.y + NewGalaxyManager.notificationManager.spacing : 0, 0);
+
+        //Logs that the notification is not moving downwards.
+        isMovingDownwards = false;
     }
 
     /// <summary>
@@ -66,13 +173,19 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     {
         //Returns if the notification is already dismissing or is not dismissable and the dismissal call itself is not forced.
         if ((!forceDismissal && !isDismissable) || isDismissing)
-            return;
+        {
+            //Plays the appropriate sound effect for unsuccessfully dismissing a notification.
+            AudioManager.PlaySFX(unsuccessfulDismissSFX);
 
-        //Logs that the notification is being dismissed.
+            //Returns out of the function.
+            return;
+        }
+
+        //Logs that the notification is in the action of being dismissed.
         isDismissing = true;
 
-        //Plays the appropriate sound effect for dismissing a notification.
-        AudioManager.PlaySFX(dismissSFX);
+        //Plays the appropriate sound effect for successfully dismissing a notification.
+        AudioManager.PlaySFX(successfulDismissSFX);
     }
 
     /// <summary>
@@ -100,12 +213,14 @@ public class GalaxyNotificationData
 {
     public string text = null;
     public string spriteName = null;
-    public bool isDismissable = false;
+    public bool isDismissable = true;
+    public bool isWarning = false;
 
     public GalaxyNotificationData(GalaxyNotification notification)
     {
         text = notification.text;
         spriteName = notification.spriteName;
         isDismissable = notification.isDismissable;
+        isWarning = notification.isWarning;
     }
 }

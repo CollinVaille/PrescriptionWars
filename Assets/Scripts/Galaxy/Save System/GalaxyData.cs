@@ -17,6 +17,7 @@ public class GalaxyData
     public bool ironPillModeEnabled = false;
     public Dictionary<int, GalaxyResourceModifierData> resourceModifiers = null;
     public int resourceModifiersCount = 0;
+    public List<GalaxyNotificationData> notifications = null;
 
     //Info.
     public string galaxyShape = null;
@@ -57,6 +58,8 @@ public class GalaxyData
             resourceModifiers.Add(resourceModifierID, new GalaxyResourceModifierData(NewGalaxyManager.resourceModifiers[resourceModifierID]));
 
         resourceModifiersCount = NewGalaxyManager.resourceModifiersCount;
+
+        notifications = NewGalaxyManager.notificationManager.notificationsSaveData;
 
         galaxyShape = NewGalaxyManager.galaxyShape;
 

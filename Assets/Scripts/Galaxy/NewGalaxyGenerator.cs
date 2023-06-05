@@ -45,6 +45,10 @@ public class NewGalaxyGenerator : MonoBehaviour
     [SerializeField, Tooltip("The settings menu that the player can interact with to change a variety of settings including game, video, and audio settings.")] private NewGalaxySettingsMenu settingsMenu = null;
     [SerializeField, Tooltip("The cheat console that allows the player to cheat mid game on the galaxy view.")] private NewCheatConsole cheatConsole = null;
 
+    [Header("Managers")]
+
+    [SerializeField, Tooltip("The manager for all notifications that are active within the galaxy scene.")] private GalaxyNotificationManager notificationManager = null;
+
     //Non-inspector variables.
 
     /// <summary>
@@ -160,9 +164,14 @@ public class NewGalaxyGenerator : MonoBehaviour
             pauseMenu,
             settingsMenu,
             cheatConsole,
+            notificationManager,
             saveGameData != null ? saveGameData.turnNumber : 0,
             resourceModifiers,
             saveGameData != null ? saveGameData.resourceModifiersCount : 0);
+
+        //Initializes the notification manager.
+        notificationManager.Initialize(saveGameData != null ? saveGameData.notifications : null);
+        notificationManager.CreateNotification("Test Notification", "Test Sprite");
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
