@@ -171,7 +171,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Initializes the notification manager.
         notificationManager.Initialize(saveGameData != null ? saveGameData.notifications : null);
-        notificationManager.CreateNotification("Test Notification", "Test Sprite");
+        notificationManager.CreateNotification("Test Notification", "Trade Post");
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();

@@ -7,7 +7,9 @@ public class GalaxyNotificationManager : MonoBehaviour
     [Header("Options")]
 
     [SerializeField, Tooltip("The float value that represents the amount of space between notifications in the galaxy scene.")] private float _spacing = 5;
-    [SerializeField, Tooltip("The float value that represents the speed at which the notifications will move downwards when needed.")] private float _downwardsMovementSpeed = 1000;
+    [SerializeField, Tooltip("The float value that represents the speed at which the notifications will move downwards when needed.")] private float _downwardsMovementSpeed = 750;
+    [SerializeField, Tooltip("The float value that represents the speed at which the notifications will be dismissed.")] private float _dismissalSpeed = 500;
+    [SerializeField, Tooltip("The float value that represents the speed at which the notification's text will fade in and out depending on whether the player is mousing over it or not.")] private float _textFadeSpeed = 3;
 
     //Non-inspector variables.
 
@@ -22,9 +24,23 @@ public class GalaxyNotificationManager : MonoBehaviour
     public float downwardsMovementSpeed { get => _downwardsMovementSpeed; }
 
     /// <summary>
+    /// Public property that should be used in order to access the float value that represents the speed at which the notifications will be dismissed.
+    /// </summary>
+    public float dismissalSpeed { get => _dismissalSpeed; }
+
+    /// <summary>
+    /// Public property that should be used in order to access the float value that represents the speed at which the notification's text will fade in and out depending on whether the player is mousing over it or not.
+    /// </summary>
+    public float textFadeSpeed { get => _textFadeSpeed; }
+
+    /// <summary>
     /// Private list that contains all of the notifications currently active within the galaxy view.
     /// </summary>
     private List<GalaxyNotification> notifications = null;
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that represents the total number of notifications that are active within the galaxy scene.
+    /// </summary>
+    public int notificationCount { get => notifications == null ? 0 : notifications.Count; }
 
     /// <summary>
     /// Public property that should be used in order to access the list of save data for the notifications that are active within the galaxy scene. Notifications that are in the action of being dismissed will not be in the list of save data since saving them is not neccessary.
@@ -100,7 +116,7 @@ public class GalaxyNotificationManager : MonoBehaviour
         notifications[notifications.Count - 1].transform.SetParent(transform);
 
         //Initializes the notification with the specified parameters.
-        notifications[notifications.Count - 1].Initialize(text, spriteName, notifications.Count - 1, isDismissable, isWarning);
+        notifications[notifications.Count - 1].Initialize(text, spriteName, notifications.Count - 1, OnNotificationDismissed, isDismissable, isWarning);
     }
 
     /// <summary>
@@ -120,7 +136,7 @@ public class GalaxyNotificationManager : MonoBehaviour
         notifications[notifications.Count - 1].transform.SetParent(transform);
 
         //Initializes the notification by providing it its save data.
-        notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1);
+        notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1, OnNotificationDismissed);
     }
 
     /// <summary>
@@ -133,5 +149,22 @@ public class GalaxyNotificationManager : MonoBehaviour
         if (notifications == null || notificationIndex < 0 || notificationIndex >= notifications.Count)
             return null;
         return notifications[notificationIndex];
+    }
+
+    /// <summary>
+    /// Private method that should be called by a notification after it has finished moving into dismissal position and is about to be destroyed. Removes the specified notification from the list of notifications that are active within the galaxy scene.
+    /// </summary>
+    /// <param name="notification"></param>
+    private void OnNotificationDismissed(GalaxyNotification notification)
+    {
+        if (notification != null && notifications != null && notifications.Contains(notification))
+        {
+            //Loops through each notification that is above the notification that is just now being fully dismissed and tells them that they need to move downwards to fill the gap.
+            for (int notificationIndex = notifications.IndexOf(notification) + 1; notificationIndex < notifications.Count; notificationIndex++)
+                notifications[notificationIndex].isMovingDownwards = true;
+
+            //Removes the dismissed notification from the list of notifications that are active within the galaxy scene.
+            notifications.Remove(notification);
+        }
     }
 }

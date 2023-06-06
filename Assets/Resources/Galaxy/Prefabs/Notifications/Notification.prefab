@@ -217,10 +217,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 4646268779121668910}
   _image: {fileID: 4646268779383694344}
+  _textCanvasGroup: {fileID: 4646268778753384388}
   successfulDismissSFX: {fileID: 8300000, guid: 8a4d0ab89cd73c5428d3de0c0b8b4e58,
     type: 3}
   unsuccessfulDismissSFX: {fileID: 8300000, guid: f80b6e33ab60b4a4a8e3954e0bfdd7f5,
     type: 3}
+  pointerEnterSFX: {fileID: 8300000, guid: 297a6935b150f454fbc8c1df15225a23, type: 3}
 --- !u!1 &4646268778507117672
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +309,7 @@ GameObject:
   - component: {fileID: 4646268778753384395}
   - component: {fileID: 4646268778753384388}
   m_Layer: 5
-  m_Name: Left Text
+  m_Name: Text Canvas Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

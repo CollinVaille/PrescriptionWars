@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
-public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
+public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Components")]
 
     [SerializeField] private Text _text = null;
     [SerializeField] private Image _image = null;
+    [SerializeField] private CanvasGroup _textCanvasGroup = null;
 
     [Header("SFX Options")]
 
     [SerializeField] private AudioClip successfulDismissSFX = null;
     [SerializeField] private AudioClip unsuccessfulDismissSFX = null;
+    [SerializeField] private AudioClip pointerEnterSFX = null;
 
     //Non-inspector variables.
 
@@ -85,6 +88,16 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     private float assignedLocalYPosition = 0;
 
     /// <summary>
+    /// Private holder variable for the method that should be called on the notification manager whenever this notification is done moving into dismissal position.
+    /// </summary>
+    private Action<GalaxyNotification> notificationManagerOnNotificationDismissed = null;
+
+    /// <summary>
+    /// Public property that should be used to access the boolean value that indicates whether or not the player is mousing over the notification. Privately set using Unity EventTrigger interfaces.
+    /// </summary>
+    public bool isMouseOver { get; private set; }
+
+    /// <summary>
     /// Public static property that should be accessed in order to obtain the string value that represents the path to the resources folder that contains all of the galaxy notification sprites.
     /// </summary>
     private static string spritesFolderPath { get => "Galaxy/Notifications/Sprites"; }
@@ -115,6 +128,34 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
                 isMovingDownwards = false;
             }
         }
+
+        //Deals with the notification being dismissed.
+        if (isDismissing)
+        {
+            //Dismisses the notification by moving it to the right at the correct speed.
+            transform.Translate(NewGalaxyManager.notificationManager.dismissalSpeed * Time.deltaTime, 0, 0, Space.Self);
+            //Checks if the notification is now off the right side of the screen and calls the OnDismissed() function if so.
+            if(transform.localPosition.x >= ((RectTransform)transform).sizeDelta.x)
+                OnDismissed();
+        }
+
+        //Deals with the text fading in and out depending on whether the player is mousing over the notification or not.
+        _textCanvasGroup.alpha += (isMouseOver ? 1 : -1) * NewGalaxyManager.notificationManager.textFadeSpeed * Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Private method that should be called by the update function once the notification is done moving to its final dismissal location.
+    /// </summary>
+    private void OnDismissed()
+    {
+        //Sets the notification as the last notification parented under the notification manager in order to avoid index shenanigans.
+        transform.SetAsLastSibling();
+
+        //Executes the needed logic on the notification manager for when a notification is dismissed, which includes removing the notification from the list of notifications active within the galaxy scene.
+        notificationManagerOnNotificationDismissed(this);
+
+        //Destroys the notification and its game object.
+        Destroy(gameObject);
     }
 
     /// <summary>
@@ -124,12 +165,14 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     /// <param name="spriteName"></param>
     /// <param name="isDismissable"></param>
     /// <param name="isWarning"></param>
-    public void Initialize(string text, string spriteName, int notificationIndex, bool isDismissable = true, bool isWarning = false)
+    public void Initialize(string text, string spriteName, int notificationIndex, Action<GalaxyNotification> notificationManagerOnNotificationDismissed, bool isDismissable = true, bool isWarning = false)
     {
         this.text = text;
         this.spriteName = spriteName;
         this.isDismissable = isDismissable;
         this.isWarning = isWarning;
+
+        this.notificationManagerOnNotificationDismissed = notificationManagerOnNotificationDismissed;
 
         //Resets the scale of the notification to fix any Unity prefab instantiation and parenting shenanigans.
         transform.localScale = Vector3.one;
@@ -147,12 +190,14 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
     /// Public method that should be called in order to initialize the notification with the values needed in order to function as intended. This version of the function is initialized using notification save data.
     /// </summary>
     /// <param name="notificationData"></param>
-    public void Initialize(GalaxyNotificationData notificationData, int notificationIndex)
+    public void Initialize(GalaxyNotificationData notificationData, int notificationIndex, Action<GalaxyNotification> notificationManagerOnNotificationDismissed)
     {
         text = notificationData.text;
         spriteName = notificationData.spriteName;
         isDismissable = notificationData.isDismissable;
         isWarning = notificationData.isWarning;
+
+        this.notificationManagerOnNotificationDismissed = notificationManagerOnNotificationDismissed;
 
         //Resets the scale of the notification to fix any Unity prefab instantiation and parenting shenanigans.
         transform.localScale = Vector3.one;
@@ -205,6 +250,27 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler
             //Dismisses the notification if the notification is dismissable.
             Dismiss();
         }
+    }
+
+    /// <summary>
+    /// Public method that is called by the Unity event system using the IPointerEnterHandler interface whenever the player mouses over the notification.
+    /// </summary>
+    /// <param name="pointerEventData"></param>
+    public void OnPointerEnter(PointerEventData pointerEventData)
+    {
+        isMouseOver = true;
+
+        //Plays the appropriate sound effect.
+        AudioManager.PlaySFX(pointerEnterSFX);
+    }
+
+    /// <summary>
+    /// Public method that is called by the Unity event system using the IPointerExitHandler interface whenever the player's mouse exits the notification.
+    /// </summary>
+    /// <param name="pointerEventData"></param>
+    public void OnPointerExit(PointerEventData pointerEventData)
+    {
+        isMouseOver = false;
     }
 }
 
