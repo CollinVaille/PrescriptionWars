@@ -18,6 +18,7 @@ public class GalaxyData
     public Dictionary<int, GalaxyResourceModifierData> resourceModifiers = null;
     public int resourceModifiersCount = 0;
     public List<GalaxyNotificationData> notifications = null;
+    public List<NewGalaxyPopupData> popups = null;
 
     //Info.
     public string galaxyShape = null;
@@ -60,6 +61,8 @@ public class GalaxyData
         resourceModifiersCount = NewGalaxyManager.resourceModifiersCount;
 
         notifications = NewGalaxyManager.notificationManager.notificationsSaveData;
+
+        popups = NewGalaxyManager.popupManager.popupsSaveData;
 
         galaxyShape = NewGalaxyManager.galaxyShape;
 

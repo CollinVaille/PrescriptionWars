@@ -218,6 +218,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static GalaxyNotificationManager notificationManager { get => galaxyManager == null ? null : galaxyManager._notificationManager; }
 
     /// <summary>
+    /// Private holder variable for the manager that manages all popups within the galaxy scene.
+    /// </summary>
+    private NewGalaxyPopupManager _popupManager = null;
+    /// <summary>
+    /// Public static property that should be accessed in order to obtain a reference to the galaxy view's popup manager that manages all popups within the galaxy scene.
+    /// </summary>
+    public static NewGalaxyPopupManager popupManager { get => galaxyManager == null ? null : galaxyManager._popupManager; }
+
+    /// <summary>
     /// Private holder variable for the transform of the game object that serves as the parent object for all confirmation popups within the galaxy scene.
     /// </summary>
     private Transform _confirmationPopupsParent = null;
@@ -354,7 +363,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -411,6 +420,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains a reference to the manager that manages all notifications within the galaxy scene.
         galaxyManager._notificationManager = notificationManager;
+
+        //Sets the value of the variable that contains a reference to the manager that manages all popups within the galaxy scene.
+        galaxyManager._popupManager = popupManager;
 
         //Sets the value of the variable that indicates how many turns have passed since the start of the game.
         galaxyManager._turnNumber = turnNumber;

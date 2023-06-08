@@ -11,7 +11,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     [SerializeField, Tooltip("Specifies the type of animation that will be played when the popup opens.")] private OpeningAnimationType openingAnimationType = 0;
     [SerializeField, Tooltip("Specifies the amount of time that the opening animation will last unless the opening animation type is instant.")] private float openingAnimationLength = 0;
     [SerializeField, Tooltip("Specifies the sound effect that is played when the popup is just starting to open.")] private AudioClip openingSFX = null;
-    [SerializeField, Tooltip("Specifies the sound effect that is played when the popup finishes opening.")] private AudioClip openedSFX = null;
+    [SerializeField, Tooltip("Specifies the sound effect that is played when the popup finishes opening.")] protected AudioClip openedSFX = null;
 
     [Header("Base Closing Options")]
 
@@ -21,6 +21,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
     [SerializeField, Tooltip("Specifies the sound effect that is played when the popup finishes closing.")] private AudioClip closedSFX = null;
     [SerializeField, Tooltip("Specifies the sound effecr that is played when the popup's close button is clicked by the player.")] private AudioClip clickCloseButtonSFX = null;
     [SerializeField, Tooltip("Specifies whether the popup game object should be destroyed whenever the popup is closed.")] private bool destroyOnClose = false;
+    [SerializeField, Tooltip("Specifies whether the popup can be closed by the player pressing the escape key on the keyboard.")] private bool escapeToClose = true;
 
     [Header("Base Interactivity Options")]
 
@@ -197,7 +198,7 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         else if (closing)
             ClosingAnimationUpdate();
 
-        if (Input.GetKeyDown(KeyCode.Escape) && isTopPopup && !GalaxyConfirmationPopupBehaviour.isAConfirmationPopupOpen && !popupClosedOnFrame)
+        if (escapeToClose && Input.GetKeyDown(KeyCode.Escape) && isTopPopup && !GalaxyConfirmationPopupBehaviour.isAConfirmationPopupOpen && !popupClosedOnFrame)
             Close();
     }
 
@@ -357,6 +358,9 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         //Logs the time at the beginning of the frame as the time when this popup was closed.
         previousPopupCloseTime = Time.time;
 
+        //Plays the appropriate sound effect for when the popup has fully finished closing.
+        AudioManager.PlaySFX(closedSFX);
+
         //Destroys the popup's entire game object if the destroy on close option is enabled/true.
         if (destroyOnClose)
         {
@@ -376,8 +380,6 @@ public class NewGalaxyPopupBehaviour : MonoBehaviour, IBeginDragHandler, IDragHa
         closingAnimationTimeElapsed = 0;
         //Logs that the popup is no longer in the process of closing.
         closing = false;
-        //Plays the appropriate sound effect for when the popup has fully finished closing.
-        AudioManager.PlaySFX(closedSFX);
     }
 
     /// <summary>

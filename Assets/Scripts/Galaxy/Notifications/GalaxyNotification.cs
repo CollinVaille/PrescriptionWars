@@ -140,7 +140,7 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
         }
 
         //Deals with the text fading in and out depending on whether the player is mousing over the notification or not.
-        _textCanvasGroup.alpha += (isMouseOver ? 1 : -1) * NewGalaxyManager.notificationManager.textFadeSpeed * Time.deltaTime;
+        _textCanvasGroup.alpha += (isMouseOver && !isDismissing ? 1 : -1) * NewGalaxyManager.notificationManager.textFadeSpeed * Time.deltaTime;
     }
 
     /// <summary>

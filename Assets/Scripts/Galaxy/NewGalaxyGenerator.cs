@@ -48,6 +48,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     [Header("Managers")]
 
     [SerializeField, Tooltip("The manager for all notifications that are active within the galaxy scene.")] private GalaxyNotificationManager notificationManager = null;
+    [SerializeField, Tooltip("The manager for all popups that are active within the galaxy scene.")] private NewGalaxyPopupManager popupManager = null;
 
     //Non-inspector variables.
 
@@ -165,6 +166,7 @@ public class NewGalaxyGenerator : MonoBehaviour
             settingsMenu,
             cheatConsole,
             notificationManager,
+            popupManager,
             saveGameData != null ? saveGameData.turnNumber : 0,
             resourceModifiers,
             saveGameData != null ? saveGameData.resourceModifiersCount : 0);
@@ -172,6 +174,9 @@ public class NewGalaxyGenerator : MonoBehaviour
         //Initializes the notification manager.
         notificationManager.Initialize(saveGameData != null ? saveGameData.notifications : null);
         notificationManager.CreateNotification("Test Notification", "Trade Post");
+
+        //Initializes the popup manager.
+        popupManager.Initialize(saveGameData != null ? saveGameData.popups : null);
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
