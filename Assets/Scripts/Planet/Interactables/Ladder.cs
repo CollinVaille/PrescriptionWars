@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ladder : Interactable, IVerticalScalerImplement
 {
-    private Pill occupant = null;
+    private PlanetPill occupant = null;
     private Vector3 occupantLocalPosition = Vector3.zero;
     private int occupantCode = 0;
     private CollisionDetectionMode occupantsPriorMode;
@@ -16,7 +16,7 @@ public class Ladder : Interactable, IVerticalScalerImplement
     public AudioClip rung1, rung2;
     public Transform scalablePart;
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -38,7 +38,7 @@ public class Ladder : Interactable, IVerticalScalerImplement
         if (!occupant)
             return;
 
-        Pill climber = occupant;
+        PlanetPill climber = occupant;
 
         //Detach from ladder
         GetOff();
@@ -49,7 +49,7 @@ public class Ladder : Interactable, IVerticalScalerImplement
         climber.GetRigidbody().AddExplosionForce(10.0f, pushOffPoint, 10.0f);
     }
 
-    private void GetOn(Pill climber)
+    private void GetOn(PlanetPill climber)
     {
         if (occupant || !climber || !climber.CanOverride())
             return;

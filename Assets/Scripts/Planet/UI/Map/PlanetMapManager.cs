@@ -119,7 +119,7 @@ public class PlanetMapManager : MonoBehaviour
             Planet.planet.oceanTransform.GetComponent<Renderer>().material = realWater;
 
         //Update camera
-        God.god.SetActiveCamera(Player.player.GetCamera(), false);
+        God.god.SetActiveCamera(PlanetPlayerPill.player.GetCamera(), false);
     }
 
     public Camera GetMapCamera() { return mapCamera; }

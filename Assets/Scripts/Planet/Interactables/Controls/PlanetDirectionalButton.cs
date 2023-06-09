@@ -21,7 +21,7 @@ public class PlanetDirectionalButton : Interactable
         isUpwardsButton = name.ToLower().Contains("up");
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 

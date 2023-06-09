@@ -38,12 +38,12 @@ public class RepairTool : Item
         Repair();
     }
 
-    public override void PutInHand(Pill newHolder)
+    public override void PutInHand(PlanetPill newHolder)
     {
         base.PutInHand(newHolder);
 
         if (holderIsPlayer)
-            holder.GetComponent<Player>().SetContinuousPrimaryAction(cooldown > 0);
+            holder.GetComponent<PlanetPlayerPill>().SetContinuousPrimaryAction(cooldown > 0);
     }
 
     public void Repair()
@@ -56,7 +56,7 @@ public class RepairTool : Item
 
         if (holder.RaycastShoot(transform, 5, out RaycastHit hit))
         {
-            Pill pill = hit.collider.GetComponent<Pill>();
+            PlanetPill pill = hit.collider.GetComponent<PlanetPill>();
 
             if (pill)
                 pill.Heal(repairPoints / 2.0f);

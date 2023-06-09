@@ -179,7 +179,7 @@ public class Vehicle : MonoBehaviour
 
     private bool ShouldIgnoreCollision(Collision collision)
     {
-        return collision.transform.GetComponentInParent<Pill>();
+        return collision.transform.GetComponentInParent<PlanetPill>();
     }
 
     public void DamageParts(Vector3 contactPoint, float radius, float impactSpeed, bool recursive)

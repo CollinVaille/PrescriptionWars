@@ -34,7 +34,7 @@ public class Elevator : Interactable, IVerticalScalerImplement
         elevatorSFX = cab.GetComponent<AudioSource>();
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 

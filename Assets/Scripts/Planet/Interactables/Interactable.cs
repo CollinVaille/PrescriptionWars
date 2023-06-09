@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-    public virtual void Interact (Pill interacting) { }
+    public virtual void Interact (PlanetPill interacting) { }
 
-    public virtual void Interact (Pill interacting, bool turnOn) { }
+    public virtual void Interact (PlanetPill interacting, bool turnOn) { }
 
     public virtual void ReleaseControl (bool voluntary) { }
 

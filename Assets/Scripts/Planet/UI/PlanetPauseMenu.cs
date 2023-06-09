@@ -221,7 +221,7 @@ public class PlanetPauseMenu : MonoBehaviour
         {
             if(saveOnLeave)
             {
-                Player.player.AssignOrderButtons(
+                PlanetPlayerPill.player.AssignOrderButtons(
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
@@ -229,7 +229,7 @@ public class PlanetPauseMenu : MonoBehaviour
             }
             else
             {
-                Player.player.RestoreOrderButtons(
+                PlanetPlayerPill.player.RestoreOrderButtons(
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 1 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 2 Dropdown").GetComponent<Dropdown>(),
                     pauseMenus[(int)MenuScreen.CommandsMenu].Find("Command 3 Dropdown").GetComponent<Dropdown>());
@@ -317,7 +317,7 @@ public class PlanetPauseMenu : MonoBehaviour
         else
         {
             //Done with loading which means player has been loaded so disable map camera
-            God.god.SetActiveCamera(Player.player.transform.Find("Head").Find("Camera").GetComponent<Camera>(), true);
+            God.god.SetActiveCamera(PlanetPlayerPill.player.transform.Find("Head").Find("Camera").GetComponent<Camera>(), true);
             Destroy(God.god.GetComponent<AudioListener>());
 
             pauseMenus[(int)MenuScreen.LoadingScreen].gameObject.SetActive(false);
@@ -379,12 +379,12 @@ public class PlanetPauseMenu : MonoBehaviour
         {
             //Clicked on squad member button, so display details about squad member
             if (buttonTransform.parent.name.Equals("Content"))
-                UpdateSquadMemberDisplay(Player.player.squad.GetMemberByName(
+                UpdateSquadMemberDisplay(PlanetPlayerPill.player.squad.GetMemberByName(
                     buttonName.Substring(0, buttonName.Length - 7)));
 
             //Clicked on squad overview button, so display overview info like objective and orders
             else if (buttonName.Equals("Overview Button"))
-                BlankSquadMemberDisplay(Player.player.squad);
+                BlankSquadMemberDisplay(PlanetPlayerPill.player.squad);
 
             //Take what is written in the transmission text box and send it over the airwaves as a radio transmission
             else if(buttonName.Equals("Send Transmission Button"))
@@ -395,7 +395,7 @@ public class PlanetPauseMenu : MonoBehaviour
                 if(customMessage?.Length > 0)
                 {
                     customMessageInputField.text = "";
-                    Squad playersSquad = Player.player.squad;
+                    Squad playersSquad = PlanetPlayerPill.player.squad;
                     playersSquad.GetArmy().Comms().Send(new CustomTransmission(playersSquad, customMessage));
                 }
             }
@@ -498,7 +498,7 @@ public class PlanetPauseMenu : MonoBehaviour
 
         //Save and apply
         VideoSettings.SaveSettings();
-        Player.player.ApplyDisplaySettings();
+        PlanetPlayerPill.player.ApplyDisplaySettings();
     }
 
     private void SetNavigationPane(NavigationPane newActivePane)
@@ -544,7 +544,7 @@ public class PlanetPauseMenu : MonoBehaviour
     public void UpdateFactionColor()
     {
         //Get player's faction color
-        Color newColor = Army.GetArmy(Player.player.team).color;
+        Color newColor = Army.GetArmy(PlanetPlayerPill.player.team).color;
 
         //Recolor each image that is supposed to be colored faction-specific
         foreach(Image image in factionColored)
@@ -557,7 +557,7 @@ public class PlanetPauseMenu : MonoBehaviour
     public void UpdateSquadMenu()
     {
         //Determine squad
-        Squad squad = Player.player.squad;
+        Squad squad = PlanetPlayerPill.player.squad;
 
         if(!squad) //Screen for when player belongs to no squad
             BlankSquadMemberDisplay(null);
@@ -567,7 +567,7 @@ public class PlanetPauseMenu : MonoBehaviour
             UpdateSquadMemberList(squad);
 
             //Refresh squad member display (keep current member selected, but refresh info)
-            Pill member = squad.GetMemberByName(
+            PlanetPill member = squad.GetMemberByName(
                 pauseMenus[(int)MenuScreen.SquadMenu].Find("Member Name").GetComponent<Text>().text);
             UpdateSquadMemberDisplay(member);
         }
@@ -596,7 +596,7 @@ public class PlanetPauseMenu : MonoBehaviour
         float yPos = -20;
         for (int x = 0; x < squad.members.Count; x++)
         {
-            Pill member = squad.members[x];
+            PlanetPill member = squad.members[x];
 
             //Get button to represent member
             Transform memberButton;
@@ -662,12 +662,12 @@ public class PlanetPauseMenu : MonoBehaviour
         }
     }
 
-    private void UpdateSquadMemberDisplay(Pill member)
+    private void UpdateSquadMemberDisplay(PlanetPill member)
     {
         //Check for member
         if(!member)
         {
-            BlankSquadMemberDisplay(Player.player.squad);
+            BlankSquadMemberDisplay(PlanetPlayerPill.player.squad);
             return;
         }
 
@@ -791,11 +791,11 @@ public class PlanetPauseMenu : MonoBehaviour
             squadMemberCamera = Instantiate(memberCameraPrefab).transform;
 
         //Switch to squad member camera if valid squad member, else switch back
-        God.god.SetActiveCamera(member ? squadMemberCamera.GetComponent<Camera>() : Player.player.GetCamera(), true);
+        God.god.SetActiveCamera(member ? squadMemberCamera.GetComponent<Camera>() : PlanetPlayerPill.player.GetCamera(), true);
 
         //When we view the player through the squad menu camera, we want to see his gear. But, we also need to rehide it if applicable when done
-        if (Player.player)
-            Player.player.UpdateGearVisibility(member == Player.player.transform);
+        if (PlanetPlayerPill.player)
+            PlanetPlayerPill.player.UpdateGearVisibility(member == PlanetPlayerPill.player.transform);
 
         //We're done here if not a valid squad member
         if (!member)
@@ -911,7 +911,7 @@ public class PlanetPauseMenu : MonoBehaviour
         }
 
         //Set currently selected option in each dropdown to reflect chosen command
-        Player.player.RestoreOrderButtons(dropdowns[0], dropdowns[1], dropdowns[2]);
+        PlanetPlayerPill.player.RestoreOrderButtons(dropdowns[0], dropdowns[1], dropdowns[2]);
     }
 
     public bool IsPaused() { return paused; }

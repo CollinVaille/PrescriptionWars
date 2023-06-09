@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Corpse : MonoBehaviour
 {
-    private Pill soulOfCorpse;
+    private PlanetPill soulOfCorpse;
     private Collider groundToStickTo;
     public bool beingExecuted = false;
 
-    public void BootUpCorpse (Pill soulOfCorpse)
+    public void BootUpCorpse (PlanetPill soulOfCorpse)
     {
         this.soulOfCorpse = soulOfCorpse;
         DavyJonesLocker.CheckIn(soulOfCorpse, this);

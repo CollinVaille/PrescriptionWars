@@ -15,7 +15,7 @@ public class StasisPod : Interactable, IDamageable
     //Subject mutation variables
     private float initialSubjectHeight = 1;
     private static Material defaultSubjectMaterial;
-    private Pill lastInteracter;
+    private PlanetPill lastInteracter;
     private int shakeCode = 0;
 
     private void Start()
@@ -33,7 +33,7 @@ public class StasisPod : Interactable, IDamageable
             sfxSource.Stop();
     }
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         base.Interact(interacting);
 

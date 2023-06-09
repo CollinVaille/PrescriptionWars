@@ -22,7 +22,7 @@ public class Spawner : MonoBehaviour
     public int team = 0;
 
     //*Death* -> Death queue -> Respawn queue -> *Alive*
-    private List<Pill> deathQueue, respawnQueue;
+    private List<PlanetPill> deathQueue, respawnQueue;
 
     //Other status variables
     private City city = null;
@@ -34,8 +34,8 @@ public class Spawner : MonoBehaviour
             totalProbability += pillClasses[x].probability;
 
         //Initialize other stuff
-        deathQueue = new List<Pill>();
-        respawnQueue = new List<Pill>();
+        deathQueue = new List<PlanetPill>();
+        respawnQueue = new List<PlanetPill>();
 
         //Get references
         city = GetComponent<City>();
@@ -61,7 +61,7 @@ public class Spawner : MonoBehaviour
                 if(respawnQueue.Count > 0) //Respawn pill
                 {
                     //Pop head of queue
-                    Pill toRespawn = respawnQueue[0];
+                    PlanetPill toRespawn = respawnQueue[0];
                     respawnQueue.RemoveAt(0);
 
                     RespawnPill(toRespawn);
@@ -76,7 +76,7 @@ public class Spawner : MonoBehaviour
             if(deathQueue.Count > 0)
             {
                 //Pop head of death queue
-                Pill deadPill = deathQueue[0];
+                PlanetPill deadPill = deathQueue[0];
                 deathQueue.RemoveAt(0);
 
                 //Insert in back of respawn queue
@@ -94,17 +94,17 @@ public class Spawner : MonoBehaviour
         prescriptions--;
 
         //Instantiate pill
-        Pill pill;
-        if (!Player.player && Player.playerTeam == team) //One time creation of player
+        PlanetPill pill;
+        if (!PlanetPlayerPill.player && PlanetPlayerPill.playerTeam == team) //One time creation of player
         {
-            pill = Instantiate(playerPrefab).GetComponent<Pill>();
+            pill = Instantiate(playerPrefab).GetComponent<PlanetPill>();
 
             //Loading is over, player is here everybody!
-            Player.player = pill.GetComponent<Player>();
+            PlanetPlayerPill.player = pill.GetComponent<PlanetPlayerPill>();
             PlanetPauseMenu.pauseMenu.LoadingScreen(false, false);
         }
         else
-            pill = Instantiate(pillPrefab).GetComponent<Pill>();
+            pill = Instantiate(pillPrefab).GetComponent<PlanetPill>();
 
         //Position and rotate pill
         if (city)
@@ -164,7 +164,7 @@ public class Spawner : MonoBehaviour
         pill.BringToLife();
     }
 
-    private void RespawnPill (Pill toRespawn)
+    private void RespawnPill (PlanetPill toRespawn)
     {
         alive++;
         prescriptions--;
@@ -178,7 +178,7 @@ public class Spawner : MonoBehaviour
         toRespawn.BringToLife();
     }
 
-    private void SetSpawnPositionAndRotation (Pill pill)
+    private void SetSpawnPositionAndRotation (PlanetPill pill)
     {
         if (city)
         {
@@ -232,7 +232,7 @@ public class Spawner : MonoBehaviour
             return pillClasses[pillClasses.Length - 1];
     }
 
-    public void ReportDeath (Pill deadPill, bool addToDeathQueue)
+    public void ReportDeath (PlanetPill deadPill, bool addToDeathQueue)
     {
         alive--;
 
@@ -240,7 +240,7 @@ public class Spawner : MonoBehaviour
             deathQueue.Add(deadPill);
     }
 
-    public void SetSquad (Pill pill)
+    public void SetSquad (PlanetPill pill)
     {
         if (!squad)
         {
@@ -261,6 +261,6 @@ public class Spawner : MonoBehaviour
         newCorpse.GetComponent<Rigidbody>().velocity = fromPill.GetComponent<Rigidbody>().velocity;
 
         //Start logic for handling corpse
-        newCorpse.GetComponent<Corpse>().BootUpCorpse(fromPill.GetComponent<Pill>());
+        newCorpse.GetComponent<Corpse>().BootUpCorpse(fromPill.GetComponent<PlanetPill>());
     }
 }

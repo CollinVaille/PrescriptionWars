@@ -12,7 +12,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
     private float damage = 34;
     private float knockback = 200;
     private float range = 300;
-    private Pill launcher;
+    private PlanetPill launcher;
 
     //Customization
     public ProjectileType projectileType = ProjectileType.Default;
@@ -37,7 +37,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
         name = name.Substring(0, name.Length - 7);
     }
 
-    public void Launch(float damage, float knockback, float range, Pill launcher)
+    public void Launch(float damage, float knockback, float range, PlanetPill launcher)
     {
         if (!launcher)
         {
@@ -93,7 +93,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
         {
             IDamageable victim = hit.collider.GetComponentInParent<IDamageable>();
 
-            if (victim == null || victim as Pill != launcher) //Make sure we don't collide with the very pill that launched us
+            if (victim == null || victim as PlanetPill != launcher) //Make sure we don't collide with the very pill that launched us
                 Impact(victim);
         }
 
@@ -118,7 +118,7 @@ public class Projectile : MonoBehaviour, ManagedVolatileObject, PlanetPooledObje
             victim.Damage(damage, knockback, transform.position, DamageType.Projectile, launcher.team);
 
             if (launcher.IsPlayer)
-                launcher.GetAudioSource().PlayOneShot(Player.player.hitMarker);
+                launcher.GetAudioSource().PlayOneShot(PlanetPlayerPill.player.hitMarker);
         }
 
         if(!explosionName.Equals(""))

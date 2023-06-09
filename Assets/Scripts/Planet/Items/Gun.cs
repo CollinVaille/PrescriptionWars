@@ -84,7 +84,7 @@ public class Gun : Item
         if (holder.RaycastShoot(transform, range, out hit))
         {
             IDamageable hitObject = hit.collider.GetComponent<IDamageable>();
-            Pill hitPill = hit.collider.GetComponent<Pill>();
+            PlanetPill hitPill = hit.collider.GetComponent<PlanetPill>();
 
             if (hitObject != null)
             {
@@ -104,13 +104,13 @@ public class Gun : Item
             if (holderIsPlayer)
             {
                 if (hitPill)
-                    Player.player.PlayHitMarkerSound(false);
+                    PlanetPlayerPill.player.PlayHitMarkerSound(false);
                 else if (hit.collider.CompareTag("Gear"))
-                    Player.player.PlayHitMarkerSound(true);
+                    PlanetPlayerPill.player.PlayHitMarkerSound(true);
             }
 
             //Play ricochet sound effect if bullet hit nearby player
-            Player.player.BulletRicochet(hit);
+            PlanetPlayerPill.player.BulletRicochet(hit);
         }
     }
 
@@ -219,14 +219,14 @@ public class Gun : Item
         }
     }
 
-    public override void PutInHand (Pill newHolder)
+    public override void PutInHand (PlanetPill newHolder)
     {
         base.PutInHand(newHolder);
 
         UpdateAmmoCountOnUI();
 
         if (holderIsPlayer)
-            holder.GetComponent<Player>().SetContinuousPrimaryAction(cooldown > 0);
+            holder.GetComponent<PlanetPlayerPill>().SetContinuousPrimaryAction(cooldown > 0);
     }
 
     public override void RetireFromHand ()

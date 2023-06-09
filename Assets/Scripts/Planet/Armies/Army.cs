@@ -14,7 +14,7 @@ public class Army : MonoBehaviour
 
     //Army composition
     public List<Squad> squads;
-    public Pill fieldGeneral;
+    public PlanetPill fieldGeneral;
     
     //Faction data
     public int team = 0;

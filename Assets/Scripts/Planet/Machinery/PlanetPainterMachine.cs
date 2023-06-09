@@ -122,7 +122,7 @@ public class PlanetPainterMachine : PlanetFactoryMachine
         if (squad.members == null || squad.members.Count == 0)
             return null;
 
-        Pill pill = squad.members[Random.Range(0, squad.members.Count)];
+        PlanetPill pill = squad.members[Random.Range(0, squad.members.Count)];
         if (!pill)
             return null;
 

@@ -30,7 +30,7 @@ public class Consumable : Item
         StartCoroutine(ConsumePortion());
     }
 
-    public override void PutInHand(Pill newHolder)
+    public override void PutInHand(PlanetPill newHolder)
     {
         base.PutInHand(newHolder);
 

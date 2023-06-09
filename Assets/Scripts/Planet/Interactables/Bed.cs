@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class Bed : Interactable
 {
-    private Pill occupant;
+    private PlanetPill occupant;
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
         GoToBed(interacting);
     }
 
-    public void GoToBed (Pill pill)
+    public void GoToBed (PlanetPill pill)
     {
         if (occupant || !pill || !pill.CanOverride())
             return;
@@ -46,7 +46,7 @@ public class Bed : Interactable
 
     private void OnCollisionEnter (Collision collision)
     {
-        Pill pill = collision.gameObject.GetComponent<Pill>();
+        PlanetPill pill = collision.gameObject.GetComponent<PlanetPill>();
 
         if (pill && !pill.IsPlayer)
             GoToBed(pill);

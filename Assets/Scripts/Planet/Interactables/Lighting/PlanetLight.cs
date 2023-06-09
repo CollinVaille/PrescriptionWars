@@ -49,7 +49,7 @@ public abstract class PlanetLight : Interactable
     public Transform objectRoot;
     protected bool on = false;
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -59,7 +59,7 @@ public abstract class PlanetLight : Interactable
             TurnOn(interacting.GetAudioSource());
     }
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         base.Interact(interacting, turnOn);
 

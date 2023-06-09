@@ -26,7 +26,7 @@ public class God : MonoBehaviour
     public GameObject corpsePrefab;
 
     //City management
-    private List<INavZoneUpdater> allNavZones, dirtyNavZones;
+    private List<IPlanetNavMeshZoneUpdater> allNavZones, dirtyNavZones;
 
     //Camera management
     private Camera currentCamera;
@@ -47,8 +47,8 @@ public class God : MonoBehaviour
         managedAudioSources = new List<AudioSource>();
         wasPlaying = new List<bool>();
         managedVolatileObjects = new List<ManagedVolatileObject>();
-        allNavZones = new List<INavZoneUpdater>();
-        dirtyNavZones = new List<INavZoneUpdater>();
+        allNavZones = new List<IPlanetNavMeshZoneUpdater>();
+        dirtyNavZones = new List<IPlanetNavMeshZoneUpdater>();
 
         //Initialize settings
         AudioSettings.LoadSettings();
@@ -167,13 +167,13 @@ public class God : MonoBehaviour
 
     public void UnmanageVolatileObject(ManagedVolatileObject volatileObjectToUnmanage) { managedVolatileObjects.Remove(volatileObjectToUnmanage); }
 
-    public void RegisterNavZone(INavZoneUpdater navZone) { allNavZones.Add(navZone); }
+    public void RegisterNavZone(IPlanetNavMeshZoneUpdater navZone) { allNavZones.Add(navZone); }
 
     public void GenerateNavMeshesAtSceneStart()
     {
         BeforeAfterUpdatingNavZones(true);
 
-        foreach (INavZoneUpdater nextNavMesh in allNavZones)
+        foreach (IPlanetNavMeshZoneUpdater nextNavMesh in allNavZones)
         {
             //I think this is synchronous. hoping
             nextNavMesh.GenerateOrUpdateNavMesh(true);
@@ -185,7 +185,7 @@ public class God : MonoBehaviour
     //PERIODIC UPDATES--------------------------------------------------------------------------------
 
     //Indicates city's nav mesh needs to be updated
-    public void PaintNavMeshDirty(INavZoneUpdater navZoneUpdater)
+    public void PaintNavMeshDirty(IPlanetNavMeshZoneUpdater navZoneUpdater)
     {
         if (!dirtyNavZones.Contains(navZoneUpdater))
             dirtyNavZones.Add(navZoneUpdater);
@@ -200,7 +200,7 @@ public class God : MonoBehaviour
         while (dirtyNavZones.Count > 0)
         {
             //Get next nav mesh to update
-            INavZoneUpdater nextNavMesh = dirtyNavZones[0];
+            IPlanetNavMeshZoneUpdater nextNavMesh = dirtyNavZones[0];
             dirtyNavZones.Remove(nextNavMesh);
 
             //Start update
@@ -403,5 +403,7 @@ public class God : MonoBehaviour
         debugMarker.rotation = Quaternion.Euler(0, 0, 0);
 
         debugMarker.name = markerName;
+
+        Destroy(debugMarker.GetComponent<Collider>());
     }
 }

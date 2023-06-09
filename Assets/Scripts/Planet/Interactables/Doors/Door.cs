@@ -25,7 +25,7 @@ public class Door : Interactable
         indoorZoneGrouping = GetComponentInParent<IndoorZoneGrouping>();
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -43,7 +43,7 @@ public class Door : Interactable
         }
     }
 
-    protected IEnumerator OpenDoor (AudioSource audioSource, Pill botCulprit)
+    protected IEnumerator OpenDoor (AudioSource audioSource, PlanetPill botCulprit)
     {
         if (transitioning || open)
             yield break;
@@ -224,7 +224,7 @@ public class Door : Interactable
         if (open || transitioning)
             return;
 
-        Pill tracking = collision.gameObject.GetComponent<Pill>();
+        PlanetPill tracking = collision.gameObject.GetComponent<PlanetPill>();
 
         if (tracking && !tracking.IsPlayer)
             StartCoroutine(OpenDoor(tracking.GetAudioSource(), tracking));

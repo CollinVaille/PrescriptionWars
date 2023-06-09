@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class City : MonoBehaviour, INavZoneUpdater
+public class City : MonoBehaviour, IPlanetNavMeshZoneUpdater
 {
     //General
     public int radius = 100;
@@ -154,7 +154,7 @@ public class City : MonoBehaviour, INavZoneUpdater
 
     public AsyncOperation GenerateOrUpdateNavMesh(bool initialGeneration)
     {
-        return transform.Find("City Limits").GetComponent<NavigationZone>()
+        return transform.Find("City Limits").GetComponent<PlanetNavMeshZone>()
             .BakeNavigation(GetComponent<UnityEngine.AI.NavMeshSurface>(), (int)(radius * 1.1f), initialGeneration);
     }
 

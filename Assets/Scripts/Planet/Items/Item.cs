@@ -9,7 +9,7 @@ public class Item : MonoBehaviour
     public AudioClip swoosh, stab, scrape, equip;
 
     //Status variables
-    protected Pill holder = null;
+    protected PlanetPill holder = null;
     protected bool stabbing = false, holderIsPlayer = false, executing = false;
 
     public IEnumerator CheapStab ()
@@ -141,7 +141,7 @@ public class Item : MonoBehaviour
     public virtual void TertiaryAction () { /* There is no default tertiary action */ }
 
     //Called when item is first put into hand (equipped from ground or grabbed sidearm)
-    public virtual void PutInHand (Pill newHolder)
+    public virtual void PutInHand (PlanetPill newHolder)
     {
         holder = newHolder;
 
@@ -149,7 +149,7 @@ public class Item : MonoBehaviour
             holderIsPlayer = holder.IsPlayer;
 
         if (holderIsPlayer)
-            holder.GetComponent<Player>().SetContinuousPrimaryAction(false);
+            holder.GetComponent<PlanetPlayerPill>().SetContinuousPrimaryAction(false);
     }
 
     //Called when item is no longer being held (unequipped or moved to sidearm)
@@ -160,7 +160,7 @@ public class Item : MonoBehaviour
 
         //This tells the item info display to stop its fade out for the item we're retiring
         if (holderIsPlayer)
-            holder.GetComponent<Player>().IncrementItemInfoFlashCode();
+            holder.GetComponent<PlanetPlayerPill>().IncrementItemInfoFlashCode();
 
         holder = null;
     }
@@ -170,7 +170,7 @@ public class Item : MonoBehaviour
         return name;
     }
 
-    public virtual void OnMeleeKill(Pill pill) { }
+    public virtual void OnMeleeKill(PlanetPill pill) { }
 
     public bool BeingHeld () { return holder; }
 

@@ -15,7 +15,7 @@ public class Water : MonoBehaviour
     private void OnTriggerEnter (Collider entering)
     {
         //Get pill
-        Pill pill = entering.GetComponent<Pill>();
+        PlanetPill pill = entering.GetComponent<PlanetPill>();
 
         //Submerge pill
         if (pill)
@@ -49,7 +49,7 @@ public class Water : MonoBehaviour
     private void OnTriggerExit (Collider exiting)
     {
         //Get pill
-        Pill pill = exiting.GetComponent<Pill>();
+        PlanetPill pill = exiting.GetComponent<PlanetPill>();
 
         //Emerge pill
         if (pill)

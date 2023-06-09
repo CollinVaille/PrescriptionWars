@@ -6,7 +6,7 @@ public class CruiseController : Interactable
 {
     private Vehicle controls = null;
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         base.Interact(interacting, turnOn);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Pill : MonoBehaviour, IDamageable
+public abstract class PlanetPill : MonoBehaviour, IDamageable, IDestroyableTarget
 {
     private static string[] pillNames;
 
@@ -11,7 +11,6 @@ public class Pill : MonoBehaviour, IDamageable
     protected Rigidbody rBody;
     protected AudioSource mainAudioSource;
     protected Spawner spawner;
-    protected Collider navigationZone;
     protected VehicleZone vehicleZone;
     public Squad squad;
     protected Item holding = null;
@@ -131,7 +130,7 @@ public class Pill : MonoBehaviour, IDamageable
         else if (holding && (layerHit == 8 || layerHit == 9))
         {
             IDamageable hitObject = collision.GetContact(0).otherCollider.GetComponent<IDamageable>();
-            Pill hitPill = collision.GetContact(0).otherCollider.GetComponent<Pill>();
+            PlanetPill hitPill = collision.GetContact(0).otherCollider.GetComponent<PlanetPill>();
 
             if (hitObject != null)
             {
@@ -170,7 +169,7 @@ public class Pill : MonoBehaviour, IDamageable
             }
             else if (holding.IsStabbing())
             {
-                if (collision.gameObject.GetComponent<Pill>()) //Hit gear of some jackwagon
+                if (collision.gameObject.GetComponent<PlanetPill>()) //Hit gear of some jackwagon
                     mainAudioSource.PlayOneShot(God.god.deflection);
                 else //Hit wall or something
                 {
@@ -229,7 +228,7 @@ public class Pill : MonoBehaviour, IDamageable
 
     public virtual bool IsPlayer { get => false; }
 
-    public Pill GetPill () { return this; }
+    public PlanetPill GetPill () { return this; }
 
     public AudioSource GetAudioSource () { return mainAudioSource; }
 
@@ -301,7 +300,7 @@ public class Pill : MonoBehaviour, IDamageable
 
             //Update UI
             if (IsPlayer)
-                GetComponent<Player>().BlankItemInfo();
+                GetComponent<PlanetPlayerPill>().BlankItemInfo();
 
             //Set transform
             holding.transform.parent = transform;
@@ -365,7 +364,7 @@ public class Pill : MonoBehaviour, IDamageable
         team = spawner.team;
         
         //So the player can read the name tags of friendly pills
-        if (team == Player.playerTeam)
+        if (team == PlanetPlayerPill.playerTeam)
         {
             if (!IsPlayer)
                 gameObject.layer = 14;
@@ -422,7 +421,7 @@ public class Pill : MonoBehaviour, IDamageable
             Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
     }
 
-    public virtual void AlertOfAttacker (Pill attacker, bool softAlert) { }
+    public virtual void AlertOfAttacker (PlanetPill attacker, bool softAlert) { }
 
     protected bool SameOrders (Squad.Orders orders)
     {
@@ -438,14 +437,6 @@ public class Pill : MonoBehaviour, IDamageable
             return squad.GetOrders() != Squad.Orders.Standby;
         else
             return ordersID == squad.GetOrdersID();
-    }
-
-    public void SetNavigationZone (Collider navigationZone) { this.navigationZone = navigationZone; }
-
-    public void RemoveNavigationZone (Collider navigationZone)
-    {
-        if (this.navigationZone == navigationZone)
-            this.navigationZone = null;
     }
 
     public virtual bool CanOverride () { return !dead && !controlOverride; }
@@ -564,7 +555,7 @@ public class Pill : MonoBehaviour, IDamageable
         string infoDump = (int)(health * 100.0f / maxHealth) + "% Manly\n";
 
         //Distance away from player
-        infoDump += (int)Vector3.Distance(transform.position, Player.player.transform.position) + "m Away\n";
+        infoDump += (int)Vector3.Distance(transform.position, PlanetPlayerPill.player.transform.position) + "m Away\n";
 
         //Foot note to identify player or to debug bot behaviour
         if (IsPlayer)
@@ -575,4 +566,8 @@ public class Pill : MonoBehaviour, IDamageable
         //We're done here
         return infoDump;
     }
+
+    public Transform GetTargetTransform() { return transform; }
+
+    public bool IsDestroyed() { return IsDead; }
 }

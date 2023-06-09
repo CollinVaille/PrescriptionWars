@@ -182,7 +182,7 @@ public class FireExtinguisher : Item
         }
     }
 
-    public override void PutInHand(Pill newHolder)
+    public override void PutInHand(PlanetPill newHolder)
     {
         base.PutInHand(newHolder);
 

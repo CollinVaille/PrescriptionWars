@@ -11,7 +11,7 @@ public class PlanetLever : Interactable
     public float upRotation, downRotation;
     public List<Interactable> effectors;
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -24,7 +24,7 @@ public class PlanetLever : Interactable
         }
     }
 
-    private void FlipLever(Pill interacting)
+    private void FlipLever(PlanetPill interacting)
     {
         //Play flip sound
         if (up)

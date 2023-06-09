@@ -71,7 +71,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, currentRange);
 
-        INavZoneUpdater alteredNavMesh = null;
+        IPlanetNavMeshZoneUpdater alteredNavMesh = null;
 
         foreach (Collider hit in hits)
         {
@@ -96,7 +96,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
                     rBody.AddExplosionForce(actualDamage * 10, transform.position, currentRange);
                 else
                 {
-                    INavZoneUpdater damagedNavMesh = DamageStructure(hit, actualDamage);
+                    IPlanetNavMeshZoneUpdater damagedNavMesh = DamageStructure(hit, actualDamage);
                     if (damagedNavMesh != null)
                         alteredNavMesh = damagedNavMesh;
                 }
@@ -123,7 +123,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
     }
 
     //Returns nav mesh that needs to be updated as result of structure change, or null if N/A
-    private INavZoneUpdater DamageStructure(Collider victim, float actualDamage)
+    private IPlanetNavMeshZoneUpdater DamageStructure(Collider victim, float actualDamage)
     {
         if (!CanDamageStructure(victim.transform))
             return null;
@@ -151,7 +151,7 @@ public class Explosion : MonoBehaviour, PlanetPooledObject
         t.LookAt(originalPos);
         t.Rotate(-originalRot); */
 
-        return t.GetComponentInParent<INavZoneUpdater>();
+        return t.GetComponentInParent<IPlanetNavMeshZoneUpdater>();
     }
 
     //Called to deactive the explosion and either... destroy it OR put it back in reserve pool

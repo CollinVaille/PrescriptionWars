@@ -14,7 +14,7 @@ public class DavyJonesLocker : MonoBehaviour
         4. Its theoretically possible you could die again before your previous corpse is removed... in that case the old entry here is replaced by the new one.
     */
 
-    private static Dictionary<Pill, Corpse> theLocker;
+    private static Dictionary<PlanetPill, Corpse> theLocker;
 
     //Call this once at the beginning of each planet scene.
     public static void PrepareTheLockerForSouls ()
@@ -22,23 +22,23 @@ public class DavyJonesLocker : MonoBehaviour
         if (theLocker != null)
             theLocker.Clear();
 
-        theLocker = new Dictionary<Pill, Corpse>();
+        theLocker = new Dictionary<PlanetPill, Corpse>();
     }
 
-    public static void CheckIn (Pill pill, Corpse corpse)
+    public static void CheckIn (PlanetPill pill, Corpse corpse)
     {
         //If pill not present, adds as new entry. If pill already present, replaces corpse with new corpse.
         theLocker[pill] = corpse;
     }
 
-    public static void CheckOut (Pill pill, Corpse corpse)
+    public static void CheckOut (PlanetPill pill, Corpse corpse)
     {
         //Ensure we have a match before removing. This is needed in the scenario where you've died twice in quick succession and the original entry got overridden by the new.
         if(GetResident(pill) == corpse)
             theLocker.Remove(pill);
     }
 
-    public static Corpse GetResident (Pill pill)
+    public static Corpse GetResident (PlanetPill pill)
     {
         //Return null if not present.
         theLocker.TryGetValue(pill, out Corpse corpse);

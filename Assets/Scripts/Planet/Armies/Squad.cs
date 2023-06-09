@@ -20,8 +20,8 @@ public class Squad : MonoBehaviour
     public GameObject mapMarkerPrefab;
 
     //Squad composition
-    public Pill leader = null;
-    public List<Pill> members;
+    public PlanetPill leader = null;
+    public List<PlanetPill> members;
 
     //Orders
     private Orders orders = Orders.Standby; //Type of order
@@ -30,7 +30,7 @@ public class Squad : MonoBehaviour
 
     public void InitializeSquad (int predictedSize, SquadType squadType)
     {
-        members = new List<Pill>(predictedSize);
+        members = new List<PlanetPill>(predictedSize);
         this.squadType = squadType;
 
         name = GenerateSquadName();
@@ -47,7 +47,7 @@ public class Squad : MonoBehaviour
     }
 
     //Adds a squad member
-    public void AddPillToSquad (Pill pill)
+    public void AddPillToSquad (PlanetPill pill)
     {
         pill.squad = this;
         members.Add(pill);
@@ -58,7 +58,7 @@ public class Squad : MonoBehaviour
         if (pill.IsPlayer)
         {
             PlanetPauseMenu.pauseMenu.UpdateSquadName(name, army.color);
-            Player.player.UpdateHealthBarColor();
+            PlanetPlayerPill.player.UpdateHealthBarColor();
         }
     }
 
@@ -77,7 +77,7 @@ public class Squad : MonoBehaviour
         ShoutOrders();
 
         //Affirmation from squadlings
-        foreach(Pill member in members)
+        foreach(PlanetPill member in members)
         {
             if (member.voice && member != leader)
             {
@@ -93,7 +93,7 @@ public class Squad : MonoBehaviour
 
     public int GetOrdersID () { return ordersID; }
 
-    public void AlertSquadOfAttacker (Pill attacker, Pill alerting, float withinRadius)
+    public void AlertSquadOfAttacker (PlanetPill attacker, PlanetPill alerting, float withinRadius)
     {
         Vector3 alertingPosition = alerting.transform.position;
 
@@ -106,7 +106,7 @@ public class Squad : MonoBehaviour
     }
 
     //Called by squad members to figure out where to stand in the formation
-    public Vector3 GetPlaceInFormation (Pill pill)
+    public Vector3 GetPlaceInFormation (PlanetPill pill)
     {
         int pillIndex = members.IndexOf(pill);
 
@@ -240,7 +240,7 @@ public class Squad : MonoBehaviour
 
     //Assign new leader (random if no new leader provided)
     //Removes any previous leader first
-    public void SetLeader (Pill newLeader = null)
+    public void SetLeader (PlanetPill newLeader = null)
     {
         //Deactivate current leader
         leaderCode++;
@@ -360,7 +360,7 @@ public class Squad : MonoBehaviour
         }
     }
 
-    public Pill GetMemberByName(string memberName)
+    public PlanetPill GetMemberByName(string memberName)
     {
         return members.Find(x => x.name.Equals(memberName));
     }

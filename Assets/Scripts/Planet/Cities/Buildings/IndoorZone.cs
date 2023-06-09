@@ -17,11 +17,11 @@ public class IndoorZone : MonoBehaviour
 
     private void OnTriggerEnter ()
     {
-        Player.player.IncrementIndoorZoneCount(indoorReverb, indoorZoneGrouping);
+        PlanetPlayerPill.player.IncrementIndoorZoneCount(indoorReverb, indoorZoneGrouping);
     }
 
     private void OnTriggerExit ()
     {
-        Player.player.DecrementIndoorZoneCount();
+        PlanetPlayerPill.player.DecrementIndoorZoneCount();
     }
 }

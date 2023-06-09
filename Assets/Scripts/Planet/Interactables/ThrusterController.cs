@@ -22,7 +22,7 @@ public class ThrusterController : Interactable
         vehicle.CoupleThrusterToVehicle();
     }
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         base.Interact(interacting, turnOn);
         ActivateThruster(turnOn);

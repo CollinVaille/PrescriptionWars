@@ -10,13 +10,13 @@ public class AutomaticDoorTriggerZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.GetComponentInParent<Pill>())
+        if (other.transform.GetComponentInParent<PlanetPill>())
             occupantCounter++;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform.GetComponentInParent<Pill>())
+        if (other.transform.GetComponentInParent<PlanetPill>())
             occupantCounter--;
     }
 }

@@ -3,15 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NavigationZone : MonoBehaviour
+public class PlanetNavMeshZone : MonoBehaviour
 {
     private Collider theCollider;
 
     private void Start() { theCollider = GetComponent<Collider>(); }
 
-    private void OnTriggerEnter(Collider bot) { bot.GetComponent<Pill>().SetNavigationZone(theCollider); }
+    private void OnTriggerEnter(Collider botCollider) { OnNavMeshZoneChange(true, botCollider); }
 
-    private void OnTriggerExit(Collider bot) { bot.GetComponent<Pill>().RemoveNavigationZone(theCollider); }
+    private void OnTriggerExit(Collider botCollider) { OnNavMeshZoneChange(false, botCollider); }
+
+    private void OnNavMeshZoneChange(bool triggerEnter, Collider botCollider)
+    {
+        PlanetBotNavMeshNavigation navMeshNavigation = botCollider.GetComponent<PlanetBotNavMeshNavigation>();
+
+        if (navMeshNavigation)
+        {
+            if(triggerEnter)
+                navMeshNavigation.SetNavMeshZone(theCollider);
+            else //trigger exit
+                navMeshNavigation.RemoveNavMeshZone(theCollider);
+        }
+    }
 
     public AsyncOperation BakeNavigation(NavMeshSurface navMeshSurface, int radius, bool firstTime)
     {
@@ -33,7 +46,7 @@ public class NavigationZone : MonoBehaviour
         //Repurpose collider for agent detection
         gameObject.layer = 13;
         if (radius > 0)
-            transform.localScale = new Vector3(radius * 2.2f, 100, radius * 2.2f);
+            transform.localScale = new Vector3(radius * 2.2f, 10000, radius * 2.2f);
 
         return op;
     }

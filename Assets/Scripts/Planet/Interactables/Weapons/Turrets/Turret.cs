@@ -18,7 +18,7 @@ public abstract class Turret : Interactable
 
     //Status and reference variables
     protected float maxRounds = 0;
-    protected Pill occupant = null;
+    protected PlanetPill occupant = null;
     private CollisionDetectionMode occupantsPriorMode;
     private int occupantCode = 0;
     protected bool triggerPressed = false;
@@ -31,7 +31,7 @@ public abstract class Turret : Interactable
         maxRounds = rounds;
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -41,7 +41,7 @@ public abstract class Turret : Interactable
             GetInTurret(interacting);
     }
 
-    protected virtual void GetInTurret(Pill interacting)
+    protected virtual void GetInTurret(PlanetPill interacting)
     {
         if (occupant || !interacting || !interacting.CanOverride())
             return;
@@ -65,7 +65,7 @@ public abstract class Turret : Interactable
         //Update rotation
         occupant.transform.localEulerAngles = Vector3.zero;
         if (occupant.IsPlayer)
-            occupant.GetComponent<Player>().ResetHeadRotation();
+            occupant.GetComponent<PlanetPlayerPill>().ResetHeadRotation();
 
         //Visual clean up
         occupant.Holster(true);

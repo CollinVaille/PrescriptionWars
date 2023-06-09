@@ -20,7 +20,7 @@ public class Cannon : Interactable
         God.god.ManageAudioSource(cannonSFX);
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         if (currentState != FiringState.Ready || shells <= 0)
             return;
@@ -31,7 +31,7 @@ public class Cannon : Interactable
         StartCoroutine(FireCannon(interacting));
     }
 
-    private IEnumerator FireCannon(Pill interacting)
+    private IEnumerator FireCannon(PlanetPill interacting)
     {
         shells--;
 
@@ -74,7 +74,7 @@ public class Cannon : Interactable
         currentState = FiringState.Ready;
     }
 
-    private void FireProjectile(Pill interacting)
+    private void FireProjectile(PlanetPill interacting)
     {
         Projectile projectile = Projectile.projectilePool.GetGameObject(projectileName).GetComponent<Projectile>();
 

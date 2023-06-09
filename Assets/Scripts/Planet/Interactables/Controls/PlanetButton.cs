@@ -16,7 +16,7 @@ public class PlanetButton : Interactable
         unpressedHeight = transform.Find("Button").localPosition.y;
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         if (beingPressed)
             return;
@@ -34,7 +34,7 @@ public class PlanetButton : Interactable
         }
     }
 
-    private IEnumerator PhysicallyPressButton(Pill interacting)
+    private IEnumerator PhysicallyPressButton(PlanetPill interacting)
     {
         //Sound of pressing switch
         interacting.GetAudioSource().PlayOneShot(pressSound);

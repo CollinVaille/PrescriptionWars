@@ -26,7 +26,7 @@ public class WD40 : RepairTool
         God.god.ManageAudioSource(shootingSFXSource);
     }
 
-    public override void PutInHand(Pill newHolder)
+    public override void PutInHand(PlanetPill newHolder)
     {
         base.PutInHand(newHolder);
 

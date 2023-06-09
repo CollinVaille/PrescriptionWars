@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Seat : Interactable
 {
-    private Pill occupant;
+    private PlanetPill occupant;
     public Vehicle controls = null;
     private Vehicle belongsTo = null;
 
@@ -25,7 +25,7 @@ public class Seat : Interactable
         }
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -35,7 +35,7 @@ public class Seat : Interactable
             Sit(interacting);
     }
 
-    private void Sit(Pill pill)
+    private void Sit(PlanetPill pill)
     {
         if (occupant || !pill || !pill.CanOverride())
             return;

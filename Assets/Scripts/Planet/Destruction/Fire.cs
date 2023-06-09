@@ -77,7 +77,7 @@ public class Fire : MonoBehaviour
             return;
 
         //If subject/target is pill, remember on fire for purposes of extinguishing on respawn
-        Pill pill = toIgnite.GetComponent<Pill>();
+        PlanetPill pill = toIgnite.GetComponent<PlanetPill>();
         if (pill)
             pill.onFire = true;
 
@@ -208,7 +208,7 @@ public class Fire : MonoBehaviour
             yield return new WaitForSeconds(extinguish.length);
 
             //If pill, no longer on fire
-            Pill pill = transform.parent.GetComponent<Pill>();
+            PlanetPill pill = transform.parent.GetComponent<PlanetPill>();
             if (pill)
                 pill.onFire = false;
 

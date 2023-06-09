@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : Pill
+public class PlanetPlayerPill : PlanetPill
 {
     private enum POV { FirstPerson, ThirdPerson, ThirdPerson360 }
     private enum Dir { Left, Center, Right }
 
-    public static Player player;
+    public static PlanetPlayerPill player;
     public static int playerTeam = 0;
 
     //References

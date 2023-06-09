@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Bot1 : Pill
+public class Bot1 : PlanetPill
 {
     //Status variables
     private Transform target, potentialTarget;
@@ -361,9 +361,9 @@ public class Bot1 : Pill
             if (target) //Attack
             {
                 if (holding.GetComponent<Gun>())
-                    StartCoroutine(RangedAttack(target.GetComponent<Pill>()));
+                    StartCoroutine(RangedAttack(target.GetComponent<PlanetPill>()));
                 else
-                    StartCoroutine(MeleeAttack(target.GetComponent<Pill>()));
+                    StartCoroutine(MeleeAttack(target.GetComponent<PlanetPill>()));
             }
             else if (potentialTarget) //Thought I heard something...
                 StartCoroutine(Investigate());
@@ -372,7 +372,7 @@ public class Bot1 : Pill
         }
     }
 
-    private IEnumerator RangedAttack (Pill targetPill)
+    private IEnumerator RangedAttack (PlanetPill targetPill)
     {
         statusReport = "In Combat";
 
@@ -465,7 +465,7 @@ public class Bot1 : Pill
             StartCoroutine(MeleeAttack(targetPill));
     }
 
-    private IEnumerator MeleeAttack (Pill targetPill)
+    private IEnumerator MeleeAttack (PlanetPill targetPill)
     {
         statusReport = "In Combat";
 
@@ -514,7 +514,7 @@ public class Bot1 : Pill
     private IEnumerator GoToPosition (Vector3 targetPosition, float arrivalRadius, int ordersID, Transform positionUpdater)
     {
         bool usingAgent = StartNavigationTo(targetPosition);
-        Collider oldNavZone = navigationZone;
+        //Collider oldNavZone = navigationZone;
         float lastUpdateTime = 0.0f;
 
         //Go until reach position or we have a target
@@ -559,6 +559,7 @@ public class Bot1 : Pill
             }
             else //Primitive-driven navigation
             {
+                /*
                 if(navigationZone && navigationZone != oldNavZone) //Switch to agent-driven navigation
                 {
                     //Debug.Log(name + " entered nav zone, switching to agent");
@@ -574,7 +575,7 @@ public class Bot1 : Pill
                     //Move forward
                     if (rBody.velocity.magnitude < moveSpeed)
                         rBody.AddForce(transform.forward * moveSpeed, ForceMode.Impulse);
-                }
+                }   */
             }
 
             //Check for enemies
@@ -612,7 +613,7 @@ public class Bot1 : Pill
         return Mathf.Sqrt(Mathf.Pow(position1.x - position2.x, 2) + Mathf.Pow(position1.z - position2.z, 2));
     }
 
-    private bool MeAndBroAlive (Pill bro) { return !dead && !bro.IsDead; }
+    private bool MeAndBroAlive (PlanetPill bro) { return !dead && !bro.IsDead; }
 
     //Performs LookAt with offset so that weapon is centered on target instead of our view
     //Also has built-in inaccuracy so bot is not aimbot!
@@ -651,6 +652,7 @@ public class Bot1 : Pill
             }
             else //Pill is on nav mesh but destination is off nav mesh
             {
+                /*
                 if (navigationZone)
                 {
                     Vector3 closestPoint = navigationZone.ClosestPoint(destination);
@@ -665,7 +667,7 @@ public class Bot1 : Pill
                         agent.CalculatePath(closestPoint, path);
                         agent.SetPath(path);
                     }
-                }
+                }   */
             }
         }
 
@@ -741,7 +743,7 @@ public class Bot1 : Pill
 
         if (Physics.SphereCast(transform.position, 4, transform.forward, out hit, 10))
         {
-            if (hit.transform.GetComponent<Pill>() && hit.transform.GetComponent<Pill>().team != team)
+            if (hit.transform.GetComponent<PlanetPill>() && hit.transform.GetComponent<PlanetPill>().team != team)
                 return hit.transform;
             else
                 return null;
@@ -819,7 +821,7 @@ public class Bot1 : Pill
         }
     }
 
-    public override void AlertOfAttacker (Pill attacker, bool softAlert)
+    public override void AlertOfAttacker (PlanetPill attacker, bool softAlert)
     {
         if (dead)
             return;

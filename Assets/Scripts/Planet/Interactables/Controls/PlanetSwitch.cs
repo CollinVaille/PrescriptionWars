@@ -12,7 +12,7 @@ public class PlanetSwitch : Interactable
     public Material onMaterial, offMaterial;
     public List<Interactable> effectors;
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
@@ -25,7 +25,7 @@ public class PlanetSwitch : Interactable
         }
     }
 
-    private void FlipSwitch(Pill interacting)
+    private void FlipSwitch(PlanetPill interacting)
     {
         //Sound of pressing switch
         interacting.GetAudioSource().PlayOneShot(pressSound);

@@ -70,7 +70,7 @@ public class CommsChannel : MonoBehaviour
         foreach(RadioClip radioClip in radioClips)
         {
             //Play the radio clip
-            Pill broadcaster = rt.squad.leader;
+            PlanetPill broadcaster = rt.squad.leader;
             if(!InterruptionDetected(broadcaster))
             {
                 //Play clip
@@ -110,12 +110,12 @@ public class CommsChannel : MonoBehaviour
         yield return new WaitForSeconds(PlayClip(RadioCommonAudio.endSound, true));
     }
 
-    private bool InterruptionDetected(Pill broadcaster)
+    private bool InterruptionDetected(PlanetPill broadcaster)
     {
         return broadcaster.IsDead;
     }
 
-    private IEnumerator PlayDeathInterruption(RadioTransmission rt, Pill broadcaster)
+    private IEnumerator PlayDeathInterruption(RadioTransmission rt, PlanetPill broadcaster)
     {
         AudioSource dyingBroadcaster = broadcaster.GetAudioSource();
         float duration;

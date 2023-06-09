@@ -31,12 +31,12 @@ public class Machete : Item
             return;
 
         inFlight = true;
-        Pill thrower = holder;
+        PlanetPill thrower = holder;
 
         StartCoroutine(BoomerangFlight(thrower));
     }
 
-    private IEnumerator BoomerangFlight(Pill thrower)
+    private IEnumerator BoomerangFlight(PlanetPill thrower)
     {
         //---------------------------------------------------------------------------------------------------------------------------------------------
         //SET UP
@@ -164,10 +164,10 @@ public class Machete : Item
             collidedWith = collision.collider;
     }
 
-    private void ApplyBoomerangHitDamageAndSound(AudioSource sfxSource, Pill thrower, Rigidbody rBody)
+    private void ApplyBoomerangHitDamageAndSound(AudioSource sfxSource, PlanetPill thrower, Rigidbody rBody)
     {
         //Removing a cool feature
-        if (thrower == collidedWith.GetComponent<Pill>())
+        if (thrower == collidedWith.GetComponent<PlanetPill>())
             return;
 
         //Apply damage and sound effects
@@ -177,14 +177,14 @@ public class Machete : Item
             damageable.Damage(meleeDamage, meleeKnockback, transform.position, DamageType.Projectile, thrower.team);
             sfxSource.PlayOneShot(stab);
             if (thrower.IsPlayer)
-                Player.player.PlayHitMarkerSound(false);
+                PlanetPlayerPill.player.PlayHitMarkerSound(false);
         }
         else
         {
             sfxSource.PlayOneShot(doink);
 
             if (thrower.IsPlayer && collidedWith.CompareTag("Gear"))
-                Player.player.PlayHitMarkerSound(true);
+                PlanetPlayerPill.player.PlayHitMarkerSound(true);
         }
 
         //Bounce boomerang out and up upon impact
@@ -193,13 +193,13 @@ public class Machete : Item
 
     private bool CloseToThrower(Transform thrower) { return Vector3.Distance(transform.position, thrower.position) < 3; }
 
-    public override void OnMeleeKill(Pill pill)
+    public override void OnMeleeKill(PlanetPill pill)
     {
         if (!executing && stabbing && holder && holder.StabbingWithIntentToExecute(0))
             StartCoroutine(PerformStabbingExecution(pill, DavyJonesLocker.GetResident(pill)));
     }
 
-    private IEnumerator PerformStabbingExecution(Pill victimPill, Corpse victimCorpse)
+    private IEnumerator PerformStabbingExecution(PlanetPill victimPill, Corpse victimCorpse)
     {
         //Set status as executing
         executing = true;

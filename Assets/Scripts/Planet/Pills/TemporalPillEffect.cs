@@ -10,10 +10,10 @@ public class TemporalPillEffect : MonoBehaviour
     private float updateInterval = 2.0f, timeLeft = 10.0f;
     private int lifeNumber;
     private bool notYetDoneFirstUpdate = true;
-    private Pill subject;
+    private PlanetPill subject;
     private GameObject referenceSlot;
 
-    public void ApplyEffect(Pill subject)
+    public void ApplyEffect(PlanetPill subject)
     {
         this.subject = subject;
 
@@ -66,14 +66,14 @@ public class TemporalPillEffect : MonoBehaviour
                     subject.moveSpeed *= magnitude;
 
                     if (subject.IsPlayer)
-                        subject.GetComponent<Player>().GetFeetAudioSource().pitch *= magnitude;
+                        subject.GetComponent<PlanetPlayerPill>().GetFeetAudioSource().pitch *= magnitude;
                 }
                 else if (lastUpdate)
                 {
                     subject.moveSpeed /= magnitude;
 
                     if (subject.IsPlayer)
-                        subject.GetComponent<Player>().GetFeetAudioSource().pitch /= magnitude;
+                        subject.GetComponent<PlanetPlayerPill>().GetFeetAudioSource().pitch /= magnitude;
                 }
                 return;
 

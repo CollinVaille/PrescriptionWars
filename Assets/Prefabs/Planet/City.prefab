@@ -199,29 +199,50 @@ MonoBehaviour:
   radius: 100
   mapMarkerPrefab: {fileID: 1688723436328904097, guid: fd115be7e4db4294daf535a7719cb532,
     type: 3}
-  buildingPrefabs: []
-  buildings: []
-  defaultWallMaterial: {fileID: 2100000, guid: 12861769f6151ea4485ed8e626647475, type: 2}
-  defaultFloorMaterial: {fileID: 2100000, guid: 8811037fe0ece84429ece78b207663e0,
-    type: 2}
-  actualSlabMaterial: {fileID: 2100000, guid: 455d693a097fc214085b7818d8af6cd3, type: 2}
-  actualGroundMaterial: {fileID: 2100000, guid: 3ee4d75610c04054895447f45e240413,
-    type: 2}
-  wallMaterials: []
-  floorMaterials: []
-  slabMaterial: {fileID: 2100000, guid: 455d693a097fc214085b7818d8af6cd3, type: 2}
-  groundMaterial: {fileID: 2100000, guid: 3ee4d75610c04054895447f45e240413, type: 2}
-  foundations: []
-  foundationColliders: []
-  wallSectionPrefab: {fileID: 0}
-  horGatePrefab: {fileID: 0}
-  verGatePrefab: {fileID: 0}
-  fencePostPrefab: {fileID: 0}
-  walls: {fileID: 0}
-  wallMaterialIndex: 0
-  cityWallMaterial: {fileID: 2100000, guid: 0cfca54f750c17845bb45f8af6fceeff, type: 2}
+  cityType:
+    name: New City Type
+    buildings: []
+    wallSections: []
+    gates: []
+    fencePostChance: 0.5
+    fencePosts: []
+    bridges: []
+    defaultWallMaterial: 
+    defaultFloorMaterial: 
+    minorVerticalScaler: 
+    majorVerticalScaler: 
+    lights: []
+    styling:
+      wallMaterials: []
+      floorMaterials: []
+      slabMaterials: []
+      groundMaterials: []
+      foundationOptions:
+        testFoundation: 
+        basicCircularFoundation: 
+        basicRectangularFoundation: 
+        basicTorusFoundation: 
+        smallCircularFoundations: []
+        smallRectangularFoundations: []
+        largeCircularFoundations: []
+        largeRectangularFoundations: []
+        largeTorusFoundations: []
+        heightOptions: []
   circularCity: 0
-  raisedCity: 0
+  terrainReservationOptions:
+    newGeneration: 0
+    circular: 0
+    radius: 0
+    relativeMaxHeight: 0
+    terrainModification: 0
+    foundPlaceOnTerrain: 0
+    minHeightToFlattenTo: 0
+    preferredSteepness: 0
+    targetToGenerateCloseTo: {fileID: 0}
+    minimumDistanceFromTarget: 0
+    centerOnTerrainAsFallbackIfPossible: 0
+    globalPosition: {x: 0, y: 0, z: 0}
+    terrainAreaCoordinates: {x: 0, y: 0}
 --- !u!114 &6564999988731377981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,7 +268,7 @@ MonoBehaviour:
     initialPillType: 0
     headGearName: 
     bodyGearName: 
-    primaryName: 
+    primaryName: WD-40
     secondaryName: 
     probability: 0.9
   - className: Riot Personnel
@@ -255,7 +276,7 @@ MonoBehaviour:
     initialPillType: 0
     headGearName: 
     bodyGearName: 
-    primaryName: 
+    primaryName: WD-40
     secondaryName: 
     probability: 0.1
   atOnce: 10
@@ -286,7 +307,7 @@ MonoBehaviour:
     initialPillType: 0
     headGearName: 
     bodyGearName: 
-    primaryName: 
+    primaryName: WD-40
     secondaryName: 
     probability: 1
   atOnce: 10

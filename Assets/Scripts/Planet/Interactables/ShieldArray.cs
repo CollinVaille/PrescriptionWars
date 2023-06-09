@@ -13,7 +13,7 @@ public class ShieldArray : Interactable
     public AudioClip onSound, offSound;
     public Transform[] shields;
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         //Already got the memo
         if (shouldBeOn == turnOn)
@@ -75,7 +75,7 @@ public class ShieldArray : Interactable
 
         shield.gameObject.SetActive(setToOn);
 
-        if(Vector3.Distance(Player.player.transform.position, shield.position) < 50)
+        if(Vector3.Distance(PlanetPlayerPill.player.transform.position, shield.position) < 50)
         {
             if (setToOn)
                 PlaySoundForShield(shield, onSound);

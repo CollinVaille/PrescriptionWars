@@ -14,7 +14,7 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
         //Required by PlanetPooledObject interface. So far, nothing to do here.
     }
 
-    public void Emit(Vector3 from, Vector3 rotation, float damage, float range, Pill launcher, float lifetime, float diameter)
+    public void Emit(Vector3 from, Vector3 rotation, float damage, float range, PlanetPill launcher, float lifetime, float diameter)
     {
         if(!launcher)
         {
@@ -39,7 +39,7 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
         }
     }
 
-    private void UpdateTransformAndCollisions(Vector3 from, Vector3 rotation, float range, float diameter, Pill launcher, float damage)
+    private void UpdateTransformAndCollisions(Vector3 from, Vector3 rotation, float range, float diameter, PlanetPill launcher, float damage)
     {
         //The below steps need to be in order because each one is dependent on the one before...
 
@@ -58,7 +58,7 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
     }
 
     //If there's a collision, returns distance between from and collision point. Else, returns -1
-    private float CheckForCollision(Vector3 from, float range, float diameter, Pill launcher, float damage)
+    private float CheckForCollision(Vector3 from, float range, float diameter, PlanetPill launcher, float damage)
     {
         //Perform collision check
         if (Physics.SphereCast(from, diameter / 2.0f, transform.forward, out RaycastHit hit, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
@@ -92,7 +92,7 @@ public class DeathRay : MonoBehaviour, ManagedVolatileObject, PlanetPooledObject
         deathRayPool.PoolGameObject(gameObject);
     }
 
-    private void Reskin(Pill launcher)
+    private void Reskin(PlanetPill launcher)
     {
         Army army = Army.GetArmy(launcher.team);
         if (army)

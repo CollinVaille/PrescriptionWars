@@ -10,12 +10,12 @@ public class PillEffect
     public PillEffectType effectType = PillEffectType.NoEffect;
     public float magnitude = 0.0f;
 
-    public void ApplyEffect(Pill subject)
+    public void ApplyEffect(PlanetPill subject)
     {
         ApplyEffect(subject, effectType, magnitude);
     }
 
-    public static void ApplyEffect(Pill subject, PillEffectType effectType, float magnitude)
+    public static void ApplyEffect(PlanetPill subject, PillEffectType effectType, float magnitude)
     {
         if (!subject)
             return;
@@ -61,7 +61,7 @@ public class PillEffect
         }
     }
 
-    private static void ApplyAsTemporalPillEffect(Pill subject, PillEffectType effectType, float magnitude)
+    private static void ApplyAsTemporalPillEffect(PlanetPill subject, PillEffectType effectType, float magnitude)
     {
         TemporalPillEffect[] temporalPillEffects = subject.GetComponents<TemporalPillEffect>();
 

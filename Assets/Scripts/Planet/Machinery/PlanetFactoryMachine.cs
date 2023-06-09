@@ -200,7 +200,7 @@ public abstract class PlanetFactoryMachine : Interactable
         return a > (b + c) * 0.5f;
     }
 
-    public override void Interact(Pill interacting, bool turnOn)
+    public override void Interact(PlanetPill interacting, bool turnOn)
     {
         base.Interact(interacting, turnOn);
 

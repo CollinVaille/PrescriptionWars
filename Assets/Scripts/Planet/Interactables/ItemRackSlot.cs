@@ -20,14 +20,14 @@ public class ItemRackSlot : Interactable
             StowSpawnItem(initiallyStowedItem);
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         base.Interact(interacting);
 
         SwapItems(interacting);
     }
 
-    private void SwapItems(Pill interacting)
+    private void SwapItems(PlanetPill interacting)
     {
         interacting.GetAudioSource().PlayOneShot(swapSounds[Random.Range(0, swapSounds.Length)]);
 

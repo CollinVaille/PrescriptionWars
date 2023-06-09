@@ -19,7 +19,7 @@ public class PlanetGrill : Interactable, IItemRackSlotMonitor
         grillSlot.AddSwapEventListener(this);
     }
 
-    public override void Interact(Pill interacting)
+    public override void Interact(PlanetPill interacting)
     {
         if (transitioning)
             return;

@@ -8,7 +8,7 @@ public class ElevatorZone : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        Pill pill = other.GetComponentInParent<Pill>();
+        PlanetPill pill = other.GetComponentInParent<PlanetPill>();
 
         //if (pill && pill.IsPlayer)
         //    Debug.Log("Entering");
@@ -26,7 +26,7 @@ public class ElevatorZone : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
-        Pill pill = other.GetComponentInParent<Pill>();
+        PlanetPill pill = other.GetComponentInParent<PlanetPill>();
 
         //if (pill && pill.IsPlayer)
         //    Debug.Log("Exiting");
