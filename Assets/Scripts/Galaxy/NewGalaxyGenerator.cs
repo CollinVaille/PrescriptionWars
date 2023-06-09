@@ -169,7 +169,8 @@ public class NewGalaxyGenerator : MonoBehaviour
             popupManager,
             saveGameData != null ? saveGameData.turnNumber : 0,
             resourceModifiers,
-            saveGameData != null ? saveGameData.resourceModifiersCount : 0);
+            saveGameData != null ? saveGameData.resourceModifiersCount : 0,
+            saveGameData != null ? saveGameData.globalActionsCount : 0);
 
         //Initializes the notification manager.
         notificationManager.Initialize(saveGameData != null ? saveGameData.notifications : null);

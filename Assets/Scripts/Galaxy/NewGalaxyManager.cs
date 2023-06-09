@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class NewGalaxyManager :  GalaxyViewBehaviour
 {
@@ -361,9 +362,22 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     }
 
     /// <summary>
+    /// Private holder variable for a dictionary that contains global actions assigned to an integer value ID.
+    /// </summary>
+    private Dictionary<int, Action<String[]>> _globalActions = null;
+    /// <summary>
+    /// Private holder variable for the integer value that represents how many global actions have been added to the dictionary of global actions. The current value of the variable will be used as the ID for the next global action added.
+    /// </summary>
+    private int _globalActionsCount = -1;
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that represents how many global actions have been added to the dictionary of global actions. The current value of the variable will be used as the ID for the next global action added.
+    /// </summary>
+    public static int globalActionsCount { get => galaxyManager == null ? -1 : galaxyManager._globalActionsCount; }
+
+    /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount, int globalActionsCount)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -431,6 +445,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         galaxyManager._resourceModifiers = resourceModifiers;
         //Sets the value of the variable that is an integer value that indicates exactly how many resources modifiers have been created so far and what the ID of the next resource modifier should be.
         galaxyManager._resourceModifiersCount = resourceModifiersCount;
+
+        //Sets the value of the variable that is an integer value that indicates how many global actions have been added to the dictionary of global actions. The current value of the variable will be used as the ID for the next global action added.
+        galaxyManager._globalActionsCount = globalActionsCount;
     }
 
     protected override void Awake()
@@ -507,5 +524,109 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
             //Plays the appropriate sound effect.
             AudioManager.PlaySFX(endTurnFinishedSFX);
         }
+    }
+
+    /// <summary>
+    /// Public static method that should be called in order to add a specified action to the dictionary of global actions before returning its now assigned integer value ID in the global actions dictionary.
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
+    public static int AddGlobalAction(Action<String[]> action)
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns -1 if so.
+        if(galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot add action to the dictionary of global actions because the galaxy manager is null. Probably meaning that there is no valid galaxy to add the global action to.");
+            return -1;
+        }
+
+        //Checks if the specified action is null and logs a warning and returns -1 if so.
+        if(action == null)
+        {
+            Debug.LogWarning("Cannot add a null action to the dictionary of global actions.");
+            return -1;
+        }
+
+        //Initializes the dictionary of global actions if it has not yet been initialized.
+        if (galaxyManager._globalActions == null)
+            galaxyManager._globalActions = new Dictionary<int, Action<string[]>>();
+
+        //Adds the specified action to the dictionary of global actions and assigns it to the integer ID that equals the global actions count before then incrementing the global actions count since a new one was just added.
+        int globalActionIndex = galaxyManager._globalActionsCount;
+        galaxyManager._globalActions.Add(globalActionIndex, action);
+        galaxyManager._globalActionsCount++;
+
+        //Returns the specified actions integer ID value in the dictionary of global actions.
+        return globalActionIndex;
+    }
+
+    /// <summary>
+    /// Sets the global action assigned to the specified ID integer value to the specified action.
+    /// </summary>
+    /// <param name="ID"></param>
+    /// <param name="action"></param>
+    public static void SetGlobalAction(int ID, Action<String[]> action)
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns if so.
+        if (galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot set global action because the galaxy manager is null. Probably meaning that there is no valid galaxy.");
+            return;
+        }
+
+        //Checks if the specified ID is less than 0 and logs a warning and returns if so.
+        if(ID < 0)
+        {
+            Debug.LogWarning("Cannot assign global action to a negative global action ID integer value.");
+            return;
+        }
+
+        //Checks if the specified action is null and logs a warning and returns if so.
+        if (action == null)
+        {
+            Debug.LogWarning("Cannot set global action to a null action.");
+            return;
+        }
+
+        //Initializes the dictionary of global actions if it has not yet been initialized.
+        if (galaxyManager._globalActions == null)
+            galaxyManager._globalActions = new Dictionary<int, Action<string[]>>();
+
+        //Checks if the ID already exists in the dictionary and assigns the specified action to it if so.
+        if (galaxyManager._globalActions.ContainsKey(ID))
+            galaxyManager._globalActions[ID] = action;
+        //Adds the specified action to the dictionary of global actions and updates the global actions count variable if needed.
+        else
+        {
+            galaxyManager._globalActions.Add(ID, action);
+            if (ID >= galaxyManager._globalActionsCount)
+                galaxyManager._globalActionsCount = ID;
+        }
+    }
+
+    /// <summary>
+    /// Public static method that should be used in order to access the global action assigned to the specified ID int the dictionary of global actions.
+    /// </summary>
+    /// <param name="ID"></param>
+    /// <returns></returns>
+    public static Action<String[]> GetGlobalAction(int ID)
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns null if so.
+        if (galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot get a global action assigned to a specified ID if the galaxy manager itself is null. Probably meaning that there is no valid galaxy.");
+            return null;
+        }
+
+        //Checks if the dictionary of global actions is null and returns null if so.
+        if (galaxyManager._globalActions == null)
+            return null;
+
+        //Checks if the dictionary doesn't contain a global action assigned to the specified ID.
+        if (!galaxyManager._globalActions.ContainsKey(ID))
+            return null;
+
+        //Returns the global action assigned to the specified global action ID.
+        return galaxyManager._globalActions[ID];
     }
 }
