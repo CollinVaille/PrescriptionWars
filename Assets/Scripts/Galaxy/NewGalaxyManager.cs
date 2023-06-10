@@ -364,7 +364,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Private holder variable for a dictionary that contains global actions assigned to an integer value ID.
     /// </summary>
-    private Dictionary<int, Action<String[]>> _globalActions = null;
+    private Dictionary<int, Action<string[]>> _globalActions = null;
     /// <summary>
     /// Private holder variable for the integer value that represents how many global actions have been added to the dictionary of global actions. The current value of the variable will be used as the ID for the next global action added.
     /// </summary>
@@ -605,7 +605,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     }
 
     /// <summary>
-    /// Public static method that should be used in order to access the global action assigned to the specified ID int the dictionary of global actions.
+    /// Public static method that should be used in order to access the global action assigned to the specified ID int in the dictionary of global actions.
     /// </summary>
     /// <param name="ID"></param>
     /// <returns></returns>
@@ -622,11 +622,36 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         if (galaxyManager._globalActions == null)
             return null;
 
-        //Checks if the dictionary doesn't contain a global action assigned to the specified ID.
+        //Checks if the dictionary doesn't contain a global action assigned to the specified ID and returns null if so.
         if (!galaxyManager._globalActions.ContainsKey(ID))
             return null;
 
         //Returns the global action assigned to the specified global action ID.
         return galaxyManager._globalActions[ID];
+    }
+
+    /// <summary>
+    /// Public static method that should be used in order to remove the global action assigned to the specified ID int from the dictionary of global actions.
+    /// </summary>
+    /// <param name="ID"></param>
+    public static void RemoveGlobalAction(int ID)
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns if so.
+        if (galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot remove a global action assigned to a specified ID if the galaxy manager itself is null. Probably meaning that there is no valid galaxy.");
+            return;
+        }
+
+        //Checks if the dictionary of global actions is null and returns if so.
+        if (galaxyManager._globalActions == null)
+            return;
+
+        //Checks if the dictionary doesn't contain a global action assigned to the specified ID and returns if so.
+        if (!galaxyManager._globalActions.ContainsKey(ID))
+            return;
+
+        //Removes the global action assigned to the specified global action ID from the dictionary of global actions.
+        galaxyManager._globalActions.Remove(ID);
     }
 }

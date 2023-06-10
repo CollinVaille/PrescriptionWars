@@ -119,7 +119,7 @@ public class NewGalaxyGenerator : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //Loads in any galaxy save game data that might be coming from the load game menu.
         LoadInSaveGameData();
@@ -178,6 +178,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Initializes the popup manager.
         popupManager.Initialize(saveGameData != null ? saveGameData.popups : null);
+        //popupManager.CreatePopup("Test Popup", null, "This is a test popup just to see if the general system is working or not.", null, new List<NewGalaxyPopupOptionData>() { new NewGalaxyPopupOptionData("Test Option", "This is the tooltip text for the test option.", null, new Dictionary<int, string[]>() { { NewGalaxyManager.AddGlobalAction(TestDebug), new string[] { "testeroo" } } }) });
 
         //Executes all of the functions that need to be executed once the galaxy has completely finished generating.
         OnGalaxyGenerationCompletion();
@@ -188,12 +189,6 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Destroys the galaxy generator script after galaxy generation completion.
         Destroy(this);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     /// <summary>

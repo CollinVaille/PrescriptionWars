@@ -57,7 +57,7 @@ public class NewGalaxyPopupManager : MonoBehaviour
     /// <param name="headerText"></param>
     /// <param name="bodySpriteName"></param>
     /// <param name="bodyText"></param>
-    public void CreatePopup(string headerText, string bodySpriteName, string bodyText, string openedSFXName)
+    public void CreatePopup(string headerText, string bodySpriteName, string bodyText, string openedSFXName, List<NewGalaxyPopupOptionData> options)
     {
         //Initializes the list of popups if it has not yet been initialized.
         if (popups == null)
@@ -70,7 +70,7 @@ public class NewGalaxyPopupManager : MonoBehaviour
         popups[popups.Count - 1].transform.SetParent(transform);
 
         //Initializes the popup by providing it its save data.
-        popups[popups.Count - 1].Initialize(headerText, bodySpriteName, bodyText, openedSFXName, OnPopupClosed);
+        popups[popups.Count - 1].Initialize(headerText, bodySpriteName, bodyText, openedSFXName, options, OnPopupClosed);
     }
 
     /// <summary>
