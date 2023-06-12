@@ -103,7 +103,7 @@ public class GalaxyNotificationManager : MonoBehaviour
     /// <param name="spriteName"></param>
     /// <param name="isDismissable"></param>
     /// <param name="isWarning"></param>
-    public void CreateNotification(string text, string spriteName, bool isDismissable = true, bool isWarning = false)
+    public void CreateNotification(string text, string spriteName, bool isDismissable = true, bool isWarning = false, NewGalaxyPopupData popupData = null)
     {
         //Initializes the list of notifications if it has not yet been initialized.
         if (notifications == null)
@@ -116,7 +116,10 @@ public class GalaxyNotificationManager : MonoBehaviour
         notifications[notifications.Count - 1].transform.SetParent(transform);
 
         //Initializes the notification with the specified parameters.
-        notifications[notifications.Count - 1].Initialize(text, spriteName, notifications.Count - 1, OnNotificationDismissed, isDismissable, isWarning);
+        notifications[notifications.Count - 1].Initialize(text, spriteName, notifications.Count - 1, OnNotificationDismissed, isDismissable, isWarning, popupData);
+
+        //Informs the galaxy manager of the notification count change.
+        NewGalaxyManager.OnNotificationCountChange();
     }
 
     /// <summary>
@@ -137,6 +140,9 @@ public class GalaxyNotificationManager : MonoBehaviour
 
         //Initializes the notification by providing it its save data.
         notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1, OnNotificationDismissed);
+
+        //Informs the galaxy manager of the notification count change.
+        NewGalaxyManager.OnNotificationCountChange();
     }
 
     /// <summary>
@@ -165,6 +171,9 @@ public class GalaxyNotificationManager : MonoBehaviour
 
             //Removes the dismissed notification from the list of notifications that are active within the galaxy scene.
             notifications.Remove(notification);
+
+            //Informs the galaxy manager of the notification count change.
+            NewGalaxyManager.OnNotificationCountChange();
         }
     }
 }

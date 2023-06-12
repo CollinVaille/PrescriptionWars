@@ -98,6 +98,11 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
     public bool isMouseOver { get; private set; }
 
     /// <summary>
+    /// Public property that should be used in order to access and mutate the data of the popup that will launch when the player clicks on the notification. If null then no popup will launch.
+    /// </summary>
+    public NewGalaxyPopupData popupData { get; set; } = null;
+
+    /// <summary>
     /// Public static property that should be accessed in order to obtain the string value that represents the path to the resources folder that contains all of the galaxy notification sprites.
     /// </summary>
     private static string spritesFolderPath { get => "Galaxy/Notifications/Sprites"; }
@@ -165,12 +170,13 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
     /// <param name="spriteName"></param>
     /// <param name="isDismissable"></param>
     /// <param name="isWarning"></param>
-    public void Initialize(string text, string spriteName, int notificationIndex, Action<GalaxyNotification> notificationManagerOnNotificationDismissed, bool isDismissable = true, bool isWarning = false)
+    public void Initialize(string text, string spriteName, int notificationIndex, Action<GalaxyNotification> notificationManagerOnNotificationDismissed, bool isDismissable = true, bool isWarning = false, NewGalaxyPopupData popupData = null)
     {
         this.text = text;
         this.spriteName = spriteName;
         this.isDismissable = isDismissable;
         this.isWarning = isWarning;
+        this.popupData = popupData;
 
         this.notificationManagerOnNotificationDismissed = notificationManagerOnNotificationDismissed;
 
@@ -196,6 +202,7 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
         spriteName = notificationData.spriteName;
         isDismissable = notificationData.isDismissable;
         isWarning = notificationData.isWarning;
+        popupData = notificationData.popupData;
 
         this.notificationManagerOnNotificationDismissed = notificationManagerOnNotificationDismissed;
 
@@ -234,6 +241,19 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
     }
 
     /// <summary>
+    /// Private method that should be called whenever the notification is clicked with the left mouse button by the player and opens the notification's stored popup.
+    /// </summary>
+    private void OpenPopup()
+    {
+        //Checks if the stored popup data is null and returns if so.
+        if (popupData == null)
+            return;
+
+        //Creates a new popup from the stored popup data.
+        NewGalaxyManager.popupManager.CreatePopup(popupData);
+    }
+
+    /// <summary>
     /// Public method that is called by the Unity event system using the IPointerClickHandler interface whenever the player clicks on the notification.
     /// </summary>
     /// <param name="pointerEventData"></param>
@@ -242,7 +262,10 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
         //Left mouse button for opening the popup.
         if (pointerEventData.button == PointerEventData.InputButton.Left)
         {
-
+            //Opens the stored popup.
+            OpenPopup();
+            //Forcefully dismisses the notification.
+            Dismiss(true);
         }
         //Right mouse button for dismissing the notification.
         else if (pointerEventData.button == PointerEventData.InputButton.Right)
@@ -281,6 +304,7 @@ public class GalaxyNotificationData
     public string spriteName = null;
     public bool isDismissable = true;
     public bool isWarning = false;
+    public NewGalaxyPopupData popupData = null;
 
     public GalaxyNotificationData(GalaxyNotification notification)
     {
@@ -288,5 +312,6 @@ public class GalaxyNotificationData
         spriteName = notification.spriteName;
         isDismissable = notification.isDismissable;
         isWarning = notification.isWarning;
+        popupData = notification.popupData;
     }
 }

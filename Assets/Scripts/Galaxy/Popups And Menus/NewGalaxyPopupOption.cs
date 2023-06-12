@@ -35,7 +35,7 @@ public class NewGalaxyPopupOption : MonoBehaviour, IPointerEnterHandler
     /// <summary>
     /// Public property that should be used in order to access the audio clip that is loaded in from the project resources and played whenever the player clicks the popup option button.
     /// </summary>
-    public AudioClip clickSFX { get => Resources.Load<AudioClip>("Galaxy/SFX/" + clickSFXName); }
+    public AudioClip clickSFX { get => clickSFXName == null || clickSFXName.Equals(string.Empty) ? null : Resources.Load<AudioClip>("Galaxy/SFX/" + clickSFXName); }
 
     /// <summary>
     /// Private holder variable for the dictionary that contains global action ID integer value keys tied to a string array of arguments to be passed in when calling the global action.

@@ -654,4 +654,36 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         //Removes the global action assigned to the specified global action ID from the dictionary of global actions.
         galaxyManager._globalActions.Remove(ID);
     }
+
+    /// <summary>
+    /// Public static method that should be called by the popup manager whenever the popup count changes. Updates whether the end turn button is interactable or not.
+    /// </summary>
+    public static void OnPopupCountChange()
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns if so.
+        if (galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot execute OnPopupCountChange logic because the galaxy manager itself is null. Probably meaning that there is no valid galaxy.");
+            return;
+        }
+
+        //Sets whether the end turn button is interactable or not. Only interactable if no popups and no notifications are currently active within the galaxy scene.
+        galaxyManager.endTurnButton.interactable = popupManager.popupCount == 0 && notificationManager.notificationCount == 0;
+    }
+
+    /// <summary>
+    /// Public static method that should be called by the notification manager whenever the notification count changes. Updates whether the end turn button is interactable or not.
+    /// </summary>
+    public static void OnNotificationCountChange()
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns if so.
+        if (galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot execute OnNotificationCountChange logic because the galaxy manager itself is null. Probably meaning that there is no valid galaxy.");
+            return;
+        }
+
+        //Sets whether the end turn button is interactable or not. Only interactable if no popups and no notifications are currently active within the galaxy scene.
+        galaxyManager.endTurnButton.interactable = popupManager.popupCount == 0 && notificationManager.notificationCount == 0;
+    }
 }

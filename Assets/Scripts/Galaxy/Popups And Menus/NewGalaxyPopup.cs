@@ -49,7 +49,7 @@ public class NewGalaxyPopup : NewGalaxyPopupBehaviour
     /// <summary>
     /// Public property that should be used in order to access and mutate the string value that indicates the name of the audio clip that will be played once the popup has fully finished its opening animation. The audio clip will be loaded in from the galaxy SFX resources folder.
     /// </summary>
-    public string openedSFXName { get => openedSFX == null ? null : openedSFX.name; set => openedSFX = Resources.Load<AudioClip>("Galaxy/SFX/" + value); }
+    public string openedSFXName { get => openedSFX == null ? null : openedSFX.name; set => openedSFX = value == null || value.Equals(string.Empty) ? null : Resources.Load<AudioClip>("Galaxy/SFX/" + value); }
 
     /// <summary>
     /// Private holder variable for the method that should be called on the popup manager whenever this popup is done closing.
@@ -95,7 +95,6 @@ public class NewGalaxyPopup : NewGalaxyPopupBehaviour
         this.popupManagerOnPopupClosed = popupManagerOnPopupClosed;
 
         //Resets the scale and position of the popup to fix any Unity prefab instantiation and parenting shenanigans.
-        transform.localScale = Vector3.one;
         transform.localPosition = Vector3.zero;
     }
 
@@ -117,7 +116,6 @@ public class NewGalaxyPopup : NewGalaxyPopupBehaviour
         this.popupManagerOnPopupClosed = popupManagerOnPopupClosed;
 
         //Resets the scale and position of the popup to fix any Unity prefab instantiation and parenting shenanigans.
-        transform.localScale = Vector3.one;
         transform.localPosition = Vector3.zero;
     }
 

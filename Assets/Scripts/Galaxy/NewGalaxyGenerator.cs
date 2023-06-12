@@ -174,7 +174,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Initializes the notification manager.
         notificationManager.Initialize(saveGameData != null ? saveGameData.notifications : null);
-        notificationManager.CreateNotification("Test Notification", "Trade Post");
+        //notificationManager.CreateNotification("Test Notification", "Trade Post", popupData: new NewGalaxyPopupData("Test Popup", "Test Body Sprite", "This popup is a test of my systems.", "Test Popup SFX", new List<NewGalaxyPopupOptionData>() { new NewGalaxyPopupOptionData("Test Option", "This is a test popup option.", "Test Option Click", new Dictionary<int, string[]>() { { NewGalaxyManager.AddGlobalAction(TestDebug), null } } ) }));
 
         //Initializes the popup manager.
         popupManager.Initialize(saveGameData != null ? saveGameData.popups : null);
@@ -189,6 +189,11 @@ public class NewGalaxyGenerator : MonoBehaviour
 
         //Destroys the galaxy generator script after galaxy generation completion.
         Destroy(this);
+    }
+
+    private static void TestDebug(string[] args)
+    {
+        Debug.Log("Test Debug");
     }
 
     /// <summary>

@@ -8,6 +8,10 @@ public class NewGalaxyPopupManager : MonoBehaviour
     /// Private list that contains all of the popups currently active within the galaxy scene.
     /// </summary>
     private List<NewGalaxyPopup> popups = null;
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that indicates the exact number of popups that are active and open in the galaxy scene.
+    /// </summary>
+    public int popupCount { get => popups == null ? 0 : popups.Count; }
 
     /// <summary>
     /// Public property that should be used in order to access the list of save data for the popups that are active within the galaxy scene. Popups that are in the action of closing will not be in the list of save data since saving them is not neccessary.
@@ -71,6 +75,9 @@ public class NewGalaxyPopupManager : MonoBehaviour
 
         //Initializes the popup by providing it its save data.
         popups[popups.Count - 1].Initialize(headerText, bodySpriteName, bodyText, openedSFXName, options, OnPopupClosed);
+
+        //Informs the galaxy manager of the popup count change.
+        NewGalaxyManager.OnPopupCountChange();
     }
 
     /// <summary>
@@ -91,6 +98,9 @@ public class NewGalaxyPopupManager : MonoBehaviour
 
         //Initializes the popup by providing it its save data.
         popups[popups.Count - 1].Initialize(popupData, OnPopupClosed);
+
+        //Informs the galaxy manager of the popup count change.
+        NewGalaxyManager.OnPopupCountChange();
     }
 
     /// <summary>
@@ -103,6 +113,9 @@ public class NewGalaxyPopupManager : MonoBehaviour
         {
             //Removes the closed popup from the list of popups that are active within the galaxy scene.
             popups.Remove(popup);
+
+            //Informs the galaxy manager of the popup count change.
+            NewGalaxyManager.OnPopupCountChange();
         }
     }
 }
