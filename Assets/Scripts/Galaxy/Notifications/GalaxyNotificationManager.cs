@@ -43,6 +43,27 @@ public class GalaxyNotificationManager : MonoBehaviour
     public int notificationCount { get => notifications == null ? 0 : notifications.Count; }
 
     /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not a non dismissable notification is in the notification queue.
+    /// </summary>
+    public bool isNonDismissableNotificationInQueue
+    {
+        get
+        {
+            //Checks if the notifications list is null and returns false if so.
+            if (notifications == null)
+                return false;
+
+            //Loops through each notification until finding one that is not dismissable and returning true.
+            foreach (GalaxyNotification notification in notifications)
+                if (!notification.isDismissable)
+                    return true;
+
+            //Returns false if no non dismissable notification could be found within the notifications list.
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Public property that should be used in order to access the list of save data for the notifications that are active within the galaxy scene. Notifications that are in the action of being dismissed will not be in the list of save data since saving them is not neccessary.
     /// </summary>
     public List<GalaxyNotificationData> notificationsSaveData
@@ -81,7 +102,7 @@ public class GalaxyNotificationManager : MonoBehaviour
         //Loops through each notification save data and recreates the notification.
         if (notificationsSaveData != null)
             foreach (GalaxyNotificationData notificationSaveData in notificationsSaveData)
-                CreateNotification(notificationSaveData);
+                CreateNotification(notificationSaveData, true);
     }
 
     // Start is called before the first frame update
@@ -123,10 +144,10 @@ public class GalaxyNotificationManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Private method that should be called in order to recreate a notification from its save data. Method should not be used to create a brand new notification with brand new parameters, the public CreateNotification() method handles that.
+    /// Public method that should be called in order to recreate a notification from its save data. Method should not be used to create a brand new notification with brand new parameters, the public CreateNotification() method handles that.
     /// </summary>
     /// <param name="notificationData"></param>
-    private void CreateNotification(GalaxyNotificationData notificationData)
+    public void CreateNotification(GalaxyNotificationData notificationData, bool onManagerInitialization = false)
     {
         //Initializes the list of notifications if it has not yet been initialized.
         if (notifications == null)
@@ -139,7 +160,10 @@ public class GalaxyNotificationManager : MonoBehaviour
         notifications[notifications.Count - 1].transform.SetParent(transform);
 
         //Initializes the notification by providing it its save data.
-        notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1, OnNotificationDismissed);
+        if(onManagerInitialization)
+            notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1, OnNotificationDismissed);
+        else
+            notifications[notifications.Count - 1].Initialize(notificationData.text, notificationData.spriteName, notifications.Count - 1, OnNotificationDismissed, notificationData.isDismissable, notificationData.isWarning, notificationData.popupData);
 
         //Informs the galaxy manager of the notification count change.
         NewGalaxyManager.OnNotificationCountChange();
@@ -175,5 +199,20 @@ public class GalaxyNotificationManager : MonoBehaviour
             //Informs the galaxy manager of the notification count change.
             NewGalaxyManager.OnNotificationCountChange();
         }
+    }
+
+    /// <summary>
+    /// Public method that should be called in order to dismiss all notifications in the notification queue. Boolean value is specified that indicates whether or not the dismissal action is forced on each popup regardless of whether it is dismissable or not.
+    /// </summary>
+    /// <param name="forceDismissal"></param>
+    public void DismissAllNotifications(bool forceDismissal = false)
+    {
+        //Retuns if the notifications list is null and there are no valid notifications to dismiss.
+        if (notifications == null)
+            return;
+
+        //Loops through each notification in the notifications list and dismisses it with the specified force dismissal boolean value.
+        foreach (GalaxyNotification notification in notifications)
+            notification.Dismiss(forceDismissal);
     }
 }

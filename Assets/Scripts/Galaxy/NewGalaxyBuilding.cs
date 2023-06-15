@@ -238,6 +238,10 @@ public class NewGalaxyBuilding
             }
         }
     }
+    /// <summary>
+    /// Public property that should be used in order to access the notification data that should be used to create a new notification to inform the player of the building upgrading to the next level.
+    /// </summary>
+    public GalaxyNotificationData upgradedNotificationData { get => new GalaxyNotificationData(GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " Upgraded", GeneralHelperMethods.GetEnumText(buildingType.ToString()), true, false, new NewGalaxyPopupData(GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " Upgraded", GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " Constellation Background", "The " + GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " in " + assignedPlanet.city.name + ", " + assignedPlanet.planetName + " has finished upgrading from level " + (level - 1) + " to level " + level + ". This increases its output per turn of " + GeneralHelperMethods.GetEnumText(buildingTypeResourceType.ToString()) + " to " + buildingTypeResourceModifierAmount + ".", "hammering-2", new List<NewGalaxyPopupOptionData>() { new NewGalaxyPopupOptionData("Okay", "You acknowledge that the " + GeneralHelperMethods.GetEnumText(buildingType.ToString()) + " has finished upgrading to level " + level + ".", null, null) })); }
 
     /// <summary>
     /// Public property that should be accessed in order to obtain the sprite that indicates a building of the building's building type. Sprite is loaded in from the project resources.
@@ -306,6 +310,7 @@ public class NewGalaxyBuilding
             {
                 level++;
                 upgrading = false;
+                NewGalaxyManager.notificationManager.CreateNotification(upgradedNotificationData);
             }
         }
     }

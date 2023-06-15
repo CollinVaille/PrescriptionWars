@@ -314,4 +314,13 @@ public class GalaxyNotificationData
         isWarning = notification.isWarning;
         popupData = notification.popupData;
     }
+
+    public GalaxyNotificationData(string text, string spriteName, bool isDismissable = true, bool isWarning = false, NewGalaxyPopupData popupData = null)
+    {
+        this.text = text;
+        this.spriteName = spriteName;
+        this.isDismissable = isDismissable;
+        this.isWarning = isWarning;
+        this.popupData = popupData;
+    }
 }

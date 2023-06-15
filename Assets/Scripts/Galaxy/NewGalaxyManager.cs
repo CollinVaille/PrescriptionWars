@@ -286,15 +286,25 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
         get => galaxyManager == null ? false : galaxyManager._turnEnding;
         private set
         {
-            //Sets whether or not the end turn button is interactable based on if the turn is currently ending or not.
-            galaxyManager.endTurnButton.interactable = !value;
-            //Closes all popups if the turn is ending.
+            //Checks if the galaxy manager is null and returns if so.
+            if(galaxyManager == null)
+            {
+                Debug.LogWarning("Cannot set whether or not the turn is ending if there is no valid galaxy manager.");
+                return;
+            }
+
+            //Closes all popups and dismisses all notifications if the turn is ending.
             if (value)
+            {
                 NewGalaxyPopupBehaviour.CloseAllPopups();
+                notificationManager.DismissAllNotifications();
+            }
             //Resets the variable that indicates how much time has passed since the turn started ending.
             galaxyManager.turnEndingTimeElapsed = 0;
             //Sets the variable that indicates whether or not the current turn is ending to the specified value.
             galaxyManager._turnEnding = value;
+            //Updates the interactability of the end turn button.
+            UpdateEndTurnButtonInteractability();
         }
     }
     /// <summary>
@@ -667,8 +677,8 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
             return;
         }
 
-        //Sets whether the end turn button is interactable or not. Only interactable if no popups and no notifications are currently active within the galaxy scene.
-        galaxyManager.endTurnButton.interactable = popupManager.popupCount == 0 && notificationManager.notificationCount == 0;
+        //Updates whether the end turn button is interactable or not.
+        UpdateEndTurnButtonInteractability();
     }
 
     /// <summary>
@@ -683,7 +693,23 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
             return;
         }
 
-        //Sets whether the end turn button is interactable or not. Only interactable if no popups and no notifications are currently active within the galaxy scene.
-        galaxyManager.endTurnButton.interactable = popupManager.popupCount == 0 && notificationManager.notificationCount == 0;
+        //Updates whether the end turn button is interactable or not.
+        UpdateEndTurnButtonInteractability();
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to update the interactability of the turn button.
+    /// </summary>
+    private static void UpdateEndTurnButtonInteractability()
+    {
+        //Checks if the galaxy manager is null and logs a warning and returns if so.
+        if(galaxyManager == null)
+        {
+            Debug.LogWarning("Cannot update the interactability of the end turn button if there is no valid galaxy manager to update the end turn interactability on.");
+            return;
+        }
+
+        //Updates the interactability of the end turn button.
+        galaxyManager.endTurnButton.interactable = !turnEnding && popupManager.popupCount == 0 && !notificationManager.isNonDismissableNotificationInQueue;
     }
 }
