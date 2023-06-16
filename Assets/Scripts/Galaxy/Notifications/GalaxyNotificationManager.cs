@@ -10,6 +10,7 @@ public class GalaxyNotificationManager : MonoBehaviour
     [SerializeField, Tooltip("The float value that represents the speed at which the notifications will move downwards when needed.")] private float _downwardsMovementSpeed = 750;
     [SerializeField, Tooltip("The float value that represents the speed at which the notifications will be dismissed.")] private float _dismissalSpeed = 500;
     [SerializeField, Tooltip("The float value that represents the speed at which the notification's text will fade in and out depending on whether the player is mousing over it or not.")] private float _textFadeSpeed = 3;
+    [SerializeField, Tooltip("The sound effect that will be played only once if a notification has been created since the manager's last update function call.")] private AudioClip notificationCreatedSFX = null;
 
     //Non-inspector variables.
 
@@ -88,6 +89,11 @@ public class GalaxyNotificationManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not a notification has been created since the last call of the manager's update function. Is not set to true for notifications that are created from save data on manager initialization.
+    /// </summary>
+    public bool notificationCreatedOnFrame { get; private set; } = false;
+
+    /// <summary>
     /// Public method that should be called in order to initialize the notification manager either at the start of a new game or with save game notification data.
     /// </summary>
     /// <param name="notificationsSaveData"></param>
@@ -114,7 +120,12 @@ public class GalaxyNotificationManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Checks if a notification has been created since the last update function call and plays the appropriate sound effect if so before setting the boolean value back to false.
+        if (notificationCreatedOnFrame)
+        {
+            AudioManager.PlaySFX(notificationCreatedSFX);
+            notificationCreatedOnFrame = false;
+        }
     }
 
     /// <summary>
@@ -138,6 +149,9 @@ public class GalaxyNotificationManager : MonoBehaviour
 
         //Initializes the notification with the specified parameters.
         notifications[notifications.Count - 1].Initialize(text, spriteName, notifications.Count - 1, OnNotificationDismissed, isDismissable, isWarning, popupData);
+
+        //Logs that a notification was created on this frame (needed in order to play the appropriate sound effect only once).
+        notificationCreatedOnFrame = true;
 
         //Informs the galaxy manager of the notification count change.
         NewGalaxyManager.OnNotificationCountChange();
@@ -163,7 +177,12 @@ public class GalaxyNotificationManager : MonoBehaviour
         if(onManagerInitialization)
             notifications[notifications.Count - 1].Initialize(notificationData, notifications.Count - 1, OnNotificationDismissed);
         else
+        {
             notifications[notifications.Count - 1].Initialize(notificationData.text, notificationData.spriteName, notifications.Count - 1, OnNotificationDismissed, notificationData.isDismissable, notificationData.isWarning, notificationData.popupData);
+
+            //Logs that a notification was created on this frame (needed in order to play the appropriate sound effect only once).
+            notificationCreatedOnFrame = true;
+        }
 
         //Informs the galaxy manager of the notification count change.
         NewGalaxyManager.OnNotificationCountChange();
