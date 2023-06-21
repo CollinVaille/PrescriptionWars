@@ -10,6 +10,7 @@ public class GalaxyNotificationManager : MonoBehaviour
     [SerializeField, Tooltip("The float value that represents the speed at which the notifications will move downwards when needed.")] private float _downwardsMovementSpeed = 750;
     [SerializeField, Tooltip("The float value that represents the speed at which the notifications will be dismissed.")] private float _dismissalSpeed = 500;
     [SerializeField, Tooltip("The float value that represents the speed at which the notification's text will fade in and out depending on whether the player is mousing over it or not.")] private float _textFadeSpeed = 3;
+    [SerializeField, Tooltip("The float value that represents the speed at which the notification's warning image will fade in and out depending on whether the notification is a warning notification or not.")] private float _warningImageFadeSpeed = 1;
     [SerializeField, Tooltip("The sound effect that will be played only once if a notification has been created since the manager's last update function call.")] private AudioClip notificationCreatedSFX = null;
 
     //Non-inspector variables.
@@ -33,6 +34,11 @@ public class GalaxyNotificationManager : MonoBehaviour
     /// Public property that should be used in order to access the float value that represents the speed at which the notification's text will fade in and out depending on whether the player is mousing over it or not.
     /// </summary>
     public float textFadeSpeed { get => _textFadeSpeed; }
+
+    /// <summary>
+    /// Public property that should be used in order to access the float value that represents the speed at which the notification's warning image will fade in and out depending on whether the notification is a warning notification or not.
+    /// </summary>
+    public float warningImageFadeSpeed { get => _warningImageFadeSpeed; }
 
     /// <summary>
     /// Private list that contains all of the notifications currently active within the galaxy view.

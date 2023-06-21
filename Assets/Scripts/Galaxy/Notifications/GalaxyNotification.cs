@@ -11,6 +11,7 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
 
     [SerializeField] private Text _text = null;
     [SerializeField] private Image _image = null;
+    [SerializeField] private Image _warningImage = null;
     [SerializeField] private CanvasGroup _textCanvasGroup = null;
 
     [Header("SFX Options")]
@@ -55,8 +56,24 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
     public bool isWarning
     {
         get => _isWarning;
-        set => _isWarning = value;
+        set
+        {
+            //Checks if the new boolean value does not equal the old boolean value and updates the necessary components if so.
+            if (_isWarning != value)
+            {
+                _warningImage.gameObject.SetActive(value);
+                _warningImage.color = new Color(_warningImage.color.r, _warningImage.color.g, _warningImage.color.b, 0);
+                _isWarningImageFadingOut = false;
+            }
+
+            //Sets the boolean value that indicates whether or not the notification is a warning.
+            _isWarning = value;
+        }
     }
+    /// <summary>
+    /// Private holder variable for the boolean value that indicates whether or not the warning image's alpha value is decreasing at the manager's specified warning image fade speed.
+    /// </summary>
+    private bool _isWarningImageFadingOut = false;
 
     /// <summary>
     /// Private holder variable for the boolean value that indicates whether or not the notification is moving downwards into its assigned position.
@@ -146,6 +163,33 @@ public class GalaxyNotification : MonoBehaviour, IPointerClickHandler, IPointerE
 
         //Deals with the text fading in and out depending on whether the player is mousing over the notification or not.
         _textCanvasGroup.alpha += (isMouseOver && !isDismissing ? 1 : -1) * NewGalaxyManager.notificationManager.textFadeSpeed * Time.deltaTime;
+
+        //Deals with the notification being a warning notification and its warning image fading in and out at the manager's specified speed.
+        if (isWarning)
+        {
+            //Grabs the warning image's current alpha value and stores it in a temporary float.
+            float warningImageAlpha = _warningImage.color.a;
+            //Increases or decreases the warning image's alpha float value at the specified speed depending on whether the warning image is currently fading out or not.
+            warningImageAlpha += (_isWarningImageFadingOut ? -1 : 1) * NewGalaxyManager.notificationManager.warningImageFadeSpeed * Time.deltaTime;
+            //Checks if the warning image is fading out and the alpha float value decreased to the minimum amount.
+            if(_isWarningImageFadingOut && warningImageAlpha <= 0)
+            {
+                //Prevents the warning image alpha value from going out of bounds.
+                warningImageAlpha = 0;
+                //Sets the warning image to start fading in.
+                _isWarningImageFadingOut = false;
+            }
+            //Checks if the warning image is fading in and the alpha float value increased to the maximum amount.
+            else if (!_isWarningImageFadingOut && warningImageAlpha >= 1)
+            {
+                //Prevents the warning image alpha value from going out of bounds.
+                warningImageAlpha = 1;
+                //Sets the warning image to start fading out.
+                _isWarningImageFadingOut = true;
+            }
+            //Updates the color of the warning image to display the newly calculated warning image alpha float value.
+            _warningImage.color = new Color(_warningImage.color.r, _warningImage.color.g, _warningImage.color.b, warningImageAlpha);
+        }
     }
 
     /// <summary>
