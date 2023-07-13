@@ -205,6 +205,24 @@ public class NewEmpire
     /// </summary>
     private Dictionary<GalaxyResourceType, float> resourcesPerTurn = null;
 
+    /// <summary>
+    /// Public property that should be used in order to access the list of pill classes that can be applied to pills belonging to the empire.
+    /// </summary>
+    public List<NewGalaxyPillClass> pillClasses { get => _pillClasses; }
+    /// <summary>
+    /// Private list that holds the pill classes that can be applied to pills belonging to the empire.
+    /// </summary>
+    private List<NewGalaxyPillClass> _pillClasses = null;
+
+    /// <summary>
+    /// Public property that should be used in order to access the list of string values that represent the names of skin materials that can be applied to pills belonging to this empire.
+    /// </summary>
+    public List<string> pillSkinNames { get => _pillSkinNames; }
+    /// <summary>
+    /// Private holder variable for the list of string values that represent the names of skin materials that can be applied to pills belonging to this empire.
+    /// </summary>
+    private List<string> _pillSkinNames = null;
+
     public NewEmpire(EmpireData empireData)
     {
         nameVar = empireData.name;
@@ -218,11 +236,16 @@ public class NewEmpire
         _credits = empireData.credits;
         _prescriptions = empireData.prescriptions;
 
+        _pillSkinNames = empireData.pillSkinNames;
+        _pillClasses = new List<NewGalaxyPillClass>();
+        foreach (NewGalaxyPillClassData pillClassData in empireData.pillClasses)
+            _pillClasses.Add(new NewGalaxyPillClass(this, pillClassData));
+
         InitializeResourcesPerTurnDictionary();
         InitializeResourceModifiersDictionary();
     }
 
-    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions)
+    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions, List<NewGalaxyPillClass> pillClasses)
     {
         nameVar = name;
         cultureVar = culture;
@@ -234,6 +257,11 @@ public class NewEmpire
         planetIDsVar = planetIDs;
         _credits = credits;
         _prescriptions = prescriptions;
+
+        _pillSkinNames = new List<string>();
+        foreach (Material material in Resources.LoadAll<Material>("Planet/Pill Skins/" + GeneralHelperMethods.GetEnumText(culture.ToString())))
+            _pillSkinNames.Add(material.name);
+        _pillClasses = pillClasses == null ? new List<NewGalaxyPillClass>() : pillClasses;
 
         InitializeResourcesPerTurnDictionary();
         InitializeResourceModifiersDictionary();
@@ -413,6 +441,8 @@ public class EmpireData
     public List<int> planetIDs = null;
     public float credits;
     public float prescriptions;
+    public List<string> pillSkinNames = null;
+    public List<NewGalaxyPillClassData> pillClasses = null;
 
     public EmpireData(NewEmpire empire)
     {
@@ -426,5 +456,9 @@ public class EmpireData
         planetIDs = empire.planetIDs;
         credits = empire.credits;
         prescriptions = empire.prescriptions;
+        pillSkinNames = empire.pillSkinNames;
+        pillClasses = new List<NewGalaxyPillClassData>();
+        foreach (NewGalaxyPillClass pillClass in empire.pillClasses)
+            pillClasses.Add(new NewGalaxyPillClassData(pillClass));
     }
 }

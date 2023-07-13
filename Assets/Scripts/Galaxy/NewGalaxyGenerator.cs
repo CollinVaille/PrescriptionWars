@@ -358,7 +358,7 @@ public class NewGalaxyGenerator : MonoBehaviour
                 NewFlag empireFlag = empireIndex == 0 && newGameData.playerEmpireFlag != null ? newGameData.playerEmpireFlag : new NewFlag(FlagDataLoader.flagSymbolNames[UnityEngine.Random.Range(0, FlagDataLoader.flagSymbolNames.Length)], empireColor.r + empireColor.g + empireColor.b < 0.6f ? Color.white : Color.black, empireColor);
 
                 //Adds the new empire to the list of empires existing within the galaxy.
-                empires.Add(new NewEmpire(empireName, empireCulture, empireColor, empireFlag, empireIndex, capitalSystemID, empireSolarSystemIDs, empirePlanetIDs, 0, 0));
+                empires.Add(new NewEmpire(empireName, empireCulture, empireColor, empireFlag, empireIndex, capitalSystemID, empireSolarSystemIDs, empirePlanetIDs, 0, 0, new List<NewGalaxyPillClass>() { }));
             }
         }
     }
