@@ -46,7 +46,7 @@ public abstract class NewGalaxyGroundUnit
     /// <summary>
     /// Public property that should be used in order to access and modify the float value that represents the amount of experience that the ground unit has.
     /// </summary>
-    public virtual float experience { get => _experience; set => _experience = value; }
+    public virtual float experience { get => _experience; set { _experience = value; foreach (Text experienceLevelText in experienceLevelTexts) if (experienceLevelText != null) experienceLevelText.text = experienceLevel.ToString(); } }
     /// <summary>
     /// Public property that should be used in order to access the integer value that represents the amount of experience that the ground unit has casted or floored from a float value to an integer value.
     /// </summary>

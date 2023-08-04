@@ -19,6 +19,7 @@ public class GalaxyData
     public int resourceModifiersCount = 0;
     public List<GalaxyNotificationData> notifications = null;
     public List<NewGalaxyPopupData> popups = null;
+    public GalaxyPillManagerData pillManagerData = null;
     public int globalActionsCount = 0;
 
     //Info.
@@ -64,6 +65,8 @@ public class GalaxyData
         notifications = NewGalaxyManager.notificationManager.notificationsSaveData;
 
         popups = NewGalaxyManager.popupManager.popupsSaveData;
+
+        pillManagerData = new GalaxyPillManagerData(NewGalaxyManager.pillManager);
 
         globalActionsCount = NewGalaxyManager.globalActionsCount;
 

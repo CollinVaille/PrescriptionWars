@@ -167,6 +167,7 @@ public class NewGalaxyGenerator : MonoBehaviour
             cheatConsole,
             notificationManager,
             popupManager,
+            new GalaxyPillManager(saveGameData != null ? saveGameData.pillManagerData : null),
             saveGameData != null ? saveGameData.turnNumber : 0,
             resourceModifiers,
             saveGameData != null ? saveGameData.resourceModifiersCount : 0,
