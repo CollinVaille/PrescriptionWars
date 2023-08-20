@@ -49,6 +49,7 @@ public class NewGalaxyGenerator : MonoBehaviour
 
     [SerializeField, Tooltip("The manager for all notifications that are active within the galaxy scene.")] private GalaxyNotificationManager notificationManager = null;
     [SerializeField, Tooltip("The manager for all popups that are active within the galaxy scene.")] private NewGalaxyPopupManager popupManager = null;
+    [SerializeField, Tooltip("The manager for all pill views within the galaxy scene.")] private GalaxyPillViewsManager pillViewsManager = null;
 
     //Non-inspector variables.
 
@@ -167,6 +168,7 @@ public class NewGalaxyGenerator : MonoBehaviour
             cheatConsole,
             notificationManager,
             popupManager,
+            pillViewsManager,
             new GalaxyPillManager(saveGameData != null ? saveGameData.pillManagerData : null),
             saveGameData != null ? saveGameData.turnNumber : 0,
             resourceModifiers,

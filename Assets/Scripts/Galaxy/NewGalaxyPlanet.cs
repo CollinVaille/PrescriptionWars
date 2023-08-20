@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.ObjectModel;
 
 public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
 {
@@ -282,15 +283,25 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
     /// </summary>
     public NewGalaxyCity city { get => _city; }
 
+    /// <summary>
+    /// Public observable collection that holds all of the armies that are stationed on the planet.
+    /// </summary>
+    public ObservableCollection<NewGalaxyArmy> stationedArmies = null;
+
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that indicates the maximum number of armies that can be stationed on the planet at one time.
+    /// </summary>
+    public int maxStationedArmiesCount { get => 3; }
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //Adds the OnZoomChangeFunction of the planet to the list of functions to be executed by the galaxy camera whenever the camera's zoom percentage meaningfully changes.
         NewGalaxyCamera.AddZoomFunction(OnZoomPercentageChange);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         //Updates the planet's rotation.
         planet.transform.localRotation = Quaternion.Euler(planet.transform.localRotation.eulerAngles.x, planet.transform.localRotation.eulerAngles.y + (rotationSpeed * Time.deltaTime), planet.transform.localRotation.eulerAngles.z);
@@ -311,6 +322,35 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
     }
 
     /// <summary>
+    /// Private method that is called whenever the stationed armies collection changes in any way and properly deals with the change.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void stationedArmies_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        //List changed - an army was added.
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            //Loops through each newly added army and ensures that it knows its stationed on the planet.
+            foreach (NewGalaxyArmy addedArmy in e.NewItems)
+                if (addedArmy.planetStationed != this)
+                    addedArmy.planetStationed = this;
+
+            //Removes the most recently newly added army until the stationed armies count is back to equaling the max stationed armies count.
+            while(stationedArmies.Count > maxStationedArmiesCount)
+                stationedArmies.RemoveAt(stationedArmies.Count - 1);
+        }
+        //List changed - an army was removed.
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            //Loops through each removed army and ensures that it knows it is no longer stationed on the planet.
+            foreach (NewGalaxyArmy removedArmy in e.OldItems)
+                if (removedArmy.planetStationed == this)
+                    removedArmy.planetStationed = null;
+        }
+    }
+
+    /// <summary>
     /// Private method that should be universally (aka regardless of whether starting a new game or loading an old game) called in order to initialize all needed data members of the planet.
     /// </summary>
     /// <param name="biomeType"></param>
@@ -325,6 +365,10 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
     /// <param name="starLight"></param>
     private void Initialize(GalaxySolarSystem solarSystem, NewGalaxyCity city, int ID, string planetName, Planet.Biome biomeType, string materialName, bool hasRings, float ringSize, float planetarySize, float planetaryRotationSpeed, float cloudSpeed, DualColorSet cloudColorCombo, Color cityColor, DualColorSet ringColorCombo, Light starLight)
     {
+        //Initializes the stationed armies observable collection.
+        stationedArmies = new ObservableCollection<NewGalaxyArmy>();
+        stationedArmies.CollectionChanged += stationedArmies_CollectionChanged;
+
         //Initializes the reference of the solar system that the planet belongs to.
         solarSystemVar = solarSystem;
         solarSystemVar.AddOnBecameVisibleFunction(OnSolarSystemBecameVisible);

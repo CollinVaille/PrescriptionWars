@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.ObjectModel;
 
 public class NewGalaxyPillClass
 {
@@ -37,6 +38,11 @@ public class NewGalaxyPillClass
     /// Private variable that holds a reference to the empire that the pill class belongs to.
     /// </summary>
     private NewEmpire _assignedEmpire = null;
+
+    /// <summary>
+    /// Public observable collection that holds all of the pills that have the class equipped.
+    /// </summary>
+    public ObservableCollection<NewGalaxyPill> pills = null;
 
     /// <summary>
     /// Public property that should be used in order to access the integer value that indicates the class' current index in its assigned empire's list of classes. Useful value for save data.
@@ -92,7 +98,17 @@ public class NewGalaxyPillClass
         get => _bodyGearName;
         set
         {
-            _bodyGearName = value;
+            //Checks if the specified body gear name is different from the already equipped body gear's name.
+            if(value != _bodyGearName)
+            {
+                //Sets the equipped body gear to the body gear with the specified name.
+                _bodyGearName = value;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its body gear to match the pill class' newly equipped body gear.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdateBodyGear();
+            }
         }
     }
     /// <summary>
@@ -112,7 +128,17 @@ public class NewGalaxyPillClass
         get => _curatedEyeWearName;
         set
         {
-            _curatedEyeWearName = value;
+            //Checks if the specified curated eye wear name is different from the already equipped curated eye wear's name.
+            if (value != _curatedEyeWearName)
+            {
+                //Sets the equipped curated eye wear to the curated eye wear with the specified name.
+                _curatedEyeWearName = value;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its curated eye wear to match the pill class' newly equipped curated eye wear.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdateCuratedEyeWear();
+            }
         }
     }
     /// <summary>
@@ -132,7 +158,17 @@ public class NewGalaxyPillClass
         get => _headGearName;
         set
         {
-            _headGearName = value;
+            //Checks if the specified head gear name is different from the already equipped head gear's name.
+            if (value != _headGearName)
+            {
+                //Sets the equipped head gear to the head gear with the specified name.
+                _headGearName = value;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its head gear to match the pill class' newly equipped head gear.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdateHeadGear();
+            }
         }
     }
     /// <summary>
@@ -143,7 +179,7 @@ public class NewGalaxyPillClass
     /// <summary>
     /// Public property that should be used in order to access the game object that serves as the primary weapon of pills of the class.
     /// </summary>
-    public GameObject primary { get => Resources.Load<GameObject>(itemsResourcesFolderPath + "/" + primaryName); }
+    public GameObject primaryPrefab { get => Resources.Load<GameObject>(itemsResourcesFolderPath + "/" + primaryName); }
     /// <summary>
     /// Public property that should be used in order to access and modify the primary weapon of pills of the class by name.
     /// </summary>
@@ -152,7 +188,17 @@ public class NewGalaxyPillClass
         get => _primaryName;
         set
         {
-            _primaryName = value;
+            //Checks if the specified primary weapon name is different from the already equipped primary weapon's name.
+            if (value != _primaryName)
+            {
+                //Sets the equipped primary weapon to the primary weapon with the specified name.
+                _primaryName = value;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its primary weapon to match the pill class' newly equipped primary weapon.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdatePrimary();
+            }
         }
     }
     /// <summary>
@@ -163,7 +209,7 @@ public class NewGalaxyPillClass
     /// <summary>
     /// Public property that should be used in order to access the game object that serves as the secondary weapon of pills of the class.
     /// </summary>
-    public GameObject secondary { get => Resources.Load<GameObject>(itemsResourcesFolderPath + "/" + secondaryName); }
+    public GameObject secondaryPrefab { get => Resources.Load<GameObject>(itemsResourcesFolderPath + "/" + secondaryName); }
     /// <summary>
     /// Public property that should be used in order to access and modify the secondary weapon of pills of the class by name.
     /// </summary>
@@ -172,7 +218,17 @@ public class NewGalaxyPillClass
         get => _secondaryName;
         set
         {
-            _secondaryName = value;
+            //Checks if the specified secondary weapon name is different from the already equipped secondary weapon's name.
+            if (value != _secondaryName)
+            {
+                //Sets the equipped secondary weapon to the secondary weapon with the specified name.
+                _secondaryName = value;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its secondary weapon to match the pill class' newly equipped secondary weapon.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdateSecondary();
+            }
         }
     }
     /// <summary>
@@ -192,7 +248,17 @@ public class NewGalaxyPillClass
         get => _skinName;
         set
         {
-            _skinName = assignedEmpire != null && assignedEmpire.pillSkinNames != null && assignedEmpire.pillSkinNames.Contains(value) ? value : null;
+            //Checks if the specified skin name is different from the already equipped skin's name.
+            if (value != _skinName)
+            {
+                //Sets the equipped skin to the skin with the specified name.
+                _skinName = assignedEmpire != null && assignedEmpire.pillSkinNames != null && assignedEmpire.pillSkinNames.Contains(value) ? value : null;
+
+                //Loops through every pill view of each pill that has the class equipped and tells it to update its skin to match the pill class' newly equipped skin.
+                foreach (NewGalaxyPill pill in pills)
+                    foreach (GalaxyPillView pillView in pill.pillViews)
+                        pillView.UpdateSkin();
+            }
         }
     }
     /// <summary>
@@ -202,6 +268,10 @@ public class NewGalaxyPillClass
 
     public NewGalaxyPillClass(NewEmpire assignedEmpire, string name, PillClassType classType, string bodyGearName = null, string curatedEyeWearName = null, string headGearName = null, string primaryName = null, string secondaryName = null, string skinName = null)
     {
+        //Initializes the pills observable collection and sets its collection changed method call.
+        pills = new ObservableCollection<NewGalaxyPill>();
+        pills.CollectionChanged += pills_CollectionChanged;
+
         _assignedEmpire = assignedEmpire;
         this.name = name;
         this.classType = classType;
@@ -224,6 +294,31 @@ public class NewGalaxyPillClass
         primaryName = pillClassData.primaryName;
         secondaryName = pillClassData.secondaryName;
         skinName = pillClassData.skinName;
+    }
+
+    /// <summary>
+    /// Private method that is called whenever the pills collection changes in any way and properly deals with the change.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void pills_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        //List changed - a pill was added.
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            //Loops through each pill that was just added and ensures that its pill class is this pill class.
+            foreach (NewGalaxyPill addedPill in e.NewItems)
+                if (addedPill.pillClass != this)
+                    addedPill.pillClass = this;
+        }
+        //List changed - a pill was removed.
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            //Loops through each pill that was just removed and ensures that its pill class is not this pill class.
+            foreach (NewGalaxyPill removedPill in e.OldItems)
+                if (removedPill.pillClass == this)
+                    removedPill.pillClass = null;
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.ObjectModel;
 
 public class NewGalaxyPill : NewGalaxyGroundUnit
 {
@@ -17,7 +18,23 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
         get => _pillClass;
         set
         {
-            _pillClass = value;
+            //Checks if the specified class is different from the pill's already assigned class.
+            if(value != _pillClass)
+            {
+                //Stores the previous pill class in a temporary variable.
+                NewGalaxyPillClass previousPillClass = _pillClass;
+                //Sets the pill's class to the specified class.
+                _pillClass = value;
+                //Checks if the previous pill class is still tracking the pill as belonging to it and stops that from happening if so.
+                if (previousPillClass != null && previousPillClass.pills.Contains(this))
+                    previousPillClass.pills.Remove(this);
+                //Checks if the newly assigned pill class has started tracking the pill as belonging to it yet and tells it to if not.
+                if (_pillClass != null && !_pillClass.pills.Contains(this))
+                    _pillClass.pills.Add(this);
+
+                //Updates the pill views that are displaying the pill to reflect the pill's class change.
+                UpdatePillViews();
+            }
         }
     }
     /// <summary>
@@ -57,12 +74,31 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
     private NewGalaxySquad _assignedSquad = null;
 
     /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not the pill is the leader of its squad.
+    /// </summary>
+    public bool isSquadLeader { get => assignedSquad != null && assignedSquad.leader == this; }
+
+    /// <summary>
+    /// Public observable collection that holds all of the pill views that are displaying the pill. Used in order to update the pill views to exactly match the current appearance of the pill.
+    /// </summary>
+    public ObservableCollection<GalaxyPillView> pillViews = null;
+
+    /// <summary>
     /// Public property that should be used both in order to access and mutate the amount of experience that the pill has. The pill specific override for the base ground unit experience property also updates the experience of the pill's assigned squad if applicable.
     /// </summary>
     public override float experience { get => base.experience; set { base.experience = value; if (assignedSquad != null) assignedSquad.UpdateExperience(); } }
 
+    /// <summary>
+    /// Public property that should be used in order to access the empire that the pill belongs to.
+    /// </summary>
+    public override NewEmpire empire { get => assignedSquad == null || assignedSquad.assignedArmy == null ? null : assignedSquad.assignedArmy.empire; }
+
     public NewGalaxyPill(string name, NewGalaxyPillClass pillClass, float experience = 1) : base(name, experience)
     {
+        //Initializes the pill views observable collection and sets its collection changed method call.
+        pillViews = new ObservableCollection<GalaxyPillView>();
+        pillViews.CollectionChanged += pillViews_CollectionChanged;
+
         //Checks if the galaxy manager's pill manager is not null and adds the pill to the dictionary of pills being tracked by the pill manager and assigns the pill's ID if so.
         if (NewGalaxyManager.pillManager != null)
             AddToPillManager();
@@ -75,6 +111,10 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
 
     public NewGalaxyPill(NewGalaxyPillData pillData, NewGalaxyPillClass pillClass) : base(pillData.groundUnitData)
     {
+        //Initializes the pill views observable collection and sets its collection changed method call.
+        pillViews = new ObservableCollection<GalaxyPillView>();
+        pillViews.CollectionChanged += pillViews_CollectionChanged;
+
         ID = pillData.ID;
 
         this.pillClass = pillClass;
@@ -91,6 +131,41 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
 
         //Adds the pill to the dictionary of pills being held by the pill manager and assigns its ID.
         ID = NewGalaxyManager.pillManager.AddPill(this);
+    }
+
+    /// <summary>
+    /// Private method that is called whenever the pill views collection changes in any way and properly deals with the change.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void pillViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        //List changed - a pill view was added.
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+        {
+            //Loops through each pill view that was just added and ensures that its displayed pill is this pill.
+            foreach (GalaxyPillView addedPillView in e.NewItems)
+                if (addedPillView.displayedPill != this)
+                    addedPillView.displayedPill = this;
+        }
+        //List changed - a pill view was removed.
+        else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+        {
+            //Loops through each pill view that was just removed and ensures that its displayed pill is not this pill.
+            foreach (GalaxyPillView removedPillView in e.OldItems)
+                if (removedPillView.displayedPill == this)
+                    removedPillView.displayedPill = null;
+        }
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to update the pill views that are currently displaying the pill.
+    /// </summary>
+    private void UpdatePillViews()
+    {
+        //Loops through each pill view thats displaying the pill and updates the pill appearance in said pill view.
+        foreach (GalaxyPillView pillView in pillViews)
+            pillView.UpdatePillAppearance();
     }
 }
 

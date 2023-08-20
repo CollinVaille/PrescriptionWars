@@ -60,6 +60,11 @@ public abstract class NewGalaxyGroundUnit
     /// </summary>
     protected float _experience = 1;
 
+    /// <summary>
+    /// Public property that should be used in order to access the empire that the ground unit belongs to.
+    /// </summary>
+    public virtual NewEmpire empire { get; }
+
     protected NewGalaxyGroundUnit(string name, float experience = 1)
     {
         //Initializes the name texts observable collection and sets its collection changed method call.

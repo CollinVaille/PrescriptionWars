@@ -223,8 +223,16 @@ public class NewEmpire
     /// </summary>
     private List<string> _pillSkinNames = null;
 
+    /// <summary>
+    /// Public property that should be used in order to access the manager that manages all of the armies that belong to the empire.
+    /// </summary>
+    public EmpireArmiesManager armiesManager { get; private set; } = null;
+
     public NewEmpire(EmpireData empireData)
     {
+        InitializeResourcesPerTurnDictionary();
+        InitializeResourceModifiersDictionary();
+
         nameVar = empireData.name;
         cultureVar = empireData.culture;
         colorVar = new Color(empireData.color[0], empireData.color[1], empireData.color[2], empireData.color[3]);
@@ -241,12 +249,14 @@ public class NewEmpire
         foreach (NewGalaxyPillClassData pillClassData in empireData.pillClasses)
             _pillClasses.Add(new NewGalaxyPillClass(this, pillClassData));
 
-        InitializeResourcesPerTurnDictionary();
-        InitializeResourceModifiersDictionary();
+        armiesManager = new EmpireArmiesManager(this, empireData.armiesManager);
     }
 
-    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions, List<NewGalaxyPillClass> pillClasses)
+    public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions, List<NewGalaxyPillClass> pillClasses, List<NewGalaxyArmy> armies = null)
     {
+        InitializeResourcesPerTurnDictionary();
+        InitializeResourceModifiersDictionary();
+
         nameVar = name;
         cultureVar = culture;
         colorVar = color;
@@ -263,8 +273,7 @@ public class NewEmpire
             _pillSkinNames.Add(material.name);
         _pillClasses = pillClasses == null ? new List<NewGalaxyPillClass>() : pillClasses;
 
-        InitializeResourcesPerTurnDictionary();
-        InitializeResourceModifiersDictionary();
+        armiesManager = new EmpireArmiesManager(this, armies);
     }
 
     /// <summary>
@@ -443,6 +452,7 @@ public class EmpireData
     public float prescriptions;
     public List<string> pillSkinNames = null;
     public List<NewGalaxyPillClassData> pillClasses = null;
+    public EmpireArmiesManagerData armiesManager = null;
 
     public EmpireData(NewEmpire empire)
     {
@@ -460,5 +470,6 @@ public class EmpireData
         pillClasses = new List<NewGalaxyPillClassData>();
         foreach (NewGalaxyPillClass pillClass in empire.pillClasses)
             pillClasses.Add(new NewGalaxyPillClassData(pillClass));
+        armiesManager = new EmpireArmiesManagerData(empire.armiesManager);
     }
 }

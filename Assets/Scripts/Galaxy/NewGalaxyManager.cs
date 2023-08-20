@@ -114,7 +114,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Publicly accessible property that returns a boolean that indicates whether or not the player is inside of the galaxy scene and the galaxy manager static instance has been initialized.
     /// </summary>
-    public static bool sceneActive { get => galaxyManager != null; }
+    public static bool initialized { get => galaxyManager != null; }
 
     /// <summary>
     /// Publicly accessible property that indicates whether the game object that the galaxy manager script is attached to is active in the hierarchy. In other words, it indicates whether the visible galaxy itself is visible in the hierarchy.
@@ -226,6 +226,15 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// Public static property that should be accessed in order to obtain a reference to the galaxy view's popup manager that manages all popups within the galaxy scene.
     /// </summary>
     public static NewGalaxyPopupManager popupManager { get => galaxyManager == null ? null : galaxyManager._popupManager; }
+
+    /// <summary>
+    /// Private holder variable for the manager that manages all the pill views within the galaxy scene.
+    /// </summary>
+    private GalaxyPillViewsManager _pillViewsManager = null;
+    /// <summary>
+    /// Public static property that should be used in order to access a reference to the galaxy view's pill views manager that manages all pill views within the galaxy scene.
+    /// </summary>
+    public static GalaxyPillViewsManager pillViewsManager { get => galaxyManager == null ? null : galaxyManager._pillViewsManager; }
 
     /// <summary>
     /// Private holder variable for the manager that manages all pills within the galaxy scene.
@@ -396,7 +405,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     /// <summary>
     /// Public static method that should be called by the galaxy generator at the end of the start method in order to initialize all of the needed variables within the galaxy manager.
     /// </summary>
-    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, GalaxyPillManager pillManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount, int globalActionsCount)
+    public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, GalaxyPillViewsManager pillViewsManager, GalaxyPillManager pillManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount, int globalActionsCount)
     {
         //Sets the static instance of the galaxy manager.
         galaxyManagerVar = galaxyManager;
@@ -456,6 +465,9 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
 
         //Sets the value of the variable that contains a reference to the manager that manages all popups within the galaxy scene.
         galaxyManager._popupManager = popupManager;
+
+        //Sets the value of the variable that contains a reference to the manages that manages all pill views within the galaxy scene.
+        galaxyManager._pillViewsManager = pillViewsManager;
 
         //Sets the value of the variable that contains a reference to the manager that manages all pills within the galaxy scene.
         galaxyManager._pillManager = pillManager;
