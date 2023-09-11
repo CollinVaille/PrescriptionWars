@@ -8,7 +8,7 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
     /// <summary>
     /// Public property that should be used in order to access the unique ID of the pill. Only privately mutable for obvious reasons.
     /// </summary>
-    public int ID { get; private set; }
+    public int ID { get; private set; } = -1;
 
     /// <summary>
     /// Public property that should be used to access and modify which class the pill belongs to.
@@ -93,6 +93,15 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
     /// </summary>
     public override NewEmpire empire { get => assignedSquad == null || assignedSquad.assignedArmy == null ? null : assignedSquad.assignedArmy.empire; }
 
+    /// <summary>
+    /// Public property that should be used in order to access the underlying special pill that has the ability to be assigned tasks and have a wide variety of skills.
+    /// </summary>
+    public NewGalaxySpecialPill specialPill { get; private set; } = null;
+    /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not there has been an initialized underlying special pill.
+    /// </summary>
+    public bool isSpecialPill { get => specialPill != null; }
+
     public NewGalaxyPill(string name, NewGalaxyPillClass pillClass, float experience = 1) : base(name, experience)
     {
         //Initializes the pill views observable collection and sets its collection changed method call.
@@ -118,6 +127,10 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
         ID = pillData.ID;
 
         this.pillClass = pillClass;
+
+        //Checks if there is any special pill save data and recreates the special pill if so.
+        if (pillData.specialPillData != null)
+            specialPill = new NewGalaxySpecialPill(this, pillData.specialPillData);
     }
 
     /// <summary>
@@ -167,6 +180,14 @@ public class NewGalaxyPill : NewGalaxyGroundUnit
         foreach (GalaxyPillView pillView in pillViews)
             pillView.UpdatePillAppearance();
     }
+
+    /// <summary>
+    /// Public method that should be called by the pill manager whenever the pill's underlying special pill is removed from the special pills dictionary. The special pill holder property is reset to null.
+    /// </summary>
+    public void OnSpecialPillRemoved()
+    {
+        specialPill = null;
+    }
 }
 
 [System.Serializable]
@@ -175,11 +196,13 @@ public class NewGalaxyPillData
     public NewGalaxyGroundUnitData groundUnitData = null;
     public int ID = -1;
     public int pillClassIndex = -1;
+    public NewGalaxySpecialPillData specialPillData = null;
 
     public NewGalaxyPillData(NewGalaxyPill pill)
     {
         groundUnitData = new NewGalaxyGroundUnitData(pill);
         ID = pill.ID;
         pillClassIndex = pill.pillClass == null ? -1 : pill.pillClass.index;
+        specialPillData = new NewGalaxySpecialPillData(pill.specialPill);
     }
 }

@@ -104,17 +104,13 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static List<HyperspaceLane> hyperspaceLanes { get => galaxyManager.hyperspaceLanesVar; }
 
     /// <summary>
-    /// Private holder variable of a galaxy manager instance.
-    /// </summary>
-    private static NewGalaxyManager galaxyManagerVar = null;
-    /// <summary>
     /// Publicly accessible property that returns an instance of a galaxy manager.
     /// </summary>
-    public static NewGalaxyManager galaxyManager { get => galaxyManagerVar; }
+    public static NewGalaxyManager galaxyManager { get; private set; } = null;
     /// <summary>
     /// Publicly accessible property that returns a boolean that indicates whether or not the player is inside of the galaxy scene and the galaxy manager static instance has been initialized.
     /// </summary>
-    public static bool initialized { get => galaxyManager != null; }
+    public static bool isInitialized { get => galaxyManager != null; }
 
     /// <summary>
     /// Publicly accessible property that indicates whether the game object that the galaxy manager script is attached to is active in the hierarchy. In other words, it indicates whether the visible galaxy itself is visible in the hierarchy.
@@ -408,7 +404,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     public static void InitializeFromGalaxyGenerator(NewGalaxyManager galaxyManager, string saveName, Material skyboxMaterial, List<GalaxySolarSystem> solarSystems, List<NewGalaxyPlanet> planets, List<NewEmpire> empires, List<HyperspaceLane> hyperspaceLanes, string galaxyShape, int playerID, bool observationModeEnabled, bool ironPillModeEnabled, List<Transform> parents, NewGalaxyPauseMenu pauseMenu, NewGalaxySettingsMenu settingsMenu, NewCheatConsole cheatConsole, GalaxyNotificationManager notificationManager, NewGalaxyPopupManager popupManager, GalaxyPillViewsManager pillViewsManager, GalaxyPillManager pillManager, int turnNumber, Dictionary<int, GalaxyResourceModifier> resourceModifiers, int resourceModifiersCount, int globalActionsCount)
     {
         //Sets the static instance of the galaxy manager.
-        galaxyManagerVar = galaxyManager;
+        NewGalaxyManager.galaxyManager = galaxyManager;
 
         //Sets the value of the variable that holds the name of the game save.
         galaxyManager._saveName = saveName;
@@ -517,7 +513,7 @@ public class NewGalaxyManager :  GalaxyViewBehaviour
     private void OnDestroy()
     {
         //Resets the static galaxy manager instance variable to null.
-        galaxyManagerVar = null;
+        galaxyManager = null;
     }
 
     /// <summary>

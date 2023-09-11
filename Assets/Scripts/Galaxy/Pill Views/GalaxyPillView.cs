@@ -86,6 +86,15 @@ public class GalaxyPillView : MonoBehaviour
     public RenderTexture renderTexture { get => _camera.targetTexture; set => _camera.targetTexture = value; }
 
     /// <summary>
+    /// Public property that should be used both in order to access and mutate the float value that indicates the rotation of the pill in the pill view.
+    /// </summary>
+    public float rotation
+    {
+        get => _pill.transform.localEulerAngles.y - 180;
+        set => _pill.transform.localEulerAngles = new Vector3(_pill.transform.localEulerAngles.x, value + 180, _pill.transform.localEulerAngles.z);
+    }
+
+    /// <summary>
     /// Public method that should be called in order to update the camera to fit the whole pill into its view.
     /// </summary>
     public void UpdateCamera()
@@ -293,7 +302,7 @@ public class GalaxyPillView : MonoBehaviour
     public void Delete()
     {
         //Checks if the galaxy manager has been initialized yet and deletes the pill view using the galaxy manager's pill view manager if so.
-        if (NewGalaxyManager.initialized)
+        if (NewGalaxyManager.isInitialized)
             NewGalaxyManager.pillViewsManager.DeletePillView(this);
     }
 }

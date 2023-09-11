@@ -70,7 +70,7 @@ public class NewGalaxyArmy : NewGalaxyGroundUnit
     /// </summary>
     public NewGalaxyPlanet planetStationed
     {
-        get => _planetStationedID >= 0 && NewGalaxyManager.initialized && _planetStationedID < NewGalaxyManager.planets.Count ? NewGalaxyManager.planets[_planetStationedID] : null;
+        get => _planetStationedID >= 0 && NewGalaxyManager.isInitialized && _planetStationedID < NewGalaxyManager.planets.Count ? NewGalaxyManager.planets[_planetStationedID] : null;
         set
         {
             //Stores the planet that the army was previously stationed on in a temporary variable.
@@ -90,7 +90,20 @@ public class NewGalaxyArmy : NewGalaxyGroundUnit
     /// </summary>
     private int _planetStationedID = -1;
 
-    public NewGalaxyArmy(NewEmpire empire, string name, string iconName = null, NewGalaxyPlanet planetStationed = null) : base(name)
+    /// <summary>
+    /// Public property that should be used both to access and mutate which special pill serves as the general of the army and performs the army's generalship task.
+    /// </summary>
+    public NewGalaxySpecialPill general { get => generalshipTask.assignedSpecialPill; set => generalshipTask.assignedSpecialPill = value; }
+    /// <summary>
+    /// Public property that should be used in order to access the task of a special pill being the general of the army.
+    /// </summary>
+    public NewGalaxySpecialPillTask generalshipTask { get; private set; } = null;
+    /// <summary>
+    /// Private holder variable for the integer value that is loaded in from the army's save data that indicates the ID of the task that assigns a special pill as the general of the army.
+    /// </summary>
+    private int generalshipTaskIDFromSaveData = -1;
+
+    public NewGalaxyArmy(NewEmpire empire, string name, string iconName = null, NewGalaxyPlanet planetStationed = null, NewGalaxySpecialPill general = null) : base(name)
     {
         //Initializes the squads observable collection and sets its collection changed method call.
         squads = new ObservableCollection<NewGalaxySquad>();
@@ -112,6 +125,9 @@ public class NewGalaxyArmy : NewGalaxyGroundUnit
 
         //Sets the planet that the army is stationed on (if any).
         this.planetStationed = planetStationed;
+
+        //Initializes the army's generalship task and assigns the general (if any is specified).
+        generalshipTask = new NewGalaxySpecialPillTask(general);
     }
 
     public NewGalaxyArmy(NewEmpire empire, NewGalaxyArmyData armyData) : base(armyData.groundUnitData)
@@ -135,14 +151,41 @@ public class NewGalaxyArmy : NewGalaxyGroundUnit
         //Loads in the army's saved icon via a string value that represents the name of the icon in the resources folder.
         iconName = armyData.iconName;
 
-        //Sets the planet that the army is stationed on. May be only properly set once the galaxy has finished generating and the stationed planet is accessible to the army via the galaxy manager.
-        if (NewGalaxyManager.initialized)
+        //Checks if the galaxy manager has been initialized or not as of yet.
+        if (NewGalaxyManager.isInitialized)
+        {
+            //Sets the planet that the army is stationed on (if any planet).
             planetStationed = armyData.planetStationedID >= 0 && armyData.planetStationedID < NewGalaxyManager.planets.Count ? NewGalaxyManager.planets[armyData.planetStationedID] : null;
+
+            //Sets the army's generalship task.
+            generalshipTask = NewGalaxyManager.pillManager.GetSpecialPillTask(armyData.generalshipTaskID);
+        }
         else
         {
+            //Sets the planet that the army is stationed on (if any planet) after the galaxy has finished generating and the galaxy manager has been initialized.
             _planetStationedID = armyData.planetStationedID;
             NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(AddArmyToPlanetStationed, 0);
+
+            //Sets the army's generalship task once the galaxy has finished generating and the galaxy manager has been initialized.
+            generalshipTaskIDFromSaveData = armyData.generalshipTaskID;
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(LoadInGeneralshipTask, 2);
         }
+    }
+
+    /// <summary>
+    /// Private method that should be called via the galaxy generator in order to load in the correct generalship task from save data after the galaxy has finished generating and the galaxy manager has been initialized.
+    /// </summary>
+    private void LoadInGeneralshipTask()
+    {
+        //Safe guard against a few unacceptable conditions.
+        if (!NewGalaxyManager.isInitialized || generalshipTaskIDFromSaveData < 0)
+            return;
+
+        //Sets the generalship task of the army back to what it was in the save data.
+        generalshipTask = NewGalaxyManager.pillManager.GetSpecialPillTask(generalshipTaskIDFromSaveData);
+
+        //Resets the integer holder variable for the generalship task ID from the save data.
+        generalshipTaskIDFromSaveData = -1;
     }
 
     /// <summary>
@@ -272,6 +315,7 @@ public class NewGalaxyArmyData
     public List<NewGalaxySquadData> squadsData = null;
     public string iconName = null;
     public int planetStationedID = -1;
+    public int generalshipTaskID = -1;
 
     public NewGalaxyArmyData(NewGalaxyArmy army)
     {
@@ -287,5 +331,7 @@ public class NewGalaxyArmyData
         iconName = army.iconName;
 
         planetStationedID = army.planetStationed == null ? -1 : army.planetStationed.ID;
+
+        generalshipTaskID = army.generalshipTask.ID;
     }
 }

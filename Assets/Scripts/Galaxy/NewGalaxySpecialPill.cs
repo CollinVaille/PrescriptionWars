@@ -10,6 +10,11 @@ public class NewGalaxySpecialPill
     }
 
     /// <summary>
+    /// Public property that should be used in order to access the integer value that indicates the ID of the special pill within the special pills dictionary held within the galaxy pill manager that can be accessed via the galaxy manager.
+    /// </summary>
+    public int ID { get; private set; } = -1;
+
+    /// <summary>
     /// Public property that should be used in order to access the underlying pill of the special pill.
     /// </summary>
     public NewGalaxyPill pill { get; private set; } = null;
@@ -18,6 +23,39 @@ public class NewGalaxySpecialPill
     /// Public property that should be used by the save data in ordert to access the dictionary that stores the special pill's experience for certain skills. Any other need to deal with the special pill's experience at a skill should be done utilizing the special pill methods and not this property.
     /// </summary>
     public Dictionary<Skill, float> skillExperiences { get; private set; } = null;
+
+    /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not the special pill is assigned a task at the moment.
+    /// </summary>
+    public bool isBusy { get => task != null; }
+    /// <summary>
+    /// Public property that should be used both to access and mutate the task that the special pill is assigned to do.
+    /// </summary>
+    public NewGalaxySpecialPillTask task
+    {
+        get => _task;
+        set
+        {
+            //Checks if the previously assigned task is the same as the newly assigned task and returns and does nothing if so.
+            if (_task == value)
+                return;
+
+            //Stores the special pill's previously assigned task in a temporary variable.
+            NewGalaxySpecialPillTask previousTask = _task;
+            //Mutates the special pill's assigned task to the specified task value.
+            _task = value;
+            //Checks if the previously assigned task still has the special pill as assigned to it and fixes that if so.
+            if (previousTask != null && previousTask.assignedSpecialPill == this)
+                previousTask.assignedSpecialPill = null;
+            //Checks if the newly assigned task is not tracking the special pill as being assigned to it and fixes that if so.
+            if (_task != null && _task.assignedSpecialPill != this)
+                _task.assignedSpecialPill = this;
+        }
+    }
+    /// <summary>
+    /// Private holder variable for the task that the special pill is doing.
+    /// </summary>
+    private NewGalaxySpecialPillTask _task = null;
 
     public NewGalaxySpecialPill(NewGalaxyPill pill)
     {
@@ -29,6 +67,13 @@ public class NewGalaxySpecialPill
         }
 
         this.pill = pill;
+
+        //Checks if the galaxy manager and therefore the pill manager has been initialized and adds the special pill to the dictionary of special pills within the galaxy if so.
+        if (NewGalaxyManager.isInitialized)
+            AddToPillManager();
+        //If the galaxy manager and therefore the pill manager have not yet been initialized, add the AddToPillManager function to the functions that the galaxy generator should execute upon galaxy generation completion.
+        else
+            NewGalaxyGenerator.ExecuteFunctionOnGalaxyGenerationCompletion(AddToPillManager, 0);
     }
 
     public NewGalaxySpecialPill(NewGalaxyPill pill, NewGalaxySpecialPillData specialPillData)
@@ -49,6 +94,19 @@ public class NewGalaxySpecialPill
 
         this.pill = pill;
         this.skillExperiences = specialPillData.skillExperiences;
+    }
+
+    /// <summary>
+    /// Private method that should be called in order to add the special pill to the list of special pills within the galaxy that exists in the pill manager that can be accessed via the galaxy manager.
+    /// </summary>
+    private void AddToPillManager()
+    {
+        //Checks if the pill manager is null or if the ID of the special pill has already been assigned and returns if so.
+        if (NewGalaxyManager.pillManager == null || ID >= 0)
+            return;
+
+        //Adds the special pill to the dictionary of special pills being held by the pill manager and assigns its ID.
+        ID = NewGalaxyManager.pillManager.AddSpecialPill(this);
     }
 
     /// <summary>
@@ -126,10 +184,13 @@ public class NewGalaxySpecialPill
 [System.Serializable]
 public class NewGalaxySpecialPillData
 {
+    public int ID = -1;
     public Dictionary<NewGalaxySpecialPill.Skill, float> skillExperiences = null;
 
     public NewGalaxySpecialPillData(NewGalaxySpecialPill specialPill)
     {
+        ID = specialPill.ID;
+
         skillExperiences = specialPill.skillExperiences;
     }
 }

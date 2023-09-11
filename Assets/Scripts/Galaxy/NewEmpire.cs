@@ -228,6 +228,15 @@ public class NewEmpire
     /// </summary>
     public EmpireArmiesManager armiesManager { get; private set; } = null;
 
+    /// <summary>
+    /// Public property that should be used in order to access the list of squad names that are valid for a squad of the empire to be named.
+    /// </summary>
+    public List<string> validSquadNames { get; private set; } = new List<string>() { "Alpha Squad", "Bravo Squad", "Charlie Squad", "Delta Squad", "Echo Squad", "Foxtrot Squad", "Golf Squad", "Hotel Squad", "India Squad", "Juliet Squad", "Kilo Squad", "Lima Squad", "Mike Squad", "November Squad", "Oscar Squad", "Papa Squad", "Quebec Squad", "Romeo Squad", "Sierra Squad", "Tango Squad", "Uniform Squad", "Victor Squad", "Whiskey Squad", "X-Ray Squad", "Yankee Squad", "Zulu Squad" };
+    /// <summary>
+    /// Public property that should be used in order to access a string value that represents a random squad name from the list of valid squad names that are valid for the empire.
+    /// </summary>
+    public string randomValidSquadName { get => (validSquadNames == null || validSquadNames.Count == 0) ? "Squad" : validSquadNames[UnityEngine.Random.Range(0, validSquadNames.Count)]; }
+
     public NewEmpire(EmpireData empireData)
     {
         InitializeResourcesPerTurnDictionary();
@@ -250,6 +259,8 @@ public class NewEmpire
             _pillClasses.Add(new NewGalaxyPillClass(this, pillClassData));
 
         armiesManager = new EmpireArmiesManager(this, empireData.armiesManager);
+
+        validSquadNames = empireData.validSquadNames;
     }
 
     public NewEmpire(string name, Culture culture, Color color, NewFlag flag, int ID, int capitalSystemID, List<int> solarSystemIDs, List<int> planetIDs, float credits, float prescriptions, List<NewGalaxyPillClass> pillClasses, List<NewGalaxyArmy> armies = null)
@@ -453,6 +464,7 @@ public class EmpireData
     public List<string> pillSkinNames = null;
     public List<NewGalaxyPillClassData> pillClasses = null;
     public EmpireArmiesManagerData armiesManager = null;
+    public List<string> validSquadNames = null;
 
     public EmpireData(NewEmpire empire)
     {
@@ -471,5 +483,6 @@ public class EmpireData
         foreach (NewGalaxyPillClass pillClass in empire.pillClasses)
             pillClasses.Add(new NewGalaxyPillClassData(pillClass));
         armiesManager = new EmpireArmiesManagerData(empire.armiesManager);
+        validSquadNames = empire.validSquadNames;
     }
 }

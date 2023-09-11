@@ -182,7 +182,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
                     unitInspectorPillParent.gameObject.SetActive(false);
 
                     //Gets the general of the army (could be null if there is no general).
-                    GalaxySpecialPill general = _unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.general;
+                    NewGalaxySpecialPill general = _unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.general;
                     //Deletes/clears the pill view if the army has no general.
                     if (general == null)
                     {
@@ -202,20 +202,20 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
                         unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                         if (unitInspectorPillView == null)
-                            unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
+                            unitInspectorPillView = NewGalaxyManager.pillViewsManager.GetNewPillView(general.pill);
                         else
-                            unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
-                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                            unitInspectorPillView.displayedPill = general.pill;
+                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.renderTexture;
                     }
                     break;
                 //Activates the base and squad components of the unit inspector if the unit list button selected is a squad button.
-                case UnitListButton.ButtonType.Squad:
+                case GalaxyArmyManagementMenuUnitListButton.ButtonType.Squad:
                     unitInspectorBaseParent.gameObject.SetActive(true);
                     unitInspectorArmyParent.gameObject.SetActive(false);
                     unitInspectorSquadParent.gameObject.SetActive(true);
                     unitInspectorPillParent.gameObject.SetActive(false);
                     //Gets the leader of the squad (could be null if there are no pills in the squad).
-                    GalaxyPill squadLeader = _unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.squadLeader;
+                    NewGalaxyPill squadLeader = _unitListButtonSelected.gameObject.GetComponent<GalaxySquadButton>().assignedSquad.leader;
                     //Deletes/clears the pill view if the squad has no leader.
                     if (squadLeader == null)
                     {
@@ -235,14 +235,14 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
                         unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                         if (unitInspectorPillView == null)
-                            unitInspectorPillView = PillViewsManager.GetNewPillView(squadLeader);
+                            unitInspectorPillView = NewGalaxyManager.pillViewsManager.GetNewPillView(squadLeader);
                         else
-                            unitInspectorPillView.DisplayedPill = squadLeader;
-                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                            unitInspectorPillView.displayedPill = squadLeader;
+                        unitListInspectorPillViewRawImage.texture = unitInspectorPillView.renderTexture;
                     }
                     break;
                 //Activates the base and pill components of the unit inspector if the unit list button selected is a pill button.
-                case UnitListButton.ButtonType.Pill:
+                case GalaxyArmyManagementMenuUnitListButton.ButtonType.Pill:
                     unitInspectorBaseParent.gameObject.SetActive(true);
                     unitInspectorArmyParent.gameObject.SetActive(false);
                     unitInspectorSquadParent.gameObject.SetActive(false);
@@ -253,10 +253,10 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
 
                     //Displays the pill in the unit inspector pill view.
                     if (unitInspectorPillView == null)
-                        unitInspectorPillView = PillViewsManager.GetNewPillView(_unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill);
+                        unitInspectorPillView = NewGalaxyManager.pillViewsManager.GetNewPillView(_unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill);
                     else
-                        unitInspectorPillView.DisplayedPill = _unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
-                    unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                        unitInspectorPillView.displayedPill = _unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill;
+                    unitListInspectorPillViewRawImage.texture = unitInspectorPillView.renderTexture;
                     break;
 
                 //Deactivates the unit inspector effectively if the button type of the unit list button selected is an unknown type.
@@ -268,9 +268,9 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
                     break;
             }
             //Sets the type of the ground unit in the unit inspector.
-            unitInspectorGroundUnitTypeText.text = _unitListButtonSelected.TypeOfButton.ToString();
+            unitInspectorGroundUnitTypeText.text = GeneralHelperMethods.GetEnumText(_unitListButtonSelected.buttonType.ToString());
             //Sets the name of the ground unit in the unit inspector.
-            unitInspectorGroundUnitNameText.text = _unitListButtonSelected.AssignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : _unitListButtonSelected.AssignedGroundUnit.name;
+            unitInspectorGroundUnitNameText.text = _unitListButtonSelected.assignedGroundUnit == null ? "Error: No Ground Unit Assigned To Unit List Button" : _unitListButtonSelected.assignedGroundUnit.name;
         }
     }
 
@@ -282,27 +282,27 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     /// <summary>
     /// List that contains all open army management menus.
     /// </summary>
-    private static List<ArmyManagementMenu> armyManagementMenus = new List<ArmyManagementMenu>();
+    private static List<GalaxyArmyManagementMenu> armyManagementMenus = new List<GalaxyArmyManagementMenu>();
 
     /// <summary>
     /// Instantiates a new army management menu from the army management menu prefab and adjusts its values based on the given specifications.
     /// </summary>
-    public static void CreateNewArmyManagementMenu(int planetSelectedID)
+    public static void CreateNewArmyManagementMenu(NewGalaxyPlanet planetSelected)
     {
         //Ensures that there won't be two army management menus open for the same planet.
-        foreach (ArmyManagementMenu armyManagementMenuInList in armyManagementMenus)
+        foreach (GalaxyArmyManagementMenu armyManagementMenuInList in armyManagementMenus)
         {
-            if (armyManagementMenuInList.PlanetSelectedID == planetSelectedID)
+            if (armyManagementMenuInList.planetSelected != null && planetSelected != null && armyManagementMenuInList.planetSelected.ID == planetSelected.ID)
                 return;
         }
         //Instantiates a new army management menu from the army management menu prefab.
         GameObject armyManagementMenu = Instantiate(armyManagementMenuPrefab);
         //Sets the parent of the army management menu.
-        armyManagementMenu.transform.SetParent(GalaxyManager.popupsParent);
+        armyManagementMenu.transform.SetParent(NewGalaxyManager.popupsParent);
         //Gets the script component of the army management menu in order to edit values.
-        ArmyManagementMenu armyManagementMenuScript = armyManagementMenu.GetComponent<ArmyManagementMenu>();
+        GalaxyArmyManagementMenu armyManagementMenuScript = armyManagementMenu.GetComponent<GalaxyArmyManagementMenu>();
         //Sets the planet selected on the army management menu.
-        armyManagementMenuScript.PlanetSelectedID = planetSelectedID;
+        armyManagementMenuScript.planetSelected = planetSelected;
         //Adds the newly created army management menu to the list of army management menus.
         armyManagementMenus.Add(armyManagementMenuScript);
     }
@@ -321,7 +321,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         base.Start();
 
         //Populates the unit list with the appropriate army buttons.
-        if (planetSelectedID >= 0 && planetSelectedID < GalaxyManager.planets.Count)
+        if (planetSelected != null)
             PopulateUnitList();
     }
 
@@ -337,8 +337,8 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     public void ExpandAll()
     {
         //Calls the expand all function on all of the army buttons.
-        foreach (UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
-            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().ExpandAll();
+        foreach (GalaxyArmyManagementMenuUnitListButton armyButton in GetAllUnitListButtonsOfButtonType(GalaxyArmyManagementMenuUnitListButton.ButtonType.Army))
+            armyButton.gameObject.GetComponent<GalaxyArmyManagementMenuExpandableUnitListButton>().ExpandAll();
 
         //Plays the expand all sound effect.
         AudioManager.PlaySFX(expandAllSFX);
@@ -350,8 +350,8 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     public void CollapseAll()
     {
         //Calls the collapse function on all of the army buttons.
-        foreach (UnitListButton armyButton in GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType.Army))
-            armyButton.gameObject.GetComponent<ExpandableUnitListButton>().Collapse(false);
+        foreach (GalaxyArmyManagementMenuUnitListButton armyButton in GetAllUnitListButtonsOfButtonType(GalaxyArmyManagementMenuUnitListButton.ButtonType.Army))
+            armyButton.gameObject.GetComponent<GalaxyArmyManagementMenuExpandableUnitListButton>().Collapse(false);
 
         //Resets the unit list button selected variable so that no unit list button is currently selected.
         unitListButtonSelected = null;
@@ -365,18 +365,21 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     /// </summary>
     private void PopulateUnitList()
     {
-        for (int armyIndex = 0; armyIndex < planetSelected.armyCount; armyIndex++)
+        if(planetSelected != null)
         {
-            //Instantiates the army button from the army button prefab.
-            GameObject armyButton = Instantiate(armyButtonPrefab);
-            //Sets the parent of the army button.
-            armyButton.transform.SetParent(_unitListButtonParent);
-            //Resets the scale of the army button.
-            armyButton.transform.localScale = Vector3.one;
-            //Gets the army button script component of the army button in order to edit some values in the script.
-            ArmyButton armyButtonScript = armyButton.GetComponent<ArmyButton>();
-            //Assigns the appropriate army to the army button.
-            armyButtonScript.Initialize(this, planetSelected.GetArmyAt(armyIndex));
+            foreach (NewGalaxyArmy army in planetSelected.stationedArmies)
+            {
+                //Instantiates the army button from the army button prefab.
+                GameObject armyButton = Instantiate(armyButtonPrefab);
+                //Sets the parent of the army button.
+                armyButton.transform.SetParent(_unitListButtonParent);
+                //Resets the scale of the army button.
+                armyButton.transform.localScale = Vector3.one;
+                //Gets the army button script component of the army button in order to edit some values in the script.
+                GalaxyArmyButton armyButtonScript = armyButton.GetComponent<GalaxyArmyButton>();
+                //Assigns the appropriate army to the army button.
+                armyButtonScript.Initialize(this, army);
+            }
         }
     }
 
@@ -395,15 +398,15 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         Destroy(gameObject);
     }
 
-    private List<UnitListButton> GetAllUnitListButtonsOfButtonType(UnitListButton.ButtonType buttonType)
+    private List<GalaxyArmyManagementMenuUnitListButton> GetAllUnitListButtonsOfButtonType(GalaxyArmyManagementMenuUnitListButton.ButtonType buttonType)
     {
         //Creates the list store of the appropriate unit list buttons in.
-        List<UnitListButton> buttonsOfButtonType = new List<UnitListButton>();
+        List<GalaxyArmyManagementMenuUnitListButton> buttonsOfButtonType = new List<GalaxyArmyManagementMenuUnitListButton>();
         //Finds all unit list buttons of the specified button type and adds them to the list.
         for (int siblingIndex = 0; siblingIndex < _unitListButtonParent.childCount; siblingIndex++)
         {
-            UnitListButton unitListButton = unitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-            if (unitListButton.TypeOfButton == buttonType)
+            GalaxyArmyManagementMenuUnitListButton unitListButton = unitListButtonParent.GetChild(siblingIndex).GetComponent<GalaxyArmyManagementMenuUnitListButton>();
+            if (unitListButton.buttonType == buttonType)
                 buttonsOfButtonType.Add(unitListButton);
         }
         //Returns the list of buttons of the specified button type.
@@ -425,7 +428,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Updates the pill view to match the correct visual representation of the pill after the selected unit list button was moved.
         if (unitInspectorPillView != null)
-            unitInspectorPillView.UpdatePillView();
+            unitInspectorPillView.UpdatePillAppearance();
     }
 
     /// <summary>
@@ -436,7 +439,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         if (unitInspectorPillView != null)
         {
             initialMouseXOnUnitInspectorPillViewDrag = Input.mousePosition.x;
-            initialPillRotationOnUnitInspectorPillViewDrag = unitInspectorPillView.PillRotation;
+            initialPillRotationOnUnitInspectorPillViewDrag = unitInspectorPillView.rotation;
             //Logs that the unit inspector pill view is being dragged.
             unitInspectorPillViewBeingDragged = true;
         }
@@ -449,7 +452,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         if (unitInspectorPillView != null)
         {
-            unitInspectorPillView.PillRotation = initialPillRotationOnUnitInspectorPillViewDrag - ((Input.mousePosition.x - initialMouseXOnUnitInspectorPillViewDrag) * pillViewRotationSpeed);
+            unitInspectorPillView.rotation = initialPillRotationOnUnitInspectorPillViewDrag - ((Input.mousePosition.x - initialMouseXOnUnitInspectorPillViewDrag) * pillViewRotationSpeed);
         }
     }
 
@@ -504,8 +507,10 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         pointerOverUnitInspectorPillView = false;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         //Ensures that the cursor texture is the default cursor texture.
         if (cursorTextureChanged)
         {
@@ -520,7 +525,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         unitInspectorPillViewBeingDragged = false;
     }
 
-    public override void OnDestroy()
+    protected override void OnDestroy()
     {
         base.OnDestroy();
 
@@ -546,30 +551,29 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         //Plays the sound effect for pressing a button in the unit inspector.
         AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
 
-        //StartCoroutine(ConfirmRenamingActionCoroutine());
+        StartCoroutine(ConfirmRenamingActionCoroutine());
     }
 
-    /*
     /// <summary>
     /// This method should be called on the click of the rename button in the unit inspector and confirms that the player wants to rename the selected ground unit.
     /// </summary>
     /// <returns></returns>
     private IEnumerator ConfirmRenamingActionCoroutine()
     {
-        if(UnitListButtonSelected.TypeOfButton != UnitListButton.ButtonType.Squad)
+        if(unitListButtonSelected.buttonType != GalaxyArmyManagementMenuUnitListButton.ButtonType.Squad)
         {
             //Creates the confirmation popup.
-            GalaxyInputFieldConfirmationPopup confirmationPopupScript = Instantiate(GalaxyInputFieldConfirmationPopup.galaxyInputFieldConfirmationPopupPrefab).GetComponent<GalaxyInputFieldConfirmationPopup>();
-            string topText = "Rename " + UnitListButtonSelected.TypeOfButton.ToString();
+            GalaxyInputFieldConfirmationPopup confirmationPopupScript = Instantiate(GalaxyInputFieldConfirmationPopup.inputFieldConfirmationPopupPrefab).GetComponent<GalaxyInputFieldConfirmationPopup>();
+            string topText = "Rename " + GeneralHelperMethods.GetEnumText(unitListButtonSelected.buttonType.ToString());
             confirmationPopupScript.CreateConfirmationPopup(topText);
-            confirmationPopupScript.SetPlaceHolderText(UnitListButtonSelected.AssignedGroundUnit.name);
+            confirmationPopupScript.SetPlaceHolderText(unitListButtonSelected.assignedGroundUnit.name);
 
             //Waits until the player has confirmed or cancelled the action.
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
             //If the player confirmed their action, it carries out the logic behind it.
-            if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
-                RenameSelectedGroundUnit(confirmationPopupScript.GetInputFieldText());
+            if (confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+                RenameSelectedGroundUnit(confirmationPopupScript.inputFieldText);
 
             //Destroys the confirmation popup.
             confirmationPopupScript.DestroyConfirmationPopup();
@@ -577,16 +581,16 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         else
         {
             //Creates the confirmation popup.
-            GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(GalaxyDropdownConfirmationPopup.galaxyDropdownConfirmationPopupPrefab).GetComponent<GalaxyDropdownConfirmationPopup>();
-            string topText = "Rename " + UnitListButtonSelected.TypeOfButton.ToString();
+            GalaxyDropdownConfirmationPopup confirmationPopupScript = Instantiate(GalaxyDropdownConfirmationPopup.dropdownConfirmationPopupPrefab).GetComponent<GalaxyDropdownConfirmationPopup>();
+            string topText = "Rename " + unitListButtonSelected.buttonType.ToString();
             confirmationPopupScript.CreateConfirmationPopup(topText);
 
             //Adds the player empire's valid squad names as dropdown options.
-            foreach(string squadName in PlanetSelected.owner.validSquadNames)
+            foreach(string squadName in planetSelected.owner.validSquadNames)
             {
                 confirmationPopupScript.AddDropdownOption(squadName);
                 //Makes the squad's current name the preselected option.
-                if (squadName.Equals(UnitListButtonSelected.AssignedGroundUnit.name))
+                if (squadName.Equals(unitListButtonSelected.assignedGroundUnit.name))
                     confirmationPopupScript.SetDropdownOptionSelected(squadName);
             }
 
@@ -594,14 +598,13 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
             yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
             //If the player confirmed their action, it carries out the logic behind it.
-            if (confirmationPopupScript.GetAnswer() == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
-                RenameSelectedGroundUnit(confirmationPopupScript.GetReturnValue());
+            if (confirmationPopupScript.answer == GalaxyConfirmationPopup.GalaxyConfirmationPopupAnswer.Confirm)
+                RenameSelectedGroundUnit(confirmationPopupScript.returnValue);
 
             //Destroys the confirmation popup.
             confirmationPopupScript.DestroyConfirmationPopup();
         }
     }
-    */
 
     /// <summary>
     /// This method should be called in order to rename the selected ground unit and update the selected unit list button's text.
@@ -610,11 +613,11 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     private void RenameSelectedGroundUnit(string newName)
     {
         //Sets the selected ground unit's name.
-        unitListButtonSelected.AssignedGroundUnit.name = newName;
+        unitListButtonSelected.assignedGroundUnit.name = newName;
         //Updates the selected unit list button to accurately reflect the new name of the ground unit.
         unitListButtonSelected.UpdateInfo();
         //Updates the unit inspector to accurately reflect the new name of the ground unit.
-        unitInspectorGroundUnitNameText.text = unitListButtonSelected.AssignedGroundUnit.name;
+        unitInspectorGroundUnitNameText.text = unitListButtonSelected.assignedGroundUnit.name;
 
         //Plays the sound effect for renaming a ground unit.
         AudioManager.PlaySFX(renameGroundUnitSFX);
@@ -639,8 +642,8 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        string topText = "Disband " + unitListButtonSelected.TypeOfButton.ToString();
-        string bodyText = "Are you sure that you want to disband " + unitListButtonSelected.AssignedGroundUnit.name + "?";
+        string topText = "Disband " + GeneralHelperMethods.GetEnumText(unitListButtonSelected.buttonType.ToString());
+        string bodyText = "Are you sure that you want to disband " + unitListButtonSelected.assignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText);
 
         //Waits until the player has confirmed or cancelled the action.
@@ -684,8 +687,8 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
-        string topText = "Change " + unitListButtonSelected.TypeOfButton.ToString() + "'s Pill Skin";
-        string bodyText = "Are you sure that you want to change the assigned pill skin for " + unitListButtonSelected.AssignedGroundUnit.name + "?";
+        string topText = "Change " + GeneralHelperMethods.GetEnumText(unitListButtonSelected.buttonType.ToString()) + "'s Pill Skin";
+        string bodyText = "Are you sure that you want to change the assigned pill skin for " + unitListButtonSelected.assignedGroundUnit.name + "?";
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, planetSelected.owner.pillSkinNames);
         confirmationPopupScript.SetPillSkinSelected(unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName);
 

@@ -121,7 +121,7 @@ public class NewGalaxySquad : NewGalaxyGroundUnit
         leaderIDFromSaveData = squadData.leaderID;
 
         //Checks if the galaxy manager has been initialized and adds the correct pills from the pill manager back into the squad if so, otherwise the pills must be added back to the squad once the galaxy has finished generating and the galaxy manager has been initialized.
-        if (NewGalaxyManager.initialized)
+        if (NewGalaxyManager.isInitialized)
         {
             //Loops through each pill ID stored as belonging to the squad in the squad's save data and grabs the pill with the specified ID from the pill manager and assigns them back to the squad.
             foreach(int pillID in squadData.pillIDs)
@@ -257,7 +257,7 @@ public class NewGalaxySquad : NewGalaxyGroundUnit
     private void AddPillsFromSaveData()
     {
         //Returns if there are no pills to add to the squad from save data or if the pills observable collection is null and hasn't been initialized yet or if the galaxy manager and therefore the pill manager is null due to not having been initialized as of yet.
-        if (pillIDsFromSaveData == null || pills == null || !NewGalaxyManager.initialized)
+        if (pillIDsFromSaveData == null || pills == null || !NewGalaxyManager.isInitialized)
             return;
 
         //Loops through each pill ID stored as belonging to the squad in the squad's save data and grabs the pill with the specified ID from the pill manager and assigns them back to the squad.
