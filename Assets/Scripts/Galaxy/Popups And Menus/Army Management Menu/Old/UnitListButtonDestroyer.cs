@@ -15,18 +15,6 @@ public class UnitListButtonDestroyer : MonoBehaviour
     /// </summary>
     private List<UnitListButton> unitListButtonsToDestroy = new List<UnitListButton>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// This method should be called in order to add a unit list button to the list of unit list buttons that need to be destroyed.
     /// </summary>

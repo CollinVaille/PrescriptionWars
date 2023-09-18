@@ -287,11 +287,14 @@ public class NewGalaxyPlanet : MonoBehaviour, IGalaxyMouseUpAsButtonBehaviour
     /// Public observable collection that holds all of the armies that are stationed on the planet.
     /// </summary>
     public ObservableCollection<NewGalaxyArmy> stationedArmies = null;
-
     /// <summary>
     /// Public property that should be used in order to access the integer value that indicates the maximum number of armies that can be stationed on the planet at one time.
     /// </summary>
     public int maxStationedArmiesCount { get => 3; }
+    /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether the maximum number of armies is stationed on the planet.
+    /// </summary>
+    public bool maxStationedArmiesCountReached { get => stationedArmies.Count >= maxStationedArmiesCount; }
 
     // Start is called before the first frame update
     private void Start()

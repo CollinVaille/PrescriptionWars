@@ -229,7 +229,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
     public virtual void OnClickWithoutDrag()
     {
         //Sets the unit list button as the one selected and displayed in the unit inspector.
-        armyManagementMenu._unitListButtonSelected = this;
+        armyManagementMenu.unitListButtonSelected = this;
 
         //Plays the sound effect for being clicked.
         AudioManager.PlaySFX(clickSFX);
@@ -255,7 +255,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
         beingDragged = true;
 
         //Sets the unit list button as the one selected and displayed in the unit inspector.
-        armyManagementMenu._unitListButtonSelected = this;
+        armyManagementMenu.unitListButtonSelected = this;
     }
 
     /// <summary>
@@ -333,7 +333,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
                 //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.buttonType == ButtonType.Army) || (buttonBelow != null && buttonBelow.buttonType == ButtonType.Squad) || (buttonBelow != null && buttonBelow.buttonType == ButtonType.Army && buttonAbove != null)))
                 {
-                    if (buttonAbove != null && buttonAbove.buttonType == ButtonType.Army && !buttonAbove.gameObject.GetComponent<GalaxyArmyButton>().Expanded)
+                    if (buttonAbove != null && buttonAbove.buttonType == ButtonType.Army && !buttonAbove.gameObject.GetComponent<GalaxyArmyButton>().isExpanded)
                         buttonAbove.gameObject.GetComponent<GalaxyArmyButton>().ForceExpand(false);
                     latestButtonMoveSuccessful = true;
                     break;
@@ -348,7 +348,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
                 //Continues on into the if statement if this unit list button was dragged to a valid location in the unit list.
                 if (newSiblingIndex != transform.GetSiblingIndex() && ((buttonAbove != null && buttonAbove.buttonType == ButtonType.Squad) || (buttonAbove != null && buttonAbove.buttonType == ButtonType.Pill)))
                 {
-                    if (buttonAbove != null && buttonAbove.buttonType == ButtonType.Squad && !buttonAbove.gameObject.GetComponent<GalaxySquadButton>().Expanded)
+                    if (buttonAbove != null && buttonAbove.buttonType == ButtonType.Squad && !buttonAbove.gameObject.GetComponent<GalaxySquadButton>().isExpanded)
                         buttonAbove.gameObject.GetComponent<GalaxySquadButton>().ForceExpand(false);
                     latestButtonMoveSuccessful = true;
                     break;
@@ -402,7 +402,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
                 case ButtonType.Army:
                     //Finds the original index the army was at in the list of armies on the planet.
                     int originalArmyIndex = 0;
-                    for (int armyIndex = 0; armyIndex < armyManagementMenu.planetSelected.armyCount; armyIndex++)
+                    for (int armyIndex = 0; armyIndex < armyManagementMenu.planetSelected.stationedArmies.Count; armyIndex++)
                     {
                         if (armyManagementMenu.planetSelected.stationedArmies[armyIndex] == gameObject.GetComponent<GalaxyArmyButton>().assignedArmy)
                         {
@@ -428,7 +428,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
                         }
                     }
                     //Changes the index that the army is placed at in the list of armies on the planet.
-                    armyManagementMenu.planetSelected.ChangeArmyIndex(originalArmyIndex, newArmyIndex);
+                    armyManagementMenu.planetSelected.stationedArmies.Move(originalArmyIndex, newArmyIndex);
                     break;
                 case ButtonType.Squad:
                     NewGalaxySquad squad = gameObject.GetComponent<GalaxySquadButton>().assignedSquad;
@@ -503,7 +503,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
                     newSquadAssigned.pills.Insert(newSiblingIndex - newParentButtons[0].transform.GetSiblingIndex() - 1, pill);
                     //Sets the pill back as the squad leader if it was before.
                     if (squadLeader && newSquadAssigned == originalSquad)
-                        originalSquad.squadLeader = pill;
+                        originalSquad.leader = pill;
                     //Updates the information displayed on the new parent buttons.
                     foreach (GalaxyArmyManagementMenuUnitListButton newParentButton in newParentButtons)
                         newParentButton.UpdateInfo();
@@ -645,7 +645,7 @@ abstract public class GalaxyArmyManagementMenuUnitListButton : GalaxyTooltipEven
         armyManagementMenu.unitListButtonDestroyer.AddUnitListButtonToDestroy(this);
 
         //No button in the unit list is selected after the disbanding action is complete.
-        armyManagementMenu._unitListButtonSelected = null;
+        armyManagementMenu.unitListButtonSelected = null;
 
         //Spacing update on button above and button below.
         if (buttonAbove != null)

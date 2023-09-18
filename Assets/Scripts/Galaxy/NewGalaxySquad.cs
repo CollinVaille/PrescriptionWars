@@ -90,6 +90,15 @@ public class NewGalaxySquad : NewGalaxyGroundUnit
     /// </summary>
     public override NewEmpire empire { get => assignedArmy == null ? null : assignedArmy.empire; }
 
+    /// <summary>
+    /// Public property that should be used in order to access the integer value that indicates the maximum number of pills that can be assigned to the squad.
+    /// </summary>
+    public int maxPillsCount { get => 5; }
+    /// <summary>
+    /// Public property that should be used in order to access the boolean value that indicates whether or not the squad has the maximum number of pills assigned to it.
+    /// </summary>
+    public bool atMaximumCapacity { get => pills.Count >= maxPillsCount; }
+
     public NewGalaxySquad(string name, Color color) : base(name)
     {
         //Initializes the pills observable collection and sets its collection changed method call.

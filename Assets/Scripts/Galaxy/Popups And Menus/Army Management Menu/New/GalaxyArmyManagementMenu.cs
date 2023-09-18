@@ -15,7 +15,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     [Header("Other Components")]
 
     [SerializeField] private VerticalLayoutGroup _unitListVerticalLayoutGroup = null;
-    [SerializeField] private UnitListButtonDestroyer _unitListButtonDestroyer = null;
+    [SerializeField] private GalaxyArmyManagementMenuUnitListButtonDestroyer _unitListButtonDestroyer = null;
     [SerializeField] private RawImage _unitListInspectorPillViewRawImage = null;
 
     [Header("Parents")]
@@ -61,7 +61,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     /// <summary>
     /// Public property that should be used in order to access the unit list button destroyer component of the army management menu that destoys a unit list button every second or so in an organized manner.
     /// </summary>
-    public UnitListButtonDestroyer unitListButtonDestroyer { get => _unitListButtonDestroyer; }
+    public GalaxyArmyManagementMenuUnitListButtonDestroyer unitListButtonDestroyer { get => _unitListButtonDestroyer; }
 
     /// <summary>
     /// Private property that should be used in order to access the unit list inspector pill view raw image of the army management menu.
@@ -669,60 +669,6 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     }
 
     /// <summary>
-    /// This method should be called using an event trigger whenever the change assigned pill skin button in the army section of the unit inspector is clicked.
-    /// </summary>
-    public void OnClickChangeAssignedPillSkinButton()
-    {
-        //Plays the sound effect for pressing a button in the unit inspector.
-        AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
-
-        StartCoroutine(ConfirmChangingAssignedPillSkinActionCoroutine());
-    }
-
-    /// <summary>
-    /// This method should be called on the click of the change assigned pill skin button in the unit inspector and confirms that the player wants to change the selected ground unit's assigned pill skin.
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator ConfirmChangingAssignedPillSkinActionCoroutine()
-    {
-        //Creates the confirmation popup.
-        GalaxyPillSkinConfirmationPopup confirmationPopupScript = Instantiate(GalaxyPillSkinConfirmationPopup.galaxyPillSkinConfirmationPopupPrefab).GetComponent<GalaxyPillSkinConfirmationPopup>();
-        string topText = "Change " + GeneralHelperMethods.GetEnumText(unitListButtonSelected.buttonType.ToString()) + "'s Pill Skin";
-        string bodyText = "Are you sure that you want to change the assigned pill skin for " + unitListButtonSelected.assignedGroundUnit.name + "?";
-        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, planetSelected.owner.pillSkinNames);
-        confirmationPopupScript.SetPillSkinSelected(unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName);
-
-        //Waits until the player has confirmed or cancelled the action.
-        yield return new WaitUntil(confirmationPopupScript.IsAnswered);
-
-        //If the player confirms their action, it carries out the logic behind it.
-        if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
-            ChangeSelectedGroundUnitAssignedPillSkin(confirmationPopupScript.ReturnValue);
-
-        //Destroys the confirmation popup.
-        confirmationPopupScript.DestroyConfirmationPopup();
-    }
-
-    /// <summary>
-    /// This method should be called in order to change the assigned pill skin of the ground unit selected in the unit list and being viewed in the unit inspector.
-    /// </summary>
-    /// <param name="pillSkinName"></param>
-    private void ChangeSelectedGroundUnitAssignedPillSkin(string pillSkinName)
-    {
-        //Checks that the unit list button selected is an army button.
-        if (unitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Army)
-        {
-            //Changes the assigned pill skin of the selected unit list button's ground unit to the pill skin specified.
-            unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.assignedPillSkinName = pillSkinName;
-        }
-        else
-        {
-            //Logs a warning that informs the programmer that the logic for changing the assigned pill skin for the type of unit list button selected has not been implemented yet.
-            Debug.LogWarning("Change Assigned Pill Skin Logic Not Implemented For Unit List Buttons of Type: " + unitListButtonSelected.TypeOfButton.ToString() + ".");
-        }
-    }
-
-    /// <summary>
     /// This method should be called using an event trigger whenever the change icon color button in the squad section of the unit inspector is clicked.
     /// </summary>
     public void OnClickChangeIconColor()
@@ -741,9 +687,9 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxyColorPickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxyColorPickerConfirmationPopup.galaxyColorPickerConfirmationPopupPrefab).GetComponent<GalaxyColorPickerConfirmationPopup>();
-        string topText = "Change " + unitListButtonSelected.AssignedGroundUnit.name + "'s Icon Color";
-        string bodyText = "Are you sure that you want to change the icon color for " + unitListButtonSelected.AssignedGroundUnit.name + "?";
-        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.iconColor);
+        string topText = "Change " + unitListButtonSelected.assignedGroundUnit.name + "'s Icon Color";
+        string bodyText = "Are you sure that you want to change the icon color for " + unitListButtonSelected.assignedGroundUnit.name + "?";
+        confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, unitListButtonSelected.gameObject.GetComponent<GalaxySquadButton>().assignedSquad.color);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -763,19 +709,19 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     private void ChangeSelectedGroundUnitIconColor(Color newIconColor)
     {
         //Checks that the unit list button selected is a squad button.
-        if (unitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Squad)
+        if (unitListButtonSelected.buttonType == GalaxyArmyManagementMenuUnitListButton.ButtonType.Squad)
         {
             //Gets the squad button component of the selected unit list button.
-            SquadButton squadButtonSelected = unitListButtonSelected.gameObject.GetComponent<SquadButton>();
+            GalaxySquadButton squadButtonSelected = unitListButtonSelected.gameObject.GetComponent<GalaxySquadButton>();
             //Changes the actual squad icon color.
-            squadButtonSelected.AssignedSquad.iconColor = newIconColor;
+            squadButtonSelected.assignedSquad.color = newIconColor;
             //Updates the squad button to display the new icon color.
             squadButtonSelected.UpdateInfo();
         }
         else
         {
             //Logs a warning that informs the programmer that the logic for changing the icon color for the type of unit list button selected has not been implemented yet.
-            Debug.LogWarning("Change Icon Color Logic Not Implemented For Unit List Buttons of Type: " + unitListButtonSelected.TypeOfButton.ToString() + ".");
+            Debug.LogWarning("Change Icon Color Logic Not Implemented For Unit List Buttons of Type: " + unitListButtonSelected.buttonType.ToString() + ".");
         }
     }
 
@@ -798,8 +744,8 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxySpritePickerConfirmationPopup confirmationPopupScript = Instantiate(GalaxySpritePickerConfirmationPopup.galaxySpritePickerConfirmationPopupPrefab).GetComponent<GalaxySpritePickerConfirmationPopup>();
-        string topText = "Change " + unitListButtonSelected.AssignedGroundUnit.name + "'s Army Icon";
-        string bodyText = "Are you sure that you want to change the army icon for " + unitListButtonSelected.AssignedGroundUnit.name + "?";
+        string topText = "Change " + unitListButtonSelected.assignedGroundUnit.name + "'s Army Icon";
+        string bodyText = "Are you sure that you want to change the army icon for " + unitListButtonSelected.assignedGroundUnit.name + "?";
         //Fills up an array of sprites with all of the possible army icon sprites before creating the confirmation popup.
         Sprite[] armyIcons = new Sprite[ArmyIconNamesLoader.armyIconNames.Length];
         for (int armyIconIndex = 0; armyIconIndex < armyIcons.Length; armyIconIndex++)
@@ -809,7 +755,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         confirmationPopupScript.CreateConfirmationPopup(topText, bodyText, armyIcons, new Color((192 / 255.0f), (192 / 255.0f), (192 / 255.0f), 1), ArmyIconNamesLoader.armyIconNames);
 
         //Army's currently selected icon is pre-selected.
-        confirmationPopupScript.SetSpriteSelected(Resources.Load<Sprite>("Galaxy/Army Icons/" + unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.armyIcon.spriteName));
+        confirmationPopupScript.SetSpriteSelected(Resources.Load<Sprite>("Galaxy/Army Icons/" + unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.iconName));
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -829,19 +775,19 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     private void ChangeSelectedGroundUnitArmyIcon(string newArmyIconSpriteName)
     {
         //Checks that the unit list button selected is an army button.
-        if (unitListButtonSelected.TypeOfButton == UnitListButton.ButtonType.Army)
+        if (unitListButtonSelected.buttonType == GalaxyArmyManagementMenuUnitListButton.ButtonType.Army)
         {
             //Gets the squad button component of the selected unit list button.
-            ArmyButton armyButtonSelected = unitListButtonSelected.gameObject.GetComponent<ArmyButton>();
+            GalaxyArmyButton armyButtonSelected = unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>();
             //Changes the actual squad icon color.
-            armyButtonSelected.AssignedArmy.armyIcon.spriteName = newArmyIconSpriteName;
+            armyButtonSelected.assignedArmy.iconName = newArmyIconSpriteName;
             //Updates the squad button to display the new icon color.
             armyButtonSelected.UpdateInfo();
         }
         else
         {
             //Logs a warning that informs the programmer that the logic for changing the army icon for the type of unit list button selected has not been implemented yet.
-            Debug.LogWarning("Change Army Icon Logic Not Implemented For Unit List Buttons of Type: " + unitListButtonSelected.TypeOfButton.ToString() + ".");
+            Debug.LogWarning("Change Army Icon Logic Not Implemented For Unit List Buttons of Type: " + unitListButtonSelected.buttonType.ToString() + ".");
         }
     }
 
@@ -851,10 +797,10 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     public void OnClickCreateArmyButton()
     {
         //Ensures the planet selected is allowed to have another army stationed on it.
-        if (!planetSelected.armyCountLimitReached)
+        if (!planetSelected.maxStationedArmiesCountReached)
         {
             //Creates a new army on the selected planet.
-            planetSelected.AddArmy(new GalaxyArmy(planetSelected.owner.empireCulture.ToString() + " Army", planetSelected.ownerID));
+            planetSelected.stationedArmies.Add(new NewGalaxyArmy(planetSelected.owner, "Army of " + planetSelected.planetName));
 
             //Instantiates the army button from the army button prefab.
             GameObject armyButton = Instantiate(armyButtonPrefab);
@@ -863,13 +809,13 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
             //Resets the scale of the army button.
             armyButton.transform.localScale = Vector3.one;
             //Gets the army button script component of the army button in order to edit some values in the script.
-            ArmyButton armyButtonScript = armyButton.GetComponent<ArmyButton>();
+            GalaxyArmyButton armyButtonScript = armyButton.GetComponent<GalaxyArmyButton>();
             //Assigns the appropriate army to the army button.
-            armyButtonScript.Initialize(this, planetSelected.GetArmyAt(planetSelected.armyCount - 1));
+            armyButtonScript.Initialize(this, planetSelected.stationedArmies[planetSelected.stationedArmies.Count - 1]);
 
             //Calls for a spacing update on the button above it if such a button exists.
             if (unitListButtonParent.childCount > 1)
-                unitListButtonParent.GetChild(unitListButtonParent.childCount - 2).GetComponent<UnitListButton>().SpacingUpdateRequiredNextFrame = true;
+                unitListButtonParent.GetChild(unitListButtonParent.childCount - 2).GetComponent<GalaxyArmyManagementMenuUnitListButton>().spacingUpdateRequiredNextFrame = true;
         }
         else
         {
@@ -914,22 +860,22 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + unitListButtonSelected.AssignedGroundUnit.name + " as the squad leader of " + unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.name + "?", unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader);
+        confirmationPopupScript.CreateConfirmationPopup("Assign Squad Leader", unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.isSquadLeader ? "Pill selected is already the leader of their assigned squad." : "Are you sure that you want to assign the pill " + unitListButtonSelected.assignedGroundUnit.name + " as the squad leader of " + unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.assignedSquad.name + "?", unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.isSquadLeader);
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
 
         //Assigns the selected pill as the squad leader if needed.
-        if (!unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.isSquadLeader && confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
+        if (!unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.isSquadLeader && confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad.squadLeader = unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill;
-            SquadButton parentSquadButton = null;
+            unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.assignedSquad.leader = unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill;
+            GalaxySquadButton parentSquadButton = null;
             for (int siblingIndex = unitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)
             {
-                UnitListButton buttonAtSiblingIndex = unitListButtonParent.GetChild(siblingIndex).GetComponent<UnitListButton>();
-                if (buttonAtSiblingIndex.TypeOfButton == UnitListButton.ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>().AssignedSquad == unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad)
+                GalaxyArmyManagementMenuUnitListButton buttonAtSiblingIndex = unitListButtonParent.GetChild(siblingIndex).GetComponent<GalaxyArmyManagementMenuUnitListButton>();
+                if (buttonAtSiblingIndex.buttonType == GalaxyArmyManagementMenuUnitListButton.ButtonType.Squad && buttonAtSiblingIndex.gameObject.GetComponent<GalaxySquadButton>().assignedSquad == unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.assignedSquad)
                 {
-                    parentSquadButton = buttonAtSiblingIndex.gameObject.GetComponent<SquadButton>();
+                    parentSquadButton = buttonAtSiblingIndex.gameObject.GetComponent<GalaxySquadButton>();
                     break;
                 }
             }
@@ -962,7 +908,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         SpecialPillConfirmationPopup confirmationPopupScript = Instantiate(SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab).GetComponent<SpecialPillConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Assign General For " + unitListButtonSelected.AssignedGroundUnit.name, (int)GalaxySpecialPill.Skill.Generalship, unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID);
+        confirmationPopupScript.CreateConfirmationPopup("Assign General For " + unitListButtonSelected.assignedGroundUnit.name, (int)NewGalaxySpecialPill.Skill.Generalship, unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.general == null ? -1 : unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.general.ID);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -970,9 +916,9 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         //If the player confirms their action, it carries out the logic behind it.
         if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.generalSpecialPillID = confirmationPopupScript.returnValue;
+            unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.general = NewGalaxyManager.pillManager.GetSpecialPill(confirmationPopupScript.returnValue);
             //Gets the general of the army (could be null if there is no general).
-            GalaxySpecialPill general = _unitListButtonSelected.gameObject.GetComponent<ArmyButton>().AssignedArmy.general;
+            NewGalaxySpecialPill general = _unitListButtonSelected.gameObject.GetComponent<GalaxyArmyButton>().assignedArmy.general;
             //Deletes/clears the pill view if the army has no general.
             if (general == null)
             {
@@ -992,10 +938,10 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
                 unitListInspectorPillViewRawImage.gameObject.SetActive(true);
 
                 if (unitInspectorPillView == null)
-                    unitInspectorPillView = PillViewsManager.GetNewPillView(general.convertedToGalaxyPill);
+                    unitInspectorPillView = NewGalaxyManager.pillViewsManager.GetNewPillView(general.pill);
                 else
-                    unitInspectorPillView.DisplayedPill = general.convertedToGalaxyPill;
-                unitListInspectorPillViewRawImage.texture = unitInspectorPillView.RenderTexture;
+                    unitInspectorPillView.displayedPill = general.pill;
+                unitListInspectorPillViewRawImage.texture = unitInspectorPillView.renderTexture;
             }
         }
 
@@ -1003,6 +949,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         confirmationPopupScript.DestroyConfirmationPopup();
     }
 
+    /*
     /// <summary>
     /// This method should be called whenever the demote special pill into service button is clicked in the unit inspector (squad button unit inspector only).
     /// </summary>
@@ -1011,7 +958,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         //Plays the sound effect for pressing a button in the unit inspector.
         AudioManager.PlaySFX(clickUnitInspectorButtonSFX);
 
-        if (!unitListButtonSelected.gameObject.GetComponent<SquadButton>().AssignedSquad.atMaximumCapacity)
+        if (!unitListButtonSelected.gameObject.GetComponent<GalaxySquadButton>().assignedSquad.atMaximumCapacity)
             StartCoroutine(ConfirmDemotingSpecialPillIntoServiceActionCoroutine());
         else
             StartCoroutine(ConfirmDemotingSpecialPillIntoServiceFailureDueToSquadCapacityReachedActionCoroutine());
@@ -1025,7 +972,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         SpecialPillConfirmationPopup confirmationPopupScript = Instantiate(SpecialPillConfirmationPopup.specialPillConfirmationPopupPrefab).GetComponent<SpecialPillConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Demote Special Pill Into Service In " + unitListButtonSelected.AssignedGroundUnit.name, (int)GalaxySpecialPill.Skill.Soldiering);
+        confirmationPopupScript.CreateConfirmationPopup("Demote Special Pill Into Service In " + unitListButtonSelected.assignedGroundUnit.name, (int)NewGalaxySpecialPill.Skill.Soldiering);
 
         //Waits until the player has confirmed or cancelled the action.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -1073,6 +1020,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         //Destroys the confirmation popup.
         confirmationPopupScript.DestroyConfirmationPopup();
     }
+    */
 
     /// <summary>
     /// This method should be called whenever the promote to special pill button is clicked in the unit inspector (pill button unit inspector only).
@@ -1093,7 +1041,7 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
     {
         //Creates the confirmation popup.
         GalaxyConfirmationPopup confirmationPopupScript = Instantiate(GalaxyConfirmationPopup.confirmationPopupPrefab).GetComponent<GalaxyConfirmationPopup>();
-        confirmationPopupScript.CreateConfirmationPopup("Promote To Special Pill", "Are you sure that you want to promote " + unitListButtonSelected.AssignedGroundUnit.name + " to a special pill? This action will remove " + unitListButtonSelected.AssignedGroundUnit.name + " from their assigned squad.");
+        confirmationPopupScript.CreateConfirmationPopup("Promote To Special Pill", "Are you sure that you want to promote " + unitListButtonSelected.assignedGroundUnit.name + " to a special pill? This action will remove " + unitListButtonSelected.assignedGroundUnit.name + " from their assigned squad.");
 
         //Waits until the player has answered the confirmation popup.
         yield return new WaitUntil(confirmationPopupScript.IsAnswered);
@@ -1101,22 +1049,22 @@ public class GalaxyArmyManagementMenu : NewGalaxyPopupBehaviour, IGalaxyTooltipH
         //Assigns the selected pill as the squad leader if needed.
         if (confirmationPopupScript.answer == GalaxyConfirmationPopupBehaviour.GalaxyConfirmationPopupAnswer.Confirm)
         {
-            SquadButton squadButton = null;
+            GalaxySquadButton squadButton = null;
             for (int siblingIndex = unitListButtonSelected.transform.GetSiblingIndex(); siblingIndex >= 0; siblingIndex--)
             {
-                if (_unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<UnitListButton>().TypeOfButton == UnitListButton.ButtonType.Squad && _unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<SquadButton>().AssignedSquad == unitListButtonSelected.gameObject.GetComponent<PillButton>().AssignedPill.assignedSquad)
+                if (_unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<GalaxyArmyManagementMenuUnitListButton>().buttonType == GalaxyArmyManagementMenuUnitListButton.ButtonType.Squad && _unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<GalaxySquadButton>().assignedSquad == unitListButtonSelected.gameObject.GetComponent<GalaxyPillButton>().assignedPill.assignedSquad)
                 {
-                    squadButton = _unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<SquadButton>();
+                    squadButton = _unitListButtonParent.GetChild(siblingIndex).gameObject.GetComponent<GalaxySquadButton>();
                     break;
                 }
             }
-            GalaxySpecialPill specialPill = unitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill != null ? unitListButtonSelected.GetComponent<PillButton>().AssignedPill.specialPill : new GalaxySpecialPill(unitListButtonSelected.GetComponent<PillButton>().AssignedPill);
-            unitListButtonSelected.GetComponent<PillButton>().AssignedPill.assignedSquad.RemovePill(unitListButtonSelected.GetComponent<PillButton>().AssignedPill);
+            NewGalaxySpecialPill specialPill = unitListButtonSelected.GetComponent<GalaxyPillButton>().assignedPill.specialPill != null ? unitListButtonSelected.GetComponent<GalaxyPillButton>().assignedPill.specialPill : new NewGalaxySpecialPill(unitListButtonSelected.GetComponent<GalaxyPillButton>().assignedPill);
+            unitListButtonSelected.GetComponent<GalaxyPillButton>().assignedPill.assignedSquad.pills.Remove(unitListButtonSelected.GetComponent<GalaxyPillButton>().assignedPill);
             specialPill.task = null;
-            UnitListButton buttonAbove = _unitListButtonParent.GetChild(unitListButtonSelected.transform.GetSiblingIndex() - 1).GetComponent<UnitListButton>(), buttonBelow = _unitListButtonParent.GetChild(unitListButtonSelected.transform.GetSiblingIndex() + 1).GetComponent<UnitListButton>();
+            GalaxyArmyManagementMenuUnitListButton buttonAbove = _unitListButtonParent.GetChild(unitListButtonSelected.transform.GetSiblingIndex() - 1).GetComponent<GalaxyArmyManagementMenuUnitListButton>(), buttonBelow = _unitListButtonParent.GetChild(unitListButtonSelected.transform.GetSiblingIndex() + 1).GetComponent<GalaxyArmyManagementMenuUnitListButton>();
             unitListButtonDestroyer.AddUnitListButtonToDestroy(unitListButtonSelected);
-            buttonAbove.SpacingUpdateRequiredNextFrame = true;
-            buttonBelow.SpacingUpdateRequiredNextFrame = true;
+            buttonAbove.spacingUpdateRequiredNextFrame = true;
+            buttonBelow.spacingUpdateRequiredNextFrame = true;
 
             //Collapses and expands the assigned squad's button in order to update the child buttons.
             squadButton.Collapse(false);
